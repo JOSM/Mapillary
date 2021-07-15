@@ -7,6 +7,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,12 +24,7 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-
-import org.apache.commons.jcs3.access.CacheAccess;
-import org.apache.commons.jcs3.access.behavior.ICacheAccess;
-import org.apache.commons.jcs3.engine.behavior.IElementAttributes;
 
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
@@ -36,41 +32,29 @@ import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.spi.preferences.Config;
+import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
 
+import org.apache.commons.jcs3.access.CacheAccess;
+import org.apache.commons.jcs3.access.behavior.ICacheAccess;
+import org.apache.commons.jcs3.engine.behavior.IElementAttributes;
+
 public final class Caches {
-
-  private Caches() {
-    // Private constructor to avoid instantiation
-  }
-
-  public static File getCacheDirectory() {
-    final File f = new File(Config.getDirs().getCacheDirectory(true) + "/Mapillary");
-    if (!f.exists()) {
-      f.mkdirs();
-    }
-    return f;
-  }
-
-  /**
-   * The cache for map object icons
-   */
-  public static final MapillaryCacheAccess<ImageIcon> mapObjectIconCache = new MapillaryCacheAccess<>(
-    JCSCacheManager.getCache("mapillary:objectIcons", 100, 1000, getCacheDirectory().getPath()));
+  private static final String ERROR = "error";
   /** The cache for user profiles */
-  public static final MapillaryCacheAccess<UserProfile> userProfileCache = new MapillaryCacheAccess<>(
+  public static final MapillaryCacheAccess<UserProfile> USER_PROFILE_CACHE = new MapillaryCacheAccess<>(
     JCSCacheManager.getCache("mapillary:userProfile", 100, 1000, getCacheDirectory().getPath()));
 
   /** The cache for non-street level images, AKA metadata images for users/organizations/etc. */
-  public static final MapillaryCacheAccess<BufferedImage> metaImages = new MapillaryCacheAccess<>(
+  public static final MapillaryCacheAccess<BufferedImage> META_IMAGES = new MapillaryCacheAccess<>(
     JCSCacheManager.getCache("mapillary:metaImages", 5, 1000, getCacheDirectory().getPath()));
 
   /** The cache for metadata objects */
-  public static final MapillaryCacheAccess<String> metaDataCache = new MapillaryCacheAccess<>(
+  public static final MapillaryCacheAccess<String> META_DATA_CACHE = new MapillaryCacheAccess<>(
     JCSCacheManager.getCache("mapillary:metadata", 100, 100000, getCacheDirectory().getPath()), string -> {
       try (JsonReader reader = Json.createReader(new ByteArrayInputStream(string.getBytes(StandardCharsets.UTF_8)))) {
         JsonObject object = reader.readObject();
-        if (object.containsKey("error") || object.containsKey("call_volume") || object.containsKey("call_count")) {
+        if (object.containsKey(ERROR) || object.containsKey("call_volume") || object.containsKey("call_count")) {
           Logging.error(object.toString());
           return false;
         }
@@ -86,16 +70,28 @@ public final class Caches {
     JCSCacheManager.getCache("mapillary:image:fullImage", MAX_MEMORY_OBJECTS, MAX_DISK_IMAGES_SIZE,
       getCacheDirectory().getPath()));
   static {
-    final IElementAttributes userProfileCacheAttributes = userProfileCache.getDefaultElementAttributes();
+    final IElementAttributes userProfileCacheAttributes = USER_PROFILE_CACHE.getDefaultElementAttributes();
     userProfileCacheAttributes.setMaxLife(604_800_000);
-    userProfileCache.setDefaultElementAttributes(userProfileCacheAttributes);
-    metaDataCache.setDefaultElementAttributes(userProfileCacheAttributes);
+    USER_PROFILE_CACHE.setDefaultElementAttributes(userProfileCacheAttributes);
+    META_DATA_CACHE.setDefaultElementAttributes(userProfileCacheAttributes);
+  }
+
+  public static File getCacheDirectory() {
+    final File f = new File(Config.getDirs().getCacheDirectory(true) + "/Mapillary");
+    if (!f.exists() && !f.mkdirs()) {
+      throw new JosmRuntimeException(
+        new IOException("Mapillary: Could not create cache directory: " + f.getAbsolutePath()));
+    }
+    return f;
+  }
+
+  private Caches() {
+    // Private constructor to avoid instantiation
   }
 
   /**
    * A wrapper to avoid saving bad returns
    *
-   * @param <K> The key type
    * @param <V> The value type
    */
   public static class MapillaryCacheAccess<V> {
@@ -109,7 +105,8 @@ public final class Caches {
 
     private boolean rateLimited;
 
-    public MapillaryCacheAccess(CacheAccess<String, V> cacheAccess, Predicate<V>... validators) {
+    @SafeVarargs
+    public MapillaryCacheAccess(@Nonnull CacheAccess<String, V> cacheAccess, @Nullable Predicate<V>... validators) {
       this.cacheAccess = cacheAccess;
       if (validators != null) {
         this.validators = Arrays.asList(validators);
@@ -195,31 +192,7 @@ public final class Caches {
         if (returnObject != null && this.validators.stream().allMatch(p -> p.test(returnObject))) {
           this.cacheAccess.put(url, returnObject);
         } else if (returnObject != null) {
-          final String message;
-          if (returnObject instanceof String) {
-            try (JsonReader reader = Json
-              .createReader(new ByteArrayInputStream(((String) returnObject).getBytes(StandardCharsets.UTF_8)))) {
-              final JsonValue jsonValue = reader.readValue();
-              if (jsonValue.getValueType() == JsonValue.ValueType.OBJECT
-                && jsonValue.asJsonObject().containsKey("error")
-                && jsonValue.asJsonObject().get("error").getValueType() == JsonValue.ValueType.OBJECT
-                && jsonValue.asJsonObject().getJsonObject("error").containsKey("message")) {
-                if ("Application request limit reached"
-                  .equals(jsonValue.asJsonObject().getJsonObject("error").getString("message"))) {
-                  this.rateLimited = true;
-                  message = marktr(
-                    "We have reached the Mapillary API limit. Disabling Mapillary networking until JOSM restart. Sorry.\n"
-                      + "Logging in after the rate limit subsides may help prevent this in the future.\n{0}");
-                } else {
-                  message = UNKNOWN_MAPILLARY_EXCEPTION;
-                }
-              } else {
-                message = UNKNOWN_MAPILLARY_EXCEPTION;
-              }
-            }
-          } else {
-            message = UNKNOWN_MAPILLARY_EXCEPTION;
-          }
+          final String message = checkReturnObject(returnObject);
           GuiHelper.runInEDT(() -> {
             Notification notification = new Notification();
             notification.setContent(tr(message, returnObject));
@@ -230,6 +203,32 @@ public final class Caches {
         }
       }
       return returnObject;
+    }
+
+    /**
+     * Check an object for issues
+     *
+     * @param returnObject The object to check
+     * @return The error message
+     */
+    private String checkReturnObject(V returnObject) {
+      if (returnObject instanceof String) {
+        try (JsonReader reader = Json
+          .createReader(new ByteArrayInputStream(((String) returnObject).getBytes(StandardCharsets.UTF_8)))) {
+          final JsonValue jsonValue = reader.readValue();
+          if (jsonValue.getValueType() == JsonValue.ValueType.OBJECT && jsonValue.asJsonObject().containsKey(ERROR)
+            && jsonValue.asJsonObject().get(ERROR).getValueType() == JsonValue.ValueType.OBJECT
+            && jsonValue.asJsonObject().getJsonObject(ERROR).containsKey("message")
+            && "Application request limit reached"
+              .equals(jsonValue.asJsonObject().getJsonObject(ERROR).getString("message"))) {
+            this.rateLimited = true;
+            return marktr(
+              "We have reached the Mapillary API limit. Disabling Mapillary networking until JOSM restart. Sorry.\n"
+                + "Logging in after the rate limit subsides may help prevent this in the future.\n{0}");
+          }
+        }
+      }
+      return UNKNOWN_MAPILLARY_EXCEPTION;
     }
 
     /**

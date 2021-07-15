@@ -1,24 +1,5 @@
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
-import org.openstreetmap.josm.data.osm.INode;
-import org.openstreetmap.josm.data.osm.IWay;
-import org.openstreetmap.josm.data.vector.VectorNode;
-import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
-import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
-import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
-import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
-import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoder;
-import org.openstreetmap.josm.tools.Logging;
-import org.openstreetmap.josm.tools.UncheckedParseException;
-import org.openstreetmap.josm.tools.date.DateUtils;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.imageio.ImageIO;
-import javax.json.Json;
-import javax.json.JsonReader;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -34,6 +15,26 @@ import java.util.concurrent.Future;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.imageio.ImageIO;
+import javax.json.Json;
+import javax.json.JsonReader;
+
+import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.data.osm.IWay;
+import org.openstreetmap.josm.data.vector.VectorNode;
+import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
+import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
+import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoder;
+import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.UncheckedParseException;
+import org.openstreetmap.josm.tools.date.DateUtils;
 
 /**
  * Keys and utility methods for Mapillary Images
@@ -252,7 +253,7 @@ public final class MapillaryImageUtils {
           completableFuture.complete(realImage);
         } catch (IOException e) {
           // Remove the key from the metadata cache -- this way we can try again later if the image URL became stale.
-          Caches.metaDataCache.getICacheAccess()
+          Caches.META_DATA_CACHE.getICacheAccess()
             .remove(MapillaryURL.APIv4.getImageInformation(new String[] { MapillaryImageUtils.getKey(image) }));
           Logging.error(e);
           completableFuture.complete(null);
@@ -352,7 +353,7 @@ public final class MapillaryImageUtils {
     Objects.requireNonNull(keys, "Image keys cannot be null");
     for (String key : keys) {
       final String imageUrl = MapillaryURL.APIv4.getImageInformation(key);
-      final String cacheData = Caches.metaDataCache.get(imageUrl, () -> {
+      final String cacheData = Caches.META_DATA_CACHE.get(imageUrl, () -> {
         try {
           return OAuthUtils.getWithHeader(new URL(imageUrl)).toString();
         } catch (IOException e) {

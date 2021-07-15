@@ -63,7 +63,7 @@ public final class OrganizationRecord implements Serializable {
       return ImageProvider.get(avatar, ImageProvider.ImageSizes.DEFAULT);
     } else if (organizationKey != null && !organizationKey.isEmpty()) {
       final String url = MapillaryURL.APIv3.retrieveOrganizationAvatar(organizationKey);
-      final BufferedImage avatarImage = Caches.metaImages.get(url, () -> {
+      final BufferedImage avatarImage = Caches.META_IMAGES.get(url, () -> {
         try {
           HttpClient client = HttpClient.create(new URL(url));
           OAuthUtils.addAuthenticationHeader(client);

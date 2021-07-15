@@ -56,10 +56,13 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
 
     Type(final MapillaryImageUtils.ImageProperties properties) {
       this.imageUrl = properties.name().toLowerCase(Locale.ROOT);
-      final Pattern pattern = Pattern.compile("thumb_([0-9]+)_url");
+      final Pattern pattern = MapillaryImageUtils.BASE_IMAGE_KEY;
       final Matcher matcher = pattern.matcher(this.imageUrl);
-      matcher.matches();
-      this.width = Integer.parseInt(matcher.group(1));
+      if (matcher.matches()) {
+        this.width = Integer.parseInt(matcher.group(1));
+      } else {
+        throw new IllegalArgumentException("Mapillary: " + this.imageUrl + " is not a valid image type");
+      }
     }
 
     /**
@@ -103,7 +106,6 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
     final ForkJoinPool pool = MapillaryUtils.getForkJoinPool(MapillaryCache.class);
     final int prefetchCount = MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get();
     final long freeMemory = Runtime.getRuntime().freeMemory();
-    final Caches.MapillaryCacheAccess<BufferedImageCacheEntry> imageCache = Caches.FULL_IMAGE_CACHE;
     // 3 bytes for RGB (jpg doesn't support the Alpha channel). I'm using 4 bytes instead of 3 for a buffer.
     long estimatedImageSize = Stream.of(MapillaryCache.Type.values())
       .mapToLong(v -> (long) v.getHeight() * v.getWidth() * 4).sum();
@@ -170,9 +172,6 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
    *
    * @param image
    *        The image.
-   * @param type
-   *        The type of image that must be downloaded (THUMBNAIL or
-   *        FULL_IMAGE).
    */
   public MapillaryCache(final INode image) {
     super(Caches.FULL_IMAGE_CACHE.getICacheAccess(),
@@ -184,7 +183,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
     }
     final Type type = Type.FULL_IMAGE;
     try {
-      if (image == null || type == null) {
+      if (image == null) {
         this.key = null;
         this.url = null;
       } else if (image.hasKey(type.getKey())) {

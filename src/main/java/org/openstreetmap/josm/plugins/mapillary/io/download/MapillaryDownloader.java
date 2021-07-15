@@ -81,7 +81,7 @@ public final class MapillaryDownloader {
     if (images.length == 0) {
       return Collections.emptyMap();
     }
-    final Caches.MapillaryCacheAccess<String> metaDataCache = Caches.metaDataCache;
+    final Caches.MapillaryCacheAccess<String> metaDataCache = Caches.META_DATA_CACHE;
     String url = MapillaryURL.APIv4.getImageInformation(images);
     String stringJson = metaDataCache.get(url, () -> {
       final JsonObject jsonObject = getUrlResponse(url);
@@ -116,7 +116,7 @@ public final class MapillaryDownloader {
     if (jsonObject.containsKey(dataString) && jsonObject.get(dataString).getValueType() == JsonValue.ValueType.ARRAY) {
       for (JsonObject entry : jsonObject.get(dataString).asJsonArray().getValuesAs(JsonObject.class)) {
         final String entryUrl = MapillaryURL.APIv4.getImageInformation(entry.getString("id"));
-        Caches.metaDataCache.getICacheAccess().put(entryUrl, entry.toString());
+        Caches.META_DATA_CACHE.getICacheAccess().put(entryUrl, entry.toString());
       }
     }
   }
@@ -157,7 +157,7 @@ public final class MapillaryDownloader {
     }
     if (toGet.length > 0) {
       return Stream.of(toGet).map(MapillaryURL.APIv4::getImagesBySequences)
-        .map(url -> Caches.metaDataCache.get(url, () -> getUrlResponse(url).toString())).map(string -> {
+        .map(url -> Caches.META_DATA_CACHE.get(url, () -> getUrlResponse(url).toString())).map(string -> {
           try (
             JsonReader reader = Json.createReader(new ByteArrayInputStream(string.getBytes(StandardCharsets.UTF_8)))) {
             return reader.readObject();

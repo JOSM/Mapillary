@@ -186,7 +186,7 @@ public class MapillarySequenceUtils {
    */
   private static synchronized IWay<?> downloadSequence(final String key) {
     final String sequenceUrl = MapillaryURL.APIv4.getImagesBySequences(key);
-    final String data = Caches.metaDataCache.get(sequenceUrl, () -> {
+    final String data = Caches.META_DATA_CACHE.get(sequenceUrl, () -> {
       try {
         return OAuthUtils.getWithHeader(new URL(sequenceUrl)).toString();
       } catch (IOException e) {

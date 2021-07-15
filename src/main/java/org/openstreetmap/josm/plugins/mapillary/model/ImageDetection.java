@@ -90,7 +90,7 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<T> {
      */
     private static List<ImageDetection<?>> getDetections(String key) {
       final String urlString = MapillaryURL.APIv4.getDetectionInformation(key);
-      final String jsonString = Caches.metaDataCache.get(urlString, () -> {
+      final String jsonString = Caches.META_DATA_CACHE.get(urlString, () -> {
         try {
           final JsonObject jsonObject = OAuthUtils.getWithHeader(new URL(urlString));
           return jsonObject != null ? jsonObject.toString() : null;

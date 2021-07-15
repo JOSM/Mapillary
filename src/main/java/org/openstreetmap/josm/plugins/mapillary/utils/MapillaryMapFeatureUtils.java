@@ -195,7 +195,7 @@ public class MapillaryMapFeatureUtils {
   private static void updateMapFeature(@Nonnull final IPrimitive primitive) {
     final String url = MapillaryURL.APIv4.getMapFeatureInformation(getId(primitive), MapFeatureProperties.GEOMETRY,
       MapFeatureProperties.IMAGES);
-    final String json = Caches.metaDataCache.get(url, () -> {
+    final String json = Caches.META_DATA_CACHE.get(url, () -> {
       try {
         return OAuthUtils.getWithHeader(new URL(url)).toString();
       } catch (IOException e) {
