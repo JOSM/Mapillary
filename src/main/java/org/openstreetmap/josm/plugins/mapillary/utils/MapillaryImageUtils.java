@@ -40,103 +40,6 @@ import org.openstreetmap.josm.tools.date.DateUtils;
  * Keys and utility methods for Mapillary Images
  */
 public final class MapillaryImageUtils {
-  /**
-   * Properties for images
-   */
-  public enum ImageProperties {
-    /** The identifier of the image */
-    ID,
-    /**
-     * Original altitude from EXIF
-     *
-     * @see #COMPUTED_ALTITUDE
-     */
-    ALTITUDE, ATOMIC_SCALE, CAMERA_PARAMETERS, CAMERA_TYPE,
-    /** Timestamp, original capture time */
-    CAPTURED_AT,
-    /**
-     * Original angle
-     *
-     * @see #COMPUTED_COMPASS_ANGLE
-     */
-    COMPASS_ANGLE,
-    /**
-     * Altitude after image processing
-     *
-     * @see #ALTITUDE
-     */
-    COMPUTED_ALTITUDE,
-    /**
-     * Compass angle after image processing
-     *
-     * @see #COMPASS_ANGLE
-     */
-    COMPUTED_COMPASS_ANGLE,
-    /**
-     * Geometry after image processing
-     *
-     * @see #GEOMETRY
-     */
-    COMPUTED_GEOMETRY,
-    /**
-     * Orientation of image after image processing
-     *
-     * @see #EXIF_ORIENTATION
-     */
-    COMPUTED_ROTATION,
-    /**
-     * Original orientation of the image
-     *
-     * @see #COMPUTED_ROTATION
-     */
-    EXIF_ORIENTATION,
-    /**
-     * Original geometry of the image
-     *
-     * @see #COMPUTED_GEOMETRY
-     */
-    GEOMETRY,
-    /** The original height of the image (int) */
-    HEIGHT,
-    /** 1 if the image is panoramic */
-    IS_PANO,
-    /** The id of the organization */
-    ORGANIZATION_ID,
-    /** A 256px image (max width). You should prefer {@link #WORST_IMAGE}. */
-    THUMB_256_URL,
-    /** A 1024px image (max width) */
-    THUMB_1024_URL,
-    /** A 2048px image (max width). You should prefer {@link #BEST_IMAGE}. */
-    THUMB_2048_URL, MERGE_CC, MESH,
-    /**
-     * The quality score of the image (float)
-     */
-    QUALITY_SCORE,
-    /**
-     * @see #SEQUENCE_ID
-     */
-    SEQUENCE,
-    /**
-     * @see #SEQUENCE
-     */
-    SEQUENCE_ID, SFM_CLUSTER,
-    /** The original width of the image */
-    WIDTH;
-
-    /** This is the highest quality image known to us at this time. Prefer this to {@link #THUMB_2048_URL}. */
-    public static final ImageProperties BEST_IMAGE = THUMB_2048_URL;
-    /** This is the lowest quality image known to us at this time. Prefer this to {@link #THUMB_256_URL}. */
-    public static final ImageProperties WORST_IMAGE = THUMB_256_URL;
-
-    @Override
-    public String toString() {
-      return super.toString().toLowerCase(Locale.ROOT);
-    }
-  }
-
-  private MapillaryImageUtils() {
-    /* No op */}
-
   /** The base image url key pattern (v4 sizes are 256, 1024, 2048) */
   public static final Pattern BASE_IMAGE_KEY = Pattern.compile("^thumb_([0-9]+)_url$");
   // Image specific
@@ -387,5 +290,103 @@ public final class MapillaryImageUtils {
       }
     }
     return OrganizationRecord.NULL_RECORD;
+  }
+
+  private MapillaryImageUtils() {
+    /* No op */
+  }
+
+  /**
+   * Properties for images
+   */
+  public enum ImageProperties {
+    /** The identifier of the image */
+    ID,
+    /**
+     * Original altitude from EXIF
+     *
+     * @see #COMPUTED_ALTITUDE
+     */
+    ALTITUDE, ATOMIC_SCALE, CAMERA_PARAMETERS, CAMERA_TYPE,
+    /** Timestamp, original capture time */
+    CAPTURED_AT,
+    /**
+     * Original angle
+     *
+     * @see #COMPUTED_COMPASS_ANGLE
+     */
+    COMPASS_ANGLE,
+    /**
+     * Altitude after image processing
+     *
+     * @see #ALTITUDE
+     */
+    COMPUTED_ALTITUDE,
+    /**
+     * Compass angle after image processing
+     *
+     * @see #COMPASS_ANGLE
+     */
+    COMPUTED_COMPASS_ANGLE,
+    /**
+     * Geometry after image processing
+     *
+     * @see #GEOMETRY
+     */
+    COMPUTED_GEOMETRY,
+    /**
+     * Orientation of image after image processing
+     *
+     * @see #EXIF_ORIENTATION
+     */
+    COMPUTED_ROTATION,
+    /**
+     * Original orientation of the image
+     *
+     * @see #COMPUTED_ROTATION
+     */
+    EXIF_ORIENTATION,
+    /**
+     * Original geometry of the image
+     *
+     * @see #COMPUTED_GEOMETRY
+     */
+    GEOMETRY,
+    /** The original height of the image (int) */
+    HEIGHT,
+    /** 1 if the image is panoramic */
+    IS_PANO,
+    /** The id of the organization */
+    ORGANIZATION_ID,
+    /** A 256px image (max width). You should prefer {@link #WORST_IMAGE}. */
+    THUMB_256_URL,
+    /** A 1024px image (max width) */
+    THUMB_1024_URL,
+    /** A 2048px image (max width). You should prefer {@link #BEST_IMAGE}. */
+    THUMB_2048_URL, MERGE_CC, MESH,
+    /**
+     * The quality score of the image (float)
+     */
+    QUALITY_SCORE,
+    /**
+     * @see #SEQUENCE_ID
+     */
+    SEQUENCE,
+    /**
+     * @see #SEQUENCE
+     */
+    SEQUENCE_ID, SFM_CLUSTER,
+    /** The original width of the image */
+    WIDTH;
+
+    /** This is the highest quality image known to us at this time. Prefer this to {@link #THUMB_2048_URL}. */
+    public static final ImageProperties BEST_IMAGE = THUMB_2048_URL;
+    /** This is the lowest quality image known to us at this time. Prefer this to {@link #THUMB_256_URL}. */
+    public static final ImageProperties WORST_IMAGE = THUMB_256_URL;
+
+    @Override
+    public String toString() {
+      return super.toString().toLowerCase(Locale.ROOT);
+    }
   }
 }
