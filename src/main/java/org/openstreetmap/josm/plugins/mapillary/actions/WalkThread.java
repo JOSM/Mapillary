@@ -1,19 +1,29 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.actions;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.annotation.Nonnull;
 import javax.swing.SwingUtilities;
 
-import org.openstreetmap.josm.data.osm.DataSelectionListener;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.osm.OsmData;
+import org.openstreetmap.josm.data.osm.event.IDataSelectionListener;
+import org.openstreetmap.josm.data.vector.VectorDataSet;
+import org.openstreetmap.josm.data.vector.VectorNode;
+import org.openstreetmap.josm.data.vector.VectorPrimitive;
+import org.openstreetmap.josm.data.vector.VectorRelation;
+import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
+import org.openstreetmap.josm.plugins.mapillary.gui.DeveloperToggleAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
@@ -26,7 +36,7 @@ import org.openstreetmap.josm.tools.Logging;
  *
  * @author nokutu
  */
-public class WalkThread extends Thread implements Serializable, DataSelectionListener {
+public class WalkThread extends Thread implements Serializable, VectorDataSelectionListener {
   private final int interval;
   private final OsmData<?, ?, ?, ?> data;
   private final MapillaryLayer layer;
@@ -51,7 +61,8 @@ public class WalkThread extends Thread implements Serializable, DataSelectionLis
     this.goForward = goForward;
     this.layer = MapillaryLayer.getInstance();
     this.data = this.layer.getData();
-    this.data.addSelectionListener(this);
+    // This currently causes a ConcurrentModificationException TODO fix
+    // this.layer.getData().addSelectionListener(this);
   }
 
   @Override
@@ -67,49 +78,76 @@ public class WalkThread extends Thread implements Serializable, DataSelectionLis
           // Start downloading 3 next full images.
           preDownloadImages(curImage, 3, CacheUtils.PICTURE.FULL_IMAGE, goForward);
         }
-        try {
-          // Wait for picture for 1 minute.
-          final MapillaryCache cache = new MapillaryCache(curImage);
-          int limit = 240; // 240 * 250 = 60000 ms
-          while (cache.get() == null) {
-            Thread.sleep(250);
-            if (limit-- < 0) {
-              new Notification(I18n.tr("Walk mode: Waiting for next image takes too long! Exiting walk mode…"))
-                .setIcon(MapillaryPlugin.LOGO.get()).show();
-              end();
-              return;
-            }
+        // Wait for picture for 1 minute.
+        awaitImageDownload(curImage);
+        synchronized (this.paused) {
+          while (this.paused.get()) {
+            this.paused.wait();
           }
+        }
+        Thread.sleep(this.interval);
 
-          synchronized (this.paused) {
-            while (this.paused.get()) {
-              wait();
-            }
-          }
-          Thread.sleep(this.interval);
-
-          final INode selectedImage = this.data.getSelectedNodes().stream().findFirst().orElse(null);
-          if (selectedImage != null
-            && selectedImage.getReferrers().stream().filter(IWay.class::isInstance).count() == 1) {
-            final INode nextSelectedImg = MapillarySequenceUtils.getNextOrPrevious(selectedImage, this.goForward);
-            if (nextSelectedImg != null && nextSelectedImg.isVisible()) {
-              this.layer.setSelected(nextSelectedImg);
-            }
-          }
-        } catch (InterruptedException e) {
-          end();
-          Thread.currentThread().interrupt();
+        final INode selectedImage = this.data.getSelectedNodes().stream().findFirst().orElse(null);
+        if (!Objects.equals(selectedImage, curSelection)) {
+          // This is just a filler until we the TODO fix ConcurrentModification error is fixed in the constructor
           return;
         }
-
+        if (selectedImage != null
+          && selectedImage.getReferrers().stream().filter(IWay.class::isInstance).count() == 1) {
+          final INode nextSelectedImg = MapillarySequenceUtils.getNextOrPrevious(selectedImage, this.goForward);
+          if (nextSelectedImg != null && nextSelectedImg.isVisible()) {
+            this.layer.setSelected(nextSelectedImg);
+          }
+        }
       }
+    } catch (InterruptedException interruptedException) {
+      Logging.warn(interruptedException);
+      Thread.currentThread().interrupt();
+    } catch (IOException e) {
+      Logging.warn(e);
     } catch (NullPointerException e) {
       Logging.warn(e);
-      end();
       // TODO: Avoid NPEs instead of waiting until they are thrown and then catching them
-      return;
+      // Until then, rethrow if developer.
+      if (DeveloperToggleAction.isDeveloper()) {
+        throw e;
+      }
+    } finally {
+      end();
     }
-    end();
+  }
+
+  /**
+   * Await the download of an image
+   *
+   * @param curImage The image waiting on download
+   * @throws IOException See {@link MapillaryCache#submit(ICachedLoaderListener, boolean)}
+   * @throws InterruptedException See {@link #wait(long)}
+   */
+  private static void awaitImageDownload(@Nonnull final INode curImage) throws IOException, InterruptedException {
+    // Wait for picture for 1 minute.
+    final MapillaryCache cache = new MapillaryCache(curImage);
+    cache.submit((a, b, c) -> {
+      synchronized (cache) {
+        cache.notifyAll();
+      }
+    }, false);
+    int limit = 600; // 600 * 100 = 60_000 ms
+    synchronized (cache) {
+      try {
+        while (cache.get() == null) {
+          cache.wait(100);
+          limit--;
+          if (limit < 0) {
+            new Notification(I18n.tr("Walk mode: Waiting for next image takes too long! Exiting walk mode…"))
+              .setIcon(MapillaryPlugin.LOGO.get()).show();
+            return;
+          }
+        }
+      } finally {
+        cache.notifyAll();
+      }
+    }
   }
 
   /**
@@ -137,14 +175,12 @@ public class WalkThread extends Thread implements Serializable, DataSelectionLis
   }
 
   @Override
-  public void selectionChanged(SelectionChangeEvent event) {
-    // TODO generify SelectionChangeEvent
-    /*
-     * if (newImage != null && !newImage.equals(oldImage.next())) {
-     * end();
-     * interrupt();
-     * }
-     */
+  public void selectionChanged(
+    final IDataSelectionListener.SelectionChangeEvent<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> event) {
+    if (event.getSelection().size() > 1 || !event.isNop()) {
+      end();
+      interrupt();
+    }
   }
 
   /**
@@ -185,7 +221,7 @@ public class WalkThread extends Thread implements Serializable, DataSelectionLis
   private void end() {
     if (SwingUtilities.isEventDispatchThread()) {
       this.endWalk = true;
-      this.data.removeSelectionListener(this);
+      this.layer.getData().removeSelectionListener(this);
       MapillaryMainDialog.getInstance().setMode(MapillaryMainDialog.MODE.NORMAL);
     } else {
       SwingUtilities.invokeLater(this::end);

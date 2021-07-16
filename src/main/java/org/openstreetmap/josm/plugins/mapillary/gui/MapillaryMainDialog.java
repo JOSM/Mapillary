@@ -31,6 +31,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
@@ -342,7 +343,7 @@ public final class MapillaryMainDialog extends ToggleDialog
    * @param mode
    *        The mode to be set. Must not be {@code null}.
    */
-  public void setMode(MODE mode) {
+  public void setMode(@Nonnull final MODE mode) {
     final Dimension buttonDim = ImageProvider.ImageSizes.CURSOR.getImageDimension();
     final Dimension nextPrevButtonDim = new Dimension(2 * buttonDim.width, buttonDim.height);
     JToggleButton toggleSigns = new JToggleButton(showSignDetectionsAction);
