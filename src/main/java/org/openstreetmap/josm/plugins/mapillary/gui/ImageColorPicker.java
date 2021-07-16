@@ -44,16 +44,6 @@ import org.openstreetmap.josm.tools.ImageProvider;
  * @author Kishan
  */
 public class ImageColorPicker extends JPanel {
-  /**
-   * A class for painting the image color picker
-   */
-  private final class ImageColorPickerPainter implements Painter<Graphics, BufferedImage, Rectangle> {
-    @Override
-    public void accept(Graphics graphics, BufferedImage bufferedImage, Rectangle rectangle) {
-      drawColorIndicator((Graphics2D) graphics, bufferedImage, rectangle, pointInComponent, color, tempColor);
-    }
-  }
-
   private final JPanel colorPanel;
   private final JPanel tempColorPanel;
   private Color color;
@@ -62,7 +52,7 @@ public class ImageColorPicker extends JPanel {
   private final ClipboardAction copyAction;
   private final JLabel colorLabel;
   private EyeDropper eyeDropper;
-  private boolean mouseIsDragging = false;
+  private boolean mouseIsDragging;
   private Point pointInComponent;
   private JToggleButton eyeDropperButton;
   private final Painter<Graphics, BufferedImage, Rectangle> dropperConsumer = new ImageColorPickerPainter();
@@ -208,7 +198,7 @@ public class ImageColorPicker extends JPanel {
 
   public class EyeDropper implements MouseListener, MouseMotionListener, Serializable {
 
-    private boolean inWindow = false;
+    private boolean inWindow;
     private transient BufferedImage screenShot;
     private Rectangle visibleRectangle;
 
@@ -263,9 +253,6 @@ public class ImageColorPicker extends JPanel {
       if (getImage() != null && SwingUtilities.isLeftMouseButton(e)) {
         if (inWindow) {
           mouseIsDragging = true;
-          long redValue = 0;
-          long greenValue = 0;
-          long blueValue = 0;
           int buffer = 1;
           Point p = MapillaryMainDialog.getInstance().imageViewer.comp2imgCoord(visibleRectangle, e.getX(), e.getY());
           buffer = Math.min(buffer, getImage().getHeight() - p.y);
@@ -273,6 +260,9 @@ public class ImageColorPicker extends JPanel {
           int[] surroundingPixels = getImage().getRGB(p.x, p.y, buffer, buffer, null, 0, buffer);
           if (surroundingPixels.length == 0)
             return;
+          long redValue = 0;
+          long greenValue = 0;
+          long blueValue = 0;
           for (int rsb : surroundingPixels) {
             Color c = new Color(rsb);
             redValue += c.getRed();
@@ -304,6 +294,16 @@ public class ImageColorPicker extends JPanel {
     void updateScreenshot(BufferedImage i, Rectangle visibleRectangle) {
       this.screenShot = i;
       this.visibleRectangle = visibleRectangle;
+    }
+  }
+
+  /**
+   * A class for painting the image color picker
+   */
+  private final class ImageColorPickerPainter implements Painter<Graphics, BufferedImage, Rectangle> {
+    @Override
+    public void accept(Graphics graphics, BufferedImage bufferedImage, Rectangle rectangle) {
+      drawColorIndicator((Graphics2D) graphics, bufferedImage, rectangle, pointInComponent, color, tempColor);
     }
   }
 }
