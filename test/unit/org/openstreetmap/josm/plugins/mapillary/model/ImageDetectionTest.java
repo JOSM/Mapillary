@@ -9,22 +9,22 @@ import java.awt.geom.Path2D;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryCaches;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
-import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 @MapillaryURLWireMock
 @MapillaryCaches
 class ImageDetectionTest {
   @RegisterExtension
-  JOSMTestRules rule = new JOSMTestRules().preferences();
+  JOSMTestRules josmTestRules = new JOSMTestRules();
 
   @Test
   void testBasics() {
@@ -45,7 +45,7 @@ class ImageDetectionTest {
     assertEquals(ObjectDetections.REGULATORY__MAXIMUM_SPEED_LIMIT_45__G3.toString(), trafficsign.getUnknownValue());
   }
 
-  private static Stream<Arguments> getDetectionsArguments() {
+  static Stream<Arguments> getDetectionsArguments() {
     // 148137757289079 technically has 5 detections, but one is a duplicate.
     return Stream.of(Arguments.of(148137757289079L, 4), Arguments.of(496980935069177L, 3),
       Arguments.of(308609047601518L, 5), Arguments.of(135511895288847L, 2), Arguments.of(464249047982277L, 1),

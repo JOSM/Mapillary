@@ -38,7 +38,7 @@ import org.openstreetmap.josm.tools.Logging;
 class MapillaryCacheTest {
 
   @RegisterExtension
-  static JOSMTestRules rules = new MapillaryTestRules().preferences().main();
+  static JOSMTestRules rules = new MapillaryTestRules().main();
 
   @Test
   void test() {

@@ -16,11 +16,13 @@ import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @ExtendWith(MapillaryCaches.MapillaryCachesExtension.class)
+@BasicPreferences
 public @interface MapillaryCaches {
   static class MapillaryCachesExtension implements AfterEachCallback, BeforeEachCallback {
     @Override
