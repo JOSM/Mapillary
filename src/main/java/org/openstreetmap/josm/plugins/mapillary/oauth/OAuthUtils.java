@@ -189,14 +189,25 @@ public final class OAuthUtils {
    * Update authorization information from a JSON object
    *
    * @param jsonObject The json object to use
+   * @return {@code true} if the update was successful
    */
-  static void updateAuthorization(final JsonObject jsonObject) {
+  static boolean updateAuthorization(final JsonObject jsonObject) {
     // The actual access token we want to use
-    final String accessToken = jsonObject.getString("access_token");
+    final String accessToken = jsonObject.getString("access_token", null);
     // This is in seconds
-    final int expiresIn = jsonObject.getInt("expires_in");
+    final int expiresIn = jsonObject.getInt("expires_in", Integer.MIN_VALUE);
     // Will probably always be bearer
-    final String tokenType = jsonObject.getString("token_type");
+    final String tokenType = jsonObject.getString("token_type", null);
+    if (tokenType == null || accessToken == null || expiresIn == Integer.MIN_VALUE) {
+      MapillaryUser.reset();
+      GuiHelper.runInEDT(() -> {
+        Notification notification = new Notification();
+        notification.setContent(tr("Mapillary: Could not refresh login, logging out"));
+        notification.setIcon(JOptionPane.ERROR_MESSAGE);
+        notification.show();
+      });
+      return false;
+    }
     if (!"bearer".equals(tokenType)) {
       MapillaryUser.reset();
       throw new JosmRuntimeException("Mapillary: Login failed due to unknown token type: " + tokenType);
@@ -229,5 +240,6 @@ public final class OAuthUtils {
     Logging.info("Successful authentication with Mapillary, the access token is {0} expiring in {1} seconds",
       accessToken, expiresIn);
     // Saves the access token in preferences.
+    return true;
   }
 }

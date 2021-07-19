@@ -83,7 +83,10 @@ public class OAuthPortListener extends Thread {
       final HttpClient.Response response = client.connect();
       try (JsonReader jsonReader = Json.createReader(response.getContentReader())) {
         final JsonObject jsonObject = jsonReader.readObject();
-        OAuthUtils.updateAuthorization(jsonObject);
+        if (!OAuthUtils.updateAuthorization(jsonObject)) {
+          Logging.info("Mapillary: Failed to login: {0}", jsonObject);
+          return;
+        }
       }
 
       String username = MapillaryUser.getUsername();
