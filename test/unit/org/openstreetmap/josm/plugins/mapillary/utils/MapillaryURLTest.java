@@ -18,7 +18,6 @@ import org.junit.jupiter.api.Test;
 class MapillaryURLTest {
 
   private static final String CLIENT_ID_QUERY_PART = "client_id=" + MapillaryURL.APIv4.CLIENT_ID;
-  private static final String SORT_BY_KEY = "sort_by=key";
 
   // TODO Test APIv4 when actually available
 

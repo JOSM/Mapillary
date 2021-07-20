@@ -2,19 +2,20 @@
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.awt.GraphicsEnvironment;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 
-import org.junit.jupiter.api.extension.ExtensionContext;
-
 import org.openstreetmap.josm.data.preferences.AbstractProperty;
 import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Utils;
+
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 /**
  * An extension of JOSMTestRules
@@ -59,7 +60,7 @@ public class MapillaryTestRules extends JOSMTestRules {
       assertNotNull(getPreferences.invoke(property));
     } catch (ReflectiveOperationException e) {
       Logging.error(e);
-      throw new AssertionError(e);
+      fail(e);
     }
   }
 

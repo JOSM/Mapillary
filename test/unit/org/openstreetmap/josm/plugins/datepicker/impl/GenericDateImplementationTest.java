@@ -7,17 +7,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.temporal.ChronoUnit;
 import java.util.stream.Stream;
+
+import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
+import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
-import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 /**
  * Test method for date implementations.
@@ -28,18 +27,12 @@ class GenericDateImplementationTest {
   static JOSMTestRules rules = new JOSMTestRules();
 
   static Stream<Arguments> getDatePickers() {
-    Calendar minCalendar = Calendar.getInstance();
-    minCalendar.setTime(new Date(Long.MIN_VALUE));
-    Calendar maxCalendar = Calendar.getInstance();
-    maxCalendar.setTime(new Date(Long.MAX_VALUE));
-    LocalDate zero = LocalDate.of(1, 1, 1);
-    LocalDate dec = LocalDate.of(1, 12, 31);
-    LocalDate current = LocalDate.now(ZoneOffset.UTC);
+    Instant zero = LocalDate.of(1, 1, 1).atStartOfDay(ZoneOffset.UTC).toInstant();
+    Instant dec = LocalDate.of(1, 12, 31).atStartOfDay(ZoneOffset.UTC).toInstant();
+    Instant current = Instant.now();
     // Don't use LocalDate.MAX and LocalDate.MIN due to conversions between Date and LocalDate
-    LocalDate max = LocalDate.of(maxCalendar.get(Calendar.YEAR), maxCalendar.get(Calendar.MONTH),
-      maxCalendar.get(Calendar.DAY_OF_MONTH));
-    LocalDate min = LocalDate.of(minCalendar.get(Calendar.YEAR), minCalendar.get(Calendar.MONTH),
-      minCalendar.get(Calendar.DAY_OF_MONTH));
+    Instant max = Instant.MAX;
+    Instant min = Instant.MIN;
     return Stream.of(new DatePickerJDatePicker(), new DatePickerSwing())
       .flatMap(datePicker -> Stream.of(Arguments.of(datePicker, min), Arguments.of(datePicker, max),
         Arguments.of(datePicker, dec), Arguments.of(datePicker, current), Arguments.of(datePicker, zero),
@@ -48,11 +41,10 @@ class GenericDateImplementationTest {
 
   @MethodSource("getDatePickers")
   @ParameterizedTest
-  void testSetGetDate(final IDatePicker<?> datePicker, final LocalDate expected) {
+  void testSetGetDate(final IDatePicker<?> datePicker, final Instant expected) {
     // This check does not test for set text listeners.
-    final Instant expectedInstant = expected != null ? Instant.from(expected.atStartOfDay(ZoneOffset.UTC))
-      : Instant.EPOCH;
+    final Instant expectedInstant = expected != null ? expected : Instant.EPOCH;
     assertDoesNotThrow(() -> datePicker.setInstant(expectedInstant));
-    assertEquals(expectedInstant, datePicker.getInstant());
+    assertEquals(expectedInstant.truncatedTo(ChronoUnit.DAYS), datePicker.getInstant());
   }
 }
