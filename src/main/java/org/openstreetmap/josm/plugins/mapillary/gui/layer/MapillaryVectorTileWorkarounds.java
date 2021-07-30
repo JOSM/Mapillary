@@ -54,16 +54,21 @@ public interface MapillaryVectorTileWorkarounds {
    * @param idKey The key for the id
    * @param nodeStream The nodes to update
    */
+  @SuppressWarnings("java:S2445")
   default void setNodeIds(final String idKey, final Stream<VectorNode> nodeStream) {
     nodeStream.filter(n -> n.hasKey(idKey)).forEach(node -> {
       final String id = node.get(idKey);
       if (NUMBER_PATTERN.matcher(id).matches()) {
         VectorDataSet dataSet = node.getDataSet();
-        // Force reindexing
-        if (dataSet != null && dataSet.containsNode(node)) {
-          dataSet.removePrimitive(node);
-          node.setOsmId(Long.parseLong(id), 1);
-          dataSet.addPrimitive(node);
+        // Synchronize on node to hopefully avoid reoccurances of JOSM #21178
+        // The important variable is "node", as it is what causes the issues.
+        synchronized (node) {
+          // Force reindexing
+          if (dataSet != null && dataSet.containsNode(node)) {
+            dataSet.removePrimitive(node);
+            node.setOsmId(Long.parseLong(id), 1);
+            dataSet.addPrimitive(node);
+          }
         }
       }
     });
