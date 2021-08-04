@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalLong;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
@@ -40,7 +41,6 @@ import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 import javax.json.stream.JsonParser;
-import javax.json.stream.JsonParser.Event;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -101,6 +101,7 @@ import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
+import org.openstreetmap.josm.plugins.mapillary.command.GenericCommand;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.AdditionalInstructions;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
@@ -326,9 +327,7 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
         .collect(Collectors.toMap(i -> i, e -> 1, Math::addExact));
       final Optional<VectorNode> bestImage = imageCount.entrySet().stream()
         .max(Comparator.comparingInt(Map.Entry::getValue)).map(Map.Entry::getKey);
-      if (bestImage.isPresent()) {
-        MapillaryLayer.getInstance().setSelected(bestImage.get());
-      }
+      bestImage.ifPresent(vectorNode -> MapillaryLayer.getInstance().setSelected(vectorNode));
     }
   }
 
@@ -497,14 +496,17 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
    */
   void addMapillaryPrimitiveToOsm(final IPrimitive mapillaryObject, final ObjectDetections detection) {
     hideWindow(this.displayedWindows.get(mapillaryObject));
-    Collection<TaggingPreset> presets = detection.getTaggingPresets();
-    DataSet dataSet = MainApplication.getLayerManager().getActiveDataSet();
+    final Collection<TaggingPreset> presets = detection.getTaggingPresets();
+    final DataSet dataSet = MainApplication.getLayerManager().getActiveDataSet();
     if (dataSet != null && !dataSet.isLocked() && presets.size() == 1) {
-      TaggingPreset preset = presets.iterator().next();
+      final TaggingPreset preset = presets.iterator().next();
       OsmPrimitive basePrimitive;
-      Collection<OsmPrimitive> toAdd;
-      if (mapillaryObject instanceof Node) {
-        basePrimitive = new Node((Node) mapillaryObject);
+      final Collection<OsmPrimitive> toAdd;
+      if (mapillaryObject instanceof INode) {
+        final Node tNode = new Node();
+        tNode.setCoor(((INode) mapillaryObject).getCoor());
+        mapillaryObject.getKeys().entrySet().forEach(entry -> tNode.put(entry.getKey(), entry.getValue()));
+        basePrimitive = tNode;
         toAdd = Collections.singleton(basePrimitive);
       } else if (mapillaryObject instanceof Way) {
         Way way = new Way((Way) mapillaryObject);
@@ -524,7 +526,6 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
       AddPrimitivesCommand add = new AddPrimitivesCommand(
         toAdd.stream().map(OsmPrimitive::save).collect(Collectors.toList()), dataSet);
       UndoRedoHandler.getInstance().add(add);
-      preset.showAndApply(new HashSet<>(add.getParticipatingPrimitives()));
       this.showingPresetWindow = true;
       basePrimitive = dataSet.getPrimitiveById(basePrimitive.getPrimitiveId());
       final int userSelection;
@@ -543,80 +544,56 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
         List<Command> undoCommands = UndoRedoHandler.getInstance().getUndoCommands();
         int index = undoCommands.size() - undoCommands.indexOf(add);
         UndoRedoHandler.getInstance().undo(index);
-      } else if (basePrimitive.isTagged() && mapillaryObject.getDataSet() instanceof DataSet) {
-        Command deleteOriginal = new Command(dataSet) {
+        return;
+      } else if (!basePrimitive.isTagged()) {
+        return;
+      }
+      GenericCommand<?, ?, ?, ?, ?> deleteOriginal = new org.openstreetmap.josm.plugins.mapillary.command.DeleteCommand(
+        mapillaryObject.getDataSet(), mapillaryObject);
+      long[] imageIds = MapillaryMapFeatureUtils.getImageIds(mapillaryObject);
+      if (updateTagsCommand != null) {
+        UndoRedoHandler.getInstance().add(new Command(updateTagsCommand.getAffectedDataSet()) {
           @Override
-          public String getDescriptionText() {
-            return tr("Delete Mapillary object");
+          public boolean executeCommand() {
+            return super.executeCommand() && updateTagsCommand.executeCommand() && deleteOriginal.executeCommand();
+          }
+
+          @Override
+          public void undoCommand() {
+            super.undoCommand();
+            updateTagsCommand.undoCommand();
+            deleteOriginal.undoCommand();
           }
 
           @Override
           public void fillModifiedData(Collection<OsmPrimitive> modified, Collection<OsmPrimitive> deleted,
             Collection<OsmPrimitive> added) {
-            if (mapillaryObject instanceof OsmPrimitive)
-              deleted.add((OsmPrimitive) mapillaryObject);
+            updateTagsCommand.fillModifiedData(modified, deleted, added);
           }
 
           @Override
-          public boolean executeCommand() {
-            DataSet mapillaryObjectData = (DataSet) mapillaryObject.getDataSet();
-            boolean locked = mapillaryObjectData.isLocked();
-            try {
-              mapillaryObjectData.unlock();
-              mapillaryObject.setDeleted(true);
-            } finally {
-              if (locked) {
-                mapillaryObjectData.lock();
-              }
-            }
-            return true;
+          public String getDescriptionText() {
+            return tr("Mapillary Smart Edit: Add objects");
           }
-
-          @Override
-          public void undoCommand() {
-            DataSet mapillaryObjectData = (DataSet) mapillaryObject.getDataSet();
-            boolean locked = mapillaryObjectData.isLocked();
-            try {
-              mapillaryObjectData.unlock();
-              mapillaryObject.setDeleted(false);
-            } finally {
-              if (locked) {
-                mapillaryObjectData.lock();
-              }
-            }
-          }
-        };
-        String detections = mapillaryObject.get(MapillaryKeys.DETECTIONS);
-        UndoRedoHandler.getInstance().add(deleteOriginal);
-        if (updateTagsCommand != null) {
-          UndoRedoHandler.getInstance().add(updateTagsCommand);
+        });
+        UndoRedoHandler.getInstance().add(updateTagsCommand);
+      }
+      if (imageIds.length > 0) {
+        final OptionalLong imageId = MapillaryLayer.getInstance().getSelected().map(MapillaryImageUtils::getKey)
+          .mapToLong(s -> s != null ? Long.parseLong(s) : 0).distinct()
+          .filter(i -> LongStream.of(imageIds).anyMatch(id -> id == i)).findFirst();
+        if (imageId.isPresent()) {
+          basePrimitive.put("mapillary:image", Long.toString(imageId.getAsLong()));
         }
-        try (JsonParser parser = Json
-          .createParser(new ByteArrayInputStream(detections.getBytes(StandardCharsets.UTF_8)))) {
-          while (parser.hasNext()) {
-            Event event = parser.next();
-            if (event == Event.START_ARRAY) {
-              break;
-            }
-          }
-          JsonArray array = parser.getArray();
-          if (!array.isEmpty()) {
-            Optional<JsonString> imageKey = array.stream().filter(JsonObject.class::isInstance)
-              .map(JsonObject.class::cast).map(o -> o.getJsonString("image_key")).filter(Objects::nonNull).findFirst();
-            if (imageKey.isPresent()) {
-              basePrimitive.put("mapillary:image", imageKey.get().getString());
-            }
-          }
-          if (mapillaryObject.hasKey("key")) {
-            basePrimitive.put("mapillary:map_feature", mapillaryObject.get("key"));
-          }
-          final AdditionalInstructions additionalInstructions = detection.getAdditionalInstructions();
-          if (additionalInstructions != null) {
-            final Command additionalCommand = additionalInstructions.apply(basePrimitive);
-            if (additionalCommand != null) {
-              UndoRedoHandler.getInstance().add(additionalCommand);
-            }
-          }
+      }
+      if (mapillaryObject.hasKey("key")) {
+        basePrimitive.put("mapillary:map_feature", mapillaryObject.get("key"));
+      }
+      final AdditionalInstructions additionalInstructions = detection.getAdditionalInstructions();
+      if (additionalInstructions != null) {
+        final Command additionalCommand = additionalInstructions.apply(basePrimitive);
+        if (additionalCommand != null) {
+          UndoRedoHandler.getInstance().add(additionalCommand);
         }
       }
     }

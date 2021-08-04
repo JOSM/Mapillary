@@ -64,6 +64,7 @@ import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.Pair;
 
 /**
  * This filters traffic signs
@@ -395,7 +396,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
    * @param smartEditMode {@code true} to turn smart edit mode on
    */
   private void smartEditMode(boolean smartEditMode) {
-    MapillaryProperties.SMART_EDIT.put(smartEditMode);
+    SwingUtilities.invokeLater(() -> MapillaryProperties.SMART_EDIT.put(smartEditMode));
     this.smartEditMode = smartEditMode;
     MapillaryFilterTableModel filterModel = MapillaryExpertFilterDialog.getInstance().getFilterModel();
     synchronized (filterModel) {
@@ -473,12 +474,11 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
    * @param expr An expression to filter buttons with
    */
   private void filterButtons(String expr) {
-    SwingUtilities.invokeLater(() -> {
-      synchronized (this.buttons) {
-        this.buttons.forEach(b -> b.setVisible(this.checkRelevant(b, expr)));
-      }
-    });
-    SwingUtilities.invokeLater(this::invalidate);
+    synchronized (this.buttons) {
+      this.buttons.stream().map(checkbox -> new Pair<>(checkbox, this.checkRelevant(checkbox, expr)))
+        .forEach(pair -> GuiHelper.runInEDT(() -> pair.a.setVisible(pair.b)));
+    }
+    GuiHelper.runInEDT(this::invalidate);
   }
 
   public void getIcons(JComponent panel) {

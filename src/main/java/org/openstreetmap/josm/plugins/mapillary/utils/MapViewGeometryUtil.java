@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.NavigatableComponent;
@@ -31,7 +32,8 @@ public final class MapViewGeometryUtil {
    */
   public static Path2D getSequencePath(NavigatableComponent nc, IWay<?> seq) {
     final Path2D.Double path = new Path2D.Double();
-    seq.getNodes().stream().filter(node -> node.isVisible() || seq.isFirstLastNode(node)).forEach(img -> {
+    final boolean anyVisible = seq.getNodes().stream().anyMatch(IPrimitive::isVisible);
+    seq.getNodes().stream().filter(node -> node.isVisible() || anyVisible && seq.isFirstLastNode(node)).forEach(img -> {
       Point p = nc.getPoint(img.getCoor());
       if (path.getCurrentPoint() == null) {
         path.moveTo(p.getX(), p.getY());
