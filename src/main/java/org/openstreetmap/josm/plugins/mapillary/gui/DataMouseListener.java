@@ -2,6 +2,7 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import static org.openstreetmap.josm.data.projection.Ellipsoid.WGS84;
 
+import org.openstreetmap.josm.data.Version;
 import org.openstreetmap.josm.data.coor.ILatLon;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.BBox;
@@ -16,6 +17,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryVectorTileWor
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.Destroyable;
+import org.openstreetmap.josm.tools.Geometry;
 import org.openstreetmap.josm.tools.HiDPISupport;
 
 import javax.swing.SwingUtilities;
@@ -131,14 +133,17 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
    * @return The new latlon
    */
   private static ILatLon getLatLon(final ILatLon original, final double angle, final double offset) {
-    final double deltaLongitudeDegree = (Math.PI * WGS84.a * Math.cos(Math.toRadians(original.lat())))
-      / (180 * Math.sqrt(1 - WGS84.e2 * Math.pow(Math.sin(Math.toRadians(original.lat())), 2)));
-    final double deltaLatitudeDegree = (Math.PI * WGS84.a * (1 - WGS84.e2))
-      / (180 * Math.pow(1 - WGS84.e2 * Math.pow(Math.sin(original.lat()), 2), 1.5));
-    final double dx = offset * Math.sin(angle);
-    final double dy = offset * Math.cos(angle);
-    final double dLon = dx / deltaLongitudeDegree;
-    final double dLat = dy / deltaLatitudeDegree;
-    return new LatLon(original.lat() + dLat, original.lon() + dLon);
+    if (Version.getInstance().getVersion() < 18109) {
+      final double deltaLongitudeDegree = (Math.PI * WGS84.a * Math.cos(Math.toRadians(original.lat())))
+        / (180 * Math.sqrt(1 - WGS84.e2 * Math.pow(Math.sin(Math.toRadians(original.lat())), 2)));
+      final double deltaLatitudeDegree = (Math.PI * WGS84.a * (1 - WGS84.e2))
+        / (180 * Math.pow(1 - WGS84.e2 * Math.pow(Math.sin(original.lat()), 2), 1.5));
+      final double dx = offset * Math.sin(angle);
+      final double dy = offset * Math.cos(angle);
+      final double dLon = dx / deltaLongitudeDegree;
+      final double dLat = dy / deltaLatitudeDegree;
+      return new LatLon(original.lat() + dLat, original.lon() + dLon);
+    }
+    return Geometry.getLatLonFrom(original, angle, offset);
   }
 }
