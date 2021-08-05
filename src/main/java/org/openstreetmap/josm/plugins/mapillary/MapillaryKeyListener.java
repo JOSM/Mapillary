@@ -121,7 +121,7 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
     menu = null;
   }
 
-  private static class MapillaryImageKeyAction extends AbstractAction {
+  static class MapillaryImageKeyAction extends AbstractAction {
     private static final long serialVersionUID = -4129937925620244251L;
     private final String imageKey;
 
@@ -153,7 +153,7 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
     }
   }
 
-  private static class MapillaryDetectionKeyAction extends AbstractAction {
+  static class MapillaryDetectionKeyAction extends AbstractAction {
     private static final long serialVersionUID = -4129937925620244252L;
     private final String[] detection;
 
