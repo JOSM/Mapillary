@@ -43,6 +43,9 @@ public class DeleteCommand<O extends IPrimitive, N extends INode, W extends IWay
 
   @Override
   public Collection<? extends OsmPrimitive> getParticipatingPrimitives() {
+    if (this.primitive instanceof OsmPrimitive) {
+      return Collections.singleton((OsmPrimitive) this.primitive);
+    }
     return Collections.emptyList();
   }
 
@@ -67,7 +70,7 @@ public class DeleteCommand<O extends IPrimitive, N extends INode, W extends IWay
     final boolean locked = data.isLocked();
     try {
       data.unlock();
-      this.primitive.setDeleted(true);
+      this.primitive.setDeleted(false);
     } finally {
       if (locked) {
         data.lock();

@@ -21,10 +21,12 @@ import org.openstreetmap.josm.TestUtils;
 import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.DeveloperToggleAction;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
+import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 
 /**
  *
  */
+@BasicPreferences
 class ObjectDetectionsTest {
   @RegisterExtension
   static JOSMTestRules rule = new JOSMTestRules().presets();

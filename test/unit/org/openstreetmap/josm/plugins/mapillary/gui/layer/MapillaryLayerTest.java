@@ -29,11 +29,13 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoderTest;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
+import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 
+@BasicPreferences
 class MapillaryLayerTest {
 
   @RegisterExtension
-  static JOSMTestRules rules = new MapillaryTestRules().main().preferences().projection();
+  static JOSMTestRules rules = new MapillaryTestRules().main().projection();
 
   private static Layer getDummyLayer() {
     return ImageryLayer.create(new ImageryInfo("dummy", "https://example.org"));
