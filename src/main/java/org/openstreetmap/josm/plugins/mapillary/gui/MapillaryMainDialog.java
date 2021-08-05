@@ -37,6 +37,7 @@ import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
@@ -392,6 +393,8 @@ public final class MapillaryMainDialog extends ToggleDialog
     case SMART_EDIT:
       JButton verify = createNavigationButton(this.approveAction, buttonDim);
       JButton reject = createNavigationButton(this.rejectAction, buttonDim);
+      verify.setEnabled(false);
+      reject.setEnabled(false);
       buttons = Stream.of(blueButton, previousButton, verify, reject, nextButton, redButton, jumpToCurrent);
       break;
     case NORMAL:
@@ -413,13 +416,34 @@ public final class MapillaryMainDialog extends ToggleDialog
     buttons.forEach(this.buttonCollection::add);
     this.buttonCollection.forEach(buttonsPanel::add);
     content.add(buttonsPanel, BorderLayout.SOUTH);
-    createLayout(content, false, null);
+    // Remove the old component
+    panelComponents(this).forEach(this::remove);
+
+    this.createLayout(content, false, null);
     disableAllButtons();
     if (Arrays.asList(MODE.WALK, MODE.SMART_EDIT).contains(mode)) {
       updateImage();
     }
     revalidate();
     repaint();
+  }
+
+  /**
+   * Find old components to remove
+   *
+   * @param component The parent component
+   * @return A list of components to remove from the parent component
+   */
+  private static Collection<Component> panelComponents(JComponent parent) {
+    final Collection<Component> componentCollection = new ArrayList<>();
+    for (Component component : parent.getComponents()) {
+      if ((component instanceof AbstractButton
+        && ((AbstractButton) component).getAction() instanceof SelectNextImageAction)
+        || (component instanceof JComponent && !panelComponents((JComponent) component).isEmpty())) {
+        componentCollection.add(component);
+      }
+    }
+    return componentCollection;
   }
 
   /**
