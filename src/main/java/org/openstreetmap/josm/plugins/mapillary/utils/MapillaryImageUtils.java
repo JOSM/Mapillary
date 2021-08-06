@@ -102,10 +102,10 @@ public final class MapillaryImageUtils {
    * @param img The image to get the quality score for
    * @return The quality score (1, 2, 3, 4, 5, or {@link Float#MIN_VALUE})
    */
-  public static float getQuality(@Nonnull INode img) {
+  public static double getQuality(@Nonnull INode img) {
     if (img.hasKey(ImageProperties.QUALITY_SCORE.toString())) {
       try {
-        return Float.parseFloat(img.get(ImageProperties.QUALITY_SCORE.toString()));
+        return Double.parseDouble(img.get(ImageProperties.QUALITY_SCORE.toString()));
       } catch (final NumberFormatException e) {
         Logging.error(e);
       }

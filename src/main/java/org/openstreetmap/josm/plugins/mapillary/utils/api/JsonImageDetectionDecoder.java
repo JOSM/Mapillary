@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -54,7 +55,7 @@ public final class JsonImageDetectionDecoder {
         returnList.addAll(decodeImageDetection(value));
       }
       returnList.removeIf(Objects::isNull);
-      return returnList;
+      return Collections.unmodifiableList(returnList);
     } else if (json.getValueType() != JsonValue.ValueType.OBJECT) {
       return Collections.emptyList();
     }
@@ -138,9 +139,9 @@ public final class JsonImageDetectionDecoder {
       if (layerRecord.size() == 1 && layerRecord.iterator().next().getField() == 3) {
         try (ProtobufParser layerParser = new ProtobufParser(layerRecord.iterator().next().getBytes())) {
           final Layer layer = new Layer(layerParser.allRecords());
-          final Feature feature = layer.getFeatures().stream().findFirst().orElse(null);
-          if (layer.getFeatures().size() == 1 && feature != null) {
-            return resizeShapes(feature.getGeometryObject().getShapes(), layer.getExtent());
+          final Optional<Feature> feature = layer.getFeatures().stream().findFirst();
+          if (layer.getFeatures().size() == 1 && feature.isPresent()) {
+            return resizeShapes(feature.get().getGeometryObject().getShapes(), layer.getExtent());
           }
         }
       }

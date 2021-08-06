@@ -1,6 +1,12 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.json.JsonArray;
+import javax.json.JsonNumber;
+import javax.json.JsonObject;
+import javax.json.JsonValue;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,25 +14,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.json.JsonArray;
-import javax.json.JsonNumber;
-import javax.json.JsonObject;
-import javax.json.JsonValue;
-
+import org.openstreetmap.gui.jmapviewer.interfaces.MapObject;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.vector.DataLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 
 /**
- * Decodes the JSON returned by {@link APIv4} into Java objects.
- * Takes a {@link JsonObject} and {@link #decodeMapObject(JsonObject)} tries to convert it to a {@link MapObject}.
+ * Decodes the JSON returned by {@link MapillaryURL.APIv4} into Java objects.
+ * Takes a {@link JsonObject} and {@link #decodeMapFeatureObject(JsonValue, IPrimitive)} tries to convert it to a
+ * {@link MapObject}.
  */
 public final class JsonMapObjectDecoder {
   private static final String COORDINATES = "coordinates";
@@ -53,9 +54,12 @@ public final class JsonMapObjectDecoder {
       }
     }
     // Update the layer if necessary
-    if (primitive instanceof DataLayer && ((DataLayer) primitive).getLayer() instanceof String
+    if (primitive instanceof DataLayer && ((DataLayer<?>) primitive).getLayer() instanceof String
       && tags.containsKey(MapillaryMapFeatureUtils.MapFeatureProperties.OBJECT_TYPE.toString())) {
-      ((DataLayer) primitive).setLayer(tags.get(MapillaryMapFeatureUtils.MapFeatureProperties.OBJECT_TYPE.toString()));
+      // We've checked that the return type of the layer is a string
+      @SuppressWarnings("unchecked")
+      final DataLayer<String> dataLayer = (DataLayer<String>) primitive;
+      dataLayer.setLayer(tags.get(MapillaryMapFeatureUtils.MapFeatureProperties.OBJECT_TYPE.toString()));
       tags.remove(MapillaryMapFeatureUtils.MapFeatureProperties.OBJECT_TYPE.toString());
     }
     // Update value (object_value and value seem to be equivalent)
@@ -69,7 +73,7 @@ public final class JsonMapObjectDecoder {
     // Set image ids
     updateImageKeys(jsonObject, tags);
     // Add remaining tags to primitive
-    tags.entrySet().stream().forEach(entry -> primitive.put(entry.getKey(), entry.getValue()));
+    tags.forEach(primitive::put);
     return Collections.singletonList(primitive);
   }
 
@@ -110,8 +114,8 @@ public final class JsonMapObjectDecoder {
     final String imagesKey = MapillaryMapFeatureUtils.MapFeatureProperties.IMAGES.toString();
     if (jsonObject.containsKey(imagesKey) && jsonObject.get(imagesKey).getValueType() == JsonValue.ValueType.OBJECT) {
       tags.remove(imagesKey);
-      tags.put(imagesKey, JsonDecoder.decodeData(jsonObject.getJsonObject(imagesKey), JsonMapObjectDecoder::parseImages)
-        .stream().collect(Collectors.joining(",")));
+      tags.put(imagesKey, String.join(",",
+        JsonDecoder.decodeData(jsonObject.getJsonObject(imagesKey), JsonMapObjectDecoder::parseImages)));
     }
   }
 
@@ -128,7 +132,7 @@ public final class JsonMapObjectDecoder {
         final Collection<String> tParsedImages = parseImages(tValue);
         tParsedImages.stream().filter(Objects::nonNull).forEach(parsedImages::add);
       }
-      return parsedImages;
+      return Collections.unmodifiableList(parsedImages);
     } else if (value.getValueType() == JsonValue.ValueType.OBJECT
       && value.asJsonObject().containsKey(MapillaryImageUtils.ImageProperties.ID.toString())) {
       // Technically, we could get/create the MapillaryLayer, and add the images if needed.

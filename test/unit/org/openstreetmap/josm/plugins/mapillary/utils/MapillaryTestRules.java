@@ -59,7 +59,7 @@ public class MapillaryTestRules extends JOSMTestRules {
       assertNotNull(getPreferences.invoke(property));
     } catch (ReflectiveOperationException e) {
       Logging.error(e);
-      throw new AssertionError(e);
+      throw new LinkageError("Bad reflection for setting config", e);
     }
   }
 

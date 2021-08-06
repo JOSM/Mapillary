@@ -505,7 +505,7 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
       if (mapillaryObject instanceof INode) {
         final Node tNode = new Node();
         tNode.setCoor(((INode) mapillaryObject).getCoor());
-        mapillaryObject.getKeys().entrySet().forEach(entry -> tNode.put(entry.getKey(), entry.getValue()));
+        mapillaryObject.getKeys().forEach(tNode::put);
         basePrimitive = tNode;
         toAdd = Collections.singleton(basePrimitive);
       } else if (mapillaryObject instanceof Way) {
@@ -548,8 +548,14 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
       } else if (!basePrimitive.isTagged()) {
         return;
       }
-      GenericCommand<?, ?, ?, ?, ?> deleteOriginal = new org.openstreetmap.josm.plugins.mapillary.command.DeleteCommand(
-        mapillaryObject.getDataSet(), mapillaryObject);
+      GenericCommand<?, ?, ?, ?, ?> deleteOriginal;
+      if (mapillaryObject instanceof VectorPrimitive) {
+        deleteOriginal = new org.openstreetmap.josm.plugins.mapillary.command.DeleteCommand<>(
+          ((VectorPrimitive) mapillaryObject).getDataSet(), (VectorPrimitive) mapillaryObject);
+      } else {
+        throw new IllegalArgumentException(
+          "Unknown primitive type for mapillaryObject: " + mapillaryObject.getClass().getName());
+      }
       long[] imageIds = MapillaryMapFeatureUtils.getImageIds(mapillaryObject);
       if (updateTagsCommand != null) {
         UndoRedoHandler.getInstance().add(new Command(updateTagsCommand.getAffectedDataSet()) {
@@ -731,11 +737,10 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
     String relationText = trn("{0} relation", "{0} relations", counter.relations, counter.relations);
 
     p.add(new JLabel(tr("{0} consists of:", getName())), GBC.eol());
-    p.add(new JLabel(nodeText, ImageProvider.get("data", "node"), SwingConstants.HORIZONTAL),
+    p.add(new JLabel(nodeText, ImageProvider.get("data", "node"), SwingConstants.CENTER),
       GBC.eop().insets(15, 0, 0, 0));
-    p.add(new JLabel(wayText, ImageProvider.get("data", "way"), SwingConstants.HORIZONTAL),
-      GBC.eop().insets(15, 0, 0, 0));
-    p.add(new JLabel(relationText, ImageProvider.get("data", "relation"), SwingConstants.HORIZONTAL),
+    p.add(new JLabel(wayText, ImageProvider.get("data", "way"), SwingConstants.CENTER), GBC.eop().insets(15, 0, 0, 0));
+    p.add(new JLabel(relationText, ImageProvider.get("data", "relation"), SwingConstants.CENTER),
       GBC.eop().insets(15, 0, 0, 0));
 
     return p;

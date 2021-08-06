@@ -71,7 +71,7 @@ public class JsonImageDetailsDecoderTest {
     final double delta = 0.000_000_000_1;
     assertEquals(1399.5043095825, Double.parseDouble(i_135511895288847.get("computed_altitude")), delta);
     assertEquals(1364.617, Double.parseDouble(i_135511895288847.get("altitude")), delta);
-    assertEquals(0.7561310782241f, MapillaryImageUtils.getQuality(i_135511895288847), delta);
+    assertEquals(0.7561310782241d, MapillaryImageUtils.getQuality(i_135511895288847), delta);
     assertEquals("7nfcwfvjdtphz7yj6zat6a", MapillaryImageUtils.getSequenceKey(i_135511895288847));
     if (Boolean.TRUE.equals(MapillaryProperties.USE_COMPUTED_LOCATIONS.get())) {
       assertEquals(Math.toRadians(1.2865829255371), MapillaryImageUtils.getAngle(i_135511895288847), delta);
