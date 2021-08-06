@@ -131,6 +131,7 @@ compile against min JOSM:
   dependencies:
     - assemble
   interruptible: true
+  allow_failure: true # It should still run against it, but there are some methods if'd around
 
 compile against latest JOSM:
   stage: test
