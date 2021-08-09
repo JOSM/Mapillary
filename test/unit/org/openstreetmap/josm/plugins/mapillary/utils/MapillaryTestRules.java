@@ -23,6 +23,11 @@ public class MapillaryTestRules extends JOSMTestRules {
   private boolean usePreferences;
 
   @Override
+  public void afterEach(ExtensionContext context) throws Exception {
+    super.afterEach(context);
+  }
+
+  @Override
   public void beforeAll(ExtensionContext context) throws Exception {
     Logging.getLogger().setFilter(record -> record.getLevel().intValue() >= Level.WARNING.intValue()
       || record.getSourceClassName().startsWith("org.openstreetmap.josm.plugins.mapillary"));

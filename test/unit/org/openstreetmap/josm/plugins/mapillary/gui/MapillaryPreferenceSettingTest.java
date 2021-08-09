@@ -188,7 +188,7 @@ class MapillaryPreferenceSettingTest {
   @ParameterizedTest(name = "[{index}] {1}")
   @MethodSource
   void testAllSettingsAreChecked(final Collection<String> checkedFieldNames, final String fieldName) {
-    if (!checkedFieldNames.contains(fieldName)) {
+    if (!checkedFieldNames.contains(fieldName) && !fieldName.startsWith("__$") /* __$ vars used for coverage */) {
       fail(fieldName + " is not tested");
     }
   }

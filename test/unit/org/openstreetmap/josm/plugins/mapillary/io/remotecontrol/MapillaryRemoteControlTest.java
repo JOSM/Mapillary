@@ -21,6 +21,9 @@ import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.io.remotecontrol.RemoteControl;
 import org.openstreetmap.josm.io.remotecontrol.handler.RequestHandler;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.AwaitThreadFinish;
+import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryCaches;
+import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryLayerAnnotation;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
@@ -31,8 +34,10 @@ import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
  *
  * @author Taylor Smock
  */
+@AwaitThreadFinish
 @BasicPreferences
 @MapillaryURLWireMock
+@MapillaryLayerAnnotation
 class MapillaryRemoteControlTest {
   // Needed for layer clearing. And Main.
   @RegisterExtension
@@ -91,6 +96,7 @@ class MapillaryRemoteControlTest {
       Arguments.of("sequence=Mapillary/7nfcwfvjdtphz7yj6zat6a", false));
   }
 
+  @MapillaryCaches
   @ParameterizedTest
   @MethodSource
   void testHandleRequest(final String request, final boolean createLayerFirst) throws UnknownHostException,
