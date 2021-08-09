@@ -65,7 +65,6 @@ public final class MapillaryDownloader {
    * Download a specific set of images
    *
    * @param images The images to download and update
-   * @return The downloaded images
    */
   public static void downloadImages(final VectorNode... images) {
     final Map<VectorDataSet, List<VectorNode>> groups = Stream.of(images)

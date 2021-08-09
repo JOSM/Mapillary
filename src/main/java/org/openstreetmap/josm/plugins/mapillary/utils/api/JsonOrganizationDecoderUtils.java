@@ -4,9 +4,10 @@ package org.openstreetmap.josm.plugins.mapillary.utils.api;
 import javax.json.JsonObject;
 
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 
 /**
- * Decodes the JSON returned by {@link APIv4} into Java objects. Takes a {@link JsonObject} to create organizations
+ * Decodes the JSON returned by {@link MapillaryURL.APIv4} into Java objects. Takes a {@link JsonObject} to create organizations
  *
  * @author Taylor Smock
  */

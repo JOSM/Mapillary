@@ -33,6 +33,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
@@ -53,6 +54,7 @@ import org.openstreetmap.josm.data.preferences.BooleanProperty;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
+import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.actions.SelectNextImageAction;
@@ -137,7 +139,7 @@ public final class MapillaryMainDialog extends ToggleDialog
   private final VerifyRejectAction rejectAction = new VerifyRejectAction(DetectionVerification.TYPE.REJECT);
 
   /**
-   * This is copied from {@link ImageViewerDialog#createNaviationButton}
+   * This is copied from {@link ImageViewerDialog#createNavigationButton(AbstractAction, Dimension)}
    *
    * @param action The action to put in a {@link JButton}
    * @param buttonDim The dimensions of the button
@@ -431,7 +433,7 @@ public final class MapillaryMainDialog extends ToggleDialog
   /**
    * Find old components to remove
    *
-   * @param component The parent component
+   * @param parent The parent component
    * @return A list of components to remove from the parent component
    */
   private static Collection<Component> panelComponents(JComponent parent) {

@@ -37,7 +37,7 @@ public class MapillarySequenceUtils {
     /** Get the "next" image */
     NEXT,
     /** Get the "previous" image */
-    PREVIOUS;
+    PREVIOUS
   }
 
   private static final CacheAccess<String, IWay<?>> SEQUENCE_CACHE = JCSCacheManager.getCache("mapillary:sequences");
@@ -60,8 +60,8 @@ public class MapillarySequenceUtils {
    */
   @Nullable
   public static INode getNextOrPrevious(@Nonnull INode node, @Nullable NextOrPrevious next) {
-    Collection<IWay<?>> connectedWays = node.getReferrers().stream().filter(IWay.class::isInstance)
-      .map(IWay.class::cast).map(way -> (IWay<?>) way).distinct().collect(Collectors.toList());
+    List<IWay<?>> connectedWays = node.getReferrers().stream().filter(IWay.class::isInstance)
+      .map(iway -> (IWay<?>) iway).distinct().collect(Collectors.toList());
     if (connectedWays.isEmpty() || connectedWays.size() > 2) {
       return null;
     }
@@ -110,7 +110,7 @@ public class MapillarySequenceUtils {
         ? MapillaryImageUtils.getSequenceKey(node)
         : "";
       ways.removeIf(tWay -> !tWay.hasKeys());
-      ways.removeIf(tWay -> !sequenceKey.equals(tWay.get(KEY)));
+      ways.removeIf(tWay -> sequenceKey != null && !sequenceKey.equals(tWay.get(KEY)));
       // Deliberate reference equality
       ways.removeIf(tWay -> way == tWay);
       ways = ways.stream().distinct().collect(Collectors.toList());
@@ -180,7 +180,8 @@ public class MapillarySequenceUtils {
   /**
    * Download a specific sequence
    *
-   * @implNote This is synchronized to avoid a CME (JOSM #20948).
+   * Note: This is synchronized to avoid a CME (JOSM #20948).
+   *
    * @param key The key to download
    * @return The downloaded sequence
    */

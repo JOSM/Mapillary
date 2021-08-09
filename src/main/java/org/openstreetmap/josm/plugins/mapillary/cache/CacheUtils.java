@@ -80,8 +80,6 @@ public final class CacheUtils {
    *
    * @param image
    *        The picture to be requested.
-   * @param type
-   *        The quality of the picture to be requested.
    * @param lis
    *        The listener that is going to receive the picture.
    */

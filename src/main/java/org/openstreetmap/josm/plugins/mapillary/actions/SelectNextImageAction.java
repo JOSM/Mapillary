@@ -131,7 +131,6 @@ public class SelectNextImageAction extends JosmAction {
    * Check if this action should be enabled
    *
    * @param currentImage The image to check against
-   * @return {@code true} if this button should be enabled
    */
   public void updateEnabled(final Component component, final INode currentImage) {
     final INode actionNode = this.getDestinationImageSupplier().get();

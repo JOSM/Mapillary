@@ -7,6 +7,7 @@ import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.Logging;
 
 import javax.json.JsonArray;
@@ -22,8 +23,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * Decodes the JSON returned by {@link APIv4} into Java objects.
- * Takes a {@link JsonObject} and {@link #decodeSequence(JsonObject)} tries to convert it to a
+ * Decodes the JSON returned by {@link MapillaryURL.APIv4} into Java objects.
+ * Takes a {@link JsonObject} and {@link #decodeSequence(JsonValue)} tries to convert it to a
  * {@link IWay}.
  */
 public final class JsonSequencesDecoder {

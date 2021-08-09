@@ -23,9 +23,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public final class MapillaryURL {
-  /** The API key for v3 */
-  private static final String CLIENT_ID = "UTZhSnNFdGpxSEFFREUwb01GYzlXZzpjNGViMzQxMTIzMjY0MjZm";
-
   /**
    * Mapillary v4 API
    *
@@ -81,8 +78,8 @@ public final class MapillaryURL {
      * @return The URL to get detections
      */
     public static String getDetectionInformation(String image) {
-      return new StringBuilder(baseMetaDataUrl).append(image).append("/detections")
-        .append(queryString(Collections.singletonMap("fields", "value,created_at,image,geometry"))).toString();
+      return baseMetaDataUrl + image + "/detections" + queryString(
+        Collections.singletonMap("fields", "value,created_at,image,geometry"));
     }
 
     /**
@@ -109,8 +106,8 @@ public final class MapillaryURL {
         Map<String, String> queryFields = new HashMap<>(2);
         queryFields.put("fields", Stream.of(getDefaultImageInformation()).map(MapillaryImageUtils.ImageProperties::name)
           .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(",")));
-        queryFields.put("image_ids", Stream.of(images).collect(Collectors.joining(",")));
-        return new StringBuilder(baseMetaDataUrl).append("images").append(queryString(queryFields)).toString();
+        queryFields.put("image_ids", String.join(",", images));
+        return baseMetaDataUrl + "images" + queryString(queryFields);
       }
       return getImageInformation(images[0]);
     }
@@ -134,10 +131,9 @@ public final class MapillaryURL {
       } else {
         imageProperties = properties;
       }
-      return new StringBuilder(baseMetaDataUrl).append(image)
-        .append(queryString(Collections.singletonMap("fields", Stream.of(imageProperties)
-          .map(MapillaryImageUtils.ImageProperties::toString).collect(Collectors.joining(",")))))
-        .toString();
+      return baseMetaDataUrl + image + queryString(Collections.singletonMap("fields",
+        Stream.of(imageProperties).map(MapillaryImageUtils.ImageProperties::toString)
+          .collect(Collectors.joining(","))));
     }
 
     /**
@@ -163,8 +159,7 @@ public final class MapillaryURL {
      * @return The URL to get image identifiers with
      */
     public static String getImagesBySequences(String key) {
-      return new StringBuilder(baseMetaDataUrl).append("image_ids")
-        .append(queryString(Collections.singletonMap("sequence_id", key))).toString();
+      return baseMetaDataUrl + "image_ids" + queryString(Collections.singletonMap("sequence_id", key));
     }
 
     /**
@@ -176,8 +171,8 @@ public final class MapillaryURL {
      */
     public static String getMapFeatureInformation(@Nonnull final String id,
       @Nonnull final MapillaryMapFeatureUtils.MapFeatureProperties... properties) {
-      return new StringBuilder(baseMetaDataUrl).append(id).append(queryString(Collections.singletonMap("fields",
-        Stream.of(properties).map(Object::toString).collect(Collectors.joining(","))))).toString();
+      return baseMetaDataUrl + id + queryString(Collections.singletonMap("fields",
+        Stream.of(properties).map(Object::toString).collect(Collectors.joining(","))));
     }
 
     /**
@@ -187,15 +182,6 @@ public final class MapillaryURL {
      */
     public static URL getUserInformation() {
       return string2URL(baseMetaDataUrl, "me", queryString(null));
-    }
-
-    /**
-     * Get the user's organizations
-     *
-     * @return The URL to get user orgs from
-     */
-    private static URL getUserOrganizations() {
-      return string2URL(baseMetaDataUrl, "me", "organizations", queryString(null));
     }
   }
 
@@ -210,7 +196,7 @@ public final class MapillaryURL {
       return string2URL(baseUrl, "users/", key, MapillaryURL.queryString(null));
     }
 
-    public static URL retrieveOrganizationss(String user) {
+    public static URL retrieveOrganizations(String user) {
       return string2URL(baseUrl, "users/" + user + "/organizations", queryString(null));
     }
 
@@ -225,8 +211,7 @@ public final class MapillaryURL {
      * @return A URL to get data from
      */
     public static String retrieveOrganizationAvatar(String organization) {
-      return new StringBuilder(baseUrl).append("organizations/").append(organization).append("/avatar")
-        .append(queryString(null)).toString();
+      return baseUrl + "organizations/" + organization + "/avatar" + queryString(null);
     }
 
     /**
@@ -354,7 +339,7 @@ public final class MapillaryURL {
   }
 
   /**
-   * Builds a query string from it's parts that are supplied as a {@link Map}
+   * Builds a query string from its parts that are supplied as a {@link Map}
    *
    * @param parts the parts of the query string
    * @return the constructed query string (including a leading ?)
@@ -376,7 +361,7 @@ public final class MapillaryURL {
 
   /**
    * Converts a {@link String} into a {@link URL} without throwing a {@link MalformedURLException}.
-   * Instead such an exception will lead to an {@link Logging#error(Throwable)}.
+   * Instead, such an exception will lead to an {@link Logging#error(Throwable)}.
    * So you should be very confident that your URL is well-formed when calling this method.
    *
    * @param strings the Strings describing the URL
