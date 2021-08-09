@@ -7,7 +7,8 @@ import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecor
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 
 /**
- * Decodes the JSON returned by {@link MapillaryURL.APIv4} into Java objects. Takes a {@link JsonObject} to create organizations
+ * Decodes the JSON returned by {@link MapillaryURL.APIv4} into Java objects. Takes a {@link JsonObject} to create
+ * organizations
  *
  * @author Taylor Smock
  */

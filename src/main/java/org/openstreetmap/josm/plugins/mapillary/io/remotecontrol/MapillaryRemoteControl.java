@@ -73,8 +73,8 @@ public class MapillaryRemoteControl extends RequestHandler.RawURLParseRequestHan
 
   @Override
   public String[] getUsageExamples() {
-    return new String[] { "/photo", "/photo?photo=Mapillary/t6g8zH8K-00W9S30iCtPaQ",
-      "photo?sequence=Mapillary/VCBzPB-zgE6R4dEpBkseEQ" };
+    return new String[] { "/photo", "/photo?photo=Mapillary/135511895288847",
+      "photo?sequence=Mapillary/7nfcwfvjdtphz7yj6zat6a" };
   }
 
   @Override
@@ -121,22 +121,20 @@ public class MapillaryRemoteControl extends RequestHandler.RawURLParseRequestHan
 
   @Override
   protected void validateRequest() throws RequestHandlerBadRequestException {
-    if (args != null) {
+    if (args != null && !args.isEmpty()) {
       images = args.getOrDefault(IMAGE_STRING, "").split(";", 0);
       sequences = args.getOrDefault(SEQUENCE_STRING, "").split(";", 0);
       if (args.containsKey(IMAGE_STRING) && !args.get(IMAGE_STRING).startsWith(MAPILLARY_PREFIX)) {
         throw new RequestHandlerBadRequestException(
-          tr("Only Mapillary images are supported at this time, use photo=Mapillary/{0}", args.get(IMAGE_STRING)));
+          tr("Only Mapillary images are supported at this time, use photo=Mapillary/<image_id>"));
       }
-      if (args.containsKey(SEQUENCE_STRING)) {
+      if (args.containsKey(SEQUENCE_STRING) && !args.get(SEQUENCE_STRING).startsWith(MAPILLARY_PREFIX)) {
         throw new RequestHandlerBadRequestException(
-          tr("Only Mapillary sequences are supported at this time, use sequence=Mapillary/{0}",
-            args.get(SEQUENCE_STRING)));
+          tr("Only Mapillary sequences are supported at this time, use sequence=Mapillary/<sequence_id>"));
       }
     } else {
       throw new RequestHandlerBadRequestException(
-        tr("At least one of the optional arguments must be used ({})", String.join(", ", getOptionalParams())));
+        tr("At least one of the optional arguments must be used ({0})", String.join(", ", getOptionalParams())));
     }
   }
-
 }

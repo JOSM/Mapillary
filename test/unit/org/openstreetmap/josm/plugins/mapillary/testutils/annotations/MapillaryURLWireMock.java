@@ -173,7 +173,13 @@ public @interface MapillaryURLWireMock {
       // This stub *MUST* be accounted for in the an extension (for example, the CollectionEndpoint extension)
       server.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/graph/images.*"))
         .withQueryParams(imageIdsParameters).willReturn(WireMock.aResponse()).atPriority(0));
+      // This stub is needed, since the creation of new layers often makes a call to the "stub" URL
+      server.stubFor(WireMock.get("/api/v4/coverageTiles/mly1_computed_public/2/{z}/{x}/{y}?access_token=test_key")
+        .willReturn(WireMock.serverError()));
+
+      // Store the stub mappings for future use.
       context.getStore(namespace).put(StubMapping.class, server.getStubMappings());
+
       // Only allow real Mapillary API calls in integration tests.
       if (context.getElement().isPresent()
         && AnnotationSupport.findAnnotation(context.getElement().get(), MapillaryURLWireMock.class)

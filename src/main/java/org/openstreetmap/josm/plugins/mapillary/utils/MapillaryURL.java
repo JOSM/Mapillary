@@ -78,8 +78,8 @@ public final class MapillaryURL {
      * @return The URL to get detections
      */
     public static String getDetectionInformation(String image) {
-      return baseMetaDataUrl + image + "/detections" + queryString(
-        Collections.singletonMap("fields", "value,created_at,image,geometry"));
+      return baseMetaDataUrl + image + "/detections"
+        + queryString(Collections.singletonMap("fields", "value,created_at,image,geometry"));
     }
 
     /**
@@ -131,9 +131,8 @@ public final class MapillaryURL {
       } else {
         imageProperties = properties;
       }
-      return baseMetaDataUrl + image + queryString(Collections.singletonMap("fields",
-        Stream.of(imageProperties).map(MapillaryImageUtils.ImageProperties::toString)
-          .collect(Collectors.joining(","))));
+      return baseMetaDataUrl + image + queryString(Collections.singletonMap("fields", Stream.of(imageProperties)
+        .map(MapillaryImageUtils.ImageProperties::toString).collect(Collectors.joining(","))));
     }
 
     /**
