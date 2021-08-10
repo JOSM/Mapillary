@@ -1,31 +1,39 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.data.mapillary;
 
-import java.util.ArrayList;
+import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.stream.Collectors;
 
 import org.openstreetmap.josm.data.osm.DataSet;
+import org.openstreetmap.josm.data.osm.Filter;
 import org.openstreetmap.josm.data.osm.FilterMatcher;
 import org.openstreetmap.josm.data.osm.FilterModel;
 import org.openstreetmap.josm.data.osm.FilterWorker;
-import org.openstreetmap.josm.data.osm.Node;
+import org.openstreetmap.josm.data.osm.IFilterablePrimitive;
+import org.openstreetmap.josm.data.osm.IPrimitive;
+import org.openstreetmap.josm.data.osm.OsmData;
 import org.openstreetmap.josm.data.osm.OsmDataManager;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
+import org.openstreetmap.josm.data.osm.search.SearchParseError;
+import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * A model to filter data
  */
 public class MapillaryFilterModel extends FilterModel {
-  private final FilterMatcher filterMatcher = new FilterMatcher();
-
   /**
    * Runs the filters on the current edit data set.
    */
   @Override
   public void executeFilters() {
-    executeFilters(OsmDataManager.getInstance().getActiveDataSet());
+    MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).stream().map(PointObjectLayer::getData)
+      .forEach(this::executeFilters);
   }
 
   /**
@@ -33,30 +41,9 @@ public class MapillaryFilterModel extends FilterModel {
    *
    * @param ds The dataset to run filters on
    */
-  public void executeFilters(DataSet ds) {
+  public <O extends IPrimitive & IFilterablePrimitive> void executeFilters(OsmData<O, ?, ?, ?> ds) {
     if (ds != null) {
-      final Collection<OsmPrimitive> deselect = new HashSet<>();
-
-      ds.beginUpdate();
-      try {
-
-        final Collection<OsmPrimitive> all = ds.allNonDeletedCompletePrimitives();
-
-        FilterWorker.executeFilters(all, filterMatcher);
-
-        // collect disabled and selected the primitives
-        for (OsmPrimitive osm : all) {
-          if (osm.isDisabled() && osm.isSelected()) {
-            deselect.add(osm);
-          }
-        }
-      } finally {
-        ds.endUpdate();
-      }
-
-      if (!deselect.isEmpty()) {
-        ds.clearSelection(deselect);
-      }
+      this.executeFilters(ds, ds.allNonDeletedCompletePrimitives());
     }
   }
 
@@ -66,7 +53,7 @@ public class MapillaryFilterModel extends FilterModel {
    * @param primitives The primitives
    */
   @Override
-  public void executeFilters(Collection<? extends OsmPrimitive> primitives) {
+  public void executeFilters(@Nullable Collection<? extends OsmPrimitive> primitives) {
     executeFilters(OsmDataManager.getInstance().getActiveDataSet(), primitives);
   }
 
@@ -76,28 +63,51 @@ public class MapillaryFilterModel extends FilterModel {
    * @param ds The dataset with the primitives
    * @param primitives The primitives
    */
-  public void executeFilters(DataSet ds, Collection<? extends OsmPrimitive> primitives) {
-    if (ds == null)
+  public <O extends IPrimitive & IFilterablePrimitive> void executeFilters(@Nullable OsmData<O, ?, ?, ?> ds,
+    @Nullable Collection<? extends O> primitives) {
+    if (ds == null || primitives == null)
       return;
 
-    List<OsmPrimitive> deselect = new ArrayList<>();
-
-    ds.beginUpdate();
-    try {
-      for (int i = 0; i < 2; i++) {
-        for (OsmPrimitive primitive : primitives) {
-          if ((i == 0 && primitive instanceof Node) || (i == 1 && !(primitive instanceof Node))) {
-            continue;
-          }
-
-          FilterWorker.executeFilters(primitive, filterMatcher);
-          if (primitive.isSelected() && primitive.isDisabled()) {
-            deselect.add(primitive);
-          }
-        }
+    final FilterMatcher filterMatcher = new FilterMatcher();
+    for (Filter filter : super.getFilters()) {
+      try {
+        filterMatcher.add(filter);
+      } catch (SearchParseError e) {
+        // This should never happen, as the other filter should throw
+        Logging.error(e);
       }
+    }
+
+    Lock lock = null;
+    if (ds instanceof DataSet) {
+      ((DataSet) ds).beginUpdate();
+    } else {
+      lock = ds.getReadLock();
+    }
+
+    Set<IPrimitive> deselect;
+    try {
+      if (lock != null) {
+        lock.lockInterruptibly();
+      }
+      // The executeFilters method properly orders primitives
+      if (FilterWorker.executeFilters(primitives, filterMatcher)) {
+        deselect = primitives.parallelStream().filter(IPrimitive::isSelected).filter(IPrimitive::isDisabled)
+          .collect(Collectors.toSet());
+      } else {
+        deselect = Collections.emptySet();
+      }
+    } catch (InterruptedException e) {
+      Logging.error(e);
+      Thread.currentThread().interrupt();
+      deselect = Collections.emptySet();
     } finally {
-      ds.endUpdate();
+      if (ds instanceof DataSet) {
+        ((DataSet) ds).endUpdate();
+      }
+      if (lock != null) {
+        lock.unlock();
+      }
     }
 
     if (!deselect.isEmpty()) {

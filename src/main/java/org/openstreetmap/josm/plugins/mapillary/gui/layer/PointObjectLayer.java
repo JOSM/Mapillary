@@ -179,6 +179,8 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
     this.setNodeIds(MapillaryMapFeatureUtils.MapFeatureProperties.ID.toString(),
       tile.getData().getAllPrimitives().stream().filter(VectorNode.class::isInstance).map(VectorNode.class::cast));
     this.listeners.fireEvent(listener -> listener.tileAdded(tile));
+    // Run filters on tile updates.
+    MapillaryExpertFilterDialog.getInstance().getFilterModel().executeFilters(tile.getData().getAllPrimitives());
   }
 
   @Override
