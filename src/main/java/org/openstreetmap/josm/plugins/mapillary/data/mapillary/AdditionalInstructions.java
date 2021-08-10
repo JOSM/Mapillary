@@ -11,6 +11,7 @@ import org.openstreetmap.josm.command.ChangeNodesCommand;
 import org.openstreetmap.josm.command.Command;
 import org.openstreetmap.josm.command.MoveCommand;
 import org.openstreetmap.josm.command.SequenceCommand;
+import org.openstreetmap.josm.data.Version;
 import org.openstreetmap.josm.data.coor.EastNorth;
 import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.IWaySegment;
@@ -36,11 +37,18 @@ public interface AdditionalInstructions {
 
     @Override
     public Command apply(final OsmPrimitive primitive) {
-      if (primitive.getDataSet() == null || !(primitive instanceof Node)) {
+      if (!(primitive instanceof Node) || primitive.getDataSet() == null) {
         return null;
       }
       final BBox searchBBox = primitive.getBBox();
-      searchBBox.addPrimitive(primitive, 0.001); // ~111m at equator
+      if (Version.getInstance().getVersion() >= 18109) {
+        final double distance = 100 * ProjectionRegistry.getProjection().getMetersPerUnit();
+        searchBBox.add((Node) primitive);
+        searchBBox.add(Geometry.getLatLonFrom((Node) primitive, Math.PI / 4, distance));
+        searchBBox.add(Geometry.getLatLonFrom((Node) primitive, 5 * Math.PI / 4, distance));
+      } else {
+        searchBBox.addPrimitive(primitive, 0.001); // ~111m at equator
+      }
       Collection<Way> highways = primitive.getDataSet().searchWays(searchBBox).stream()
         .filter(way -> way.hasKey("highway")).collect(Collectors.toList());
       if (highways.isEmpty())
