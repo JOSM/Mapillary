@@ -24,6 +24,7 @@ import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorWay;
+import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.AwaitThreadFinish;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryCaches;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMockErrors;
@@ -33,6 +34,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.tools.Logging;
 
+@AwaitThreadFinish
 @MapillaryURLWireMock
 @MapillaryCaches
 class MapillaryCacheTest {
