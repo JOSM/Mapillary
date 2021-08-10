@@ -46,6 +46,9 @@ class ObjectDetectionsTest {
    */
   static Stream<Arguments> provideObjectDetections() {
     // Ensure that we are only testing production object detections
+    // Both ExpertToggleAction and DeveloperToggleAction have instances
+    ExpertToggleAction.getInstance().setExpert(false);
+    DeveloperToggleAction.getInstance().setDeveloper(false);
     assertFalse(ExpertToggleAction.isExpert());
     assertFalse(DeveloperToggleAction.isDeveloper());
     return Stream.of(ObjectDetections.values()).filter(d -> {
