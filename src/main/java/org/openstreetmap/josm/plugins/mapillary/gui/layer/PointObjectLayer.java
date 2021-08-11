@@ -4,12 +4,10 @@ package org.openstreetmap.josm.plugins.mapillary.gui.layer;
 import static org.openstreetmap.josm.tools.I18n.tr;
 import static org.openstreetmap.josm.tools.I18n.trn;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.ByteArrayInputStream;
@@ -21,12 +19,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.OptionalLong;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
@@ -41,9 +37,7 @@ import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 import javax.json.stream.JsonParser;
-import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -51,26 +45,18 @@ import javax.swing.JPanel;
 import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 
 import org.openstreetmap.josm.actions.RenameLayerAction;
-import org.openstreetmap.josm.command.AddPrimitivesCommand;
-import org.openstreetmap.josm.command.Command;
 import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.data.UndoRedoHandler;
 import org.openstreetmap.josm.data.imagery.ImageryInfo;
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
 import org.openstreetmap.josm.data.osm.BBox;
-import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.HighlightUpdateListener;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IRelation;
 import org.openstreetmap.josm.data.osm.IWay;
-import org.openstreetmap.josm.data.osm.Node;
-import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.PrimitiveId;
-import org.openstreetmap.josm.data.osm.Way;
 import org.openstreetmap.josm.data.osm.event.AbstractDatasetChangedEvent;
 import org.openstreetmap.josm.data.osm.event.DataSetListenerAdapter.Listener;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
@@ -96,14 +82,11 @@ import org.openstreetmap.josm.gui.layer.imagery.MVTLayer;
 import org.openstreetmap.josm.gui.mappaint.MapPaintStyles;
 import org.openstreetmap.josm.gui.mappaint.loader.MapPaintStyleLoader;
 import org.openstreetmap.josm.gui.mappaint.mapcss.MapCSSStyleSource;
-import org.openstreetmap.josm.gui.tagging.presets.TaggingPreset;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
+import org.openstreetmap.josm.plugins.mapillary.actions.SmartEditAddAction;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
-import org.openstreetmap.josm.plugins.mapillary.command.GenericCommand;
-import org.openstreetmap.josm.plugins.mapillary.data.mapillary.AdditionalInstructions;
-import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
 import org.openstreetmap.josm.plugins.mapillary.data.osm.event.FilterEventListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
@@ -229,7 +212,7 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
         selectedInView.forEach(p -> paintAdditionalPanel(p, mv));
       }
     } else {
-      this.displayedWindows.forEach((o, w) -> hideWindow(w));
+      this.displayedWindows.forEach((o, w) -> realHideWindow(w));
     }
     // TODO remove when we can set the vector primitives as selected
     if (mv.getDist100Pixel() < 50) {
@@ -275,7 +258,7 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
       .filter(AdditionalActionPanel.class::isInstance).map(AdditionalActionPanel.class::cast).findAny().orElse(null);
 
     if (displayedPanel == null) {
-      displayedPanel = new AdditionalActionPanel(mapillaryObject);
+      displayedPanel = new AdditionalActionPanel(new JButton(new SmartEditAddAction(this, mapillaryObject)));
       pTooltip = fixPanelSizeAndLocation(mv, displayedPanel, xl, xr, yt, yb);
       displayedWindow.setAutoRequestFocus(false);
       displayedWindow.add(displayedPanel);
@@ -357,42 +340,6 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
       .filter(n -> this.selected.contains(MapillaryMapFeatureUtils.getId(n))).map(INode.class::cast);
   }
 
-  private class AdditionalActionPanel extends JPanel {
-    private boolean hasContent;
-
-    /**
-     * @param mapillaryObject The Mapillary object which should have additional actions
-     */
-    public AdditionalActionPanel(IPrimitive mapillaryObject) {
-      this.setBackground(UIManager.getColor("ToolTip.background"));
-      this.setForeground(UIManager.getColor("ToolTip.foreground"));
-      this.setFont(UIManager.getFont("ToolTip.font"));
-      this.setBorder(BorderFactory.createLineBorder(Color.black));
-      final ObjectDetections detection = ObjectDetections.valueOfMapillaryValue(mapillaryObject.get("value"));
-      if (!detection.getTaggingPresets().isEmpty()) {
-        this.hasContent = true;
-        JButton add = new JButton(tr("Add"));
-        add.setAction(new AbstractAction(tr("Add")) {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            addMapillaryPrimitiveToOsm(mapillaryObject, detection);
-          }
-        });
-        this.add(add);
-      }
-    }
-
-    /**
-     * Check if there is content in the layer
-     *
-     * @return {@code true} if there is content to show
-     */
-    public boolean hasContent() {
-      return this.hasContent;
-    }
-
-  }
-
   /**
    * @param mv The current MapView
    * @param displayedPanel The panel to display
@@ -419,7 +366,7 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
    *
    * @param window The window to hide
    */
-  private static void hideWindow(JWindow window) {
+  private static void realHideWindow(JWindow window) {
     GuiHelper.runInEDT(() -> {
       if (window != null) {
         window.setVisible(false);
@@ -431,6 +378,29 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
     });
   }
 
+  /**
+   * Hide windows for a specific primitive
+   *
+   * @param mapillaryObject The primitive to hide windows for
+   */
+  public void hideWindow(final IPrimitive mapillaryObject) {
+    realHideWindow(this.displayedWindows.get(mapillaryObject));
+  }
+
+  /**
+   * Hide the additional actions while running something
+   *
+   * @param runnable The runnable to run
+   */
+  public void hideAdditionalActionsWindow(final Runnable runnable) {
+    this.showingPresetWindow = true;
+    try {
+      runnable.run();
+    } finally {
+      this.showingPresetWindow = false;
+    }
+  }
+
   @Override
   public void selectionChanged(
     SelectionChangeEvent<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> event) {
@@ -438,7 +408,7 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
     VectorPrimitive prim = selection.parallelStream().filter(p -> !p.isDeleted() && p.hasKey(MapillaryKeys.DETECTIONS))
       .findFirst().orElse(null);
     this.displayedWindows.entrySet().parallelStream().filter(e -> !selection.contains(e.getKey()))
-      .forEach(e -> hideWindow(e.getValue()));
+      .forEach(e -> realHideWindow(e.getValue()));
     Map<IPrimitive, JWindow> temporaryWindows = this.displayedWindows.entrySet().parallelStream()
       .filter(e -> selection.contains(e.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     this.displayedWindows.clear();
@@ -488,123 +458,6 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
       }
     }
     return null;
-  }
-
-  /**
-   * Add a Mapillary Object Detection Primitive to OSM
-   *
-   * @param mapillaryObject The primitive to add to OSM
-   * @param detection The detections for the primitive
-   */
-  void addMapillaryPrimitiveToOsm(final IPrimitive mapillaryObject, final ObjectDetections detection) {
-    hideWindow(this.displayedWindows.get(mapillaryObject));
-    final Collection<TaggingPreset> presets = detection.getTaggingPresets();
-    final DataSet dataSet = MainApplication.getLayerManager().getActiveDataSet();
-    if (dataSet != null && !dataSet.isLocked() && presets.size() == 1) {
-      final TaggingPreset preset = presets.iterator().next();
-      OsmPrimitive basePrimitive;
-      final Collection<OsmPrimitive> toAdd;
-      if (mapillaryObject instanceof INode) {
-        final Node tNode = new Node();
-        tNode.setCoor(((INode) mapillaryObject).getCoor());
-        mapillaryObject.getKeys().forEach(tNode::put);
-        basePrimitive = tNode;
-        toAdd = Collections.singleton(basePrimitive);
-      } else if (mapillaryObject instanceof Way) {
-        Way way = new Way((Way) mapillaryObject);
-        way.removeAll();
-        way.setNodes(Collections.emptyList());
-        ((Way) mapillaryObject).getNodes().forEach(node -> way.addNode(new Node(node)));
-        basePrimitive = way;
-        toAdd = new HashSet<>();
-        toAdd.add(basePrimitive);
-        toAdd.addAll(((Way) basePrimitive).getNodes());
-      } else {
-        return;
-      }
-      basePrimitive.removeAll();
-      detection.getOsmKeys().forEach(basePrimitive::put);
-
-      AddPrimitivesCommand add = new AddPrimitivesCommand(
-        toAdd.stream().map(OsmPrimitive::save).collect(Collectors.toList()), dataSet);
-      UndoRedoHandler.getInstance().add(add);
-      this.showingPresetWindow = true;
-      basePrimitive = dataSet.getPrimitiveById(basePrimitive.getPrimitiveId());
-      final int userSelection;
-      final Command updateTagsCommand;
-      try {
-        userSelection = preset.showDialog(Collections.singleton(basePrimitive), false);
-        updateTagsCommand = TaggingPreset.createCommand(Collections.singleton(basePrimitive), preset.getChangedTags());
-      } finally {
-        this.showingPresetWindow = false;
-      }
-      // Closing the window returns 0. Not in the TaggingPreset public answers at this time.
-      if ((userSelection == 0 || userSelection == TaggingPreset.DIALOG_ANSWER_CANCEL)
-        && UndoRedoHandler.getInstance().hasUndoCommands()) {
-        // Technically, it would be easier to do one undo, but this avoids corner cases
-        // where a user makes some modifications while the preset window is open.
-        List<Command> undoCommands = UndoRedoHandler.getInstance().getUndoCommands();
-        int index = undoCommands.size() - undoCommands.indexOf(add);
-        UndoRedoHandler.getInstance().undo(index);
-        return;
-      } else if (!basePrimitive.isTagged()) {
-        return;
-      }
-      GenericCommand<?, ?, ?, ?, ?> deleteOriginal;
-      if (mapillaryObject instanceof VectorPrimitive) {
-        deleteOriginal = new org.openstreetmap.josm.plugins.mapillary.command.DeleteCommand<>(
-          ((VectorPrimitive) mapillaryObject).getDataSet(), (VectorPrimitive) mapillaryObject);
-      } else {
-        throw new IllegalArgumentException(
-          "Unknown primitive type for mapillaryObject: " + mapillaryObject.getClass().getName());
-      }
-      long[] imageIds = MapillaryMapFeatureUtils.getImageIds(mapillaryObject);
-      if (updateTagsCommand != null) {
-        UndoRedoHandler.getInstance().add(new Command(updateTagsCommand.getAffectedDataSet()) {
-          @Override
-          public boolean executeCommand() {
-            return super.executeCommand() && updateTagsCommand.executeCommand() && deleteOriginal.executeCommand();
-          }
-
-          @Override
-          public void undoCommand() {
-            super.undoCommand();
-            updateTagsCommand.undoCommand();
-            deleteOriginal.undoCommand();
-          }
-
-          @Override
-          public void fillModifiedData(Collection<OsmPrimitive> modified, Collection<OsmPrimitive> deleted,
-            Collection<OsmPrimitive> added) {
-            updateTagsCommand.fillModifiedData(modified, deleted, added);
-          }
-
-          @Override
-          public String getDescriptionText() {
-            return tr("Mapillary Smart Edit: Add objects");
-          }
-        });
-        UndoRedoHandler.getInstance().add(updateTagsCommand);
-      }
-      if (imageIds.length > 0) {
-        final OptionalLong imageId = MapillaryLayer.getInstance().getSelected().map(MapillaryImageUtils::getKey)
-          .mapToLong(s -> s != null ? Long.parseLong(s) : 0).distinct()
-          .filter(i -> LongStream.of(imageIds).anyMatch(id -> id == i)).findFirst();
-        if (imageId.isPresent()) {
-          basePrimitive.put("mapillary:image", Long.toString(imageId.getAsLong()));
-        }
-      }
-      if (mapillaryObject.hasKey("key")) {
-        basePrimitive.put("mapillary:map_feature", mapillaryObject.get("key"));
-      }
-      final AdditionalInstructions additionalInstructions = detection.getAdditionalInstructions();
-      if (additionalInstructions != null) {
-        final Command additionalCommand = additionalInstructions.apply(basePrimitive);
-        if (additionalCommand != null) {
-          UndoRedoHandler.getInstance().add(additionalCommand);
-        }
-      }
-    }
   }
 
   /**
@@ -675,7 +528,7 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
     VectorDataSet data = this.getData();
     data.removeHighlightUpdateListener(this);
     data.removeSelectionListener(this);
-    this.displayedWindows.forEach((i, w) -> hideWindow(w));
+    this.displayedWindows.forEach((i, w) -> realHideWindow(w));
     this.displayedWindows.clear();
     if (MapillaryLayer.hasInstance()) {
       MapillaryLayer.getInstance().getData().removeSelectionListener(this);
