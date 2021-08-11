@@ -224,8 +224,8 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
         Point point = mv.getPoint(p.getBBox().getCenter());
         return mv.contains(point);
       }).collect(Collectors.toList());
-      if (Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()) && MainApplication.getMap().mapView
-        .getDist100Pixel() <= MapillaryProperties.SMART_ADD_MIN_DIST_PER_PIXEL.get()) {
+      if (MainApplication.getMap().mapView.getDist100Pixel() <= MapillaryProperties.SMART_ADD_MIN_DIST_PER_PIXEL
+        .get()) {
         selectedInView.forEach(p -> paintAdditionalPanel(p, mv));
       }
     } else {
