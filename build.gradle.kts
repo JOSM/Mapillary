@@ -153,7 +153,8 @@ josm {
     pathTransformer = getPathTransformer(project.projectDir, "gitlab.com/JOSM/plugin/Mapillary/blob")
   }
   initialPreferences.set(
-    "<tag key='mapillary.developer' value='true'/>"
+    "<tag key='mapillary.developer' value='true'/> <tag key='mapillary.access-token' value='MLYARAQoQptKvMW5jvw8Ckl4rfXl6Bw4Mkj7sNpdgGMl7h6GfzpwXQ0KEzTqO3FAF0p6uAnmVKmWBZBgulqFX5pmAZCfg74dXBvWfQgtJdmDidluHCjreW0FXdBSosQZDZD'/> <tag key='mapillary.access-token.expires-at' value='1630359994'/> <tag key='mapillary.access-token.refresh-in' value='604800'/>"
+
   )
 }
 
@@ -234,7 +235,7 @@ spotbugs {
 
 // JaCoCo config
 jacoco {
-  toolVersion = "0.8.5"
+  toolVersion = "0.8.7"
 }
 val jacocoTestReport by tasks.getting(JacocoReport::class) {
   reports {
