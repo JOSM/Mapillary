@@ -21,6 +21,7 @@ class AdditionalActionPanel extends JPanel {
     this.setBorder(BorderFactory.createLineBorder(Color.black));
     for (JButton button : actionButtons) {
       this.add(button);
+      this.hasContent = this.hasContent || button.getAction().isEnabled();
     }
   }
 

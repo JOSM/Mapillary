@@ -111,6 +111,8 @@ public class SmartEditAddAction extends JosmAction {
       addMapillaryTags(addedPrimitive);
 
       generateCommands(addedPrimitive, updateTagsCommand);
+      this.pointObjectLayer.setSelected(
+        this.pointObjectLayer.getSelected().filter(n -> !n.equals(this.mapillaryObject)).collect(Collectors.toList()));
     }
   }
 
@@ -157,8 +159,8 @@ public class SmartEditAddAction extends JosmAction {
         basePrimitive.put("mapillary:image", Long.toString(imageId.getAsLong()));
       }
     }
-    if (mapillaryObject.hasKey("key")) {
-      basePrimitive.put("mapillary:map_feature", mapillaryObject.get("key"));
+    if (MapillaryMapFeatureUtils.getId(mapillaryObject) != null) {
+      basePrimitive.put("mapillary:map_feature", MapillaryMapFeatureUtils.getId(mapillaryObject));
     }
 
   }

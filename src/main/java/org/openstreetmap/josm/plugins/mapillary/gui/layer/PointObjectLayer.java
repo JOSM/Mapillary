@@ -258,7 +258,10 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
       .filter(AdditionalActionPanel.class::isInstance).map(AdditionalActionPanel.class::cast).findAny().orElse(null);
 
     if (displayedPanel == null) {
-      displayedPanel = new AdditionalActionPanel(new JButton(new SmartEditAddAction(this, mapillaryObject)));
+      final SmartEditAddAction addAction = new SmartEditAddAction(this, mapillaryObject);
+      final JButton addButton = new JButton(tr("Add"));
+      addButton.setAction(addAction);
+      displayedPanel = new AdditionalActionPanel(addButton);
       pTooltip = fixPanelSizeAndLocation(mv, displayedPanel, xl, xr, yt, yb);
       displayedWindow.setAutoRequestFocus(false);
       displayedWindow.add(displayedPanel);

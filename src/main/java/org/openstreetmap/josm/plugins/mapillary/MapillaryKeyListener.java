@@ -3,37 +3,26 @@ package org.openstreetmap.josm.plugins.mapillary;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonReader;
-import javax.json.JsonStructure;
-import javax.json.JsonValue;
 import javax.swing.AbstractAction;
 import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.OsmData;
+import org.openstreetmap.josm.data.osm.OsmPrimitiveType;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.gui.MainApplication;
@@ -43,9 +32,9 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.ImageProvider;
-import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Listen for Mapillary keys
@@ -58,8 +47,6 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
   private PropertiesDialog properties;
   private final Map<JPopupMenu, List<String>> addedValues = new HashMap<>();
   private final Map<JPopupMenu, List<Component>> addedComponents = new HashMap<>();
-
-  private static final String IMAGE_KEY = "image_key";
 
   public MapillaryKeyListener(PropertiesDialog properties, JPopupMenu menu) {
     this.menu = menu;
@@ -169,19 +156,17 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
       final VectorDataSet data = MapillaryLayer.getInstance().getData();
       final Collection<IPrimitive> detections = MainApplication.getLayerManager()
         .getLayersOfType(PointObjectLayer.class).stream().map(PointObjectLayer::getData)
-        .flatMap(d -> d.allNonDeletedPrimitives().stream())
-        .filter(p -> p.hasKey("key") && Stream.of(this.detection).anyMatch(d -> d.equals(p.get("key"))))
+        .flatMap(d -> d.allNonDeletedPrimitives().stream()).filter(p -> MapillaryMapFeatureUtils.getId(p) != null)
+        .filter(p -> Stream.of(this.detection).anyMatch(d -> d.equals(MapillaryMapFeatureUtils.getId(p))))
         .collect(Collectors.toSet());
-      final Collection<String> images = detections.stream()
-        .flatMap(d -> detectionsKeyToImages(d.get("detections")).stream()).collect(Collectors.toList());
-      final Map<String, VectorNode> dataImages = data.getNodes().stream()
-        .filter(i -> MapillaryImageUtils.getKey(i) != null)
-        .collect(Collectors.toMap(MapillaryImageUtils::getKey, i -> i));
-      Collection<String> missingImages = images.stream().filter(i -> !dataImages.containsKey(i))
-        .collect(Collectors.toList());
-      if (!missingImages.isEmpty()) {
-        MapillaryDownloader.downloadSequences(
-          MapillaryDownloader.downloadImages(missingImages.toArray(new String[0])).keySet().toArray(new String[0]));
+      final long[] images = detections.stream()
+        .flatMapToLong(d -> LongStream.of(MapillaryMapFeatureUtils.getImageIds(d))).distinct().toArray();
+      final long[] missingImages = LongStream.of(images)
+        .filter(i -> data.getPrimitiveById(i, OsmPrimitiveType.NODE) == null).toArray();
+      if (missingImages.length != 0) {
+        MapillaryDownloader.downloadSequences(MapillaryDownloader
+          .downloadImages(LongStream.of(missingImages).mapToObj(Long::toString).toArray(String[]::new)).keySet()
+          .toArray(new String[0]));
       }
       Map<OsmData<?, ?, ?, ?>, List<IPrimitive>> selections = detections.stream()
         .collect(Collectors.groupingBy(IPrimitive::getDataSet));
@@ -190,27 +175,6 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
           selection.getKey().setSelected(selection.getValue());
         }
       });
-    }
-
-    private static Collection<String> detectionsKeyToImages(String key) {
-      try (InputStream keyStream = new ByteArrayInputStream(key.getBytes(StandardCharsets.UTF_8));
-        JsonReader reader = Json.createReader(keyStream)) {
-        JsonStructure structure = reader.read();
-        Set<String> imageKeys = new TreeSet<>();
-        if (structure.getValueType() == JsonValue.ValueType.ARRAY) {
-          JsonArray array = structure.asJsonArray();
-          for (JsonValue obj : array) {
-            if (obj.getValueType() == JsonValue.ValueType.OBJECT && obj.asJsonObject().containsKey(IMAGE_KEY)
-              && obj.asJsonObject().get(IMAGE_KEY).getValueType() == JsonValue.ValueType.STRING) {
-              imageKeys.add(obj.asJsonObject().getString(IMAGE_KEY));
-            }
-          }
-        }
-        return imageKeys;
-      } catch (IOException e) {
-        Logging.error(e);
-      }
-      return Collections.emptyList();
     }
   }
 }
