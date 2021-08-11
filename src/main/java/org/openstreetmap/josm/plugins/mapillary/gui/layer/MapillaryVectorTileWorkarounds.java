@@ -64,7 +64,7 @@ public interface MapillaryVectorTileWorkarounds {
         VectorDataSet dataSet = node.getDataSet();
         // Synchronize on node to hopefully avoid reoccurances of JOSM #21178
         // The important variable is "node", as it is what causes the issues.
-        synchronized (node) {
+        synchronized (node.getStyleCacheSyncObject()) {
           // Force reindexing
           if (dataSet != null && dataSet.containsNode(node)) {
             dataSet.removePrimitive(node);
