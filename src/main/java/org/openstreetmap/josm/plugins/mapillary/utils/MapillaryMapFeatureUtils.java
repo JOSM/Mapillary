@@ -85,10 +85,15 @@ public class MapillaryMapFeatureUtils {
    *
    * @param primitive The primitive to check
    * @return The ID for the feature (should be convertable to an int)
+   * @deprecated Use {@link IPrimitive#getId()}} instead
    */
-  @Nullable
-  public static String getId(@Nullable final IPrimitive primitive) {
-    return getKeyValue(primitive, MapFeatureProperties.ID);
+  @Deprecated
+  public static long getId(@Nullable final IPrimitive primitive) {
+    final String str = getKeyValue(primitive, MapFeatureProperties.ID);
+    if (str != null) {
+      return Long.parseLong(str);
+    }
+    return 0;
   }
 
   /**

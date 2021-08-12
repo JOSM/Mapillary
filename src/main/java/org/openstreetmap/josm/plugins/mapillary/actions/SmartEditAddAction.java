@@ -31,7 +31,6 @@ import org.openstreetmap.josm.plugins.mapillary.data.mapillary.AdditionalInstruc
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
 import org.openstreetmap.josm.tools.ImageProvider;
 
@@ -111,8 +110,8 @@ public class SmartEditAddAction extends JosmAction {
       addMapillaryTags(addedPrimitive);
 
       generateCommands(addedPrimitive, updateTagsCommand);
-      this.pointObjectLayer.setSelected(
-        this.pointObjectLayer.getSelected().filter(n -> !n.equals(this.mapillaryObject)).collect(Collectors.toList()));
+      this.pointObjectLayer.getData().setSelected(this.pointObjectLayer.getData().getSelected().stream()
+        .filter(n -> !n.equals(this.mapillaryObject)).collect(Collectors.toList()));
     }
   }
 
@@ -152,15 +151,15 @@ public class SmartEditAddAction extends JosmAction {
   private void addMapillaryTags(final IPrimitive basePrimitive) {
     long[] imageIds = MapillaryMapFeatureUtils.getImageIds(mapillaryObject);
     if (imageIds.length > 0) {
-      final OptionalLong imageId = MapillaryLayer.getInstance().getSelected().map(MapillaryImageUtils::getKey)
-        .mapToLong(s -> s != null ? Long.parseLong(s) : 0).distinct()
-        .filter(i -> LongStream.of(imageIds).anyMatch(id -> id == i)).findFirst();
+      final OptionalLong imageId = MapillaryLayer.getInstance().getData().getSelectedNodes().stream()
+        .mapToLong(IPrimitive::getUniqueId).distinct().filter(i -> LongStream.of(imageIds).anyMatch(id -> id == i))
+        .findFirst();
       if (imageId.isPresent()) {
         basePrimitive.put("mapillary:image", Long.toString(imageId.getAsLong()));
       }
     }
-    if (MapillaryMapFeatureUtils.getId(mapillaryObject) != null) {
-      basePrimitive.put("mapillary:map_feature", MapillaryMapFeatureUtils.getId(mapillaryObject));
+    if (mapillaryObject.getId() != 0) {
+      basePrimitive.put("mapillary:map_feature", Long.toString(mapillaryObject.getId()));
     }
 
   }

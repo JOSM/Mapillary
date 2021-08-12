@@ -18,7 +18,6 @@ import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.gui.progress.swing.PleaseWaitProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.tools.Logging;
-import org.openstreetmap.josm.tools.Utils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -84,8 +83,8 @@ public class MapillaryExportWriterThread extends Thread {
         if (this.path == null && mimg.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
           String runPath = new File(mimg.get(MapillaryImageUtils.IMPORTED_KEY)).getPath();
           finalPath = runPath.substring(0, runPath.lastIndexOf('.'));
-        } else if (MapillaryImageUtils.getKey(mimg) != null && !Utils.isStripEmpty(MapillaryImageUtils.getKey(mimg))) {
-          finalPath = Paths.get(this.path, MapillaryImageUtils.getSequenceKey(mimg), MapillaryImageUtils.getKey(mimg))
+        } else if (MapillaryImageUtils.getKey(mimg) != null && mimg.getUniqueId() > 0) {
+          finalPath = Paths.get(this.path, MapillaryImageUtils.getSequenceKey(mimg), Long.toString(mimg.getUniqueId()))
             .toString();
         } else if (mimg.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
           finalPath = Paths.get(this.path, mimg.get(MapillaryImageUtils.IMPORTED_KEY)).toString();

@@ -55,14 +55,14 @@ class ImageDetectionTest {
   @ParameterizedTest
   @MethodSource("getDetectionsArguments")
   void testGetDetectionsWait(long id, int expectedDetections) {
-    List<ImageDetection<?>> detections = ImageDetection.getDetections(Long.toString(id), true);
+    List<ImageDetection<?>> detections = ImageDetection.getDetections(id, true);
     assertEquals(expectedDetections, detections.size());
   }
 
   @ParameterizedTest
   @MethodSource("getDetectionsArguments")
   void testGetDetectionsNoWait(long id, int expectedDetections) {
-    List<ImageDetection<?>> detections = ImageDetection.getDetections(Long.toString(id), false);
+    List<ImageDetection<?>> detections = ImageDetection.getDetections(id, false);
     assertTrue(detections.isEmpty());
   }
 }

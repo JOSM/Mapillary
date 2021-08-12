@@ -174,10 +174,10 @@ public final class MapillaryUtils {
       zoomBounds = new Bounds(zoomBounds.getCenter(), latExtent, lonExtent);
 
       MainApplication.getMap().mapView.zoomTo(zoomBounds);
-      MapillaryLayer.getInstance().setSelected(Collections.emptyList());
+      MapillaryLayer.getInstance().getData().clearSelection();
       MapillaryLayer.getInstance().getData().clearSelection();
       if (select) {
-        MapillaryLayer.getInstance().setSelected(images);
+        MapillaryLayer.getInstance().getData().setSelected(images);
       }
       MapillaryLayer.invalidateInstance();
     }

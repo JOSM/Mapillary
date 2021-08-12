@@ -17,12 +17,12 @@ import javax.json.JsonValue;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.BBox;
+import org.openstreetmap.josm.data.osm.OsmPrimitiveType;
 import org.openstreetmap.josm.data.osm.Tag;
 import org.openstreetmap.josm.data.osm.TagMap;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryVectorTileWorkarounds;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
@@ -91,17 +91,18 @@ public final class JsonImageDetailsDecoder {
       if (key == null) {
         return null;
       }
+      final long id = Long.parseLong(key);
       final LatLon coordinates = JsonDecoder.decodeLatLon(
         json.getJsonObject(useComputedData ? MapillaryImageUtils.ImageProperties.COMPUTED_GEOMETRY.toString()
           : MapillaryImageUtils.ImageProperties.GEOMETRY.toString()).getJsonArray("coordinates"));
       final BBox searchBBox = new BBox(coordinates);
       searchBBox.addLatLon(coordinates, 0.001);
-      VectorNode image = data.searchNodes(searchBBox).stream()
-        .filter(node -> key.equals(MapillaryImageUtils.getKey(node))).findAny().orElseGet(() -> {
-          VectorNode tImage = createNewImage(json, coordinates);
-          data.addPrimitive(tImage);
-          return tImage;
-        });
+      VectorNode image = (VectorNode) data.getPrimitiveById(id, OsmPrimitiveType.NODE);
+      if (image == null) {
+        image = createNewImage(json, coordinates);
+        data.addPrimitive(image);
+      }
+
       if (coordinates != null) {
         image.setCoor(coordinates);
       }
@@ -153,9 +154,9 @@ public final class JsonImageDetailsDecoder {
     if (coordinates != null) {
       tImage.setCoor(coordinates);
     }
-    final String id = MapillaryImageUtils.getKey(tImage);
-    if (id != null && MapillaryVectorTileWorkarounds.NUMBER_PATTERN.matcher(id).matches()) {
-      tImage.setOsmId(Long.parseLong(id), 1);
+    final long id = MapillaryImageUtils.getKey(tImage);
+    if (id != 0) {
+      tImage.setOsmId(id, 1);
     }
     return tImage;
   }

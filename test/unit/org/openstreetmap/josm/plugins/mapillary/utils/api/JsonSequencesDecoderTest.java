@@ -22,6 +22,7 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 
+import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
@@ -123,7 +124,7 @@ class JsonSequencesDecoderTest {
     final JsonValue json = toCheck != null ? stringToJsonValue(toCheck) : null;
     final List<VectorWay> seq = JsonSequencesDecoder.decodeSequence(json);
     assertTrue(seq.isEmpty(), seq.stream().map(VectorWay::getNodes).flatMap(Collection::stream)
-      .map(MapillaryImageUtils::getKey).collect(Collectors.joining(",")));
+      .mapToLong(IPrimitive::getUniqueId).mapToObj(Long::toString).collect(Collectors.joining(",")));
   }
 
   @Test

@@ -16,9 +16,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import javax.annotation.Nonnull;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonException;
@@ -50,7 +49,6 @@ import org.openstreetmap.josm.actions.RenameLayerAction;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.imagery.ImageryInfo;
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
-import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.HighlightUpdateListener;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
@@ -95,7 +93,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddEventSource;
 import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddListener;
-import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
@@ -112,7 +109,7 @@ import org.openstreetmap.josm.tools.Pair;
  * Mapillary Point Object layer
  */
 public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpdateListener,
-  VectorDataSelectionListener, LayerChangeListener, MapillaryVectorTileWorkarounds, TileAddEventSource<MVTTile> {
+  VectorDataSelectionListener, LayerChangeListener, TileAddEventSource<MVTTile> {
   private final FilterEventListener tableModelListener;
   private static final String PAINT_STYLE_SOURCE = "resource://mapcss/Mapillary.mapcss";
   private static MapCSSStyleSource mapcss;
@@ -120,7 +117,6 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
 
   private boolean showingPresetWindow;
   private final ListenerList<TileAddListener<MVTTile>> listeners = ListenerList.create();
-  private List<String> selected = Collections.emptyList();
 
   private static MapCSSStyleSource getMapCSSStyle() {
     List<MapCSSStyleSource> styles = MapPaintStyles.getStyles().getStyleSources().parallelStream()
@@ -156,11 +152,15 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
 
   @Override
   public void finishedLoading(MVTTile tile) {
-    super.finishedLoading(tile);
     // This is required for the mapcss to work properly
     tile.getData().getAllPrimitives().forEach(primitive -> primitive.put("layer", primitive.getLayer()));
-    this.setNodeIds(MapillaryMapFeatureUtils.MapFeatureProperties.ID.toString(),
-      tile.getData().getAllPrimitives().stream().filter(VectorNode.class::isInstance).map(VectorNode.class::cast));
+    tile.getData().getAllPrimitives().stream().filter(primitive -> primitive.getId() != 0)
+      .forEach(primitive -> primitive.setOsmId(MapillaryMapFeatureUtils.getId(primitive), 1));
+    // We need to ensure that the primitives are reset
+    final Set<VectorPrimitive> primitives = new HashSet<>(tile.getData().getAllPrimitives());
+    tile.getData().getPrimitivesMap().clear();
+    primitives.forEach(primitive -> tile.getData().getPrimitivesMap().put(primitive.getPrimitiveId(), primitive));
+    super.finishedLoading(tile);
     this.listeners.fireEvent(listener -> listener.tileAdded(tile));
     // Run filters on tile updates.
     MapillaryExpertFilterDialog.getInstance().getFilterModel().executeFilters(tile.getData().getAllPrimitives());
@@ -217,7 +217,7 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
     // TODO remove when we can set the vector primitives as selected
     if (mv.getDist100Pixel() < 50) {
       g.setColor(MapPaintSettings.INSTANCE.getSelectedColor());
-      for (INode node : this.getSelected().collect(Collectors.toList())) {
+      for (INode node : this.getData().getSelectedNodes()) {
         final Point p = mv.getPoint(node.getCoor());
         final ImageSizes size = ImageSizes.MAP;
         g.drawRect(p.x - size.getAdjustedWidth(), p.y - size.getAdjustedHeight(), 2 * size.getAdjustedWidth(),
@@ -294,53 +294,6 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
       this.listeners.removeListener(listener);
     }
     return this.listeners.containsListener(listener);
-  }
-
-  @Override
-  public <N extends INode> void setSelected(final Collection<N> nodes) {
-    this.selected = nodes.stream().map(MapillaryMapFeatureUtils::getId).collect(Collectors.toList());
-    getMapFeatureDetections(this.selected);
-    this.getData().setSelected(nodes);
-    if (!nodes.isEmpty() && MapillaryLayer.hasInstance()
-      && MapillaryLayer.getInstance().getSelected()
-        .noneMatch(image -> nodes.stream().map(MapillaryMapFeatureUtils::getImageIds).flatMapToLong(LongStream::of)
-          .distinct().mapToObj(Long::toString).anyMatch(id -> id.equals(MapillaryImageUtils.getKey(image))))) {
-      final BBox searchBBox = new BBox();
-      nodes.forEach(node -> searchBBox.addPrimitive(node, 0.005));
-      final Set<String> idArray = nodes.stream().map(MapillaryMapFeatureUtils::getImageIds)
-        .flatMapToLong(LongStream::of).distinct().mapToObj(Long::toString).collect(Collectors.toSet());
-      final List<VectorNode> potentialImages = MapillaryLayer.getInstance().getData().searchNodes(searchBBox).stream()
-        .distinct().filter(node -> idArray.contains(MapillaryImageUtils.getKey(node))).collect(Collectors.toList());
-      final Map<VectorNode, Integer> imageCount = nodes.stream().map(image -> getBestImage(image, potentialImages))
-        .collect(Collectors.toMap(i -> i, e -> 1, Math::addExact));
-      final Optional<VectorNode> bestImage = imageCount.entrySet().stream()
-        .max(Comparator.comparingInt(Map.Entry::getValue)).map(Map.Entry::getKey);
-      bestImage.ifPresent(vectorNode -> MapillaryLayer.getInstance().setSelected(vectorNode));
-    }
-  }
-
-  /**
-   * Get the image detections for the specified map features
-   *
-   * @param keys The key/id of the map feature
-   */
-  private static void getMapFeatureDetections(@Nonnull final Collection<String> keys) {
-    final Collection<String> finished = new ArrayList<>(keys.size());
-    for (String key : keys) {
-      // Repaint as we get features
-      ImageDetection.getDetections(key, (tKey, detections) -> {
-        finished.add(tKey);
-        if (finished.size() == keys.size()) {
-          MapillaryMainDialog.getInstance().imageViewer.invalidate();
-        }
-      });
-    }
-  }
-
-  @Override
-  public Stream<INode> getSelected() {
-    return this.getData().getSelectedNodes().stream()
-      .filter(n -> this.selected.contains(MapillaryMapFeatureUtils.getId(n))).map(INode.class::cast);
   }
 
   /**
@@ -495,18 +448,19 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
   }
 
   private static List<INode> getImagesForDetections(VectorDataSet data, List<Map<String, String>> detections) {
-    List<String> keys = detections.stream().filter(m -> m.containsKey(MapillaryKeys.IMAGE_KEY))
-      .map(m -> m.get(MapillaryKeys.IMAGE_KEY)).collect(Collectors.toList());
-    Set<String> keySet = data.getNodes().stream().map(MapillaryImageUtils::getKey).filter(Objects::nonNull)
+    long[] keys = detections.stream().filter(m -> m.containsKey(MapillaryKeys.IMAGE_KEY))
+      .map(m -> m.get(MapillaryKeys.IMAGE_KEY)).mapToLong(Long::parseLong).toArray();
+    final Set<Long> keySet = data.getNodes().stream().map(MapillaryImageUtils::getKey).filter(Objects::nonNull)
       .collect(Collectors.toSet());
-    String[] missing = keys.stream().filter(key -> !keySet.contains(key)).toArray(String[]::new);
-    if (keys.isEmpty())
+    final long[] missing = LongStream.of(keys).filter(key -> !keySet.contains(key)).toArray();
+    if (keys.length == 0) {
       MapillaryDownloader.downloadImages(missing);
-    else
+    } else {
       MapillaryUtils.getForkJoinPool(MapillaryCache.class).execute(() -> MapillaryDownloader.downloadImages(missing));
-    Map<String, INode> nodeMap = data.getNodes().stream().filter(img -> MapillaryImageUtils.getKey(img) != null)
+    }
+    Map<Long, INode> nodeMap = data.getNodes().stream().filter(img -> MapillaryImageUtils.getKey(img) != null)
       .collect(Collectors.toMap(MapillaryImageUtils::getKey, i -> i));
-    return keys.stream().map(nodeMap::get).collect(Collectors.toList());
+    return LongStream.of(keys).mapToObj(nodeMap::get).collect(Collectors.toList());
   }
 
   @Override

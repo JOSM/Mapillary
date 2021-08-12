@@ -842,8 +842,8 @@ public final class MapillaryMainDialog extends ToggleDialog
 
   @Override
   public void selectionChanged(SelectionChangeEvent event) {
-    INode newImage = MapillaryLayer.getInstance().getSelected().filter(MapillaryImageUtils.IS_IMAGE).findFirst()
-      .orElse(null);
+    INode newImage = MapillaryLayer.getInstance().getData().getSelectedNodes().stream()
+      .filter(MapillaryImageUtils.IS_IMAGE).findFirst().orElse(null);
     setImage(newImage);
   }
 

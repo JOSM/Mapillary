@@ -20,6 +20,8 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
+import org.openstreetmap.josm.data.osm.IPrimitive;
+import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.DetectionType;
@@ -28,7 +30,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.DetectionVerification;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
@@ -51,7 +52,7 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<T> {
    */
   private static final String CACHE_NAME_PREFIX = "mapillary:image:";
   /** Detections (on a per-image basis) */
-  private static final CacheAccess<String, List<ImageDetection<?>>> DETECTION_CACHE = JCSCacheManager
+  private static final CacheAccess<Long, List<ImageDetection<?>>> DETECTION_CACHE = JCSCacheManager
     .getCache(CACHE_NAME_PREFIX + DETECTIONS);
   private static final String PACKAGE_TRAFFIC_SIGNS = "trafficsign";
 
@@ -68,8 +69,7 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<T> {
    * @param listener The consumer to notify when the detections are downloaded
    * @return A ForkJoinTask (just in case it needs to be cancelled)
    */
-  public static ImageDetectionForkJoinTask getDetections(String key,
-    BiConsumer<String, List<ImageDetection<?>>> listener) {
+  public static ImageDetectionForkJoinTask getDetections(long key, BiConsumer<Long, List<ImageDetection<?>>> listener) {
     return (ImageDetectionForkJoinTask) MapillaryUtils.getForkJoinPool()
       .submit(new ImageDetectionForkJoinTask(key, listener));
   }
@@ -81,13 +81,13 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<T> {
    * @param wait {@code true} to wait for the detections
    * @return The image detections
    */
-  public static List<ImageDetection<?>> getDetections(String key, boolean wait) {
+  public static List<ImageDetection<?>> getDetections(long key, boolean wait) {
     if (wait) {
       final ImageDetectionForkJoinTask task = new ImageDetectionForkJoinTask(key, null);
       task.fork();
       return task.join();
     } else {
-      if (key != null && DETECTION_CACHE.get(key) != null) {
+      if (key != 0 && DETECTION_CACHE.get(key) != null) {
         return new ArrayList<>(DETECTION_CACHE.get(key));
       }
       return Collections.emptyList();
@@ -158,9 +158,9 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<T> {
    */
   public Color getColor() {
     if (MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).parallelStream()
-      .flatMap(PointObjectLayer::getSelected).map(MapillaryMapFeatureUtils::getId)
-      .flatMap(id -> ImageDetection.getDetections(id, false).stream()).filter(Objects::nonNull)
-      .anyMatch(id -> id.getKey().equals(this.getKey()))) {
+      .map(PointObjectLayer::getData).map(VectorDataSet::getSelected).flatMap(Collection::stream)
+      .mapToLong(IPrimitive::getId).mapToObj(id -> ImageDetection.getDetections(id, false)).flatMap(Collection::stream)
+      .filter(Objects::nonNull).anyMatch(id -> id.getKey().equals(this.getKey()))) {
       return isRejected() || Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()) ? Color.RED : Color.CYAN;
     }
     if (this.isTrafficSign())
@@ -207,11 +207,11 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<T> {
    * A ForkJoinTask that can be cancelled
    */
   public static class ImageDetectionForkJoinTask extends ForkJoinTask<List<ImageDetection<?>>> {
-    private final BiConsumer<String, List<ImageDetection<?>>> listener;
-    public final String key;
+    private final BiConsumer<Long, List<ImageDetection<?>>> listener;
+    public final long key;
     private List<ImageDetection<?>> results;
 
-    public ImageDetectionForkJoinTask(String key, BiConsumer<String, List<ImageDetection<?>>> listener) {
+    public ImageDetectionForkJoinTask(long key, BiConsumer<Long, List<ImageDetection<?>>> listener) {
       this.key = key;
       this.listener = listener;
     }
@@ -247,7 +247,7 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<T> {
      * @param key The image key
      * @return The detections
      */
-    private static List<ImageDetection<?>> getDetections(String key) {
+    private static List<ImageDetection<?>> getDetections(long key) {
       final String urlString = MapillaryURL.APIv4.getDetectionInformation(key);
       final String jsonString = Caches.META_DATA_CACHE.get(urlString, () -> {
         try {

@@ -18,8 +18,10 @@ import org.openstreetmap.josm.tools.Logging;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.json.Json;
+import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.JsonString;
 import javax.json.JsonValue;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -57,7 +59,7 @@ public final class MapillaryDownloader {
    * @param images The images to download
    * @return The downloaded images
    */
-  public static Map<String, Collection<VectorNode>> downloadImages(String... images) {
+  public static Map<String, Collection<VectorNode>> downloadImages(long... images) {
     return realDownloadImages(MapillaryLayer.getInstance().getData(), images);
   }
 
@@ -70,13 +72,12 @@ public final class MapillaryDownloader {
     final Map<VectorDataSet, List<VectorNode>> groups = Stream.of(images)
       .collect(Collectors.groupingBy(VectorNode::getDataSet));
     for (Map.Entry<VectorDataSet, List<VectorNode>> entry : groups.entrySet()) {
-      realDownloadImages(entry.getKey(),
-        entry.getValue().stream().map(MapillaryImageUtils::getKey).toArray(String[]::new));
+      realDownloadImages(entry.getKey(), entry.getValue().stream().mapToLong(MapillaryImageUtils::getKey).toArray());
     }
   }
 
   private static Map<String, Collection<VectorNode>> realDownloadImages(final VectorDataSet dataSet,
-    final String... images) {
+    final long... images) {
     if (images.length == 0) {
       return Collections.emptyMap();
     }
@@ -114,7 +115,16 @@ public final class MapillaryDownloader {
     final String dataString = "data";
     if (jsonObject.containsKey(dataString) && jsonObject.get(dataString).getValueType() == JsonValue.ValueType.ARRAY) {
       for (JsonObject entry : jsonObject.get(dataString).asJsonArray().getValuesAs(JsonObject.class)) {
-        final String entryUrl = MapillaryURL.APIv4.getImageInformation(entry.getString("id"));
+        final JsonValue idValue = entry.get("id");
+        final long id;
+        if (idValue.getValueType() == JsonValue.ValueType.STRING) {
+          id = Long.parseLong(((JsonString) idValue).getString());
+        } else if (idValue.getValueType() == JsonValue.ValueType.NUMBER) {
+          id = ((JsonNumber) idValue).longValue();
+        } else {
+          throw new IllegalArgumentException("id value not understood: " + jsonObject);
+        }
+        final String entryUrl = MapillaryURL.APIv4.getImageInformation(id);
         Caches.META_DATA_CACHE.getICacheAccess().put(entryUrl, entry.toString());
       }
     }

@@ -187,7 +187,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
         this.key = null;
         this.url = null;
       } else if (image.hasKey(type.getKey())) {
-        this.key = MapillaryImageUtils.getKey(image) + '.' + type.width;
+        this.key = Long.toString(image.getUniqueId()) + '.' + type.width;
         this.url = new URL(image.get(type.getKey()));
       } else {
         // Iterate through the keys, maybe there is another image url?

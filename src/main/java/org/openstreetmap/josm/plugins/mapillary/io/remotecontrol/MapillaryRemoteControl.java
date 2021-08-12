@@ -79,9 +79,10 @@ public class MapillaryRemoteControl extends RequestHandler.RawURLParseRequestHan
 
   @Override
   protected void handleRequest() throws RequestHandlerErrorException, RequestHandlerBadRequestException {
-    String[] mapillaryImages = Stream.of(images).filter(image -> image.startsWith(MAPILLARY_PREFIX))
-      .map(image -> image.substring(MAPILLARY_PREFIX.length())).toArray(String[]::new);
-    List<String> mapillarySequences = Stream.of(sequences).filter(sequence -> sequence.startsWith(MAPILLARY_PREFIX))
+    final long[] mapillaryImages = Stream.of(images).filter(image -> image.startsWith(MAPILLARY_PREFIX))
+      .map(image -> image.substring(MAPILLARY_PREFIX.length())).mapToLong(Long::parseLong).toArray();
+    final List<String> mapillarySequences = Stream.of(sequences)
+      .filter(sequence -> sequence.startsWith(MAPILLARY_PREFIX))
       .map(sequence -> sequence.substring(MAPILLARY_PREFIX.length())).collect(Collectors.toCollection(ArrayList::new));
     if (mapillaryImages.length == 0 && mapillarySequences.isEmpty()) {
       throw new RequestHandlerBadRequestException(tr("No known image provider used"));
@@ -97,7 +98,8 @@ public class MapillaryRemoteControl extends RequestHandler.RawURLParseRequestHan
       List<INode> addedImages = images.entrySet().stream().flatMap(entry -> entry.getValue().stream())
         .collect(Collectors.toList());
       if (addedImages.size() == 1) {
-        GuiHelper.runInEDTAndWait(() -> MapillaryLayer.getInstance().setSelected(addedImages.iterator().next()));
+        GuiHelper
+          .runInEDTAndWait(() -> MapillaryLayer.getInstance().getData().setSelected(addedImages.iterator().next()));
         // TODO zoom to selected image?
       }
     }

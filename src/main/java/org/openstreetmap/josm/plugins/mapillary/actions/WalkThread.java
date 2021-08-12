@@ -96,7 +96,7 @@ public class WalkThread extends Thread implements Serializable, VectorDataSelect
           && selectedImage.getReferrers().stream().filter(IWay.class::isInstance).count() == 1) {
           final INode nextSelectedImg = MapillarySequenceUtils.getNextOrPrevious(selectedImage, this.goForward);
           if (nextSelectedImg != null && nextSelectedImg.isVisible()) {
-            this.layer.setSelected(nextSelectedImg);
+            this.layer.getData().setSelected(nextSelectedImg);
           }
         }
       }

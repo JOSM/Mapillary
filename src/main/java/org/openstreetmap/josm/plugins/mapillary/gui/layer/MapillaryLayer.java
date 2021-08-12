@@ -32,7 +32,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Nonnull;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -102,9 +101,8 @@ import org.openstreetmap.josm.tools.Logging;
  *
  * @author nokutu
  */
-public final class MapillaryLayer extends MVTLayer
-  implements ActiveLayerChangeListener, LayerChangeListener, UploadHook, MapillaryVectorTileWorkarounds,
-  IDataSelectionListener<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> {
+public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeListener, LayerChangeListener,
+  UploadHook, IDataSelectionListener<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> {
 
   /** The radius of the image marker */
   private static final int IMG_MARKER_RADIUS = 7;
@@ -151,10 +149,6 @@ public final class MapillaryLayer extends MVTLayer
 
   /** {@code true} if this layer is destroyed */
   private boolean destroyed;
-
-  /** Selected node ids */
-  @Nonnull
-  private List<String> selected = Collections.emptyList();
 
   private static AlphaComposite fadeComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
     MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
@@ -305,7 +299,7 @@ public final class MapillaryLayer extends MVTLayer
       MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
 
     // Draw the blue and red line
-    final INode selectedImage = this.getSelected().findFirst().orElse(null);
+    final INode selectedImage = this.getData().getSelectedNodes().stream().findFirst().orElse(null);
     synchronized (this) {
       for (int i = 0; i < this.nearestImages.size(); i++) {
         if (i % 2 == 0) {
@@ -348,9 +342,8 @@ public final class MapillaryLayer extends MVTLayer
     }
     // Paint selected images last. Not particularly worried about painting too much, since most people don't select
     // thousands of images.
-    for (INode imageAbs : this.getSelected().collect(Collectors.toList())) {
-      if (imageAbs.isVisible() && mv != null && mv.contains(mv.getPoint(imageAbs.getCoor()))
-        && this.selected.contains(MapillaryImageUtils.getKey(imageAbs))) {
+    for (INode imageAbs : this.getData().getSelectedNodes()) {
+      if (imageAbs.isVisible() && mv != null && mv.contains(mv.getPoint(imageAbs.getCoor()))) {
         drawImageMarker(g, imageAbs);
       }
     }
@@ -404,9 +397,9 @@ public final class MapillaryLayer extends MVTLayer
       Logging.warn("An image is not painted, because it is null or has no LatLon!");
       return;
     }
-    final INode selectedImg = this.getSelected().findFirst().orElse(null);
+    final INode selectedImg = this.getData().getSelectedNodes().stream().findFirst().orElse(null);
     if (!IMAGE_CA_PAINT_RANGE.contains(MainApplication.getMap().mapView.getDist100Pixel()) && !img.equals(selectedImg)
-      && this.getSelected().noneMatch(img::equals)
+      && !this.getData().getSelectedNodes().contains(img)
       && (selectedImg == null || (MapillaryImageUtils.getSequence(img) != null && !Objects
         .equals(MapillaryImageUtils.getSequenceKey(img), MapillaryImageUtils.getSequenceKey(selectedImg))))) {
       Logging.trace("An image was not painted due to a high zoom level, and not being the selected image/sequence");
@@ -421,7 +414,7 @@ public final class MapillaryLayer extends MVTLayer
     // Determine colors
     final Color directionC;
     final Image i;
-    if (selectedImg != null && this.getSelected().anyMatch(img::equals)) {
+    if (selectedImg != null && this.getData().getSelectedNodes().contains(img)) {
       i = SELECTED_IMAGE.getImage();
       directionC = MapillaryColorScheme.SEQ_HIGHLIGHTED_CA;
     } else if (MapillaryImageUtils.getSequenceKey(selectedImg) != null
@@ -463,7 +456,7 @@ public final class MapillaryLayer extends MVTLayer
 
     // Paint highlight for selected or highlighted images
     if (getData().getHighlighted().contains(img.getPrimitiveId())
-      || (selectedImg != null && this.getSelected().anyMatch(img::equals))) {
+      || (selectedImg != null && this.getData().getSelectedNodes().contains(img))) {
       g.setColor(Color.WHITE);
       g.setStroke(new BasicStroke(2));
       g.drawOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
@@ -678,7 +671,7 @@ public final class MapillaryLayer extends MVTLayer
     if (MapillaryMainDialog.hasInstance()) {
       selected = MapillaryMainDialog.getInstance().getImage();
     } else {
-      selected = this.getSelected().findFirst().orElse(null);
+      selected = this.getData().getSelectedNodes().stream().findFirst().orElse(null);
     }
     INode[] newNearestImages;
     if (MapillaryImageUtils.getKey(selected) != null) {
@@ -752,10 +745,14 @@ public final class MapillaryLayer extends MVTLayer
 
   @Override
   public void finishedLoading(final MVTTile tile) {
+    tile.getData().getAllPrimitives().stream().filter(MapillaryImageUtils.IS_IMAGE)
+      .forEach(primitive -> primitive.setOsmId(MapillaryImageUtils.getKey(primitive), 1));
+    // We need to ensure that the primitives are reset
+    final Set<VectorPrimitive> primitives = new HashSet<>(tile.getData().getAllPrimitives());
+    tile.getData().getPrimitivesMap().clear();
+    primitives.forEach(primitive -> tile.getData().getPrimitivesMap().put(primitive.getPrimitiveId(), primitive));
     super.finishedLoading(tile);
     this.tileListeners.fireEvent(l -> l.finishedLoading(tile));
-    this.setNodeIds(MapillaryImageUtils.ImageProperties.ID.toString(),
-      tile.getData().getAllPrimitives().stream().filter(VectorNode.class::isInstance).map(VectorNode.class::cast));
   }
 
   /**
@@ -769,32 +766,6 @@ public final class MapillaryLayer extends MVTLayer
 
   public void removeTileDownloadListener(final MVTTile.TileListener tileListener) {
     this.tileListeners.removeListener(tileListener);
-  }
-
-  /**
-   * Set the selected nodes. This is needed since Mapillary tile entities only have unique ids within a tile (this is
-   * arguable a spec violation,
-   * depending upon how it is read).
-   *
-   * @see #getSelected()
-   * @param <N> The node type
-   * @param nodes The nodes that are actually selected.
-   */
-  public <N extends INode> void setSelected(Collection<N> nodes) {
-    this.selected = nodes.stream().map(MapillaryImageUtils::getKey).collect(Collectors.toList());
-    this.getData().setSelected(nodes);
-  }
-
-  /**
-   * Get the selected images.
-   *
-   * @see #setSelected for an explanation why this is necessary.
-   * @return The selected images.
-   */
-  @Override
-  public Stream<INode> getSelected() {
-    return this.getData().getSelectedNodes().stream().map(INode.class::cast)
-      .filter(node -> this.selected.contains(MapillaryImageUtils.getKey(node)));
   }
 
   private static class NearestImgToTargetComparator implements Comparator<INode> {

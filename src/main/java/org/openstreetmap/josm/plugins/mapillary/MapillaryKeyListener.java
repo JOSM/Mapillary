@@ -123,30 +123,29 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
     @Override
     public void actionPerformed(ActionEvent e) {
       VectorDataSet data = MapillaryLayer.getInstance().getData();
-      Map<String, VectorNode> map = data.getNodes().stream().filter(image -> MapillaryImageUtils.getKey(image) != null)
+      Map<Long, VectorNode> map = data.getNodes().stream().filter(image -> MapillaryImageUtils.getKey(image) != null)
         .collect(Collectors.toMap(MapillaryImageUtils::getKey, i -> i));
-      Collection<String> missingImages = Stream.of(this.imageKey.split(";", 0)).filter(i -> !map.containsKey(i))
-        .collect(Collectors.toList());
+      long[] missingImages = Stream.of(this.imageKey.split(";", 0)).mapToLong(Long::parseLong)
+        .filter(i -> !map.containsKey(i)).toArray();
       map.clear(); // deallocate map
-      if (!missingImages.isEmpty()) {
-        MapillaryDownloader.downloadSequences(
-          MapillaryDownloader.downloadImages(missingImages.toArray(new String[0])).keySet().toArray(new String[0]));
+      if (missingImages.length != 0) {
+        MapillaryDownloader
+          .downloadSequences(MapillaryDownloader.downloadImages(missingImages).keySet().toArray(new String[0]));
       }
-      Map<String, VectorNode> newMap = data.getNodes().stream()
-        .filter(image -> MapillaryImageUtils.getKey(image) != null)
+      Map<Long, VectorNode> newMap = data.getNodes().stream().filter(image -> MapillaryImageUtils.getKey(image) != null)
         .collect(Collectors.toMap(MapillaryImageUtils::getKey, i -> i));
-      GuiHelper.runInEDT(() -> MapillaryLayer.getInstance()
+      GuiHelper.runInEDT(() -> MapillaryLayer.getInstance().getData()
         .setSelected(Stream.of(this.imageKey.split(";", 0)).map(newMap::get).collect(Collectors.toSet())));
     }
   }
 
   static class MapillaryDetectionKeyAction extends AbstractAction {
     private static final long serialVersionUID = -4129937925620244252L;
-    private final String[] detection;
+    private final long[] detection;
 
     MapillaryDetectionKeyAction(String detection) {
       new ImageProvider("mapillary-logo").getResource().attachImageIcon(this, true);
-      this.detection = detection.split(";", 0);
+      this.detection = Stream.of(detection.split(";", 0)).mapToLong(Long::valueOf).toArray();
       putValue(NAME, tr("Select Mapillary Detection ({0})", detection));
       putValue(SHORT_DESCRIPTION, tr("Select the Mapillary Detection {0}", detection));
     }
@@ -156,17 +155,15 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
       final VectorDataSet data = MapillaryLayer.getInstance().getData();
       final Collection<IPrimitive> detections = MainApplication.getLayerManager()
         .getLayersOfType(PointObjectLayer.class).stream().map(PointObjectLayer::getData)
-        .flatMap(d -> d.allNonDeletedPrimitives().stream()).filter(p -> MapillaryMapFeatureUtils.getId(p) != null)
-        .filter(p -> Stream.of(this.detection).anyMatch(d -> d.equals(MapillaryMapFeatureUtils.getId(p))))
-        .collect(Collectors.toSet());
+        .flatMap(d -> d.allNonDeletedPrimitives().stream()).filter(p -> p.getId() != 0)
+        .filter(p -> LongStream.of(this.detection).anyMatch(d -> d == p.getId())).collect(Collectors.toSet());
       final long[] images = detections.stream()
         .flatMapToLong(d -> LongStream.of(MapillaryMapFeatureUtils.getImageIds(d))).distinct().toArray();
       final long[] missingImages = LongStream.of(images)
         .filter(i -> data.getPrimitiveById(i, OsmPrimitiveType.NODE) == null).toArray();
       if (missingImages.length != 0) {
-        MapillaryDownloader.downloadSequences(MapillaryDownloader
-          .downloadImages(LongStream.of(missingImages).mapToObj(Long::toString).toArray(String[]::new)).keySet()
-          .toArray(new String[0]));
+        MapillaryDownloader
+          .downloadSequences(MapillaryDownloader.downloadImages(missingImages).keySet().toArray(new String[0]));
       }
       Map<OsmData<?, ?, ?, ?>, List<IPrimitive>> selections = detections.stream()
         .collect(Collectors.groupingBy(IPrimitive::getDataSet));

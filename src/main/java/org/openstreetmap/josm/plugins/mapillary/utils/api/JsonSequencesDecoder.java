@@ -1,7 +1,9 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
+import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IWay;
+import org.openstreetmap.josm.data.osm.OsmPrimitiveType;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
@@ -21,6 +23,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 /**
  * Decodes the JSON returned by {@link MapillaryURL.APIv4} into Java objects.
@@ -51,20 +54,20 @@ public final class JsonSequencesDecoder {
       Logging.error("Mapillary: The sequence endpoint just returns an array of picture ids");
       return Collections.emptyList();
     }
-    final List<String> imageIds = ((JsonArray) json)
+    final long[] imageIds = ((JsonArray) json)
       .getValuesAs(value -> value instanceof JsonObject ? (JsonObject) value : null).stream().filter(Objects::nonNull)
       .filter(image -> image.containsKey("id")).map(image -> image.get("id"))
       .filter(jsonObject -> jsonObject instanceof JsonString || jsonObject instanceof JsonNumber)
-      .map(value -> value instanceof JsonString ? ((JsonString) value).getString() : ((JsonNumber) value).toString())
-      .collect(Collectors.toList());
-    final Collection<String> currentImageIds = MapillaryLayer.getInstance().getData().getNodes().stream()
-      .map(MapillaryImageUtils::getKey).filter(imageIds::contains).collect(Collectors.toSet());
-    MapillaryDownloader
-      .downloadImages(imageIds.stream().filter(id -> !currentImageIds.contains(id)).toArray(String[]::new));
-    final List<VectorNode> nodes = MapillaryLayer.getInstance().getData().getNodes().stream()
-      .filter(node -> imageIds.contains(MapillaryImageUtils.getKey(node)))
-      .sorted(Comparator.comparingInt(node -> imageIds.indexOf(MapillaryImageUtils.getKey(node))))
-      .collect(Collectors.toList());
+      .mapToLong(value -> value instanceof JsonString ? Long.parseLong(((JsonString) value).getString())
+        : ((JsonNumber) value).longValue())
+      .distinct().toArray();
+    final long[] currentImageIds = MapillaryLayer.getInstance().getData().getNodes().stream()
+      .mapToLong(IPrimitive::getUniqueId).filter(i -> LongStream.of(imageIds).anyMatch(l -> i == l)).toArray();
+    MapillaryDownloader.downloadImages(
+      LongStream.of(imageIds).filter(id -> LongStream.of(currentImageIds).noneMatch(i -> i == id)).toArray());
+    final List<VectorNode> nodes = LongStream.of(imageIds)
+      .mapToObj(id -> MapillaryLayer.getInstance().getData().getPrimitiveById(id, OsmPrimitiveType.NODE))
+      .filter(VectorNode.class::isInstance).map(VectorNode.class::cast).collect(Collectors.toList());
     if (nodes.isEmpty()) {
       Logging.error("Mapillary: The sequence does not have any nodes");
       return Collections.emptyList();

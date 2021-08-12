@@ -13,7 +13,6 @@ import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.imagery.MVTLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryVectorTileWorkarounds;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.Destroyable;
@@ -53,14 +52,14 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
         .collect(Collectors.toList());
       if (!nodes.isEmpty()) {
         // This is needed since Mapillary ids are only unique within a tile.
-        ((MapillaryVectorTileWorkarounds) layer).setSelected(nodes);
+        layer.getData().setSelected(nodes);
         if (layer instanceof MapillaryLayer && nodes.size() == 1 && MapillaryMainDialog.hasInstance()) {
           SwingUtilities.invokeLater(() -> MapillaryMainDialog.getInstance().setImage(nodes.iterator().next()));
         }
         continue;
       } else if (layer instanceof MapillaryLayer) {
         if (e.getClickCount() >= MapillaryProperties.DESELECT_CLICK_COUNT.get()) {
-          ((MapillaryLayer) layer).setSelected(Collections.emptyList());
+          layer.getData().clearSelection();
           layer.getData().clearSelection();
         }
         continue;

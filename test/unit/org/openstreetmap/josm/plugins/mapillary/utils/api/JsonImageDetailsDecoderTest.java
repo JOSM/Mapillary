@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.time.Instant;
 import java.util.Collection;
-import java.util.stream.Stream;
+import java.util.stream.LongStream;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,14 +47,14 @@ public class JsonImageDetailsDecoderTest {
   @ValueSource(booleans = { true, false })
   void testDecodeImageInfos(boolean computedLocations) throws IOException {
     MapillaryProperties.USE_COMPUTED_LOCATIONS.put(computedLocations);
-    final String[] images = new String[] { "135511895288847" };
+    final long[] images = new long[] { 135511895288847L };
 
     final VectorDataSet data = new VectorDataMock();
-    Stream.of(images)
-      .map(image -> createDownloadedImage(image, new LatLon(39.068354912098, -108.57081597085), 0, false))
+    LongStream.of(images)
+      .mapToObj(image -> createDownloadedImage(image, new LatLon(39.068354912098, -108.57081597085), 0, false))
       .forEach(data::addPrimitive);
 
-    for (String image : images) {
+    for (long image : images) {
       final URL url = new URL(
         MapillaryURL.APIv4.getImageInformation(image, MapillaryImageUtils.ImageProperties.values()));
       JsonDecoder.decodeData(OAuthUtils.getWithHeader(url),
@@ -87,13 +87,14 @@ public class JsonImageDetailsDecoderTest {
   @Test
   @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.APPLICATION_REQUEST_LIMIT_REACHED)
   void testDecodeImageInfosWithFetchErrorsApplicationRequestLimitReached() throws IOException {
-    final String[] images = new String[] { "148137757289079", "311799370533334", "4235112816526838", "464249047982277",
-      "308609047601518", "135511895288847", "311681117131457", };
+    final long[] images = new long[] { 148137757289079L, 311799370533334L, 4235112816526838L, 464249047982277L,
+      308609047601518L, 135511895288847L, 311681117131457L, };
 
     final VectorDataSet data = new VectorDataMock();
-    Stream.of(images).map(image -> createDownloadedImage(image, LatLon.ZERO, 0, false)).forEach(data::addPrimitive);
+    LongStream.of(images).mapToObj(image -> createDownloadedImage(image, LatLon.ZERO, 0, false))
+      .forEach(data::addPrimitive);
 
-    for (String image : images) {
+    for (long image : images) {
       final URL url = new URL(
         MapillaryURL.APIv4.getImageInformation(image, MapillaryImageUtils.ImageProperties.values()));
       assertDoesNotThrow(() -> JsonDecoder.decodeData(OAuthUtils.getWithHeader(url),
@@ -102,8 +103,13 @@ public class JsonImageDetailsDecoderTest {
   }
 
   public static VectorNode createDownloadedImage(String key, LatLon latLon, double cameraAngle, boolean pano) {
+    return createDownloadedImage(Long.parseLong(key), latLon, cameraAngle, pano);
+  }
+
+  public static VectorNode createDownloadedImage(long key, LatLon latLon, double cameraAngle, boolean pano) {
     VectorNode image = new VectorNode("test");
-    image.put(MapillaryImageUtils.ImageProperties.ID.toString(), key);
+    image.setOsmId(key, 1);
+    image.put(MapillaryImageUtils.ImageProperties.ID.toString(), Long.toString(key));
     image.setCoor(latLon);
     image.put(MapillaryImageUtils.ImageProperties.COMPASS_ANGLE.toString(), Double.toString(cameraAngle));
     image.put(MapillaryImageUtils.ImageProperties.IS_PANO.toString(),

@@ -213,7 +213,7 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
      */
     final Predicate<INode> isSelected;
     if (MapillaryLayer.hasInstance()) {
-      isSelected = node -> MapillaryLayer.getInstance().getSelected().anyMatch(node::equals);
+      isSelected = node -> MapillaryLayer.getInstance().getData().getSelected().contains(node);
     } else {
       isSelected = node -> true;
     }
@@ -231,7 +231,7 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
       hasKey.test(newImage) ? MapillaryImageUtils.getKey(newImage) : "‹none›"));
 
     imgKeyValue.setEnabled(newImage != null);
-    final String newImageKey = hasKey.test(newImage) ? MapillaryImageUtils.getKey(newImage) : null;
+    final String newImageKey = newImage != null ? Long.toString(newImage.getId()) : null;
     if (newImageKey != null) {
       final URL newImageUrl = MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.get()
         ? MapillaryURL.MainWebsite.blurEditImage(newImageKey)

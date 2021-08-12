@@ -51,7 +51,7 @@ class JsonMapObjectDecoderTest {
   @Test
   void testDecodeMapObject() throws IOException {
     final JsonObject jsonObject = OAuthUtils.getWithHeader(new URL(MapillaryURL.APIv4
-      .getMapFeatureInformation("496980935069177", MapillaryMapFeatureUtils.MapFeatureProperties.values())));
+      .getMapFeatureInformation(496980935069177L, MapillaryMapFeatureUtils.MapFeatureProperties.values())));
     final VectorNode node1 = new VectorNode("test");
     Collection<VectorPrimitive> exampleMapObjects = JsonDecoder.decodeData(jsonObject,
       json -> JsonMapObjectDecoder.decodeMapFeatureObject(json, node1));
@@ -65,7 +65,7 @@ class JsonMapObjectDecoderTest {
     assertEquals(1_503_523_954L, MapillaryMapFeatureUtils.getLastSeenAt(node1).getEpochSecond()); // 2017-08-23T21:32:34
                                                                                                   // UTC
     assertEquals("complementary--both-directions--g2", MapillaryMapFeatureUtils.getValue(node1));
-    assertEquals("496980935069177", MapillaryMapFeatureUtils.getId(node1));
+    assertEquals(496980935069177L, node1.getUniqueId());
     assertEquals(new LatLon(41.341166490122, -83.417193328459), node1.getCoor());
 
     final long[] images = MapillaryMapFeatureUtils.getImageIds(node1);
@@ -80,7 +80,7 @@ class JsonMapObjectDecoderTest {
   @Test
   void testNoOverwriteFromInitialVector() throws IOException {
     final JsonObject jsonObject = OAuthUtils.getWithHeader(new URL(MapillaryURL.APIv4
-      .getMapFeatureInformation("496980935069177", MapillaryMapFeatureUtils.MapFeatureProperties.values())));
+      .getMapFeatureInformation(496980935069177L, MapillaryMapFeatureUtils.MapFeatureProperties.values())));
     final VectorNode node1 = new VectorNode("test");
     node1.setCoor(new LatLon(12, 2));
     node1.put(MapillaryMapFeatureUtils.MapFeatureProperties.FIRST_SEEN_AT.toString(), Long.toString(1_000_000_000L));

@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import org.openstreetmap.josm.data.Bounds;
@@ -77,7 +78,7 @@ public final class MapillaryURL {
      * @param image The object to get detections for
      * @return The URL to get detections
      */
-    public static String getDetectionInformation(String image) {
+    public static String getDetectionInformation(long image) {
       return baseMetaDataUrl + image + "/detections"
         + queryString(Collections.singletonMap("fields", "value,created_at,image,geometry"));
     }
@@ -101,12 +102,12 @@ public final class MapillaryURL {
      * @return A URL to get for more image information (default properties ONLY)
      */
     @Nonnull
-    public static String getImageInformation(String[] images) {
+    public static String getImageInformation(long[] images) {
       if (images.length > 1) {
         Map<String, String> queryFields = new HashMap<>(2);
         queryFields.put("fields", Stream.of(getDefaultImageInformation()).map(MapillaryImageUtils.ImageProperties::name)
           .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(",")));
-        queryFields.put("image_ids", String.join(",", images));
+        queryFields.put("image_ids", LongStream.of(images).mapToObj(Long::toString).collect(Collectors.joining(",")));
         return baseMetaDataUrl + "images" + queryString(queryFields);
       }
       return getImageInformation(images[0]);
@@ -122,8 +123,7 @@ public final class MapillaryURL {
      * @return A URL to get for more image information
      */
     @Nonnull
-    public static String getImageInformation(@Nonnull String image,
-      @Nullable MapillaryImageUtils.ImageProperties... properties) {
+    public static String getImageInformation(long image, @Nullable MapillaryImageUtils.ImageProperties... properties) {
       final MapillaryImageUtils.ImageProperties[] imageProperties;
       if (properties == null || properties.length == 0) {
         return getImageInformation(image, getDefaultImageInformation());
@@ -168,7 +168,7 @@ public final class MapillaryURL {
      * @param properties The properties to get
      * @return The URL to get additional information with
      */
-    public static String getMapFeatureInformation(@Nonnull final String id,
+    public static String getMapFeatureInformation(final long id,
       @Nonnull final MapillaryMapFeatureUtils.MapFeatureProperties... properties) {
       return baseMetaDataUrl + id + queryString(Collections.singletonMap("fields",
         Stream.of(properties).map(Object::toString).collect(Collectors.joining(","))));
