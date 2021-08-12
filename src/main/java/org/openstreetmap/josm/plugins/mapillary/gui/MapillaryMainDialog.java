@@ -129,7 +129,6 @@ public final class MapillaryMainDialog extends ToggleDialog
   public final MapillaryImageDisplay imageViewer = new MapillaryImageDisplay();
 
   private MapillaryCache imageCache;
-  private MapillaryCache thumbnailCache;
 
   private final ShowDetectionOutlinesAction showDetectionOutlinesAction = new ShowDetectionOutlinesAction();
   private final ShowSignDetectionsAction showSignDetectionsAction = new ShowSignDetectionsAction();
@@ -252,13 +251,14 @@ public final class MapillaryMainDialog extends ToggleDialog
     public void updateEnabledState() {
       INode image = MapillaryMainDialog.getInstance().getImage();
       ImageDetection<?> detection = getDetection();
-      if (MapillaryImageUtils.getKey(image) != null || detection == null) {
+      if (MapillaryImageUtils.getKey(image) != 0 || detection == null) {
         this.setEnabled(false);
       } else {
-        if (this.type != detection.getApprovalType())
-          this.setEnabled(MapillaryImageUtils.getKey(image).equals(detection.getImageKey()));
-        else
+        if (this.type != detection.getApprovalType()) {
+          this.setEnabled(MapillaryImageUtils.getKey(image) == detection.getImageKey());
+        } else {
           this.setEnabled(false);
+        }
       }
     }
 
@@ -476,7 +476,7 @@ public final class MapillaryMainDialog extends ToggleDialog
 
       this.updateButtonStates(currentImage);
 
-      if (MapillaryImageUtils.getKey(currentImage) != null) {
+      if (MapillaryImageUtils.getKey(currentImage) != 0) {
         if (currentImage.getNumKeys() <= CacheUtils.MAPILLARY_DEFAULT_KEY_LENGTH) {
           MainApplication.worker.submit(() -> {
             MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(currentImage));
@@ -499,7 +499,7 @@ public final class MapillaryMainDialog extends ToggleDialog
 
         ForkJoinPool pool = MapillaryUtils.getForkJoinPool();
         if (this.futureDetections != null && !this.futureDetections.isDone()
-          && !MapillaryImageUtils.getKey(image).equals(this.futureDetections.key)) {
+          && MapillaryImageUtils.getKey(image) != this.futureDetections.key) {
           this.futureDetections.cancel(false);
         }
         this.futureDetections = ImageDetection.getDetections(MapillaryImageUtils.getKey(this.image),
@@ -669,7 +669,7 @@ public final class MapillaryMainDialog extends ToggleDialog
       SwingUtilities.invokeLater(this::updateTitle);
     } else if (this.image != null) {
       StringBuilder title = new StringBuilder(tr(BASE_TITLE));
-      if (MapillaryImageUtils.getKey(this.image) != null) {
+      if (MapillaryImageUtils.getKey(this.image) != 0) {
         INode mapillaryImage = this.image;
         OrganizationRecord organizationRecord = MapillaryImageUtils.getOrganization(mapillaryImage);
         if (organizationRecord != OrganizationRecord.NULL_RECORD) {
@@ -805,8 +805,7 @@ public final class MapillaryMainDialog extends ToggleDialog
   }
 
   private void realLoadingFinished(final CacheEntry data) {
-    if ((imageCache == null || data.equals(imageCache.get()) || thumbnailCache == null
-      || data.equals(thumbnailCache.get()))) {
+    if (imageCache == null || data.equals(imageCache.get())) {
       final INode mai = getImage();
       setDisplayImage(() -> {
         try {
@@ -819,8 +818,8 @@ public final class MapillaryMainDialog extends ToggleDialog
       }, ImageDetection.getDetections(MapillaryImageUtils.getKey(mai), false),
         MapillaryImageUtils.IS_PANORAMIC.test(mai));
       if (mai != null) {
-        ImageDetection.getDetections(MapillaryImageUtils.getKey(mai), (key, detections) -> this
-          .updateDetections(this.imageCache != null ? this.imageCache : this.thumbnailCache, mai, detections));
+        ImageDetection.getDetections(MapillaryImageUtils.getKey(mai),
+          (key, detections) -> this.updateDetections(this.imageCache, mai, detections));
       }
     }
   }

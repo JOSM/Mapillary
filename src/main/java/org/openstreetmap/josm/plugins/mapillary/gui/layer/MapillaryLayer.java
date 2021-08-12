@@ -559,7 +559,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
   @Override
   public Object getInfoComponent() {
     Map<String, List<VectorNode>> nodeCollection = getData().getNodes().stream()
-      .filter(node -> MapillaryImageUtils.getKey(node) != null)
+      .filter(node -> MapillaryImageUtils.getKey(node) != 0)
       .collect(Collectors.groupingBy(MapillaryImageUtils::getSequenceKey));
     IntSummaryStatistics seqSizeStats = nodeCollection.values().stream().mapToInt(List::size).summaryStatistics();
     final long numTotal = seqSizeStats.getSum();
@@ -674,7 +674,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
       selected = this.getData().getSelectedNodes().stream().findFirst().orElse(null);
     }
     INode[] newNearestImages;
-    if (MapillaryImageUtils.getKey(selected) != null) {
+    if (MapillaryImageUtils.getKey(selected) != 0) {
       newNearestImages = getNearestImagesFromDifferentSequences(selected, 2);
     } else {
       newNearestImages = new INode[0];
@@ -746,7 +746,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
   @Override
   public void finishedLoading(final MVTTile tile) {
     tile.getData().getAllPrimitives().stream().filter(MapillaryImageUtils.IS_IMAGE)
-      .forEach(primitive -> primitive.setOsmId(MapillaryImageUtils.getKey(primitive), 1));
+      .forEach(primitive -> primitive.setOsmId(MapillaryImageUtils.getKey(primitive, true), 1));
     // We need to ensure that the primitives are reset
     final Set<VectorPrimitive> primitives = new HashSet<>(tile.getData().getAllPrimitives());
     tile.getData().getPrimitivesMap().clear();

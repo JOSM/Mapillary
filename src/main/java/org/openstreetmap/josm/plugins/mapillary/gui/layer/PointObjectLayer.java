@@ -92,6 +92,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilter
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddEventSource;
 import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddListener;
+import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
@@ -358,34 +359,11 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
   @Override
   public void selectionChanged(
     SelectionChangeEvent<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> event) {
-    Collection<VectorPrimitive> selection = event.getSelection();
-    VectorPrimitive prim = selection.parallelStream()
-      .filter(p -> !p.isDeleted() && MapillaryMapFeatureUtils.getImageIds(p).length != 0).findFirst().orElse(null);
-    this.displayedWindows.entrySet().parallelStream().filter(e -> !selection.contains(e.getKey()))
-      .forEach(e -> realHideWindow(e.getValue()));
-    Map<IPrimitive, JWindow> temporaryWindows = this.displayedWindows.entrySet().parallelStream()
-      .filter(e -> selection.contains(e.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    this.displayedWindows.clear();
-    this.displayedWindows.putAll(temporaryWindows);
-
-    if (prim != null && (MapillaryLayer.hasInstance() || Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()))) {
-      VectorDataSet mapillaryData = MapillaryLayer.getInstance().getData();
-      Collection<INode> images = LongStream.of(MapillaryMapFeatureUtils.getImageIds(prim))
-        .mapToObj(image -> mapillaryData.getPrimitiveById(image, OsmPrimitiveType.NODE)).filter(INode.class::isInstance)
-        .map(INode.class::cast).collect(Collectors.toList());
-      if (!MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {
-        MapillaryDownloadAction.addLayer();
-      }
-      INode selectedImage = mapillaryData.getSelectedNodes().stream().findFirst().orElse(null);
-      INode toSelect = images.isEmpty() ? null : getBestImage(prim, images);
-      boolean inDetections = selectedImage != null && images.contains(selectedImage);
-
-      if (!inDetections && (selectedImage == null || !selectedImage.equals(toSelect))) {
-        mapillaryData.setSelected(toSelect);
-      }
+    if (this.getData().equals(event.getSource())) {
+      this.selectedMapFeatureChanged(event);
+    } else if (MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().getData().equals(event.getSource())) {
+      this.selectedImageChanged(event);
     }
-    GuiHelper.runInEDT(() -> MapillaryMainDialog.getInstance().imageViewer.repaint());
-    GuiHelper.runInEDT(() -> MapillaryFilterDialog.getInstance().updateFilteredImages());
   }
 
   /**
@@ -586,28 +564,56 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
     this.getData().setZoom(this.getZoomLevel());
   }
 
-  /*
-   * TODO finish porting
-   * @Override
-   * public void selectedImageChanged(INode oldImage, INode newImage) {
-   * final VectorDataSet data = this.getData();
-   * Collection<VectorPrimitive> currentSelection = data.getSelected();
-   * if (newImage.hasKey(MapillaryKeys.DETECTIONS)) {
-   * String key = newImage.hasKey(MapillaryKeys.KEY) ? newImage.get(MapillaryKeys.KEY) : null;
-   * Collection<IPrimitive> nodes = newImage.get(MapillaryKeys.DETECTIONS).getDetections(false).parallelStream()
-   * .map(ImageDetection::getKey).flatMap(
-   * // Create a new ArrayList to avoid a ConcurrentModificationException
-   * d -> new ArrayList<>(data.getNodes()).parallelStream()
-   * .filter(n -> n.hasKey(MapillaryKeys.DETECTIONS) && n.get(MapillaryKeys.DETECTIONS).contains(d)))
-   * .collect(Collectors.toList());
-   * if (!nodes.containsAll(currentSelection) && !newImageDetections.getDetections().isEmpty()
-   * && !Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()) && currentSelection.stream()
-   * .filter(i -> i.hasKey(MapillaryKeys.DETECTIONS)).anyMatch(i -> !i.get(MapillaryKeys.DETECTIONS).contains(key))) {
-   * data.setSelected(nodes);
-   * }
-   * } else {
-   * data.clearSelection();
-   * }
-   * }
-   */
+  private void selectedMapFeatureChanged(
+    SelectionChangeEvent<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> event) {
+    Collection<VectorPrimitive> selection = event.getSelection();
+    VectorPrimitive prim = selection.parallelStream()
+      .filter(p -> !p.isDeleted() && MapillaryMapFeatureUtils.getImageIds(p).length != 0).findFirst().orElse(null);
+    this.displayedWindows.entrySet().parallelStream().filter(e -> !selection.contains(e.getKey()))
+      .forEach(e -> realHideWindow(e.getValue()));
+    Map<IPrimitive, JWindow> temporaryWindows = this.displayedWindows.entrySet().parallelStream()
+      .filter(e -> selection.contains(e.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    this.displayedWindows.clear();
+    this.displayedWindows.putAll(temporaryWindows);
+
+    if (prim != null && (MapillaryLayer.hasInstance() || Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()))) {
+      VectorDataSet mapillaryData = MapillaryLayer.getInstance().getData();
+      Collection<INode> images = LongStream.of(MapillaryMapFeatureUtils.getImageIds(prim))
+        .mapToObj(image -> mapillaryData.getPrimitiveById(image, OsmPrimitiveType.NODE)).filter(INode.class::isInstance)
+        .map(INode.class::cast).collect(Collectors.toList());
+      if (!MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {
+        MapillaryDownloadAction.addLayer();
+      }
+      INode selectedImage = mapillaryData.getSelectedNodes().stream().findFirst().orElse(null);
+      INode toSelect = images.isEmpty() ? null : getBestImage(prim, images);
+      boolean inDetections = selectedImage != null && images.contains(selectedImage);
+
+      if (!inDetections && (selectedImage == null || !selectedImage.equals(toSelect))) {
+        mapillaryData.setSelected(toSelect);
+      }
+    }
+    GuiHelper.runInEDT(() -> MapillaryMainDialog.getInstance().imageViewer.repaint());
+    GuiHelper.runInEDT(() -> MapillaryFilterDialog.getInstance().updateFilteredImages());
+  }
+
+  private void selectedImageChanged(
+    SelectionChangeEvent<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> event) {
+    final VectorDataSet data = this.getData();
+    Collection<VectorPrimitive> currentSelection = data.getSelected();
+    final VectorNode newImage = event.getSelection().stream().filter(VectorNode.class::isInstance)
+      .map(VectorNode.class::cast).findFirst().orElse(null);
+    if (newImage != null && !ImageDetection.getDetections(newImage.getId(), false).isEmpty()) {
+      final long key = newImage.getId();
+      final Collection<IPrimitive> nodes = ImageDetection.getDetections(key, false).parallelStream()
+        .map(detection -> data.getPrimitiveById(detection.getKey(), OsmPrimitiveType.NODE))
+        .collect(Collectors.toList());
+
+      if (!nodes.containsAll(currentSelection) && !nodes.isEmpty()
+        && !Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get())) {
+        data.setSelected(nodes);
+      }
+    } else {
+      data.clearSelection();
+    }
+  }
 }

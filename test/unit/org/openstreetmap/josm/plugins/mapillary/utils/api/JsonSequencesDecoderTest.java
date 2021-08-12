@@ -88,13 +88,13 @@ class JsonSequencesDecoderTest {
     // vector way. We also cannot check anything _except_ that the sequence now has data.
 
     // Check that the nodes/ids were correctly decoded
-    assertEquals("148137757289079", MapillaryImageUtils.getKey(exampleSequence.getNode(0)));
-    assertEquals("311799370533334", MapillaryImageUtils.getKey(exampleSequence.getNode(1)));
-    assertEquals("4235112816526838", MapillaryImageUtils.getKey(exampleSequence.getNode(2)));
-    assertEquals("464249047982277", MapillaryImageUtils.getKey(exampleSequence.getNode(3)));
-    assertEquals("308609047601518", MapillaryImageUtils.getKey(exampleSequence.getNode(4)));
-    assertEquals("135511895288847", MapillaryImageUtils.getKey(exampleSequence.getNode(5)));
-    assertEquals("311681117131457", MapillaryImageUtils.getKey(exampleSequence.getNode(6)));
+    assertEquals(148137757289079L, MapillaryImageUtils.getKey(exampleSequence.getNode(0)));
+    assertEquals(311799370533334L, MapillaryImageUtils.getKey(exampleSequence.getNode(1)));
+    assertEquals(4235112816526838L, MapillaryImageUtils.getKey(exampleSequence.getNode(2)));
+    assertEquals(464249047982277L, MapillaryImageUtils.getKey(exampleSequence.getNode(3)));
+    assertEquals(308609047601518L, MapillaryImageUtils.getKey(exampleSequence.getNode(4)));
+    assertEquals(135511895288847L, MapillaryImageUtils.getKey(exampleSequence.getNode(5)));
+    assertEquals(311681117131457L, MapillaryImageUtils.getKey(exampleSequence.getNode(6)));
     assertEquals(7, exampleSequence.getNodesCount());
   }
 

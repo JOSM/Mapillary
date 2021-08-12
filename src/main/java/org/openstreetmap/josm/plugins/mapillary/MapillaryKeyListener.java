@@ -123,7 +123,7 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
     @Override
     public void actionPerformed(ActionEvent e) {
       VectorDataSet data = MapillaryLayer.getInstance().getData();
-      Map<Long, VectorNode> map = data.getNodes().stream().filter(image -> MapillaryImageUtils.getKey(image) != null)
+      Map<Long, VectorNode> map = data.getNodes().stream().filter(image -> MapillaryImageUtils.getKey(image) != 0)
         .collect(Collectors.toMap(MapillaryImageUtils::getKey, i -> i));
       long[] missingImages = Stream.of(this.imageKey.split(";", 0)).mapToLong(Long::parseLong)
         .filter(i -> !map.containsKey(i)).toArray();
@@ -132,7 +132,7 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
         MapillaryDownloader
           .downloadSequences(MapillaryDownloader.downloadImages(missingImages).keySet().toArray(new String[0]));
       }
-      Map<Long, VectorNode> newMap = data.getNodes().stream().filter(image -> MapillaryImageUtils.getKey(image) != null)
+      Map<Long, VectorNode> newMap = data.getNodes().stream().filter(image -> MapillaryImageUtils.getKey(image) != 0)
         .collect(Collectors.toMap(MapillaryImageUtils::getKey, i -> i));
       GuiHelper.runInEDT(() -> MapillaryLayer.getInstance().getData()
         .setSelected(Stream.of(this.imageKey.split(";", 0)).map(newMap::get).collect(Collectors.toSet())));

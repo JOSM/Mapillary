@@ -83,7 +83,7 @@ public class MapillaryExportWriterThread extends Thread {
         if (this.path == null && mimg.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
           String runPath = new File(mimg.get(MapillaryImageUtils.IMPORTED_KEY)).getPath();
           finalPath = runPath.substring(0, runPath.lastIndexOf('.'));
-        } else if (MapillaryImageUtils.getKey(mimg) != null && mimg.getUniqueId() > 0) {
+        } else if (MapillaryImageUtils.getKey(mimg) != 0 && mimg.getUniqueId() > 0) {
           finalPath = Paths.get(this.path, MapillaryImageUtils.getSequenceKey(mimg), Long.toString(mimg.getUniqueId()))
             .toString();
         } else if (mimg.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {

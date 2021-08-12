@@ -61,13 +61,13 @@ public class JsonImageDetailsDecoderTest {
         value -> JsonImageDetailsDecoder.decodeImageInfos(value, data));
     }
 
-    final VectorNode i_135511895288847 = data.getNodes().stream()
-      .filter(image -> "135511895288847".equals(MapillaryImageUtils.getKey(image))).findFirst().get();
+    final VectorNode i_135511895288847 = data.getNodes().stream().filter(image -> 135511895288847L == image.getId())
+      .findFirst().get();
     // JOSM currently (2021-06-09) only stores timestamps to the second level, not millisecond level
     assertEquals(Instant.ofEpochMilli(1_563_721_072_184L).getEpochSecond(),
       MapillaryImageUtils.getDate(i_135511895288847).getEpochSecond());
     assertEquals(i_135511895288847.getInstant(), MapillaryImageUtils.getDate(i_135511895288847));
-    assertEquals("135511895288847", MapillaryImageUtils.getKey(i_135511895288847));
+    assertEquals(135511895288847L, i_135511895288847.getUniqueId());
     final double delta = 0.000_000_000_1;
     assertEquals(1399.5043095825, Double.parseDouble(i_135511895288847.get("computed_altitude")), delta);
     assertEquals(1364.617, Double.parseDouble(i_135511895288847.get("altitude")), delta);

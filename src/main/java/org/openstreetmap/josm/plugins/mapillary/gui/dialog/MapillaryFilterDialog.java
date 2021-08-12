@@ -451,7 +451,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
         return true;
       }
       MainLayerManager layerManager = MainApplication.getLayerManager();
-      if (this.smartAdd && MapillaryImageUtils.getKey(img) != null
+      if (this.smartAdd && MapillaryImageUtils.getKey(img) != 0
         && !layerManager.getLayersOfType(AbstractOsmDataLayer.class).isEmpty()) {
         Collection<IPrimitive> currentSelection = Stream
           .concat(layerManager.getLayersOfType(OsmDataLayer.class).stream().map(OsmDataLayer::getDataSet),

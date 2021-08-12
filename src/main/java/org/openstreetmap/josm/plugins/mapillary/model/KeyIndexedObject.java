@@ -6,10 +6,10 @@ import java.io.Serializable;
 /**
  * An object that is identified amongst objects of the same class by a {@link String} key.
  */
-public class KeyIndexedObject implements Serializable {
-  private final String key;
+public class KeyIndexedObject<T> implements Serializable {
+  private final T key;
 
-  protected KeyIndexedObject(final String key) {
+  protected KeyIndexedObject(final T key) {
     if (key == null) {
       throw new IllegalArgumentException();
     }
@@ -21,7 +21,7 @@ public class KeyIndexedObject implements Serializable {
    *
    * @return the unique key that identifies this object among other instances of the same class
    */
-  public String getKey() {
+  public T getKey() {
     return key;
   }
 
@@ -50,7 +50,7 @@ public class KeyIndexedObject implements Serializable {
     if (!(obj instanceof KeyIndexedObject)) {
       return false;
     }
-    KeyIndexedObject other = (KeyIndexedObject) obj;
+    KeyIndexedObject<?> other = (KeyIndexedObject<?>) obj;
     return key.equals(other.key);
   }
 

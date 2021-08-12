@@ -225,7 +225,7 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
   }
 
   private void selectedImageChanged(@Nullable INode oldImage, @Nullable INode newImage) {
-    final Predicate<INode> hasKey = node -> node != null && MapillaryImageUtils.getKey(node) != null;
+    final Predicate<INode> hasKey = node -> node != null && MapillaryImageUtils.getKey(node) != 0;
     Logging.debug(String.format("Selected Mapillary image changed from %s to %s.",
       hasKey.test(oldImage) ? MapillaryImageUtils.getKey(oldImage) : "‹none›",
       hasKey.test(newImage) ? MapillaryImageUtils.getKey(newImage) : "‹none›"));

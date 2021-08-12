@@ -31,6 +31,7 @@ import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryU
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoderTest;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -44,12 +45,11 @@ class MapillaryCacheTest {
 
   @Test
   void test() {
-    VectorNode image = new VectorNode("mapillary-images");
-    image.setCoor(new LatLon(39.068354972222, -108.57081597222));
+    // Use 135511895288847 since that is an image we have real information for
+    VectorNode image = JsonImageDetailsDecoderTest.createDownloadedImage(135511895288847L,
+      new LatLon(39.068354972222, -108.57081597222), 0, false);
     VectorDataSet vectorDataSet = new VectorDataSet();
     vectorDataSet.addPrimitive(image);
-    // Use 135511895288847 since that is an image we have real information for
-    image.put(MapillaryImageUtils.ImageProperties.ID.toString(), "135511895288847");
     MapillaryCache cache = new MapillaryCache(image);
     assertNotNull(cache.getUrl());
     assertNotNull(cache.getCacheKey());
@@ -69,9 +69,8 @@ class MapillaryCacheTest {
   @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.APPLICATION_REQUEST_LIMIT_REACHED)
   void testNonRegression21035() {
     final VectorDataSet vectorDataSet = createSampleData();
-    final VectorNode image2 = vectorDataSet.getNodes().stream()
-      .filter(node -> "311799370533334".equals(MapillaryImageUtils.getKey(node))).findFirst()
-      .orElseThrow(() -> new AssertionFailedError("Image 311799370533334 not found"));
+    final VectorNode image2 = vectorDataSet.getNodes().stream().filter(node -> 311799370533334L == node.getId())
+      .findFirst().orElseThrow(() -> new AssertionFailedError("Image 311799370533334 not found"));
     Logging.clearLastErrorAndWarnings();
     MapillaryCache.cacheSurroundingImages(image2);
     Awaitility.await().pollDelay(Durations.ONE_HUNDRED_MILLISECONDS).catchUncaughtExceptions().ignoreNoExceptions()
@@ -88,9 +87,8 @@ class MapillaryCacheTest {
   @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.APPLICATION_REQUEST_LIMIT_REACHED)
   void testIAEInSubmit() {
     final VectorDataSet vectorDataSet = createSampleData();
-    final VectorNode image2 = vectorDataSet.getNodes().stream()
-      .filter(node -> "311799370533334".equals(MapillaryImageUtils.getKey(node))).findFirst()
-      .orElseThrow(() -> new AssertionFailedError("Image 311799370533334 not found"));
+    final VectorNode image2 = vectorDataSet.getNodes().stream().filter(node -> 311799370533334L == node.getId())
+      .findFirst().orElseThrow(() -> new AssertionFailedError("Image 311799370533334 not found"));
     Logging.clearLastErrorAndWarnings();
     CacheUtils.submit(image2, null);
     Awaitility.await().pollDelay(Durations.ONE_HUNDRED_MILLISECONDS).catchUncaughtExceptions().ignoreNoExceptions()
@@ -109,6 +107,9 @@ class MapillaryCacheTest {
     image1.put(idKey, "148137757289079");
     image2.put(idKey, "311799370533334");
     image3.put(idKey, "4235112816526838");
+    for (VectorNode i : Arrays.asList(image1, image2, image3)) {
+      i.setOsmId(MapillaryImageUtils.getKey(i), 1);
+    }
     image1.setCoor(new LatLon(39.065738749246, -108.57077016445));
     image2.setCoor(new LatLon(39.065986975316, -108.57079091664));
     image3.setCoor(new LatLon(39.066878001959, -108.57081199999));

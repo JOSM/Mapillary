@@ -28,15 +28,15 @@ class ImageDetectionTest {
 
   @Test
   void testBasics() {
-    ImageDetection<Path2D.Double> id = new ImageDetection<>(new Path2D.Double(), "imgKey", "key", "value");
-    ImageDetection<Path2D.Double> trafficsign = new ImageDetection<>(new Path2D.Double(), "imgKey2", "key2",
+    ImageDetection<Path2D.Double> id = new ImageDetection<>(new Path2D.Double(), 1, 2, "value");
+    ImageDetection<Path2D.Double> trafficsign = new ImageDetection<>(new Path2D.Double(), 3, 4,
       ObjectDetections.REGULATORY__MAXIMUM_SPEED_LIMIT_45__G3.toString());
 
-    assertEquals("imgKey", id.getImageKey());
-    assertEquals("imgKey2", trafficsign.getImageKey());
+    assertEquals(1, id.getImageKey());
+    assertEquals(3, trafficsign.getImageKey());
 
-    assertEquals("key", id.getKey());
-    assertEquals("key2", trafficsign.getKey());
+    assertEquals(2, id.getKey());
+    assertEquals(4, trafficsign.getKey());
 
     assertFalse(id.isTrafficSign());
     assertTrue(trafficsign.isTrafficSign());

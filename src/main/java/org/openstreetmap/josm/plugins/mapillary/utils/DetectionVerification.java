@@ -42,7 +42,8 @@ public final class DetectionVerification {
       throw new UnsupportedOperationException("Mapillary: v4 API does not currently support voting");
     }
     HttpClient client = HttpClient.create(
-      MapillaryURL.APIv3.vote(detection.isTrafficSign() ? "traffic_sign" : "FIXME", detection.getKey()), "POST");
+      MapillaryURL.APIv3.vote(detection.isTrafficSign() ? "traffic_sign" : "FIXME", Long.toString(detection.getKey())),
+      "POST");
     client.setHeader("Content-Type", "application/json");
     JsonObjectBuilder builder = Json.createObjectBuilder();
     builder.add("change_type", type.toString());

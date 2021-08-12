@@ -73,6 +73,10 @@ public final class JsonMapObjectDecoder {
     // Set image ids
     updateImageKeys(jsonObject, tags);
     // Add remaining tags to primitive
+    if (jsonObject.containsKey(MapillaryMapFeatureUtils.MapFeatureProperties.ID.toString())) {
+      long id = Long.parseLong(jsonObject.getString(MapillaryMapFeatureUtils.MapFeatureProperties.ID.toString(), "0"));
+      primitive.setOsmId(id, 1);
+    }
     tags.forEach(primitive::put);
     return Collections.singletonList(primitive);
   }
@@ -96,7 +100,7 @@ public final class JsonMapObjectDecoder {
         && geometry.getJsonArray(COORDINATES).stream().allMatch(JsonNumber.class::isInstance)) {
         final JsonArray jsonArray = geometry.getJsonArray(COORDINATES);
         ((INode) primitive)
-          .setCoor(new LatLon(jsonArray.getJsonNumber(0).doubleValue(), jsonArray.getJsonNumber(1).doubleValue()));
+          .setCoor(new LatLon(jsonArray.getJsonNumber(1).doubleValue(), jsonArray.getJsonNumber(0).doubleValue()));
       } else {
         throw new IllegalArgumentException(
           MessageFormat.format("Mapillary: Bad geometry for {0}: {1}", primitive.getClass().getSimpleName(), geometry));

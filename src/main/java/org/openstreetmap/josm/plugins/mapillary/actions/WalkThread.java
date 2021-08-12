@@ -71,7 +71,7 @@ public class WalkThread extends Thread implements Serializable, VectorDataSelect
       INode curSelection;
       INode curImage;
       while (!this.endWalk && (curSelection = this.data.getSelectedNodes().stream().findFirst().orElse(null)) != null
-        && (curImage = MapillaryImageUtils.getKey(curSelection) != null ? curSelection : null) != null) {
+        && (curImage = MapillaryImageUtils.getKey(curSelection) != 0 ? curSelection : null) != null) {
         // Predownload next 10 thumbnails.
         preDownloadImages(curImage, 10, CacheUtils.PICTURE.THUMBNAIL, goForward);
         if (this.waitForPicture) {
@@ -168,7 +168,7 @@ public class WalkThread extends Thread implements Serializable, VectorDataSelect
     if (n >= 1 && startImage != null) {
       CacheUtils.downloadPicture(startImage, type);
       final INode nextImg = MapillarySequenceUtils.getNextOrPrevious(startImage, goForward);
-      if (MapillaryImageUtils.getKey(nextImg) != null && n > 1) {
+      if (MapillaryImageUtils.getKey(nextImg) != 0 && n > 1) {
         preDownloadImages(nextImg, n - 1, type, goForward);
       }
     }

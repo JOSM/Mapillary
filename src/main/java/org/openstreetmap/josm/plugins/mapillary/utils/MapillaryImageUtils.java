@@ -198,14 +198,31 @@ public final class MapillaryImageUtils {
    * Get The key for a node
    *
    * @param image The image
-   * @return The key, or {@code null} if no key exists
+   * @return The key, or {@code 0} if no key exists
    */
-  @Nullable
-  public static Long getKey(@Nullable IPrimitive image) {
-    if (image != null && image.hasKey(ImageProperties.ID.toString())) {
-      return Long.parseLong(image.get(ImageProperties.ID.toString()));
+  public static long getKey(@Nullable IPrimitive image) {
+    return getKey(image, false);
+  }
+
+  /**
+   * Get a key for an image
+   *
+   * @param image The image to get the id for
+   * @param ignoreId {@code true} to not use the current id and read from the tags
+   * @return The key, or {@code 0} if no key exists
+   */
+  public static long getKey(@Nullable IPrimitive image, boolean ignoreId) {
+    if (image != null) {
+      if (image.getUniqueId() > 0 && !ignoreId) {
+        return image.getId();
+      }
+      if (image.hasKey(ImageProperties.ID.toString())) {
+        final long id = Long.parseLong(image.get(ImageProperties.ID.toString()));
+        image.setOsmId(id, 1);
+        return id;
+      }
     }
-    return null;
+    return 0;
   }
 
   /**

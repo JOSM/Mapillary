@@ -100,7 +100,7 @@ class JsonMapObjectDecoderTest {
     assertEquals(2_000_000_000L, MapillaryMapFeatureUtils.getLastSeenAt(node1).toEpochMilli()); // 2017-08-23T21:32:34
                                                                                                 // UTC
     assertEquals("complementary--both-directions--g2", MapillaryMapFeatureUtils.getValue(node1));
-    assertEquals("496980935069177", MapillaryMapFeatureUtils.getId(node1));
+    assertEquals(496980935069177L, MapillaryMapFeatureUtils.getId(node1));
     assertEquals(new LatLon(41.341166490122, -83.417193328459), node1.getCoor());
 
     final long[] images = MapillaryMapFeatureUtils.getImageIds(node1);
@@ -132,9 +132,9 @@ class JsonMapObjectDecoderTest {
 
   static Stream<Arguments> testGeometrySource() {
     return Stream.of(Arguments.of(new LatLon(0, 0), "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[0, 0]}}"),
-      Arguments.of(new LatLon(0, 1), "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[0, 1]}}"),
-      Arguments.of(new LatLon(1, 0), "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[1, 0]}}"),
-      Arguments.of(new LatLon(-20, -30), "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[-20, -30]}}"));
+      Arguments.of(new LatLon(1, 0), "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[0, 1]}}"),
+      Arguments.of(new LatLon(0, 1), "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[1, 0]}}"),
+      Arguments.of(new LatLon(-30, -20), "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[-20, -30]}}"));
   }
 
   @ParameterizedTest

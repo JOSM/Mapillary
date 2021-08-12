@@ -43,7 +43,7 @@ import org.apache.commons.jcs3.access.CacheAccess;
 /**
  * A store for ImageDetection information
  */
-public class ImageDetection<T extends Shape> extends SpecialImageArea<T> {
+public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
   private static final String DETECTIONS = "detections";
 
   /**
@@ -102,7 +102,7 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<T> {
    * @param key The detection key
    * @param value The actual detection value (e.g., `object--fire-hydrant`)
    */
-  public ImageDetection(final T shape, final String imageKey, final String key, final String value) {
+  public ImageDetection(final T shape, final long imageKey, final long key, final String value) {
     super(shape, imageKey, key);
     final Pair<Boolean, ObjectDetections> foundDetection = ObjectDetections.findFallbackDetection(value);
     this.value = foundDetection.b;

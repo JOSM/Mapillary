@@ -61,11 +61,11 @@ public final class JsonImageDetectionDecoder {
     }
     final JsonObject jsonObject = json.asJsonObject();
 
-    final String key = jsonObject.getString("id", null);
-    final String imageKey = decodeImageIds(jsonObject.get("image"));
+    final long key = Long.parseLong(jsonObject.getString("id", "0"));
+    final Long imageKey = decodeImageIds(jsonObject.get("image"));
     final String value = jsonObject.getString("value", null);
     final Shape shape = decodeShape(jsonObject.get("geometry"));
-    if (shape != null && imageKey != null && key != null && value != null) {
+    if (shape != null && imageKey != null && key != 0 && value != null) {
       try {
         return Collections.singletonList(new ImageDetection<>(shape, imageKey, key, value));
       } catch (IllegalArgumentException e) {
@@ -86,13 +86,13 @@ public final class JsonImageDetectionDecoder {
    * @return The image id
    */
   @Nullable
-  private static String decodeImageIds(@Nullable JsonValue jsonValue) {
+  private static Long decodeImageIds(@Nullable JsonValue jsonValue) {
     if (jsonValue != null && jsonValue.getValueType() == JsonValue.ValueType.OBJECT) {
       final JsonObject jsonObject = jsonValue.asJsonObject();
       if (jsonObject.containsKey("id")) {
         final JsonValue id = jsonObject.get("id");
         if (id.getValueType() == JsonValue.ValueType.STRING) {
-          return ((JsonString) id).getString();
+          return Long.parseLong(((JsonString) id).getString());
         }
       }
     }

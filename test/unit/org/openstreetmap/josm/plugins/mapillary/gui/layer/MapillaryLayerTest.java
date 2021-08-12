@@ -113,7 +113,7 @@ class MapillaryLayerTest {
 
   @Test
   void testSetImageViewed() {
-    INode image = JsonImageDetailsDecoderTest.createDownloadedImage("0", LatLon.ZERO, 0, false);
+    INode image = JsonImageDetailsDecoderTest.createDownloadedImage("1", LatLon.ZERO, 0, false);
     assertFalse(MapillaryLayer.getInstance().setImageViewed(null),
       "An image should not be set as viewed if there is no image or dataset");
     assertFalse(MapillaryLayer.getInstance().setImageViewed(image),
@@ -134,7 +134,7 @@ class MapillaryLayerTest {
     Node node = new Node(LatLon.ZERO);
     ds.addPrimitive(node);
     node.setModified(true);
-    INode image = JsonImageDetailsDecoderTest.createDownloadedImage("0", LatLon.ZERO, 0, false);
+    INode image = JsonImageDetailsDecoderTest.createDownloadedImage("1", LatLon.ZERO, 0, false);
     MainApplication.getLayerManager().addLayer(new OsmDataLayer(ds, "Test Layer", null));
     MapillaryLayer.getInstance().setImageViewed(image);
     actualChangesetSourceTag = MapillaryLayer.getInstance().getChangesetSourceTag();

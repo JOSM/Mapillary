@@ -119,14 +119,14 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
         break; // It doesn't make sense to try to cache images that won't be kept.
       }
       if (nextImage != null) {
-        if (MapillaryImageUtils.getKey(nextImage) != null) {
+        if (MapillaryImageUtils.getKey(nextImage) != 0) {
           INode current = nextImage;
           pool.execute(() -> CacheUtils.downloadPicture(current, CacheUtils.PICTURE.THUMBNAIL));
         }
         nextImage = MapillarySequenceUtils.getNextOrPrevious(nextImage, MapillarySequenceUtils.NextOrPrevious.NEXT);
       }
       if (prevImage != null) {
-        if (MapillaryImageUtils.getKey(prevImage) != null) {
+        if (MapillaryImageUtils.getKey(prevImage) != 0) {
           INode current = prevImage;
           pool.execute(() -> CacheUtils.downloadPicture(current, CacheUtils.PICTURE.THUMBNAIL));
         }
@@ -151,14 +151,14 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
       MapillarySequenceUtils.NextOrPrevious.PREVIOUS);
     for (int i = 0; i < prefetchCount; i++) {
       if (nextImage != null) {
-        if (MapillaryImageUtils.getKey(nextImage) != null) {
+        if (MapillaryImageUtils.getKey(nextImage) != 0) {
           INode current = nextImage;
           pool.execute(() -> MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(current)));
         }
         nextImage = MapillarySequenceUtils.getNextOrPrevious(nextImage, MapillarySequenceUtils.NextOrPrevious.NEXT);
       }
       if (prevImage != null) {
-        if (MapillaryImageUtils.getKey(prevImage) != null) {
+        if (MapillaryImageUtils.getKey(prevImage) != 0) {
           INode current = prevImage;
           pool.execute(() -> MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(current)));
         }
@@ -178,7 +178,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
       new TileJobOptions(50_000, 50_000, new HashMap<>(), TimeUnit.HOURS.toSeconds(4)), DEFAULT_JOB_EXECUTOR);
     if (image instanceof VectorNode) {
       MapillaryDownloader.downloadImages((VectorNode) image);
-    } else {
+    } else if (MapillaryImageUtils.getKey(image) != 0) {
       MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(image));
     }
     final Type type = Type.FULL_IMAGE;
