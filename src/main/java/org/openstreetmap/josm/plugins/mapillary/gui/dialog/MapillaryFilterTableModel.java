@@ -122,12 +122,12 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
     }
   }
 
-  private void loadPrefs() {
+  private synchronized void loadPrefs() {
     model.loadPrefs("mapillary.filters.entries");
     cleanup();
   }
 
-  private void savePrefs() {
+  private synchronized void savePrefs() {
     model.savePrefs("mapillary.filters.entries");
   }
 

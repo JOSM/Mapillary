@@ -392,7 +392,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
    */
   public void updateFilteredImages() {
     if (MapillaryLayer.hasInstance()) {
-      updateFilteredImages(MapillaryLayer.getInstance().getData().getNodes().parallelStream());
+      MainApplication.worker
+        .submit(() -> this.updateFilteredImages(MapillaryLayer.getInstance().getData().getNodes().parallelStream()));
     }
   }
 
@@ -407,7 +408,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
     this.shouldHidePredicate.smartAdd = Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get());
     Predicate<INode> shouldHide = this.getShouldHidePredicate();
     nodeStream.filter(MapillaryImageUtils.IS_IMAGE).forEach(img -> img.setVisible(!shouldHide.test(img)));
-    MapillaryLayer.invalidateInstance();
+    GuiHelper.runInEDT(MapillaryLayer::invalidateInstance);
   }
 
   /**

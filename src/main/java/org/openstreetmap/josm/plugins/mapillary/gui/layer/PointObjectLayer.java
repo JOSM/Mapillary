@@ -54,6 +54,7 @@ import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IRelation;
 import org.openstreetmap.josm.data.osm.IWay;
+import org.openstreetmap.josm.data.osm.OsmPrimitiveType;
 import org.openstreetmap.josm.data.osm.PrimitiveId;
 import org.openstreetmap.josm.data.osm.event.AbstractDatasetChangedEvent;
 import org.openstreetmap.josm.data.osm.event.DataSetListenerAdapter.Listener;
@@ -84,20 +85,17 @@ import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.SmartEditAddAction;
-import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
 import org.openstreetmap.josm.plugins.mapillary.data.osm.event.FilterEventListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddEventSource;
 import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddListener;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
@@ -361,8 +359,8 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
   public void selectionChanged(
     SelectionChangeEvent<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> event) {
     Collection<VectorPrimitive> selection = event.getSelection();
-    VectorPrimitive prim = selection.parallelStream().filter(p -> !p.isDeleted() && p.hasKey(MapillaryKeys.DETECTIONS))
-      .findFirst().orElse(null);
+    VectorPrimitive prim = selection.parallelStream()
+      .filter(p -> !p.isDeleted() && MapillaryMapFeatureUtils.getImageIds(p).length != 0).findFirst().orElse(null);
     this.displayedWindows.entrySet().parallelStream().filter(e -> !selection.contains(e.getKey()))
       .forEach(e -> realHideWindow(e.getValue()));
     Map<IPrimitive, JWindow> temporaryWindows = this.displayedWindows.entrySet().parallelStream()
@@ -371,14 +369,14 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
     this.displayedWindows.putAll(temporaryWindows);
 
     if (prim != null && (MapillaryLayer.hasInstance() || Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()))) {
-      List<Map<String, String>> detections = parseDetections(prim.get(MapillaryKeys.DETECTIONS));
-
       VectorDataSet mapillaryData = MapillaryLayer.getInstance().getData();
+      Collection<INode> images = LongStream.of(MapillaryMapFeatureUtils.getImageIds(prim))
+        .mapToObj(image -> mapillaryData.getPrimitiveById(image, OsmPrimitiveType.NODE)).filter(INode.class::isInstance)
+        .map(INode.class::cast).collect(Collectors.toList());
       if (!MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {
         MapillaryDownloadAction.addLayer();
       }
       INode selectedImage = mapillaryData.getSelectedNodes().stream().findFirst().orElse(null);
-      List<INode> images = getImagesForDetections(mapillaryData, detections);
       INode toSelect = images.isEmpty() ? null : getBestImage(prim, images);
       boolean inDetections = selectedImage != null && images.contains(selectedImage);
 
@@ -445,22 +443,6 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
       Logging.error(e);
     }
     return detections;
-  }
-
-  private static List<INode> getImagesForDetections(VectorDataSet data, List<Map<String, String>> detections) {
-    long[] keys = detections.stream().filter(m -> m.containsKey(MapillaryKeys.IMAGE_KEY))
-      .map(m -> m.get(MapillaryKeys.IMAGE_KEY)).mapToLong(Long::parseLong).toArray();
-    final Set<Long> keySet = data.getNodes().stream().map(MapillaryImageUtils::getKey).filter(Objects::nonNull)
-      .collect(Collectors.toSet());
-    final long[] missing = LongStream.of(keys).filter(key -> !keySet.contains(key)).toArray();
-    if (keys.length == 0) {
-      MapillaryDownloader.downloadImages(missing);
-    } else {
-      MapillaryUtils.getForkJoinPool(MapillaryCache.class).execute(() -> MapillaryDownloader.downloadImages(missing));
-    }
-    Map<Long, INode> nodeMap = data.getNodes().stream().filter(img -> MapillaryImageUtils.getKey(img) != null)
-      .collect(Collectors.toMap(MapillaryImageUtils::getKey, i -> i));
-    return LongStream.of(keys).mapToObj(nodeMap::get).collect(Collectors.toList());
   }
 
   @Override
