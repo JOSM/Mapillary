@@ -101,14 +101,15 @@ public final class MapillaryDownloader {
     } else {
       nodes = Collections.emptyList();
     }
-    return nodes.stream().sorted(Comparator.comparingLong(image -> MapillaryImageUtils.getDate(image).toEpochMilli()))
-      .collect(Collector.of(
-        HashMap<String, Collection<VectorNode>>::new, (map, node) -> map
-          .computeIfAbsent(MapillaryImageUtils.getSequenceKey(node), key -> new ArrayList<>()).add(node),
-        (rMap, oMap) -> {
-          rMap.putAll(oMap);
-          return rMap;
-        }));
+    return Collections.unmodifiableMap(
+      nodes.stream().sorted(Comparator.comparingLong(image -> MapillaryImageUtils.getDate(image).toEpochMilli()))
+        .collect(Collector.of(
+          HashMap<String, Collection<VectorNode>>::new, (map, node) -> map
+            .computeIfAbsent(MapillaryImageUtils.getSequenceKey(node), key -> new ArrayList<>()).add(node),
+          (rMap, oMap) -> {
+            rMap.putAll(oMap);
+            return rMap;
+          })));
   }
 
   private static void separatelyCacheDownloadedImages(final JsonObject jsonObject) {

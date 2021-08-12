@@ -1,6 +1,14 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonString;
+import javax.json.JsonStructure;
+import javax.json.JsonValue;
+import javax.swing.SwingUtilities;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -8,8 +16,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -20,18 +26,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonString;
-import javax.json.JsonStructure;
-import javax.json.JsonValue;
-import javax.swing.SwingUtilities;
-
 import org.apache.commons.imaging.common.RationalNumber;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
-
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.INode;
@@ -53,6 +49,7 @@ public final class MapillaryUtils {
 
   private static final double MIN_ZOOM_SQUARE_SIDE = 0.002;
   private static final Map<String, ForkJoinPool> forkJoinPool = new HashMap<>();
+  private static final long[] EMPTY_LONG = new long[0];
 
   private MapillaryUtils() {
     // Private constructor to avoid instantiation
@@ -102,7 +99,7 @@ public final class MapillaryUtils {
    *        ) of the equator</li>
    *        </ul>
    * @return the decimal degree-value for the given input, negative when west of
-   *         0-meridian or south of equator, positive otherwise
+   *         0-meridian or south of the equator, positive otherwise
    * @throws IllegalArgumentException if {@code degMinSec} doesn't have length 3 or if {@code ref} is
    *         not one of the values mentioned above
    */
@@ -150,7 +147,7 @@ public final class MapillaryUtils {
   /**
    * Zooms to fit all the given {@link INode} objects.
    *
-   * @param images The images your are zooming to.
+   * @param images The images you are zooming to.
    * @param select Whether the added images must be selected or not.
    */
   public static void showPictures(final Set<INode> images, final boolean select) {
@@ -216,7 +213,7 @@ public final class MapillaryUtils {
       && !MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).isEmpty()) {
       return MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).stream()
         .map(PointObjectLayer::getData).flatMap(ds -> ds.getAllSelected().stream()).map(MapillaryUtils::getDetections)
-        .flatMap(Collection::stream).noneMatch(key -> d.getKey().equals(key));
+        .flatMapToLong(LongStream::of).noneMatch(key -> d.getKey() == key);
     }
     return checkIfDetectionIsFilteredBasic(detectionLayers, d);
   }
@@ -250,7 +247,7 @@ public final class MapillaryUtils {
    * @param osmPrimitive The primitive to get the detection from
    * @return A collection of image keys
    */
-  public static Collection<String> getImagesFromDetections(IPrimitive osmPrimitive) {
+  public static long[] getImagesFromDetections(IPrimitive osmPrimitive) {
     if (osmPrimitive.hasKey(MapillaryKeys.DETECTIONS)) {
       try (
         ByteArrayInputStream inputStream = new ByteArrayInputStream(
@@ -262,13 +259,13 @@ public final class MapillaryUtils {
           return array.stream().filter(JsonObject.class::isInstance).map(JsonObject.class::cast)
             .filter(obj -> obj.containsKey("image_key")).map(obj -> obj.get("image_key"))
             .filter(JsonString.class::isInstance).map(JsonString.class::cast).map(JsonString::getString)
-            .collect(Collectors.toSet());
+            .mapToLong(Long::parseLong).distinct().toArray();
         }
       } catch (IOException e) {
         Logging.error(e);
       }
     }
-    return Collections.emptyList();
+    return EMPTY_LONG;
   }
 
   /**
@@ -278,7 +275,7 @@ public final class MapillaryUtils {
    * @param <T> The primitive type
    * @return A collection of detection keys
    */
-  public static <T extends IPrimitive> Collection<String> getDetections(T osmPrimitive) {
+  public static <T extends IPrimitive> long[] getDetections(T osmPrimitive) {
     if (osmPrimitive.hasKey(MapillaryKeys.DETECTIONS)) {
       try (
         ByteArrayInputStream inputStream = new ByteArrayInputStream(
@@ -290,13 +287,13 @@ public final class MapillaryUtils {
           return array.stream().filter(JsonObject.class::isInstance).map(JsonObject.class::cast)
             .filter(obj -> obj.containsKey("detection_key")).map(obj -> obj.get("detection_key"))
             .filter(JsonString.class::isInstance).map(JsonString.class::cast).map(JsonString::getString)
-            .collect(Collectors.toSet());
+            .mapToLong(Long::parseLong).toArray();
         }
       } catch (IOException e) {
         Logging.error(e);
       }
     }
-    return Collections.emptyList();
+    return EMPTY_LONG;
   }
 
   /**
@@ -327,7 +324,7 @@ public final class MapillaryUtils {
   }
 
   /**
-   * Await quiesience on all ForkJoinPools. This excludes the common pool.
+   * Await quiescence on all ForkJoinPools. This excludes the common pool.
    *
    * @param timeout The amount of time units to wait
    * @param timeUnit The unit of time to wait

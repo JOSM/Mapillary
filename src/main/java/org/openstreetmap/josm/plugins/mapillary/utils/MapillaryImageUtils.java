@@ -387,10 +387,14 @@ public final class MapillaryImageUtils {
      */
     QUALITY_SCORE,
     /**
+     * The sequence key
+     *
      * @see #SEQUENCE_ID
      */
     SEQUENCE,
     /**
+     * The sequence id (key)
+     *
      * @see #SEQUENCE
      */
     SEQUENCE_ID, SFM_CLUSTER,

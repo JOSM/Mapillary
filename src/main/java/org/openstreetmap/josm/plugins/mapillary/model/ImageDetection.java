@@ -88,7 +88,7 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
       return task.join();
     } else {
       if (key != 0 && DETECTION_CACHE.get(key) != null) {
-        return new ArrayList<>(DETECTION_CACHE.get(key));
+        return Collections.unmodifiableList(new ArrayList<>(DETECTION_CACHE.get(key)));
       }
       return Collections.emptyList();
     }
@@ -148,7 +148,7 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
    */
   public boolean isTrafficSign() {
     return this.value.getDetectionTypes().contains(DetectionType.TRAFFIC_SIGN)
-      || this.value == ObjectDetections.UNKNOWN && this.originalValue.contains(PACKAGE_TRAFFIC_SIGNS);
+      || (this.value == ObjectDetections.UNKNOWN && this.originalValue.contains(PACKAGE_TRAFFIC_SIGNS));
   }
 
   /**
@@ -264,9 +264,9 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
           final Collection<ImageDetection<?>> detections = JsonDecoder.decodeData(reader.readObject(),
             JsonImageDetectionDecoder::decodeImageDetection);
           if (detections instanceof List) {
-            return (List<ImageDetection<?>>) detections;
+            return Collections.unmodifiableList((List<ImageDetection<?>>) detections);
           }
-          return new ArrayList<>(detections);
+          return Collections.unmodifiableList(new ArrayList<>(detections));
         }
       }
       return Collections.emptyList();

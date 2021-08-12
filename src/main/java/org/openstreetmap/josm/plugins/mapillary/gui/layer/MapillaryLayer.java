@@ -119,11 +119,10 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
   /** The range to paint the full detection image at */
   private static final Range IMAGE_CA_PAINT_RANGE = Selector.GeneralSelector.fromLevel(18, Integer.MAX_VALUE);
 
-  /** The sprite to use to indicate that there are sign detections in the image */
-  private static final Image YIELD_SIGN = new ImageProvider("josm-ca", "sign-detection").setMaxSize(TRAFFIC_SIGN_SIZE)
-    .get().getImage();
-
   private static final String IMAGE_SPRITE_DIR = "josm-ca";
+  /** The sprite to use to indicate that there are sign detections in the image */
+  private static final Image YIELD_SIGN = new ImageProvider(IMAGE_SPRITE_DIR, "sign-detection")
+    .setMaxSize(TRAFFIC_SIGN_SIZE).get().getImage();
   /** The default sprite for a Mapillary image */
   private static final ImageIcon DEFAULT_SPRITE = new ImageProvider(IMAGE_SPRITE_DIR, "default-ca")
     .setMaxWidth(ImageProvider.ImageSizes.MAP.getAdjustedHeight()).get();
@@ -359,7 +358,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
       if (MapillarySequenceUtils.hasKey(sequence)) {
         final INode toCheck = sequence.getNodes().stream()
           .filter(inode -> !Instant.EPOCH.equals(MapillaryImageUtils.getDate(inode))).map(INode.class::cast).findFirst()
-          .orElse((INode) sequence.firstNode());
+          .orElse(sequence.firstNode());
         color = getAgedColor(toCheck, MapillaryColorScheme.SEQ_UNSELECTED);
       } else {
         color = MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED;
@@ -563,12 +562,12 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
       .collect(Collectors.groupingBy(MapillaryImageUtils::getSequenceKey));
     IntSummaryStatistics seqSizeStats = nodeCollection.values().stream().mapToInt(List::size).summaryStatistics();
     final long numTotal = seqSizeStats.getSum();
-    return new StringBuilder(I18n.tr("Mapillary layer")).append('\n')
-      .append(I18n.trn("{0} sequence, containing between {1} and {2} images (ø {3})",
+    return I18n.tr("Mapillary layer") + '\n'
+      + I18n.trn("{0} sequence, containing between {1} and {2} images (ø {3})",
         "{0} sequences, each containing between {1} and {2} images (ø {3})", getData().getWays().size(),
         getData().getWays().size(), seqSizeStats.getCount() <= 0 ? 0 : seqSizeStats.getMin(),
-        seqSizeStats.getCount() <= 0 ? 0 : seqSizeStats.getMax(), seqSizeStats.getAverage()))
-      .append("\n= ").append(I18n.trn("{0} image in total", "{0} images in total", numTotal, numTotal)).toString();
+        seqSizeStats.getCount() <= 0 ? 0 : seqSizeStats.getMax(), seqSizeStats.getAverage())
+      + "\n= " + I18n.trn("{0} image in total", "{0} images in total", numTotal, numTotal);
   }
 
   @Override
@@ -657,8 +656,8 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     return getData().searchWays(searchBBox).parallelStream().filter(seq -> MapillarySequenceUtils.hasKey(seq)
       && !MapillarySequenceUtils.getKey(seq).equals(MapillaryImageUtils.getSequenceKey(target))).map(seq -> {
         // Maps sequence to image from sequence that is nearest to target
-        Optional<VectorNode> resImg = seq.getNodes().parallelStream()
-          .filter(img -> !"".equals(MapillaryImageUtils.getKey(img))).min(new NearestImgToTargetComparator(target));
+        Optional<VectorNode> resImg = seq.getNodes().parallelStream().filter(img -> MapillaryImageUtils.getKey(img) > 0)
+          .min(new NearestImgToTargetComparator(target));
         return resImg.orElse(null);
       }).filter(img -> // Filters out images too far away from target
     img != null
@@ -703,7 +702,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
   }
 
   /**
-   * The the tile for a location
+   * The tile for a location
    *
    * @param location The location to load the tile for
    * @return A future indicating if loading finished

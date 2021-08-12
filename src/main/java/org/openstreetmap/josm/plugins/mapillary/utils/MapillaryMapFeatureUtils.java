@@ -85,9 +85,7 @@ public class MapillaryMapFeatureUtils {
    *
    * @param primitive The primitive to check
    * @return The ID for the feature (should be convertable to an int)
-   * @deprecated Use {@link IPrimitive#getId()}} instead
    */
-  @Deprecated
   public static long getId(@Nullable final IPrimitive primitive) {
     final String str = getKeyValue(primitive, MapFeatureProperties.ID);
     if (str != null) {
@@ -160,7 +158,7 @@ public class MapillaryMapFeatureUtils {
     String images = getKeyValue(primitive, MapFeatureProperties.IMAGES);
     if (images == null) {
       // Synchronize on primitive -- we want to avoid multiple threads getting the metadata
-      synchronized (primitive) {
+      synchronized (primitive.getStyleCacheSyncObject()) {
         // short-circuit
         images = getKeyValue(primitive, MapFeatureProperties.IMAGES);
         if (images == null) {

@@ -109,7 +109,7 @@ public final class Caches {
     public MapillaryCacheAccess(@Nonnull CacheAccess<String, V> cacheAccess, @Nullable Predicate<V>... validators) {
       this.cacheAccess = cacheAccess;
       if (validators != null) {
-        this.validators = Arrays.asList(validators);
+        this.validators = Arrays.asList(validators.clone());
       } else {
         this.validators = Collections.emptyList();
       }
@@ -125,6 +125,8 @@ public final class Caches {
     }
 
     /**
+     * Get the default element attributes
+     *
      * @see CacheAccess#getDefaultElementAttributes()
      * @return The default element attributes
      */
@@ -133,6 +135,8 @@ public final class Caches {
     }
 
     /**
+     * Set the default element attributes
+     *
      * @see CacheAccess#setDefaultElementAttributes(IElementAttributes)
      * @param iElementAttributes The default element attributes to set
      */

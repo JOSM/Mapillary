@@ -7,7 +7,7 @@ import javax.swing.ImageIcon;
 
 import org.openstreetmap.josm.tools.ImageProvider;
 
-public class UserProfile extends KeyIndexedObject {
+public class UserProfile extends KeyIndexedObject<String> {
   private static final long serialVersionUID = -2626823438368139952L;
 
   /** A default user profile */

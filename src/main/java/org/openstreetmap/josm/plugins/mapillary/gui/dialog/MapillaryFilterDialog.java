@@ -63,6 +63,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
@@ -237,9 +238,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
     this.organizations.addItemListener(l -> this.shouldHidePredicate.organization = (OrganizationRecord) l.getItem());
 
     this.resetObjects.addListener(() -> organizations.setSelectedItem(OrganizationRecord.NULL_RECORD));
-    ResetListener setListener = () -> {
-      this.shouldHidePredicate.organization = (OrganizationRecord) this.organizations.getSelectedItem();
-    };
+    ResetListener setListener = () -> this.shouldHidePredicate.organization = (OrganizationRecord) this.organizations
+      .getSelectedItem();
     this.resetObjects.addListener(setListener);
     setListener.reset();
   }
@@ -457,8 +457,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
           .concat(layerManager.getLayersOfType(OsmDataLayer.class).stream().map(OsmDataLayer::getDataSet),
             layerManager.getLayersOfType(PointObjectLayer.class).stream().map(PointObjectLayer::getData))
           .flatMap(ds -> ds.getAllSelected().stream()).collect(Collectors.toSet());
-        Collection<String> keys = currentSelection.stream().map(MapillaryUtils::getImagesFromDetections)
-          .flatMap(Collection::stream).collect(Collectors.toSet());
+        Collection<Long> keys = currentSelection.stream().map(MapillaryUtils::getImagesFromDetections)
+          .flatMapToLong(LongStream::of).boxed().collect(Collectors.toSet());
         if (!keys.contains(MapillaryImageUtils.getKey(img))) {
           return true;
         }
@@ -473,7 +473,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
           || (this.qualityScore < 0.6f && MapillaryImageUtils.getQuality(img) == Float.MIN_VALUE)))) {
         return true;
       }
-      if (!"".equals(MapillaryImageUtils.getKey(img))) {
+      if (MapillaryImageUtils.getKey(img) > 0) {
         if (!this.downloadedIsSelected) {
           return true;
         }
