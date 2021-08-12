@@ -105,10 +105,9 @@ coverage:
   needs: ["test"]
   dependencies:
     - test
-  image: haynes/jacoco2cobertura:1.0.3
+  image: haynes/jacoco2cobertura:1.0.7
   script:
-    - 'python /opt/cover2cover.py build/reports/jacoco/test/jacocoTestReport.xml src/main/java > build/reports/jacoco/test/coverage.xml'
-    - 'python /opt/source2filename.py build/reports/jacoco/test/coverage.xml'
+    - python /opt/cover2cover.py build/reports/jacoco/test/jacocoTestReport.xml $CI_PROJECT_DIR/src/main/java/ > build/reports/jacoco/test/coverage.xml
   artifacts:
     reports:
       cobertura: "build/reports/jacoco/test/coverage.xml"
