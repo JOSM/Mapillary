@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.function.BiConsumer;
 
@@ -89,6 +90,9 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
     } else {
       if (key != 0 && DETECTION_CACHE.get(key) != null) {
         return Collections.unmodifiableList(new ArrayList<>(DETECTION_CACHE.get(key)));
+      } else if (key != 0) {
+        final ImageDetectionForkJoinTask task = new ImageDetectionForkJoinTask(key, null);
+        ForkJoinPool.commonPool().execute(task);
       }
       return Collections.emptyList();
     }
