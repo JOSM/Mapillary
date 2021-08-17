@@ -1,36 +1,22 @@
 package org.openstreetmap.josm.plugins.mapillary.testutils.annotations;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.common.FileSource;
-import com.github.tomakehurst.wiremock.common.TextFile;
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import com.github.tomakehurst.wiremock.extension.Parameters;
-import com.github.tomakehurst.wiremock.extension.ResponseTransformer;
-import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
-import com.github.tomakehurst.wiremock.http.Request;
-import com.github.tomakehurst.wiremock.http.Response;
-import com.github.tomakehurst.wiremock.matching.AnythingPattern;
-import com.github.tomakehurst.wiremock.matching.StringValuePattern;
-import com.github.tomakehurst.wiremock.stubbing.StubMapping;
-import com.github.tomakehurst.wiremock.verification.LoggedRequest;
-import org.junit.jupiter.api.extension.AfterAllCallback;
-import org.junit.jupiter.api.extension.AfterEachCallback;
-import org.junit.jupiter.api.extension.BeforeAllCallback;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.platform.commons.support.AnnotationSupport;
-import org.openstreetmap.josm.TestUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
-import org.openstreetmap.josm.tools.Logging;
-import org.openstreetmap.josm.tools.Utils;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import javax.imageio.ImageIO;
 import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
+import javax.json.JsonString;
 import javax.json.JsonValue;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -46,8 +32,31 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.platform.commons.support.AnnotationSupport;
+import org.openstreetmap.josm.TestUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.Utils;
+
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.common.FileSource;
+import com.github.tomakehurst.wiremock.common.TextFile;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.extension.Parameters;
+import com.github.tomakehurst.wiremock.extension.ResponseTransformer;
+import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
+import com.github.tomakehurst.wiremock.http.Request;
+import com.github.tomakehurst.wiremock.http.Response;
+import com.github.tomakehurst.wiremock.matching.AnythingPattern;
+import com.github.tomakehurst.wiremock.matching.StringValuePattern;
+import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 
 /**
  * Mock Mapillary API calls
@@ -177,6 +186,19 @@ public @interface MapillaryURLWireMock {
       server.stubFor(WireMock.get("/api/v4/coverageTiles/mly1_computed_public/2/{z}/{x}/{y}?access_token=test_key")
         .willReturn(WireMock.serverError()));
 
+      // Stubs for images (default to returning a "blank" image at low priority)
+      try (ByteArrayOutputStream imageOut = new ByteArrayOutputStream()) {
+        final BufferedImage bufferedImage = new BufferedImage(2048, 2048, BufferedImage.TYPE_INT_ARGB);
+        final Graphics2D graphics = bufferedImage.createGraphics();
+        graphics.setColor(Color.WHITE);
+        graphics.drawRect(0, 0, 2048, 2048);
+        ImageIO.write(bufferedImage, "png", imageOut);
+        server.stubFor(WireMock.get(WireMock.urlPathMatching("/thumb_([0-9]+)_([0-9]+)"))
+          .willReturn(WireMock.aResponse().withBody(imageOut.toByteArray())).atPriority(100));
+      } catch (Exception exception) {
+        fail(exception);
+      }
+
       // Store the stub mappings for future use.
       context.getStore(namespace).put(StubMapping.class, server.getStubMappings());
 
@@ -213,7 +235,7 @@ public @interface MapillaryURLWireMock {
             .map(image -> files.getTextFileNamed("api/v4/responses/graph/" + image + ".json"))
             .collect(Collectors.toList());
           // We need to get the actual bytes prior to returning, so we need to read the files.
-          final String body = imageText.stream().map(text -> text.readContentsAsString())
+          final String body = imageText.stream().map(TextFile::readContentsAsString)
             .collect(Collectors.joining(",", "{\"data\":[", "]}"));
           return Response.Builder.like(response).but().body(body).build();
         }
@@ -230,7 +252,7 @@ public @interface MapillaryURLWireMock {
      * Replace filler urls with wiremock URLs
      */
     private static final class FillerUrlReplacer extends ResponseTransformer {
-      private static final Pattern FILLER_URL_PATTERN = Pattern.compile("\"([a-zA-Z0-9_]*?)_filler_url\"");
+      private static final Pattern FILLER_URL_PATTERN = Pattern.compile("([a-zA-Z0-9_]*?)_filler_url");
 
       WireMockServer server;
 
@@ -259,10 +281,18 @@ public @interface MapillaryURLWireMock {
           JsonReader reader = Json.createReader(new ByteArrayInputStream(newBody.getBytes(StandardCharsets.UTF_8)))) {
           final JsonValue value = reader.readValue();
           if (value instanceof JsonObject) {
-            final JsonValue data = ((JsonObject) value).containsKey("data") ? ((JsonObject) value).get("data") : value;
+            final JsonValue data = ((JsonObject) value).getOrDefault("data", value);
             if (data instanceof JsonObject && ((JsonObject) data).containsKey("id")) {
-              final String id = ((JsonObject) data).getString("id");
-              newBody = FILLER_URL_PATTERN.matcher(newBody).replaceAll("\"" + server.baseUrl() + "/$1_" + id + "\"");
+              newBody = replaceThumbUrls(server, (JsonObject) data).toString();
+            } else if (data instanceof JsonArray) {
+              final JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+              for (JsonValue jsonValue : ((JsonArray) data)) {
+                if (jsonValue instanceof JsonObject && ((JsonObject) jsonValue).containsKey("id")) {
+                  jsonArrayBuilder.add(replaceThumbUrls(server, (JsonObject) jsonValue));
+                }
+              }
+              final JsonObjectBuilder dataObject = Json.createObjectBuilder();
+              newBody = dataObject.add("data", jsonArrayBuilder).build().toString();
             }
           }
         }
@@ -277,25 +307,62 @@ public @interface MapillaryURLWireMock {
             final JsonValue jsonValue = reader.readValue();
             if (jsonValue instanceof JsonObject) {
               final JsonObjectBuilder builder = Json.createObjectBuilder();
-              for (Map.Entry<String, JsonValue> entry : ((JsonObject) jsonValue).entrySet()) {
-                if (entry.getKey().equals("data") && entry.getValue() instanceof JsonObject) {
-                  final JsonObjectBuilder dataBuilder = Json.createObjectBuilder();
-                  for (Map.Entry<String, JsonValue> dataEntry : entry.getValue().asJsonObject().entrySet()) {
-                    if (fields.contains(dataEntry.getKey())) {
-                      dataBuilder.add(dataEntry.getKey(), dataEntry.getValue());
-                    }
-                  }
-                  builder.add("data", dataBuilder);
-                } else {
-                  builder.add(entry.getKey(), entry.getValue());
-                }
-              }
+              filterFiles(builder, fields, jsonValue);
               newBody = builder.build().toString();
             }
           }
         }
 
         return Response.Builder.like(response).but().body(newBody).build();
+      }
+
+      private static JsonObject replaceThumbUrls(final WireMockServer server, final JsonObject jsonObject) {
+        final JsonObjectBuilder builder = Json.createObjectBuilder();
+        final String id = jsonObject.getString("id");
+        for (Map.Entry<String, JsonValue> entry : jsonObject.entrySet()) {
+          if (entry.getValue().getValueType() == JsonValue.ValueType.STRING
+            && FILLER_URL_PATTERN.matcher(((JsonString) entry.getValue()).getString()).matches()) {
+            builder.add(entry.getKey(), FILLER_URL_PATTERN.matcher(((JsonString) entry.getValue()).getString())
+              .replaceAll(server.baseUrl() + "/$1_" + id));
+          } else {
+            builder.add(entry.getKey(), entry.getValue());
+          }
+        }
+        return builder.build();
+      }
+
+      private static void filterFiles(final JsonObjectBuilder builder, final List<String> fields,
+        final JsonValue jsonValue) {
+        if (jsonValue instanceof JsonObject) {
+          for (Map.Entry<String, JsonValue> entry : ((JsonObject) jsonValue).entrySet()) {
+            if (entry.getValue() instanceof JsonObject) {
+              final JsonObjectBuilder dataBuilder = Json.createObjectBuilder();
+              for (Map.Entry<String, JsonValue> dataEntry : entry.getValue().asJsonObject().entrySet()) {
+                dataBuilder.add(dataEntry.getKey(), dataEntry.getValue());
+              }
+              final JsonObject jsonObject = dataBuilder.build();
+              if (!jsonObject.isEmpty() && fields.contains(entry.getKey())) {
+                builder.add(entry.getKey(), jsonObject);
+              }
+            } else if (entry.getValue() instanceof JsonArray) {
+              JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+              for (JsonValue jsonValue1 : ((JsonArray) entry.getValue())) {
+                JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
+                filterFiles(jsonObjectBuilder, fields, jsonValue1);
+                final JsonObject jsonObject = jsonObjectBuilder.build();
+                if (!jsonObject.isEmpty()) {
+                  jsonArrayBuilder.add(jsonObject);
+                }
+              }
+              final JsonArray jsonArray = jsonArrayBuilder.build();
+              if (!jsonArray.isEmpty()) {
+                builder.add(entry.getKey(), jsonArray);
+              }
+            } else if (fields.contains(entry.getKey()) || "id".equals(entry.getKey())) {
+              builder.add(entry.getKey(), entry.getValue());
+            }
+          }
+        }
       }
     }
   }

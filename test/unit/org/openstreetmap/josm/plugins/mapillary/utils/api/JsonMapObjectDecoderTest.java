@@ -59,11 +59,9 @@ class JsonMapObjectDecoderTest {
 
     final VectorPrimitive exampleMapObject = exampleMapObjects.iterator().next();
     assertSame(node1, exampleMapObject);
-
-    assertEquals(1_503_523_946L, MapillaryMapFeatureUtils.getFirstSeenAt(node1).getEpochSecond()); // 2017-08-23T21:32:26
-                                                                                                   // UTC
-    assertEquals(1_503_523_954L, MapillaryMapFeatureUtils.getLastSeenAt(node1).getEpochSecond()); // 2017-08-23T21:32:34
-                                                                                                  // UTC
+    // 2017-08-23T21:32:26 UTC -- both are currently the same time
+    assertEquals(1_503_523_946L, MapillaryMapFeatureUtils.getFirstSeenAt(node1).getEpochSecond());
+    assertEquals(1_503_523_946L, MapillaryMapFeatureUtils.getLastSeenAt(node1).getEpochSecond());
     assertEquals("complementary--both-directions--g2", MapillaryMapFeatureUtils.getValue(node1));
     assertEquals(496980935069177L, node1.getUniqueId());
     assertEquals(new LatLon(41.341166490122, -83.417193328459), node1.getCoor());
