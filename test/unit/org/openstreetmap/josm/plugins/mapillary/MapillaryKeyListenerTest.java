@@ -19,6 +19,7 @@ import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
+import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryLayerAnnotation;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMockErrors;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
@@ -37,6 +38,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
  */
 @BasicPreferences
 @MapillaryURLWireMock
+@MapillaryLayerAnnotation
 class MapillaryKeyListenerTest {
   /** This is the JOSM standard component count. Update as needed. */
   private static final int TAG_MENU_COMPONENT_COUNT = 15;

@@ -200,10 +200,13 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     if (instance != null) {
       return instance;
     }
-    final MapillaryLayer layer = new MapillaryLayer();
-    layer.init();
-    instance = layer; // Only set instance field after initialization is complete
-    return instance;
+    // Running in the EDT can help avoid deadlocks due to synchronization
+    return GuiHelper.runInEDTAndWaitAndReturn(() -> {
+      final MapillaryLayer layer = new MapillaryLayer();
+      layer.init();
+      instance = layer; // Only set instance field after initialization is complete
+      return instance;
+    });
   }
 
   /**

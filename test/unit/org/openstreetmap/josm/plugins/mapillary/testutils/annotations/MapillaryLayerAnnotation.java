@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -25,7 +26,7 @@ public @interface MapillaryLayerAnnotation {
 
     @Override
     public void afterEach(ExtensionContext context) throws Exception {
-      cleanup();
+      this.beforeEach(context);
     }
 
     @Override
@@ -40,7 +41,11 @@ public @interface MapillaryLayerAnnotation {
 
     void cleanup() {
       if (MapillaryLayer.hasInstance()) {
-        MapillaryLayer.getInstance().destroy();
+        final MapillaryLayer layer = MapillaryLayer.getInstance();
+        if (MainApplication.getLayerManager().containsLayer(layer)) {
+          MainApplication.getLayerManager().removeLayer(layer);
+        }
+        layer.destroy();
       }
     }
   }

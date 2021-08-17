@@ -106,7 +106,7 @@ public class SelectNextImageAction extends JosmAction {
 
   SelectNextImageAction(final String name, final String description, final ImageProvider icon, final Shortcut sc,
     final SerializableSupplier<INode> destinationImgSupplier) {
-    super(null, icon, description, sc, false, "mapillary:" + name.replace(" ", "_"), false);
+    super(name, icon, description, sc, false, "mapillary:" + name.replace(" ", "_"), false);
     putValue(SHORT_DESCRIPTION, description);
     this.destinationImgSupplier = destinationImgSupplier;
   }
@@ -133,8 +133,23 @@ public class SelectNextImageAction extends JosmAction {
    * @param currentImage The image to check against
    */
   public void updateEnabled(final Component component, final INode currentImage) {
+    this.updateEnabledState(currentImage);
+    component.setEnabled(this.isEnabled());
+  }
+
+  @Override
+  protected void updateEnabledState() {
+    super.updateEnabledState();
+    if (MapillaryMainDialog.hasInstance()) {
+      this.updateEnabledState(MapillaryMainDialog.getInstance().getImage());
+    } else {
+      this.setEnabled(false);
+    }
+  }
+
+  protected void updateEnabledState(final INode currentImage) {
     final INode actionNode = this.getDestinationImageSupplier().get();
-    component.setEnabled(actionNode != null && !actionNode.equals(currentImage));
+    this.setEnabled(actionNode != null && !actionNode.equals(currentImage));
   }
 
   /**
@@ -144,6 +159,11 @@ public class SelectNextImageAction extends JosmAction {
    */
   public Supplier<INode> getDestinationImageSupplier() {
     return this.destinationImgSupplier;
+  }
+
+  @Override
+  public String toString() {
+    return "SelectNextImageAction." + this.getValue(NAME);
   }
 
   @FunctionalInterface

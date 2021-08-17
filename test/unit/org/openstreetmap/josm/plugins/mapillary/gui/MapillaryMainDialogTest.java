@@ -17,6 +17,7 @@ import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryU
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMockErrors;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
+import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 import org.openstreetmap.josm.tools.Logging;
 
 import org.awaitility.Awaitility;
@@ -30,6 +31,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
  *
  * @author Taylor Smock
  */
+@BasicPreferences
 @MapillaryURLWireMock
 class MapillaryMainDialogTest {
   @RegisterExtension
