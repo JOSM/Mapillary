@@ -35,7 +35,7 @@
   "thumb_256_url": "thumb_256_filler_url",
   "thumb_1024_url": "thumb_1024_filler_url",
   "thumb_2048_url": "thumb_2048_filler_url",
-  "merge_cc": 4546427159383000000,
+  "merge_cc": 4.546427159383e+18,
   "mesh": {
     "id": "903987176835273",
     "url": "mesh_filler_url"
@@ -47,5 +47,6 @@
     "url": "sfm_cluster_filler_url"
   },
   "width": 4160,
-  "id": "135511895288847"
+  "id": "338231874314914",
+  "comment": "This file is pretty much hand written -- the image appears to be borked on Mapillary's end (as of August 17, 2021)"
 }

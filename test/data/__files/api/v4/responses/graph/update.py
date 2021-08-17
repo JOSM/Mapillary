@@ -16,6 +16,7 @@ MAPILLARY_API_ROOT = "https://graph.mapillary.com/"
 MAPILLARY_HEADERS = {"Authorization": f"OAuth {MAPILLARY_API_KEY}"}
 
 ITEM_RE = re.compile(r"[0-9]+")
+THUMB_RE = re.compile(r"thumb_([0-9]+)_url")
 def update_item(root: str, files: List[str]):
   for file in files:
     if ITEM_RE.search(file):
@@ -25,6 +26,16 @@ def update_item(root: str, files: List[str]):
         fields = [key for key in json_data]
       params = {"fields": ",".join(fields)}
       request = requests.get(MAPILLARY_API_ROOT + file.replace(".json", ""), params=params, headers=MAPILLARY_HEADERS)
+      print(request.url)
+      json_data = request.json()
+      for key in json_data:
+        match = THUMB_RE.match(key)
+        if match:
+          json_data[key] = "thumb_" + match.group(1) + "_filler_url"
+        elif isinstance(json_data[key], dict) and "url" in json_data[key]:
+          json_data[key]["url"] = key + "_filler_url"
+      with open(os.path.join(root, file), 'w') as fh:
+        json.dump(json_data, fh, indent=2)
 
 def update_image_ids(root: str, files: List[str]):
   for file in files:
