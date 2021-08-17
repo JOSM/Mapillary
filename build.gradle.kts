@@ -114,16 +114,14 @@ spotless {
     target("**/*.gradle", "**.*.md", "**/.gitignore")
 
     trimTrailingWhitespace()
-    indentWithSpaces(2)
+    indentWithSpaces(4)
     endWithNewline()
   }
   java {
-    // Exclude datepicker -- this should eventually become another plugin (needs to be in JOSM plugin svn or the replacement thereof)
-    targetExclude("src/main/java/org/openstreetmap/josm/plugins/datepicker/**/*")
     // Avoid large formatting commits.
     ratchetFrom("origin/master")
     trimTrailingWhitespace()
-    indentWithSpaces(2)
+    indentWithSpaces(4)
     endWithNewline()
     removeUnusedImports()
     eclipse().configFile("config/format/code_format.xml")
