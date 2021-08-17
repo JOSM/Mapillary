@@ -37,7 +37,7 @@ public final class MapillaryURL {
          */
         public static String ACCESS_ID = "MLY|4223665974375089|d62822dd792b6a823d0794ef26450398";
         /**
-         * This is the client id for the application, used soley for authentication
+         * This is the client id for the application, used solely for authentication
          */
         public static final long CLIENT_ID = 4_280_585_711_960_869L;
 
