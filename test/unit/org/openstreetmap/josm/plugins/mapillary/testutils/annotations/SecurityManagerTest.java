@@ -15,12 +15,11 @@ import java.security.Permission;
  */
 @ExtendWith(SecurityManagerTest.SecurityManagerExtension.class)
 public @interface SecurityManagerTest {
-    static class SecurityManagerExtension implements AfterEachCallback, BeforeEachCallback {
+    class SecurityManagerExtension implements AfterEachCallback, BeforeEachCallback {
         private static class TestSecurityManager extends SecurityManager {
             @Override
             public void checkPermission(Permission perm) {
-                if (perm instanceof RuntimePermission
-                    && "setSecurityManager".equals(((RuntimePermission) perm).getName())) {
+                if (perm instanceof RuntimePermission && "setSecurityManager".equals(perm.getName())) {
                     StackTraceElement stackTrace = Thread.currentThread().getStackTrace()[1];
                     if (SecurityManagerTest.SecurityManagerExtension.class.getCanonicalName()
                         .equals(stackTrace.getClassName())) {

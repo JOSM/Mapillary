@@ -28,7 +28,7 @@ public @interface MapillaryURLWireMockErrors {
 
     Type value() default Type.APPLICATION_REQUEST_LIMIT_REACHED;
 
-    static class WireMockExtension implements BeforeEachCallback {
+    class WireMockExtension implements BeforeEachCallback {
         @Override
         public void beforeEach(ExtensionContext context) throws Exception {
             final ExtensionContext.Namespace namespace = ExtensionContext.Namespace.create(MapillaryURLWireMock.class);
