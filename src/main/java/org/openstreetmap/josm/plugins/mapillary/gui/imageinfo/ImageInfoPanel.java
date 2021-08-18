@@ -102,8 +102,8 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
         showDetectionsCheck.setSelected(MapillaryProperties.SHOW_DETECTED_SIGNS.get());
         showDetectionsCheck
             .addActionListener(action -> MapillaryProperties.SHOW_DETECTED_SIGNS.put(showDetectionsCheck.isSelected()));
-        MapillaryProperties.SHOW_DETECTED_SIGNS
-            .addListener(valueChange -> showDetectionsCheck.setSelected(MapillaryProperties.SHOW_DETECTED_SIGNS.get()));
+        MapillaryProperties.SHOW_DETECTED_SIGNS.addListener(valueChange -> GuiHelper
+            .runInEDT(() -> showDetectionsCheck.setSelected(MapillaryProperties.SHOW_DETECTED_SIGNS.get())));
 
         usernameLabel = new JLabel();
         usernameLabel.setFont(usernameLabel.getFont().deriveFont(Font.PLAIN));
