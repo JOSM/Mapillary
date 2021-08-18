@@ -46,14 +46,16 @@ public class FilterEventListener implements TableModelListener {
 
     public synchronized void updateAndRunFilters() {
         matcher.reset();
-        for (List<Filter> filters : Arrays.asList(
-            MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters(),
-            MainApplication.getMap().filterDialog.getFilterModel().getFilters())) {
-            for (Filter filter : filters) {
-                try {
-                    matcher.add(filter);
-                } catch (SearchParseError e1) {
-                    Logging.error(e1);
+        if (MainApplication.getMap() != null) {
+            for (List<Filter> filters : Arrays.asList(
+                MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters(),
+                MainApplication.getMap().filterDialog.getFilterModel().getFilters())) {
+                for (Filter filter : filters) {
+                    try {
+                        matcher.add(filter);
+                    } catch (SearchParseError e1) {
+                        Logging.error(e1);
+                    }
                 }
             }
         }

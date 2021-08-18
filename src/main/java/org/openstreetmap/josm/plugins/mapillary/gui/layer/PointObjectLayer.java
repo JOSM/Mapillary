@@ -137,7 +137,6 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
         }
         tableModelListener = new FilterEventListener(this, this.getData());
         MapillaryExpertFilterDialog.getInstance().getFilterModel().addTableModelListener(tableModelListener);
-        MainApplication.getMap().filterDialog.getFilterModel().addTableModelListener(tableModelListener);
         tableModelListener.tableChanged(null);
 
         VectorDataSet data = this.getData();

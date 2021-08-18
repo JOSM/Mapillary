@@ -20,6 +20,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.openstreetmap.josm.TestUtils;
 import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.DeveloperToggleAction;
+import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.ObjectDetectionsAnnotation;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 
@@ -27,6 +28,7 @@ import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
  *
  */
 @BasicPreferences
+@ObjectDetectionsAnnotation
 class ObjectDetectionsTest {
     @RegisterExtension
     static JOSMTestRules rule = new JOSMTestRules().presets();
@@ -36,7 +38,6 @@ class ObjectDetectionsTest {
     static void beforeClass() throws ReflectiveOperationException {
         osmKey = ObjectDetections.class.getDeclaredField("osmKey");
         osmKey.setAccessible(true);
-        ObjectDetections.updatePresets();
     }
 
     /**

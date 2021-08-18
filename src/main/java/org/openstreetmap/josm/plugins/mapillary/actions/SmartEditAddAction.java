@@ -2,6 +2,8 @@ package org.openstreetmap.josm.plugins.mapillary.actions;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,7 +28,7 @@ import org.openstreetmap.josm.data.vector.VectorPrimitive;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.tagging.presets.TaggingPreset;
 import org.openstreetmap.josm.plugins.mapillary.command.AddMapillaryObjectCommand;
-import org.openstreetmap.josm.plugins.mapillary.command.GenericCommand;
+import org.openstreetmap.josm.plugins.mapillary.command.DeleteCommand;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.AdditionalInstructions;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
@@ -122,17 +124,20 @@ public class SmartEditAddAction extends JosmAction {
      * @param basePrimitive The base primitive
      * @param updateTagsCommand The tag add command
      */
-    private void generateCommands(final OsmPrimitive basePrimitive, final Command updateTagsCommand) {
-        GenericCommand<?, ?, ?, ?, ?> deleteOriginal;
+    private void generateCommands(@Nonnull final OsmPrimitive basePrimitive,
+        @Nullable final Command updateTagsCommand) {
+        DeleteCommand<?, ?, ?, ?, ?> deleteOriginal;
         if (mapillaryObject instanceof VectorPrimitive) {
-            deleteOriginal = new org.openstreetmap.josm.plugins.mapillary.command.DeleteCommand<>(
-                ((VectorPrimitive) mapillaryObject).getDataSet(), (VectorPrimitive) mapillaryObject);
+            deleteOriginal = new DeleteCommand<>(((VectorPrimitive) mapillaryObject).getDataSet(),
+                (VectorPrimitive) mapillaryObject);
         } else {
             throw new IllegalArgumentException(
                 "Unknown primitive type for mapillaryObject: " + mapillaryObject.getClass().getName());
         }
+        UndoRedoHandler.getInstance().add(new AddMapillaryObjectCommand(deleteOriginal, updateTagsCommand));
+        // The updateTagsCommand is only generated when there are not "static" tags (i.e., emergency=fire_hydrant does
+        // not count, but emergency=fire_hydrant + colour=yellow does).
         if (updateTagsCommand != null) {
-            UndoRedoHandler.getInstance().add(new AddMapillaryObjectCommand(deleteOriginal, updateTagsCommand));
             UndoRedoHandler.getInstance().add(updateTagsCommand);
         }
         final AdditionalInstructions additionalInstructions = detection.getAdditionalInstructions();
@@ -177,7 +182,7 @@ public class SmartEditAddAction extends JosmAction {
             mapillaryObject.getKeys().forEach(tNode::put);
             return Collections.singletonList(tNode);
         } else if (mapillaryObject instanceof IWay) {
-            Way way = new Way((Way) mapillaryObject);
+            Way way = new Way();
             way.removeAll();
             way.setNodes(Collections.emptyList());
             ((IWay<?>) mapillaryObject).getNodes().stream().map(INode::getCoor).map(Node::new).forEach(way::addNode);
