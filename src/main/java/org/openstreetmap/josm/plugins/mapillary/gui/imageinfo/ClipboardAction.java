@@ -7,6 +7,8 @@ import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -16,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
 
+import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
@@ -92,20 +95,26 @@ public class ClipboardAction extends AbstractAction {
                     popupParent.getLocationOnScreen().x,
                     popupParent.getLocationOnScreen().y + popupParent.getHeight() + 2);
                 popup.show();
-                new Thread(() -> {
-                    try {
-                        while (lastCopyTime + POPUP_DURATION >= System.currentTimeMillis()) {
-                            Thread.sleep(1000);
-                        }
-                    } catch (InterruptedException e1) {
-                        // Ignore interruptions, continue with closing the popup
-                    } finally {
-                        popup.hide();
-                    }
-                }).start();
+                Timer timer = new Timer();
+                timer.schedule(new TimerPopupTask(popup), POPUP_DURATION);
             }
             lastCopyTime = System.currentTimeMillis();
         }
     }
 
+    /**
+     * A timer task to hide the popup
+     */
+    private static class TimerPopupTask extends TimerTask {
+        private final Popup popup;
+
+        public TimerPopupTask(final Popup popup) {
+            this.popup = popup;
+        }
+
+        @Override
+        public void run() {
+            GuiHelper.runInEDT(this.popup::hide);
+        }
+    }
 }
