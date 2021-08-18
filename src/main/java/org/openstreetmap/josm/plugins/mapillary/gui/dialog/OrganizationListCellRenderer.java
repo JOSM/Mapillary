@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class OrganizationListCellRenderer extends DefaultListCellRenderer {
     private static final long serialVersionUID = -1650696801628131389L;
     /** Scaled organization icons -- cached for performance */
-    private static final Map<OrganizationRecord, ImageIcon> organizationScaledIcons = new ConcurrentHashMap<>();
+    private static final Map<OrganizationRecord, ImageIcon> organizationScaledIcons = new ConcurrentHashMap<>(0);
 
     @Override
     public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
@@ -26,20 +26,30 @@ public class OrganizationListCellRenderer extends DefaultListCellRenderer {
         JLabel comp = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         if (value instanceof OrganizationRecord) {
             OrganizationRecord organization = (OrganizationRecord) value;
-            if (organization.getNiceName() != null && !organization.getNiceName().isEmpty()) {
+            if (organization.getNiceName() != null && !organization.getNiceName().isEmpty()
+                || organization == OrganizationRecord.NULL_RECORD) {
                 comp.setText(organization.getNiceName());
             } else {
-                comp.setText(organization.getKey());
+                comp.setText(Long.toString(organization.getId()));
             }
             if (organization.getAvatar() != null) {
-                comp.setIcon(organizationScaledIcons.computeIfAbsent(organization, tOrganization -> {
-                    final ImageProvider.ImageSizes size = ImageProvider.ImageSizes.DEFAULT;
-                    final Image scaledImage = tOrganization.getAvatar().getImage()
-                        .getScaledInstance(size.getAdjustedWidth(), size.getAdjustedHeight(), Image.SCALE_SMOOTH);
-                    return new ImageIcon(scaledImage);
-                }));
+                comp.setIcon(organizationScaledIcons.computeIfAbsent(organization,
+                    OrganizationListCellRenderer::scaleOrganizationIcon));
             }
         }
         return comp;
+    }
+
+    /**
+     * Scale organization icons
+     *
+     * @param organization The organization whose icon needs to be scaled
+     * @return The scaled icon
+     */
+    private static ImageIcon scaleOrganizationIcon(final OrganizationRecord organization) {
+        final ImageProvider.ImageSizes size = ImageProvider.ImageSizes.DEFAULT;
+        final Image scaledImage = organization.getAvatar().getImage().getScaledInstance(size.getAdjustedWidth(),
+            size.getAdjustedHeight(), Image.SCALE_SMOOTH);
+        return new ImageIcon(scaledImage);
     }
 }

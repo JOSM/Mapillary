@@ -1,6 +1,12 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.data.mapillary;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
+import javax.imageio.ImageIO;
+import javax.json.JsonObject;
+import javax.swing.ImageIcon;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.Serializable;
@@ -9,9 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
+import java.util.regex.Pattern;
 
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
 import org.openstreetmap.josm.data.osm.INode;
@@ -31,81 +35,125 @@ import org.openstreetmap.josm.tools.Logging;
  *
  * @author Taylor Smock
  */
+@Immutable
 public final class OrganizationRecord implements Serializable {
+    private static final Pattern NUMBER_PATTERN = Pattern.compile("[0-9]+");
     private static final ListenerList<OrganizationRecordListener> LISTENERS = ListenerList.create();
-    private String description;
-    private final String key;
-    private String name;
-    private String niceName;
-    private ImageIcon avatar;
+    private final String description;
+    private final long id;
+    private final String name;
+    private final String niceName;
+    private final ImageIcon avatar;
 
-    private static final Map<String, OrganizationRecord> CACHE = new ConcurrentHashMap<>();
+    private static final Map<Long, OrganizationRecord> CACHE = new ConcurrentHashMap<>(1);
 
-    public static final OrganizationRecord NULL_RECORD = new OrganizationRecord("", "", "", "");
+    public static final OrganizationRecord NULL_RECORD = new OrganizationRecord(0L, "", "", "", "");
 
     static {
-        CACHE.put("", NULL_RECORD);
+        CACHE.put(0L, NULL_RECORD);
     }
 
-    private OrganizationRecord(String key, String slug, String name, String description) {
-        // TODO actually get the avatar icon
-        this.avatar = createAvatarIcon(null, key);
+    private OrganizationRecord(Long id, String slug, String name, String description, String avatarUrl) {
+        this.avatar = createAvatarIcon(avatarUrl);
         this.description = description;
-        this.key = key;
+        this.id = id;
         this.name = slug;
         this.niceName = name;
     }
 
-    // OAuthUtils.addAuthenticationHeader returns the resource passed into it.
-    @SuppressWarnings("resource")
-    private static ImageIcon createAvatarIcon(String avatar, String organizationKey) {
+    /**
+     * Get or create an avatar icon
+     *
+     * @param avatar The url for the avatar
+     * @return The avatar to show
+     */
+    @Nonnull
+    private static ImageIcon createAvatarIcon(@Nullable String avatar) {
         if (avatar != null && !avatar.isEmpty()) {
-            return ImageProvider.get(avatar, ImageProvider.ImageSizes.DEFAULT);
-        } else if (organizationKey != null && !organizationKey.isEmpty()) {
-            final String url = MapillaryURL.APIv3.retrieveOrganizationAvatar(organizationKey);
-            final BufferedImage avatarImage = Caches.META_IMAGES.get(url, () -> {
-                try {
-                    HttpClient client = HttpClient.create(new URL(url));
-                    OAuthUtils.addAuthenticationHeader(client);
-                    HttpClient.Response response = client.connect();
-                    if (response.getResponseCode() >= 200 && response.getResponseCode() < 400) {
-                        return ImageIO.read(response.getContent());
-                    }
-                } catch (IOException e) {
-                    Logging.error(e);
-                }
-                return null;
-            });
+            final BufferedImage avatarImage = Caches.META_IMAGES.get(avatar, () -> fetchAvatarIcon(avatar));
             return avatarImage != null ? new ImageIcon(avatarImage) : ImageProvider.createBlankIcon(ImageSizes.DEFAULT);
         }
         return ImageProvider.getEmpty(ImageSizes.DEFAULT);
     }
 
-    public static OrganizationRecord getOrganization(String key, String slug, String name, String description) {
-        boolean newRecord = !CACHE.containsKey(key);
-        OrganizationRecord record = CACHE.computeIfAbsent(key, k -> new OrganizationRecord(k, slug, name, description));
-        // TODO remove when getNewOrganization is done, and make vars final again
-        record.avatar = createAvatarIcon(null, key);
-        record.description = description;
-        record.name = slug;
-        record.niceName = name;
-        if (newRecord) {
-            LISTENERS.fireEvent(l -> l.organizationAdded(record));
+    /**
+     * Do the actual avatar icon fetch
+     *
+     * @param url The icon to get
+     * @return The image
+     */
+    private static BufferedImage fetchAvatarIcon(String url) {
+        try {
+            HttpClient client = HttpClient.create(new URL(url));
+            OAuthUtils.addAuthenticationHeader(client);
+            HttpClient.Response response = client.connect();
+            if (response.getResponseCode() >= 200 && response.getResponseCode() < 400) {
+                return ImageIO.read(response.getContent());
+            }
+        } catch (IOException e) {
+            Logging.error(e);
         }
-        return record;
+        return null;
     }
 
-    public static OrganizationRecord getOrganization(String key) {
-        return key == null ? NULL_RECORD : CACHE.computeIfAbsent(key, OrganizationRecord::getNewOrganization);
+    /**
+     * Get an organization
+     *
+     * @param id The organization id
+     * @return The organization
+     */
+    public static OrganizationRecord getOrganization(long id) {
+        return CACHE.computeIfAbsent(id, OrganizationRecord::getNewOrganization);
     }
 
-    // OAuthUtils.addAuthenticationHeader returns the resource passed into it.
-    private static OrganizationRecord getNewOrganization(String key) {
+    /**
+     * Get an organization
+     *
+     * @param id The organization id
+     * @return The organization
+     */
+    public static OrganizationRecord getOrganization(String id) {
+        return getOrganization(Long.parseLong(id));
+    }
+
+    /**
+     * Get a new organization
+     *
+     * @param id The organization id
+     * @return The new organization record
+     */
+    private static OrganizationRecord getNewOrganization(long id) {
         // TODO check for API in v4 (preferably one that doesn't need user auth)
-        OrganizationRecord gr = new OrganizationRecord(key, "", "", "");
-        // Ensure that we aren't blocking the main EDT thread
-        MainApplication.worker.execute(() -> LISTENERS.fireEvent(l -> l.organizationAdded(gr)));
-        return gr;
+        final String url = MapillaryURL.APIv4.getOrganizationInformation(id);
+        try {
+            final JsonObject data = OAuthUtils.getWithHeader(new URL(url));
+            final OrganizationRecord organizationRecord = decodeNewOrganization(data);
+            // Ensure that we aren't blocking the main EDT thread
+            MainApplication.worker.execute(() -> LISTENERS.fireEvent(l -> l.organizationAdded(organizationRecord)));
+            return organizationRecord;
+        } catch (IOException exception) {
+            Logging.error(exception);
+        }
+        return null;
+    }
+
+    /**
+     * Decode a new organization
+     *
+     * @param organization The object to decode
+     * @return A new organization record
+     */
+    private static OrganizationRecord decodeNewOrganization(JsonObject organization) {
+        String description = organization.getString("description", "");
+        String slug = organization.getString("slug", "");
+        String name = organization.getString("name", "");
+        String idString = organization.getString("id", "");
+        String avatarUrl = organization.getString("profile_photo_url", null);
+        long id = 0;
+        if (NUMBER_PATTERN.matcher(idString).matches()) {
+            id = Long.parseLong(idString);
+        }
+        return new OrganizationRecord(id, slug, name, description, avatarUrl);
     }
 
     /**
@@ -141,8 +189,8 @@ public final class OrganizationRecord implements Serializable {
      *
      * @return The organization key
      */
-    public String getKey() {
-        return key;
+    public long getId() {
+        return id;
     }
 
     /**

@@ -487,7 +487,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
                 }
                 if (!OrganizationRecord.NULL_RECORD.equals(this.organization)
                     && MapillaryImageUtils.getSequenceKey(img) != null
-                    && !this.organization.getKey().equals(MapillaryImageUtils.getOrganization(img).getKey())) {
+                    && this.organization.getId() != MapillaryImageUtils.getOrganization(img).getId()) {
                     return true;
                 }
             }

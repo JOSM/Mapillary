@@ -181,6 +181,16 @@ public final class MapillaryURL {
         }
 
         /**
+         * Get the URL for organization information
+         *
+         * @param id The organization id
+         */
+        public static String getOrganizationInformation(long id) {
+            // profile_photo_url for profile photos, possibly (currently not public -- errors out) TODO
+            return baseMetaDataUrl + id + queryString(Collections.singletonMap("fields", "slug,name,description"));
+        }
+
+        /**
          * Get user information for the current user
          *
          * @return The URL to get user information (logged in user only)
