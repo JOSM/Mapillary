@@ -15,34 +15,36 @@ import java.security.Permission;
  */
 @ExtendWith(SecurityManagerTest.SecurityManagerExtension.class)
 public @interface SecurityManagerTest {
-  static class SecurityManagerExtension implements AfterEachCallback, BeforeEachCallback {
-    private static class TestSecurityManager extends SecurityManager {
-      @Override
-      public void checkPermission(Permission perm) {
-        if (perm instanceof RuntimePermission && "setSecurityManager".equals(((RuntimePermission) perm).getName())) {
-          StackTraceElement stackTrace = Thread.currentThread().getStackTrace()[1];
-          if (SecurityManagerTest.SecurityManagerExtension.class.getCanonicalName().equals(stackTrace.getClassName())) {
-            return;
-          }
+    static class SecurityManagerExtension implements AfterEachCallback, BeforeEachCallback {
+        private static class TestSecurityManager extends SecurityManager {
+            @Override
+            public void checkPermission(Permission perm) {
+                if (perm instanceof RuntimePermission
+                    && "setSecurityManager".equals(((RuntimePermission) perm).getName())) {
+                    StackTraceElement stackTrace = Thread.currentThread().getStackTrace()[1];
+                    if (SecurityManagerTest.SecurityManagerExtension.class.getCanonicalName()
+                        .equals(stackTrace.getClassName())) {
+                        return;
+                    }
+                }
+                super.checkPermission(perm);
+            }
         }
-        super.checkPermission(perm);
-      }
-    }
 
-    @Override
-    public void afterEach(ExtensionContext context) throws Exception {
-      SecurityManager sm = System.getSecurityManager();
-      if (sm != null && sm instanceof TestSecurityManager) {
-        System.setSecurityManager(null);
-      }
-    }
+        @Override
+        public void afterEach(ExtensionContext context) throws Exception {
+            SecurityManager sm = System.getSecurityManager();
+            if (sm != null && sm instanceof TestSecurityManager) {
+                System.setSecurityManager(null);
+            }
+        }
 
-    @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
-      if (System.getSecurityManager() == null) {
-        TestSecurityManager securityManager = new TestSecurityManager();
-        System.setSecurityManager(securityManager);
-      }
+        @Override
+        public void beforeEach(ExtensionContext context) throws Exception {
+            if (System.getSecurityManager() == null) {
+                TestSecurityManager securityManager = new TestSecurityManager();
+                System.setSecurityManager(securityManager);
+            }
+        }
     }
-  }
 }

@@ -9,6 +9,6 @@ import org.junit.jupiter.api.Tag;
  */
 @Tag(IntegrationTest.TAG)
 public interface IntegrationTest {
-  /** This is the actual tag string added to the test */
-  String TAG = "integration";
+    /** This is the actual tag string added to the test */
+    String TAG = "integration";
 }

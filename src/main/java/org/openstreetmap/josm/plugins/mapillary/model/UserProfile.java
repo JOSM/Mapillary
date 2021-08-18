@@ -8,41 +8,41 @@ import javax.swing.ImageIcon;
 import org.openstreetmap.josm.tools.ImageProvider;
 
 public class UserProfile extends KeyIndexedObject<String> {
-  private static final long serialVersionUID = -2626823438368139952L;
+    private static final long serialVersionUID = -2626823438368139952L;
 
-  /** A default user profile */
-  public static final UserProfile NONE = new UserProfile("", "",
-    ImageProvider.createBlankIcon(ImageProvider.ImageSizes.DEFAULT));
+    /** A default user profile */
+    public static final UserProfile NONE = new UserProfile("", "",
+        ImageProvider.createBlankIcon(ImageProvider.ImageSizes.DEFAULT));
 
-  private final String username;
-  private final ImageIcon avatar;
+    private final String username;
+    private final ImageIcon avatar;
 
-  public UserProfile(String key, String username, ImageIcon avatar) {
-    super(key);
-    this.avatar = avatar;
-    this.username = username;
-  }
-
-  public String getUsername() {
-    return username;
-  }
-
-  public ImageIcon getAvatar() {
-    return avatar;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o instanceof UserProfile) {
-      UserProfile other = (UserProfile) o;
-      return super.equals(other) && Objects.equals(this.username, other.username)
-        && Objects.equals(this.avatar, other.avatar);
+    public UserProfile(String key, String username, ImageIcon avatar) {
+        super(key);
+        this.avatar = avatar;
+        this.username = username;
     }
-    return false;
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), this.username, this.avatar);
-  }
+    public String getUsername() {
+        return username;
+    }
+
+    public ImageIcon getAvatar() {
+        return avatar;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof UserProfile) {
+            UserProfile other = (UserProfile) o;
+            return super.equals(other) && Objects.equals(this.username, other.username)
+                && Objects.equals(this.avatar, other.avatar);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), this.username, this.avatar);
+    }
 }

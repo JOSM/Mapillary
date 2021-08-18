@@ -1897,286 +1897,287 @@ public enum ObjectDetections {
   }
   // @formatter:on
 
-  private final String key;
-  private final DetectionType[] detectionTypes;
-  private final String[] osmKey;
-  private final Collection<TaggingPresetType> taggingPresetType;
-  private final Supplier<AdditionalInstructions> additionalCommands;
-  private final DataType dataType;
-  private final ImageIcon icon;
-  // Not final just in case a preset change listener needs to be implemented
-  private TaggingPreset[] presets = new TaggingPreset[0];
+    private final String key;
+    private final DetectionType[] detectionTypes;
+    private final String[] osmKey;
+    private final Collection<TaggingPresetType> taggingPresetType;
+    private final Supplier<AdditionalInstructions> additionalCommands;
+    private final DataType dataType;
+    private final ImageIcon icon;
+    // Not final just in case a preset change listener needs to be implemented
+    private TaggingPreset[] presets = new TaggingPreset[0];
 
-  /**
-   * Create an ObjectDetection
-   */
-  ObjectDetections() {
-    this((DetectionType[]) null);
-  }
-
-  /**
-   * Create an ObjectDetection
-   *
-   * @param detectionTypes The types that the detection <i>may</i> appear as
-   */
-  ObjectDetections(DetectionType... detectionTypes) {
-    this(null, (TaggingPresetType[]) null, detectionTypes, DataType.PRODUCTION);
-  }
-
-  /**
-   * Create an ObjectDetection
-   *
-   * @param osmKey The OSM key for the object
-   * @param taggingPresetType The valid types for the preset
-   * @param detectionTypes The types that the detection <i>may</i> appear as
-   * @param dataType The type of the data (AKA, how ready the detection is)
-   */
-  ObjectDetections(String osmKey, TaggingPresetType taggingPresetType, DetectionType detectionTypes,
-    DataType dataType) {
-    this(osmKey, new TaggingPresetType[] { taggingPresetType }, new DetectionType[] { detectionTypes }, dataType);
-  }
-
-  /**
-   * Create an ObjectDetection
-   *
-   * @param osmKey The OSM key for the object
-   * @param taggingPresetType The valid types for the preset
-   * @param detectionTypes The types that the detection <i>may</i> appear as
-   * @param dataType The type of the data (AKA, how ready the detection is)
-   */
-  ObjectDetections(String osmKey, TaggingPresetType taggingPresetType, DetectionType[] detectionTypes,
-    DataType dataType) {
-    this(osmKey, new TaggingPresetType[] { taggingPresetType }, detectionTypes, dataType);
-  }
-
-  /**
-   * Create an ObjectDetection
-   *
-   * @param osmKey The OSM key for the object
-   * @param taggingPresetType The valid types for the preset
-   * @param detectionTypes The types that the detection <i>may</i> appear as
-   * @param dataType The type of the data (AKA, how ready the detection is)
-   */
-  ObjectDetections(String osmKey, TaggingPresetType[] taggingPresetType, DetectionType[] detectionTypes,
-    DataType dataType) {
-    this(osmKey, taggingPresetType, null, detectionTypes, dataType);
-  }
-
-  /**
-   * Create an ObjectDetection
-   *
-   * @param osmKey The OSM key for the object
-   * @param taggingPresetType The valid types for the preset
-   * @param additionalCommands Additional commands to run
-   * @param detectionTypes The types that the detection <i>may</i> appear as
-   * @param dataType The type of the data (AKA, how ready the detection is)
-   */
-  ObjectDetections(String osmKey, TaggingPresetType[] taggingPresetType,
-    Supplier<AdditionalInstructions> additionalCommands, DetectionType[] detectionTypes, DataType dataType) {
-    this.key = this.name().replace("_", "-").toLowerCase(Locale.ENGLISH);
-    this.detectionTypes = detectionTypes;
-    // Use two ;; to avoid cases where a delimited list is needed
-    this.osmKey = osmKey != null ? osmKey.split(";;", 0) : null;
-    this.taggingPresetType = taggingPresetType != null ? Arrays.asList(taggingPresetType) : null;
-    this.additionalCommands = additionalCommands;
-    this.dataType = dataType;
-    this.icon = this.getIcon();
-    this.updateMappingPresets();
-  }
-
-  /**
-   * Convert a string detection into an enum
-   *
-   * @param detection The detection to get an enum for
-   * @return The enum
-   */
-  public static Optional<ObjectDetections> getDetection(String detection) {
-    return Stream.of(values()).parallel().filter(d -> d.getKey().equals(detection)).findAny();
-  }
-
-  /**
-   * Get fallback detections for a detection
-   *
-   * @param detection The detection to find a fallback for
-   * @return A (somewhat) specific fallback detection <i>or</i> {@link #UNKNOWN}, with the boolean indicating if it was
-   *         rejected.
-   */
-  public static Pair<Boolean, ObjectDetections> findFallbackDetection(String detection) {
-    Optional<ObjectDetections> objectDetection = getDetection(detection);
-    if (objectDetection.isPresent()) {
-      return new Pair<>(false, objectDetection.get());
+    /**
+     * Create an ObjectDetection
+     */
+    ObjectDetections() {
+        this((DetectionType[]) null);
     }
-    if (detection.endsWith("--reject")) {
-      Pair<Boolean, ObjectDetections> pair = findFallbackDetection(
-        detection.substring(0, detection.length() - "--reject".length()));
-      pair.a = true;
-      return pair;
+
+    /**
+     * Create an ObjectDetection
+     *
+     * @param detectionTypes The types that the detection <i>may</i> appear as
+     */
+    ObjectDetections(DetectionType... detectionTypes) {
+        this(null, (TaggingPresetType[]) null, detectionTypes, DataType.PRODUCTION);
     }
-    // Don't log void-- detections as unknown (we don't care about them)
-    if (!detection.startsWith("void--")) {
-      Logging.error("Unknown detection \"" + detection + "\"");
+
+    /**
+     * Create an ObjectDetection
+     *
+     * @param osmKey The OSM key for the object
+     * @param taggingPresetType The valid types for the preset
+     * @param detectionTypes The types that the detection <i>may</i> appear as
+     * @param dataType The type of the data (AKA, how ready the detection is)
+     */
+    ObjectDetections(String osmKey, TaggingPresetType taggingPresetType, DetectionType detectionTypes,
+        DataType dataType) {
+        this(osmKey, new TaggingPresetType[] { taggingPresetType }, new DetectionType[] { detectionTypes }, dataType);
     }
-    String toFind = detection.replaceAll("--g[0-9]+$", "");
-    return new Pair<>(false, Stream.of(ObjectDetections.values()).filter(d -> d.getKey().contains(toFind)).findFirst()
-      .orElse(ObjectDetections.UNKNOWN));
-  }
 
-  /**
-   * Get additional instructions
-   *
-   * @return The additional instructions
-   */
-  public AdditionalInstructions getAdditionalInstructions() {
-    if (this.additionalCommands != null) {
-      return this.additionalCommands.get();
+    /**
+     * Create an ObjectDetection
+     *
+     * @param osmKey The OSM key for the object
+     * @param taggingPresetType The valid types for the preset
+     * @param detectionTypes The types that the detection <i>may</i> appear as
+     * @param dataType The type of the data (AKA, how ready the detection is)
+     */
+    ObjectDetections(String osmKey, TaggingPresetType taggingPresetType, DetectionType[] detectionTypes,
+        DataType dataType) {
+        this(osmKey, new TaggingPresetType[] { taggingPresetType }, detectionTypes, dataType);
     }
-    return null;
-  }
 
-  /**
-   * Get the actual key used by Mapillary
-   *
-   * @return The key used for object detections
-   */
-  public String getKey() {
-    return this.key;
-  }
-
-  public TagMap getOsmKeys() {
-    TagMap tagMap = new TagMap();
-    if (this.osmKey == null) {
-      return tagMap;
+    /**
+     * Create an ObjectDetection
+     *
+     * @param osmKey The OSM key for the object
+     * @param taggingPresetType The valid types for the preset
+     * @param detectionTypes The types that the detection <i>may</i> appear as
+     * @param dataType The type of the data (AKA, how ready the detection is)
+     */
+    ObjectDetections(String osmKey, TaggingPresetType[] taggingPresetType, DetectionType[] detectionTypes,
+        DataType dataType) {
+        this(osmKey, taggingPresetType, null, detectionTypes, dataType);
     }
-    for (String tag : this.osmKey) {
-      Tag parsedTag = Tag.ofString(tag);
-      tagMap.put(parsedTag.getKey(), parsedTag.getValue());
+
+    /**
+     * Create an ObjectDetection
+     *
+     * @param osmKey The OSM key for the object
+     * @param taggingPresetType The valid types for the preset
+     * @param additionalCommands Additional commands to run
+     * @param detectionTypes The types that the detection <i>may</i> appear as
+     * @param dataType The type of the data (AKA, how ready the detection is)
+     */
+    ObjectDetections(String osmKey, TaggingPresetType[] taggingPresetType,
+        Supplier<AdditionalInstructions> additionalCommands, DetectionType[] detectionTypes, DataType dataType) {
+        this.key = this.name().replace("_", "-").toLowerCase(Locale.ENGLISH);
+        this.detectionTypes = detectionTypes;
+        // Use two ;; to avoid cases where a delimited list is needed
+        this.osmKey = osmKey != null ? osmKey.split(";;", 0) : null;
+        this.taggingPresetType = taggingPresetType != null ? Arrays.asList(taggingPresetType) : null;
+        this.additionalCommands = additionalCommands;
+        this.dataType = dataType;
+        this.icon = this.getIcon();
+        this.updateMappingPresets();
     }
-    if (Arrays.asList(this.detectionTypes).contains(DetectionType.TRAFFIC_SIGN)) {
-      tagMap.put("direction", "");
+
+    /**
+     * Convert a string detection into an enum
+     *
+     * @param detection The detection to get an enum for
+     * @return The enum
+     */
+    public static Optional<ObjectDetections> getDetection(String detection) {
+        return Stream.of(values()).parallel().filter(d -> d.getKey().equals(detection)).findAny();
     }
-    return tagMap;
-  }
 
-  /**
-   * Get the valid detection types for the object
-   *
-   * @return The detection types that the object <i>may</i> appear in
-   */
-  public Collection<DetectionType> getDetectionTypes() {
-    return this.detectionTypes != null ? Collections.unmodifiableCollection(Arrays.asList(this.detectionTypes))
-      : Collections.emptyList();
-  }
-
-  /**
-   * Update presets for a set key/value
-   */
-  private void updateMappingPresets() {
-    if (osmKey != null) {
-      TagMap map = new TagMap();
-      for (String partialKey : osmKey) {
-        Tag osmTag = Tag.ofString(partialKey);
-        map.put(osmTag.getKey(), osmTag.getValue());
-      }
-      this.presets = TaggingPresets.getMatchingPresets(this.taggingPresetType, map, false).toArray(this.presets);
-    } else {
-      this.presets = new TaggingPreset[0];
-    }
-  }
-
-  /**
-   * Get tagging presets for a specific Mapillary detection key
-   *
-   * @param mapillaryKey The Mapillary detection key to get presets for
-   * @return A list of OSM presets for the Mapillary key
-   */
-  public static TaggingPreset[] getTaggingPresetsFor(String mapillaryKey) {
-    return Stream.of(ObjectDetections.values()).filter(detection -> detection.osmKey != null)
-      .filter(mapping -> mapping.key.equals(mapillaryKey)).flatMap(mapping -> Stream.of(mapping.presets))
-      .toArray(TaggingPreset[]::new);
-  }
-
-  /**
-   * Get the tagging presets for this ObjectDetect
-   *
-   * @return A list of tagging presets
-   */
-  public Collection<TaggingPreset> getTaggingPresets() {
-    return Collections.unmodifiableCollection(Arrays.asList(this.presets));
-  }
-
-  /**
-   * Update presets for each key
-   */
-  public static void updatePresets() {
-    Stream.of(values()).forEach(ObjectDetections::updateMappingPresets);
-  }
-
-  /**
-   * Get the base key
-   *
-   * @return The base key without subcategories (specifically, without "--gNUMBER")
-   */
-  public String getBaseKey() {
-    return getKey().replaceAll("--g[0-9]*$", "");
-  }
-
-  /**
-   * Check if the object is addable
-   *
-   * @return {@code true} if the object should be addable
-   */
-  public boolean shouldBeAddable() {
-    return this.dataType.shouldBeVisible();
-  }
-
-  /**
-   * Convert a Mapillary object detection value to an enum
-   *
-   * @param value The value to convert
-   * @return The enum
-   */
-  public static ObjectDetections valueOfMapillaryValue(String value) {
-    if (value != null) {
-      try {
-        return valueOf(value.toUpperCase(Locale.ENGLISH).replace('-', '_'));
-      } catch (IllegalArgumentException e) {
-        Logging.error(e);
-      }
-    }
-    return UNKNOWN;
-  }
-
-  /**
-   * Get the icon for the detection
-   *
-   * @return The icon
-   */
-  public ImageIcon getIcon() {
-    if (this.icon != null) {
-      return this.icon;
-    }
-    if (Stream.of(ObjectsWithNoImages.OBJECTS_WITH_NO_IMAGES).noneMatch(this.key::equals)) {
-      for (DetectionType type : this.getDetectionTypes()) {
-        if (type.getImageLocationString() == null)
-          continue;
-        ImageIcon tIcon = ImageProvider.getIfAvailable(type.getImageLocationString(), this.getKey());
-        if (tIcon != null) {
-          return tIcon;
+    /**
+     * Get fallback detections for a detection
+     *
+     * @param detection The detection to find a fallback for
+     * @return A (somewhat) specific fallback detection <i>or</i> {@link #UNKNOWN}, with the boolean indicating if it
+     *         was
+     *         rejected.
+     */
+    public static Pair<Boolean, ObjectDetections> findFallbackDetection(String detection) {
+        Optional<ObjectDetections> objectDetection = getDetection(detection);
+        if (objectDetection.isPresent()) {
+            return new Pair<>(false, objectDetection.get());
         }
-      }
+        if (detection.endsWith("--reject")) {
+            Pair<Boolean, ObjectDetections> pair = findFallbackDetection(
+                detection.substring(0, detection.length() - "--reject".length()));
+            pair.a = true;
+            return pair;
+        }
+        // Don't log void-- detections as unknown (we don't care about them)
+        if (!detection.startsWith("void--")) {
+            Logging.error("Unknown detection \"" + detection + "\"");
+        }
+        String toFind = detection.replaceAll("--g[0-9]+$", "");
+        return new Pair<>(false, Stream.of(ObjectDetections.values()).filter(d -> d.getKey().contains(toFind))
+            .findFirst().orElse(ObjectDetections.UNKNOWN));
     }
-    return NO_ICON;
-  }
 
-  @Override
-  public String toString() {
-    return this.key;
-  }
+    /**
+     * Get additional instructions
+     *
+     * @return The additional instructions
+     */
+    public AdditionalInstructions getAdditionalInstructions() {
+        if (this.additionalCommands != null) {
+            return this.additionalCommands.get();
+        }
+        return null;
+    }
 
-  /**
-   * Useful constants
-   */
-  private static class Constants {
-    private static final String HIGHWAY_TRAFFIC_SIGNALS = "highway=traffic_signals";
-  }
+    /**
+     * Get the actual key used by Mapillary
+     *
+     * @return The key used for object detections
+     */
+    public String getKey() {
+        return this.key;
+    }
+
+    public TagMap getOsmKeys() {
+        TagMap tagMap = new TagMap();
+        if (this.osmKey == null) {
+            return tagMap;
+        }
+        for (String tag : this.osmKey) {
+            Tag parsedTag = Tag.ofString(tag);
+            tagMap.put(parsedTag.getKey(), parsedTag.getValue());
+        }
+        if (Arrays.asList(this.detectionTypes).contains(DetectionType.TRAFFIC_SIGN)) {
+            tagMap.put("direction", "");
+        }
+        return tagMap;
+    }
+
+    /**
+     * Get the valid detection types for the object
+     *
+     * @return The detection types that the object <i>may</i> appear in
+     */
+    public Collection<DetectionType> getDetectionTypes() {
+        return this.detectionTypes != null ? Collections.unmodifiableCollection(Arrays.asList(this.detectionTypes))
+            : Collections.emptyList();
+    }
+
+    /**
+     * Update presets for a set key/value
+     */
+    private void updateMappingPresets() {
+        if (osmKey != null) {
+            TagMap map = new TagMap();
+            for (String partialKey : osmKey) {
+                Tag osmTag = Tag.ofString(partialKey);
+                map.put(osmTag.getKey(), osmTag.getValue());
+            }
+            this.presets = TaggingPresets.getMatchingPresets(this.taggingPresetType, map, false).toArray(this.presets);
+        } else {
+            this.presets = new TaggingPreset[0];
+        }
+    }
+
+    /**
+     * Get tagging presets for a specific Mapillary detection key
+     *
+     * @param mapillaryKey The Mapillary detection key to get presets for
+     * @return A list of OSM presets for the Mapillary key
+     */
+    public static TaggingPreset[] getTaggingPresetsFor(String mapillaryKey) {
+        return Stream.of(ObjectDetections.values()).filter(detection -> detection.osmKey != null)
+            .filter(mapping -> mapping.key.equals(mapillaryKey)).flatMap(mapping -> Stream.of(mapping.presets))
+            .toArray(TaggingPreset[]::new);
+    }
+
+    /**
+     * Get the tagging presets for this ObjectDetect
+     *
+     * @return A list of tagging presets
+     */
+    public Collection<TaggingPreset> getTaggingPresets() {
+        return Collections.unmodifiableCollection(Arrays.asList(this.presets));
+    }
+
+    /**
+     * Update presets for each key
+     */
+    public static void updatePresets() {
+        Stream.of(values()).forEach(ObjectDetections::updateMappingPresets);
+    }
+
+    /**
+     * Get the base key
+     *
+     * @return The base key without subcategories (specifically, without "--gNUMBER")
+     */
+    public String getBaseKey() {
+        return getKey().replaceAll("--g[0-9]*$", "");
+    }
+
+    /**
+     * Check if the object is addable
+     *
+     * @return {@code true} if the object should be addable
+     */
+    public boolean shouldBeAddable() {
+        return this.dataType.shouldBeVisible();
+    }
+
+    /**
+     * Convert a Mapillary object detection value to an enum
+     *
+     * @param value The value to convert
+     * @return The enum
+     */
+    public static ObjectDetections valueOfMapillaryValue(String value) {
+        if (value != null) {
+            try {
+                return valueOf(value.toUpperCase(Locale.ENGLISH).replace('-', '_'));
+            } catch (IllegalArgumentException e) {
+                Logging.error(e);
+            }
+        }
+        return UNKNOWN;
+    }
+
+    /**
+     * Get the icon for the detection
+     *
+     * @return The icon
+     */
+    public ImageIcon getIcon() {
+        if (this.icon != null) {
+            return this.icon;
+        }
+        if (Stream.of(ObjectsWithNoImages.OBJECTS_WITH_NO_IMAGES).noneMatch(this.key::equals)) {
+            for (DetectionType type : this.getDetectionTypes()) {
+                if (type.getImageLocationString() == null)
+                    continue;
+                ImageIcon tIcon = ImageProvider.getIfAvailable(type.getImageLocationString(), this.getKey());
+                if (tIcon != null) {
+                    return tIcon;
+                }
+            }
+        }
+        return NO_ICON;
+    }
+
+    @Override
+    public String toString() {
+        return this.key;
+    }
+
+    /**
+     * Useful constants
+     */
+    private static class Constants {
+        private static final String HIGHWAY_TRAFFIC_SIGNALS = "highway=traffic_signals";
+    }
 }

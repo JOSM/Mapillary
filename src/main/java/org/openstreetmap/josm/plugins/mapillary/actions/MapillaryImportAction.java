@@ -24,33 +24,33 @@ import static org.openstreetmap.josm.tools.I18n.tr;
  * Imports a set of picture files into JOSM. They must be in jpg or png format.
  */
 public class MapillaryImportAction extends JosmAction {
-  private static final long serialVersionUID = -6902666084216980921L;
+    private static final long serialVersionUID = -6902666084216980921L;
 
-  /**
-   * Create a new MapillaryImportAction
-   *
-   * @see JosmAction#JosmAction(String, String, String, Shortcut, boolean, String, boolean)
-   */
-  public MapillaryImportAction() {
-    super(tr("Import pictures"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
-      tr("Import local pictures"), Shortcut.registerShortcut("mapillary:mapillaryImportImages",
-        tr("Import pictures into Mapillary layer"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
-      false, "mapillary:mapillaryImportImages", false);
-  }
+    /**
+     * Create a new MapillaryImportAction
+     *
+     * @see JosmAction#JosmAction(String, String, String, Shortcut, boolean, String, boolean)
+     */
+    public MapillaryImportAction() {
+        super(tr("Import pictures"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
+            tr("Import local pictures"), Shortcut.registerShortcut("mapillary:mapillaryImportImages",
+                tr("Import pictures into Mapillary layer"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+            false, "mapillary:mapillaryImportImages", false);
+    }
 
-  /**
-   * Records in the history, that the given images were loaded
-   *
-   * @param addedImages the images that have been loaded
-   */
-  public static void recordChanges(List<VectorNode> addedImages) {
-    VectorDataSet dataSet = MapillaryLayer.getInstance().getData();
-    new ConcurrentSkipListSet<>(addedImages).forEach(dataSet::addPrimitive);
-    MapillaryUtils.showAllPictures();
-  }
+    /**
+     * Records in the history, that the given images were loaded
+     *
+     * @param addedImages the images that have been loaded
+     */
+    public static void recordChanges(List<VectorNode> addedImages) {
+        VectorDataSet dataSet = MapillaryLayer.getInstance().getData();
+        new ConcurrentSkipListSet<>(addedImages).forEach(dataSet::addPrimitive);
+        MapillaryUtils.showAllPictures();
+    }
 
-  @Override
-  public void actionPerformed(ActionEvent event) {
-    new ImportMethodDialog(MainApplication.getMainFrame()).setVisible(true);
-  }
+    @Override
+    public void actionPerformed(ActionEvent event) {
+        new ImportMethodDialog(MainApplication.getMainFrame()).setVisible(true);
+    }
 }

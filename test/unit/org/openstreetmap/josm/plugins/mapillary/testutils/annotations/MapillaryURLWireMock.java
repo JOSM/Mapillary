@@ -68,302 +68,307 @@ import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 @Target(ElementType.TYPE)
 @ExtendWith(MapillaryURLWireMock.MapillaryURLMockExtension.class)
 public @interface MapillaryURLWireMock {
-  /** Use to indicate wether or not the API calls should be mocked */
-  enum Type {
-    /** Mock the API calls */
-    STANDARD,
-    /** Call the real server (may only be used with {@link IntegrationTest}s) */
-    INTEGRATION
-  }
-
-  Type value() default Type.STANDARD;
-
-  /**
-   * Do the test setup and teardowns
-   */
-  class MapillaryURLMockExtension implements AfterAllCallback, AfterEachCallback, BeforeAllCallback {
-    private static final String defaultBaseMetaDataUrl;
-    private static final String defaultBaseTileUrl;
-    private static final String defaultAccessKey;
-    static {
-      String baseMetaDataUrl;
-      String baseTileUrl;
-      String accessKey;
-      try {
-        baseMetaDataUrl = (String) TestUtils.getPrivateStaticField(MapillaryURL.APIv4.class, "baseMetaDataUrl");
-        baseTileUrl = (String) TestUtils.getPrivateStaticField(MapillaryURL.APIv4.class, "baseTileUrl");
-        accessKey = (String) TestUtils.getPrivateStaticField(MapillaryURL.APIv4.class, "ACCESS_ID");
-      } catch (ReflectiveOperationException e) {
-        Logging.error(e);
-        baseMetaDataUrl = null;
-        baseTileUrl = null;
-        accessKey = null;
-      }
-      defaultBaseTileUrl = baseTileUrl;
-      defaultBaseMetaDataUrl = baseMetaDataUrl;
-      defaultAccessKey = accessKey;
+    /** Use to indicate wether or not the API calls should be mocked */
+    enum Type {
+        /** Mock the API calls */
+        STANDARD,
+        /** Call the real server (may only be used with {@link IntegrationTest}s) */
+        INTEGRATION
     }
 
-    @Override
-    public void afterAll(final ExtensionContext context) throws Exception {
-      final ExtensionContext.Namespace namespace = ExtensionContext.Namespace.create(MapillaryURLWireMock.class);
-      final WireMockServer server = context.getStore(namespace).get(WireMockServer.class, WireMockServer.class);
-      server.stop();
-      // Ensure things throw if this isn't called
-      TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseMetaDataUrl", null);
-      TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseTileUrl", null);
-      TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "ACCESS_ID", null);
-    }
-
-    @Override
-    public void afterEach(final ExtensionContext context) throws Exception {
-      final ExtensionContext.Namespace namespace = ExtensionContext.Namespace.create(MapillaryURLWireMock.class);
-      final WireMockServer server = context.getStore(namespace).get(WireMockServer.class, WireMockServer.class);
-      final List<LoggedRequest> unmatched = server.findAllUnmatchedRequests();
-      try {
-        if (!unmatched.isEmpty()) {
-          fail(unmatched.stream().map(LoggedRequest::getUrl)
-            .collect(Collectors.joining(System.lineSeparator(), "Failing URLs:" + System.lineSeparator(), "")));
-        }
-      } finally {
-        // We want to reset it all regardless for future tests
-        server.resetAll();
-        List<?> stubs = context.getStore(namespace).get(StubMapping.class, List.class);
-        stubs.stream().filter(StubMapping.class::isInstance).map(StubMapping.class::cast)
-          .forEach(server::addStubMapping);
-      }
-    }
-
-    @Override
-    public void beforeAll(final ExtensionContext context) throws Exception {
-      final ExtensionContext.Namespace namespace = ExtensionContext.Namespace.create(MapillaryURLWireMock.class);
-      final Object check = context.getStore(namespace).get(WireMockServer.class);
-      assertNull(check, "A wiremock server shouldn't have been started yet");
-
-      final WireMockConfiguration wireMockConfiguration = new WireMockConfiguration().dynamicPort();// .usingFilesUnderDirectory("test/resources/api/v4");
-      final FillerUrlReplacer fillerUrlReplacer = new FillerUrlReplacer();
-      wireMockConfiguration.extensions(new CollectionEndpoint(), new ResponseTemplateTransformer(false),
-        fillerUrlReplacer);
-      wireMockConfiguration.withRootDirectory("test" + File.separatorChar + "resources");
-      final WireMockServer server = new WireMockServer(wireMockConfiguration);
-      fillerUrlReplacer.server = server;
-
-      context.getStore(namespace).put(WireMockServer.class, server);
-      server.start();
-      final Map<String, StringValuePattern> potentialParameters = new HashMap<>();
-      potentialParameters.put("fields", new AnythingPattern());
-      server.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/graph/image_ids.*"))
-        .withQueryParam("sequence_id", new AnythingPattern())
-        .willReturn(
-          WireMock.aResponse().withBodyFile("api/v4/responses/graph/image_ids/{{request.query.sequence_id}}.json")
-            .withHeader("Content-Type", "application/json").withTransformers("response-template"))
-        .atPriority(0));
-      server.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/graph/.*")).withQueryParams(potentialParameters)
-        .willReturn(WireMock.aResponse().withBodyFile("api/v4/responses/graph/{{request.path.[3]}}.json")
-          .withHeader("Content-Type", "application/json").withTransformers("response-template"))
-        .atPriority(100));
-      server.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/coverageTiles/.*"))
-        .withQueryParams(potentialParameters)
-        .willReturn(WireMock.aResponse().withBodyFile(
-          "api/v4/responses/coverageTiles/{{request.path.[3]}}/{{request.path.[4]}}/{{request.path.[5]}}/{{request.path.[6]}}/{{request.path.[7]}}/{{request.path.[8]}}.mvt")
-          .withHeader("Content-Type", "application/vnd.mapbox-vector-tile", "application/vnd.google.protobuf",
-            "application/x-protobuf", "application/protobuf")
-          .withTransformers("response-template"))
-        .atPriority(0));
-      server.stubFor(
-        WireMock.get(WireMock.urlPathMatching("/api/v4/graph/.*?/detections")).withQueryParams(potentialParameters)
-          .willReturn(WireMock.aResponse().withBodyFile("api/v4/responses/graph/{{request.path.[3]}}/detections.json")
-            .withHeader("Content-Type", "application/json").withTransformers("response-template"))
-          .atPriority(0));
-
-      final Map<String, StringValuePattern> imageIdsParameters = new HashMap<>(potentialParameters);
-      imageIdsParameters.put("image_ids", new AnythingPattern());
-
-      // This stub *MUST* be accounted for in the an extension (for example, the CollectionEndpoint extension)
-      server.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/graph/images.*"))
-        .withQueryParams(imageIdsParameters).willReturn(WireMock.aResponse()).atPriority(0));
-      // This stub is needed, since the creation of new layers often makes a call to the "stub" URL
-      server.stubFor(WireMock.get("/api/v4/coverageTiles/mly1_computed_public/2/{z}/{x}/{y}?access_token=test_key")
-        .willReturn(WireMock.serverError()));
-
-      // Stubs for images (default to returning a "blank" image at low priority)
-      try (ByteArrayOutputStream imageOut = new ByteArrayOutputStream()) {
-        final BufferedImage bufferedImage = new BufferedImage(2048, 2048, BufferedImage.TYPE_INT_ARGB);
-        final Graphics2D graphics = bufferedImage.createGraphics();
-        graphics.setColor(Color.WHITE);
-        graphics.drawRect(0, 0, 2048, 2048);
-        ImageIO.write(bufferedImage, "png", imageOut);
-        server.stubFor(WireMock.get(WireMock.urlPathMatching("/thumb_([0-9]+)_([0-9]+)"))
-          .willReturn(WireMock.aResponse().withBody(imageOut.toByteArray())).atPriority(100));
-      } catch (Exception exception) {
-        fail(exception);
-      }
-
-      // Store the stub mappings for future use.
-      context.getStore(namespace).put(StubMapping.class, server.getStubMappings());
-
-      // Only allow real Mapillary API calls in integration tests.
-      if (context.getElement().isPresent()
-        && AnnotationSupport.findAnnotation(context.getElement().get(), MapillaryURLWireMock.class)
-          .map(MapillaryURLWireMock::value).orElse(Type.STANDARD) == Type.INTEGRATION
-        && context.getTags().contains(IntegrationTest.TAG)) {
-        TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseMetaDataUrl", defaultBaseMetaDataUrl);
-        TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseTileUrl", defaultBaseTileUrl);
-        TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "ACCESS_ID", defaultAccessKey);
-      } else {
-        TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseMetaDataUrl",
-          server.baseUrl() + "/api/v4/graph/");
-        TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseTileUrl",
-          server.baseUrl() + "/api/v4/coverageTiles/");
-        // Wiremock pattern matching has issues with the actual key. So replace it with a "test_key".
-        TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "ACCESS_ID", "test_key");
-      }
-    }
+    Type value() default Type.STANDARD;
 
     /**
-     * Account for collection endpoints
+     * Do the test setup and teardowns
      */
-    private static final class CollectionEndpoint extends ResponseTransformer {
-
-      @Override
-      public Response transform(Request request, Response response, FileSource files, Parameters parameters) {
-        if (request.queryParameter("image_ids").isPresent()) {
-          // Not implemented currently since I don't know if I need to split on `,` or `%2C`
-          final List<String> imageIds = request.queryParameter("image_ids").values().stream()
-            .map(str -> str.split(",", -1)).flatMap(Stream::of).filter(Objects::nonNull).collect(Collectors.toList());
-          final List<TextFile> imageText = imageIds.stream()
-            .map(image -> files.getTextFileNamed("api/v4/responses/graph/" + image + ".json"))
-            .collect(Collectors.toList());
-          // We need to get the actual bytes prior to returning, so we need to read the files.
-          final String body = imageText.stream().map(TextFile::readContentsAsString)
-            .collect(Collectors.joining(",", "{\"data\":[", "]}"));
-          return Response.Builder.like(response).but().body(body).build();
+    class MapillaryURLMockExtension implements AfterAllCallback, AfterEachCallback, BeforeAllCallback {
+        private static final String defaultBaseMetaDataUrl;
+        private static final String defaultBaseTileUrl;
+        private static final String defaultAccessKey;
+        static {
+            String baseMetaDataUrl;
+            String baseTileUrl;
+            String accessKey;
+            try {
+                baseMetaDataUrl = (String) TestUtils.getPrivateStaticField(MapillaryURL.APIv4.class, "baseMetaDataUrl");
+                baseTileUrl = (String) TestUtils.getPrivateStaticField(MapillaryURL.APIv4.class, "baseTileUrl");
+                accessKey = (String) TestUtils.getPrivateStaticField(MapillaryURL.APIv4.class, "ACCESS_ID");
+            } catch (ReflectiveOperationException e) {
+                Logging.error(e);
+                baseMetaDataUrl = null;
+                baseTileUrl = null;
+                accessKey = null;
+            }
+            defaultBaseTileUrl = baseTileUrl;
+            defaultBaseMetaDataUrl = baseMetaDataUrl;
+            defaultAccessKey = accessKey;
         }
-        return response;
-      }
 
-      @Override
-      public String getName() {
-        return "collectionEndpoint";
-      }
-    }
-
-    /**
-     * Replace filler urls with wiremock URLs
-     */
-    private static final class FillerUrlReplacer extends ResponseTransformer {
-      private static final Pattern FILLER_URL_PATTERN = Pattern.compile("([a-zA-Z0-9_]*?)_filler_url");
-
-      WireMockServer server;
-
-      @Override
-      public String getName() {
-        return "fillerUrlReplacer";
-      }
-
-      @Override
-      public Response transform(Request request, Response response, FileSource files, Parameters parameters) {
-        if (server == null) {
-          fail("No wiremock server set");
+        @Override
+        public void afterAll(final ExtensionContext context) throws Exception {
+            final ExtensionContext.Namespace namespace = ExtensionContext.Namespace.create(MapillaryURLWireMock.class);
+            final WireMockServer server = context.getStore(namespace).get(WireMockServer.class, WireMockServer.class);
+            server.stop();
+            // Ensure things throw if this isn't called
+            TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseMetaDataUrl", null);
+            TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseTileUrl", null);
+            TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "ACCESS_ID", null);
         }
-        // If the user is logged in, we <i>technically</i> don't need the access_token in parameters
-        if (!request.queryParameter("access_token").isPresent() && !request.containsHeader("Authorization")) {
-          fail("Always pass the access token: " + request.getUrl());
-        }
-        // Don't try to modify the vector tiles
-        if (request.contentTypeHeader().containsValue("application/vnd.mapbox-vector-tile")) {
-          return response;
-        }
-        final String origBody = response.getBodyAsString();
-        String newBody = origBody.replaceAll("https?:\\/\\/.*?\\/", server.baseUrl() + "/");
-        // Replace with ids
-        try (
-          JsonReader reader = Json.createReader(new ByteArrayInputStream(newBody.getBytes(StandardCharsets.UTF_8)))) {
-          final JsonValue value = reader.readValue();
-          if (value instanceof JsonObject) {
-            final JsonValue data = ((JsonObject) value).getOrDefault("data", value);
-            if (data instanceof JsonObject && ((JsonObject) data).containsKey("id")) {
-              newBody = replaceThumbUrls(server, (JsonObject) data).toString();
-            } else if (data instanceof JsonArray) {
-              final JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
-              for (JsonValue jsonValue : ((JsonArray) data)) {
-                if (jsonValue instanceof JsonObject && ((JsonObject) jsonValue).containsKey("id")) {
-                  jsonArrayBuilder.add(replaceThumbUrls(server, (JsonObject) jsonValue));
+
+        @Override
+        public void afterEach(final ExtensionContext context) throws Exception {
+            final ExtensionContext.Namespace namespace = ExtensionContext.Namespace.create(MapillaryURLWireMock.class);
+            final WireMockServer server = context.getStore(namespace).get(WireMockServer.class, WireMockServer.class);
+            final List<LoggedRequest> unmatched = server.findAllUnmatchedRequests();
+            try {
+                if (!unmatched.isEmpty()) {
+                    fail(unmatched.stream().map(LoggedRequest::getUrl).collect(
+                        Collectors.joining(System.lineSeparator(), "Failing URLs:" + System.lineSeparator(), "")));
                 }
-              }
-              final JsonObjectBuilder dataObject = Json.createObjectBuilder();
-              newBody = dataObject.add("data", jsonArrayBuilder).build().toString();
+            } finally {
+                // We want to reset it all regardless for future tests
+                server.resetAll();
+                List<?> stubs = context.getStore(namespace).get(StubMapping.class, List.class);
+                stubs.stream().filter(StubMapping.class::isInstance).map(StubMapping.class::cast)
+                    .forEach(server::addStubMapping);
             }
-          }
         }
 
-        // Filter based off of parameters
-        if (request.queryParameter("fields").isPresent()) {
-          final List<String> fields = request.queryParameter("fields").values().stream()
-            .flatMap(string -> Stream.of(string.split(",", -1))).filter(Objects::nonNull)
-            .filter(string -> !Utils.isStripEmpty(string)).collect(Collectors.toList());
-          try (
-            JsonReader reader = Json.createReader(new ByteArrayInputStream(newBody.getBytes(StandardCharsets.UTF_8)))) {
-            final JsonValue jsonValue = reader.readValue();
-            if (jsonValue instanceof JsonObject) {
-              final JsonObjectBuilder builder = Json.createObjectBuilder();
-              filterFiles(builder, fields, jsonValue);
-              newBody = builder.build().toString();
+        @Override
+        public void beforeAll(final ExtensionContext context) throws Exception {
+            final ExtensionContext.Namespace namespace = ExtensionContext.Namespace.create(MapillaryURLWireMock.class);
+            final Object check = context.getStore(namespace).get(WireMockServer.class);
+            assertNull(check, "A wiremock server shouldn't have been started yet");
+
+            final WireMockConfiguration wireMockConfiguration = new WireMockConfiguration().dynamicPort();// .usingFilesUnderDirectory("test/resources/api/v4");
+            final FillerUrlReplacer fillerUrlReplacer = new FillerUrlReplacer();
+            wireMockConfiguration.extensions(new CollectionEndpoint(), new ResponseTemplateTransformer(false),
+                fillerUrlReplacer);
+            wireMockConfiguration.withRootDirectory("test" + File.separatorChar + "resources");
+            final WireMockServer server = new WireMockServer(wireMockConfiguration);
+            fillerUrlReplacer.server = server;
+
+            context.getStore(namespace).put(WireMockServer.class, server);
+            server.start();
+            final Map<String, StringValuePattern> potentialParameters = new HashMap<>();
+            potentialParameters.put("fields", new AnythingPattern());
+            server.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/graph/image_ids.*"))
+                .withQueryParam("sequence_id", new AnythingPattern())
+                .willReturn(WireMock.aResponse()
+                    .withBodyFile("api/v4/responses/graph/image_ids/{{request.query.sequence_id}}.json")
+                    .withHeader("Content-Type", "application/json").withTransformers("response-template"))
+                .atPriority(0));
+            server
+                .stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/graph/.*")).withQueryParams(potentialParameters)
+                    .willReturn(WireMock.aResponse().withBodyFile("api/v4/responses/graph/{{request.path.[3]}}.json")
+                        .withHeader("Content-Type", "application/json").withTransformers("response-template"))
+                    .atPriority(100));
+            server.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/coverageTiles/.*"))
+                .withQueryParams(potentialParameters)
+                .willReturn(WireMock.aResponse().withBodyFile(
+                    "api/v4/responses/coverageTiles/{{request.path.[3]}}/{{request.path.[4]}}/{{request.path.[5]}}/{{request.path.[6]}}/{{request.path.[7]}}/{{request.path.[8]}}.mvt")
+                    .withHeader("Content-Type", "application/vnd.mapbox-vector-tile", "application/vnd.google.protobuf",
+                        "application/x-protobuf", "application/protobuf")
+                    .withTransformers("response-template"))
+                .atPriority(0));
+            server.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/graph/.*?/detections"))
+                .withQueryParams(potentialParameters)
+                .willReturn(
+                    WireMock.aResponse().withBodyFile("api/v4/responses/graph/{{request.path.[3]}}/detections.json")
+                        .withHeader("Content-Type", "application/json").withTransformers("response-template"))
+                .atPriority(0));
+
+            final Map<String, StringValuePattern> imageIdsParameters = new HashMap<>(potentialParameters);
+            imageIdsParameters.put("image_ids", new AnythingPattern());
+
+            // This stub *MUST* be accounted for in the an extension (for example, the CollectionEndpoint extension)
+            server.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/graph/images.*"))
+                .withQueryParams(imageIdsParameters).willReturn(WireMock.aResponse()).atPriority(0));
+            // This stub is needed, since the creation of new layers often makes a call to the "stub" URL
+            server
+                .stubFor(WireMock.get("/api/v4/coverageTiles/mly1_computed_public/2/{z}/{x}/{y}?access_token=test_key")
+                    .willReturn(WireMock.serverError()));
+
+            // Stubs for images (default to returning a "blank" image at low priority)
+            try (ByteArrayOutputStream imageOut = new ByteArrayOutputStream()) {
+                final BufferedImage bufferedImage = new BufferedImage(2048, 2048, BufferedImage.TYPE_INT_ARGB);
+                final Graphics2D graphics = bufferedImage.createGraphics();
+                graphics.setColor(Color.WHITE);
+                graphics.drawRect(0, 0, 2048, 2048);
+                ImageIO.write(bufferedImage, "png", imageOut);
+                server.stubFor(WireMock.get(WireMock.urlPathMatching("/thumb_([0-9]+)_([0-9]+)"))
+                    .willReturn(WireMock.aResponse().withBody(imageOut.toByteArray())).atPriority(100));
+            } catch (Exception exception) {
+                fail(exception);
             }
-          }
+
+            // Store the stub mappings for future use.
+            context.getStore(namespace).put(StubMapping.class, server.getStubMappings());
+
+            // Only allow real Mapillary API calls in integration tests.
+            if (context.getElement().isPresent()
+                && AnnotationSupport.findAnnotation(context.getElement().get(), MapillaryURLWireMock.class)
+                    .map(MapillaryURLWireMock::value).orElse(Type.STANDARD) == Type.INTEGRATION
+                && context.getTags().contains(IntegrationTest.TAG)) {
+                TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseMetaDataUrl", defaultBaseMetaDataUrl);
+                TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseTileUrl", defaultBaseTileUrl);
+                TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "ACCESS_ID", defaultAccessKey);
+            } else {
+                TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseMetaDataUrl",
+                    server.baseUrl() + "/api/v4/graph/");
+                TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseTileUrl",
+                    server.baseUrl() + "/api/v4/coverageTiles/");
+                // Wiremock pattern matching has issues with the actual key. So replace it with a "test_key".
+                TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "ACCESS_ID", "test_key");
+            }
         }
 
-        return Response.Builder.like(response).but().body(newBody).build();
-      }
+        /**
+         * Account for collection endpoints
+         */
+        private static final class CollectionEndpoint extends ResponseTransformer {
 
-      private static JsonObject replaceThumbUrls(final WireMockServer server, final JsonObject jsonObject) {
-        final JsonObjectBuilder builder = Json.createObjectBuilder();
-        final String id = jsonObject.getString("id");
-        for (Map.Entry<String, JsonValue> entry : jsonObject.entrySet()) {
-          if (entry.getValue().getValueType() == JsonValue.ValueType.STRING
-            && FILLER_URL_PATTERN.matcher(((JsonString) entry.getValue()).getString()).matches()) {
-            builder.add(entry.getKey(), FILLER_URL_PATTERN.matcher(((JsonString) entry.getValue()).getString())
-              .replaceAll(server.baseUrl() + "/$1_" + id));
-          } else {
-            builder.add(entry.getKey(), entry.getValue());
-          }
-        }
-        return builder.build();
-      }
-
-      private static void filterFiles(final JsonObjectBuilder builder, final List<String> fields,
-        final JsonValue jsonValue) {
-        if (jsonValue instanceof JsonObject) {
-          for (Map.Entry<String, JsonValue> entry : ((JsonObject) jsonValue).entrySet()) {
-            if (entry.getValue() instanceof JsonObject) {
-              final JsonObjectBuilder dataBuilder = Json.createObjectBuilder();
-              for (Map.Entry<String, JsonValue> dataEntry : entry.getValue().asJsonObject().entrySet()) {
-                dataBuilder.add(dataEntry.getKey(), dataEntry.getValue());
-              }
-              final JsonObject jsonObject = dataBuilder.build();
-              if (!jsonObject.isEmpty() && fields.contains(entry.getKey())) {
-                builder.add(entry.getKey(), jsonObject);
-              }
-            } else if (entry.getValue() instanceof JsonArray) {
-              JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
-              for (JsonValue jsonValue1 : ((JsonArray) entry.getValue())) {
-                JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
-                filterFiles(jsonObjectBuilder, fields, jsonValue1);
-                final JsonObject jsonObject = jsonObjectBuilder.build();
-                if (!jsonObject.isEmpty()) {
-                  jsonArrayBuilder.add(jsonObject);
+            @Override
+            public Response transform(Request request, Response response, FileSource files, Parameters parameters) {
+                if (request.queryParameter("image_ids").isPresent()) {
+                    // Not implemented currently since I don't know if I need to split on `,` or `%2C`
+                    final List<String> imageIds = request.queryParameter("image_ids").values().stream()
+                        .map(str -> str.split(",", -1)).flatMap(Stream::of).filter(Objects::nonNull)
+                        .collect(Collectors.toList());
+                    final List<TextFile> imageText = imageIds.stream()
+                        .map(image -> files.getTextFileNamed("api/v4/responses/graph/" + image + ".json"))
+                        .collect(Collectors.toList());
+                    // We need to get the actual bytes prior to returning, so we need to read the files.
+                    final String body = imageText.stream().map(TextFile::readContentsAsString)
+                        .collect(Collectors.joining(",", "{\"data\":[", "]}"));
+                    return Response.Builder.like(response).but().body(body).build();
                 }
-              }
-              final JsonArray jsonArray = jsonArrayBuilder.build();
-              if (!jsonArray.isEmpty()) {
-                builder.add(entry.getKey(), jsonArray);
-              }
-            } else if (fields.contains(entry.getKey()) || "id".equals(entry.getKey())) {
-              builder.add(entry.getKey(), entry.getValue());
+                return response;
             }
-          }
+
+            @Override
+            public String getName() {
+                return "collectionEndpoint";
+            }
         }
-      }
+
+        /**
+         * Replace filler urls with wiremock URLs
+         */
+        private static final class FillerUrlReplacer extends ResponseTransformer {
+            private static final Pattern FILLER_URL_PATTERN = Pattern.compile("([a-zA-Z0-9_]*?)_filler_url");
+
+            WireMockServer server;
+
+            @Override
+            public String getName() {
+                return "fillerUrlReplacer";
+            }
+
+            @Override
+            public Response transform(Request request, Response response, FileSource files, Parameters parameters) {
+                if (server == null) {
+                    fail("No wiremock server set");
+                }
+                // If the user is logged in, we <i>technically</i> don't need the access_token in parameters
+                if (!request.queryParameter("access_token").isPresent() && !request.containsHeader("Authorization")) {
+                    fail("Always pass the access token: " + request.getUrl());
+                }
+                // Don't try to modify the vector tiles
+                if (request.contentTypeHeader().containsValue("application/vnd.mapbox-vector-tile")) {
+                    return response;
+                }
+                final String origBody = response.getBodyAsString();
+                String newBody = origBody.replaceAll("https?:\\/\\/.*?\\/", server.baseUrl() + "/");
+                // Replace with ids
+                try (JsonReader reader = Json
+                    .createReader(new ByteArrayInputStream(newBody.getBytes(StandardCharsets.UTF_8)))) {
+                    final JsonValue value = reader.readValue();
+                    if (value instanceof JsonObject) {
+                        final JsonValue data = ((JsonObject) value).getOrDefault("data", value);
+                        if (data instanceof JsonObject && ((JsonObject) data).containsKey("id")) {
+                            newBody = replaceThumbUrls(server, (JsonObject) data).toString();
+                        } else if (data instanceof JsonArray) {
+                            final JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+                            for (JsonValue jsonValue : ((JsonArray) data)) {
+                                if (jsonValue instanceof JsonObject && ((JsonObject) jsonValue).containsKey("id")) {
+                                    jsonArrayBuilder.add(replaceThumbUrls(server, (JsonObject) jsonValue));
+                                }
+                            }
+                            final JsonObjectBuilder dataObject = Json.createObjectBuilder();
+                            newBody = dataObject.add("data", jsonArrayBuilder).build().toString();
+                        }
+                    }
+                }
+
+                // Filter based off of parameters
+                if (request.queryParameter("fields").isPresent()) {
+                    final List<String> fields = request.queryParameter("fields").values().stream()
+                        .flatMap(string -> Stream.of(string.split(",", -1))).filter(Objects::nonNull)
+                        .filter(string -> !Utils.isStripEmpty(string)).collect(Collectors.toList());
+                    try (JsonReader reader = Json
+                        .createReader(new ByteArrayInputStream(newBody.getBytes(StandardCharsets.UTF_8)))) {
+                        final JsonValue jsonValue = reader.readValue();
+                        if (jsonValue instanceof JsonObject) {
+                            final JsonObjectBuilder builder = Json.createObjectBuilder();
+                            filterFiles(builder, fields, jsonValue);
+                            newBody = builder.build().toString();
+                        }
+                    }
+                }
+
+                return Response.Builder.like(response).but().body(newBody).build();
+            }
+
+            private static JsonObject replaceThumbUrls(final WireMockServer server, final JsonObject jsonObject) {
+                final JsonObjectBuilder builder = Json.createObjectBuilder();
+                final String id = jsonObject.getString("id");
+                for (Map.Entry<String, JsonValue> entry : jsonObject.entrySet()) {
+                    if (entry.getValue().getValueType() == JsonValue.ValueType.STRING
+                        && FILLER_URL_PATTERN.matcher(((JsonString) entry.getValue()).getString()).matches()) {
+                        builder.add(entry.getKey(),
+                            FILLER_URL_PATTERN.matcher(((JsonString) entry.getValue()).getString())
+                                .replaceAll(server.baseUrl() + "/$1_" + id));
+                    } else {
+                        builder.add(entry.getKey(), entry.getValue());
+                    }
+                }
+                return builder.build();
+            }
+
+            private static void filterFiles(final JsonObjectBuilder builder, final List<String> fields,
+                final JsonValue jsonValue) {
+                if (jsonValue instanceof JsonObject) {
+                    for (Map.Entry<String, JsonValue> entry : ((JsonObject) jsonValue).entrySet()) {
+                        if (entry.getValue() instanceof JsonObject) {
+                            final JsonObjectBuilder dataBuilder = Json.createObjectBuilder();
+                            for (Map.Entry<String, JsonValue> dataEntry : entry.getValue().asJsonObject().entrySet()) {
+                                dataBuilder.add(dataEntry.getKey(), dataEntry.getValue());
+                            }
+                            final JsonObject jsonObject = dataBuilder.build();
+                            if (!jsonObject.isEmpty() && fields.contains(entry.getKey())) {
+                                builder.add(entry.getKey(), jsonObject);
+                            }
+                        } else if (entry.getValue() instanceof JsonArray) {
+                            JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+                            for (JsonValue jsonValue1 : ((JsonArray) entry.getValue())) {
+                                JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
+                                filterFiles(jsonObjectBuilder, fields, jsonValue1);
+                                final JsonObject jsonObject = jsonObjectBuilder.build();
+                                if (!jsonObject.isEmpty()) {
+                                    jsonArrayBuilder.add(jsonObject);
+                                }
+                            }
+                            final JsonArray jsonArray = jsonArrayBuilder.build();
+                            if (!jsonArray.isEmpty()) {
+                                builder.add(entry.getKey(), jsonArray);
+                            }
+                        } else if (fields.contains(entry.getKey()) || "id".equals(entry.getKey())) {
+                            builder.add(entry.getKey(), entry.getValue());
+                        }
+                    }
+                }
+            }
+        }
     }
-  }
 }

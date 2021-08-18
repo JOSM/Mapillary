@@ -8,12 +8,12 @@ import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 class MapillaryPropertiesTest {
 
-  @RegisterExtension
-  static JOSMTestRules rules = new MapillaryTestRules();
+    @RegisterExtension
+    static JOSMTestRules rules = new MapillaryTestRules();
 
-  @Test
-  void test() {
-    TestUtil.testUtilityClass(MapillaryProperties.class);
-  }
+    @Test
+    void test() {
+        TestUtil.testUtilityClass(MapillaryProperties.class);
+    }
 
 }

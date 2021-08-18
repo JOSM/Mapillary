@@ -31,54 +31,54 @@ import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 @MapillaryLayerAnnotation
 class PointObjectLayerTest {
 
-  @RegisterExtension
-  static JOSMTestRules rules = new MapillaryTestRules().timeout(20000).projection().main();
+    @RegisterExtension
+    static JOSMTestRules rules = new MapillaryTestRules().timeout(20000).projection().main();
 
-  private PointObjectLayer instance;
-  private OsmDataLayer osm;
+    private PointObjectLayer instance;
+    private OsmDataLayer osm;
 
-  private static WireMockServer wmRule;
+    private static WireMockServer wmRule;
 
-  @BeforeAll
-  static void beforeClass() {
-    wmRule = new WireMockServer(wireMockConfig().dynamicPort());
-    wmRule.start();
-  }
+    @BeforeAll
+    static void beforeClass() {
+        wmRule = new WireMockServer(wireMockConfig().dynamicPort());
+        wmRule.start();
+    }
 
-  @AfterAll
-  static void afterClass() {
-    wmRule.stop();
-  }
+    @AfterAll
+    static void afterClass() {
+        wmRule.stop();
+    }
 
-  @BeforeEach
-  void setUp() {
-    osm = new OsmDataLayer(new DataSet(), "Test", null);
-    MainApplication.getLayerManager().addLayer(osm);
-    instance = new PointObjectLayer(MapillaryKeys.MAPILLARY_POINT_OBJECTS);
-  }
+    @BeforeEach
+    void setUp() {
+        osm = new OsmDataLayer(new DataSet(), "Test", null);
+        MainApplication.getLayerManager().addLayer(osm);
+        instance = new PointObjectLayer(MapillaryKeys.MAPILLARY_POINT_OBJECTS);
+    }
 
-  @Test
-  void testGetIcon() {
-    Icon i = instance.getIcon();
-    assertEquals(ImageSizes.LAYER.getAdjustedHeight(), i.getIconHeight());
-    assertEquals(ImageSizes.LAYER.getAdjustedWidth(), i.getIconWidth());
-  }
+    @Test
+    void testGetIcon() {
+        Icon i = instance.getIcon();
+        assertEquals(ImageSizes.LAYER.getAdjustedHeight(), i.getIconHeight());
+        assertEquals(ImageSizes.LAYER.getAdjustedWidth(), i.getIconWidth());
+    }
 
-  @Test
-  void testMergable() {
-    assertFalse(instance.isMergable(null));
-    instance.mergeFrom(null);
-  }
+    @Test
+    void testMergable() {
+        assertFalse(instance.isMergable(null));
+        instance.mergeFrom(null);
+    }
 
-  @Test
-  void testInfoComponent() {
-    assertNotNull(instance.getInfoComponent());
-  }
+    @Test
+    void testInfoComponent() {
+        assertNotNull(instance.getInfoComponent());
+    }
 
-  @Test
-  void testTrivialMethods() {
-    assertNotNull(instance.getToolTipText());
-    instance.visitBoundingBox(null);
-    assertEquals(10, instance.getMenuEntries().length);
-  }
+    @Test
+    void testTrivialMethods() {
+        assertNotNull(instance.getToolTipText());
+        instance.visitBoundingBox(null);
+        assertEquals(10, instance.getMenuEntries().length);
+    }
 }

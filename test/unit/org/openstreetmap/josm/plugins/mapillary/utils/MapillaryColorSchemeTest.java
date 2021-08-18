@@ -9,16 +9,16 @@ import org.junit.jupiter.api.Test;
 
 class MapillaryColorSchemeTest {
 
-  @Test
-  void testUtilityClass() {
-    TestUtil.testUtilityClass(MapillaryColorScheme.class);
-  }
+    @Test
+    void testUtilityClass() {
+        TestUtil.testUtilityClass(MapillaryColorScheme.class);
+    }
 
-  @Test
-  void testStyleAsDefaultPanel() {
-    assertDoesNotThrow(() -> {
-      MapillaryColorScheme.styleAsDefaultPanel();
-      MapillaryColorScheme.styleAsDefaultPanel((JComponent[]) null);
-    });
-  }
+    @Test
+    void testStyleAsDefaultPanel() {
+        assertDoesNotThrow(() -> {
+            MapillaryColorScheme.styleAsDefaultPanel();
+            MapillaryColorScheme.styleAsDefaultPanel((JComponent[]) null);
+        });
+    }
 }

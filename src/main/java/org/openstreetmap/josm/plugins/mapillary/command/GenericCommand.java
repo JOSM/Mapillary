@@ -19,54 +19,54 @@ import org.openstreetmap.josm.data.osm.OsmData;
  * @param <D> The data set class
  */
 public abstract class GenericCommand<O extends IPrimitive, N extends INode, W extends IWay<N>, R extends IRelation<?>, D extends OsmData<O, N, W, R>>
-  implements PseudoCommand {
+    implements PseudoCommand {
 
-  private final D data;
+    private final D data;
 
-  protected GenericCommand(D dataset) {
-    this.data = dataset;
-  }
+    protected GenericCommand(D dataset) {
+        this.data = dataset;
+    }
 
-  /**
-   * Executes the command on the dataset. This implementation will remember all
-   * primitives returned by fillModifiedData for restoring them on undo.
-   * <p>
-   * The layer should be invalidated after execution so that it can be re-painted.
-   *
-   * @return true
-   */
-  public abstract boolean executeCommand();
+    /**
+     * Executes the command on the dataset. This implementation will remember all
+     * primitives returned by fillModifiedData for restoring them on undo.
+     * <p>
+     * The layer should be invalidated after execution so that it can be re-painted.
+     *
+     * @return true
+     */
+    public abstract boolean executeCommand();
 
-  /**
-   * Undoes the command.
-   * It can be assumed that all objects are in the same state they were before.
-   * It can also be assumed that executeCommand was called exactly once before.
-   * This implementation undoes all objects stored by a former call to executeCommand.
-   */
-  public abstract void undoCommand();
+    /**
+     * Undoes the command.
+     * It can be assumed that all objects are in the same state they were before.
+     * It can also be assumed that executeCommand was called exactly once before.
+     * This implementation undoes all objects stored by a former call to executeCommand.
+     */
+    public abstract void undoCommand();
 
-  /**
-   * Gets the data set this command affects.
-   *
-   * @return The data set. May be <code>null</code> if no layer was set and no edit layer was found.
-   */
-  public D getAffectedDataSet() {
-    return data;
-  }
+    /**
+     * Gets the data set this command affects.
+     *
+     * @return The data set. May be <code>null</code> if no layer was set and no edit layer was found.
+     */
+    public D getAffectedDataSet() {
+        return data;
+    }
 
-  /**
-   * Return the primitives that take part in this command.
-   *
-   * @return primitives that take part in this command
-   */
-  public abstract Collection<? extends O> getParticipatingIPrimitives();
+    /**
+     * Return the primitives that take part in this command.
+     *
+     * @return primitives that take part in this command
+     */
+    public abstract Collection<? extends O> getParticipatingIPrimitives();
 
-  /**
-   * Fill collections with modified data
-   *
-   * @param modified The modified primitives
-   * @param deleted The deleted primitives
-   * @param added The added primitives
-   */
-  public abstract void fillModifiedData(Collection<O> modified, Collection<O> deleted, Collection<O> added);
+    /**
+     * Fill collections with modified data
+     *
+     * @param modified The modified primitives
+     * @param deleted The deleted primitives
+     * @param added The added primitives
+     */
+    public abstract void fillModifiedData(Collection<O> modified, Collection<O> deleted, Collection<O> added);
 }

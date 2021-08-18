@@ -28,29 +28,29 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @ExtendWith(AwaitThreadFinish.AwaitThreadFinishExtension.class)
 public @interface AwaitThreadFinish {
-  /**
-   * An extension that waits for threads to finish, and then continues
-   */
-  class AwaitThreadFinishExtension implements AfterEachCallback, BeforeEachCallback {
-    @Override
-    public void afterEach(ExtensionContext context) throws Exception {
-      final int threadCount = context.getStore(ExtensionContext.Namespace.create(AwaitThreadFinish.class))
-        .get(Thread.class, Integer.class);
-      // Wait for everything to finish
-      final AtomicBoolean workerDone = new AtomicBoolean();
-      MainApplication.worker.submit(() -> workerDone.set(true));
-      Awaitility.await().atMost(Durations.FIVE_SECONDS).until(workerDone::get);
+    /**
+     * An extension that waits for threads to finish, and then continues
+     */
+    class AwaitThreadFinishExtension implements AfterEachCallback, BeforeEachCallback {
+        @Override
+        public void afterEach(ExtensionContext context) throws Exception {
+            final int threadCount = context.getStore(ExtensionContext.Namespace.create(AwaitThreadFinish.class))
+                .get(Thread.class, Integer.class);
+            // Wait for everything to finish
+            final AtomicBoolean workerDone = new AtomicBoolean();
+            MainApplication.worker.submit(() -> workerDone.set(true));
+            Awaitility.await().atMost(Durations.FIVE_SECONDS).until(workerDone::get);
 
-      ForkJoinPool.commonPool().awaitQuiescence(5, TimeUnit.SECONDS);
-      MapillaryUtils.forkJoinPoolsAwaitQuiescence(5, TimeUnit.SECONDS);
+            ForkJoinPool.commonPool().awaitQuiescence(5, TimeUnit.SECONDS);
+            MapillaryUtils.forkJoinPoolsAwaitQuiescence(5, TimeUnit.SECONDS);
 
-      // Awaitility.await().atMost(5, TimeUnit.SECONDS).until(() -> Thread.activeCount() < threadCount);
+            // Awaitility.await().atMost(5, TimeUnit.SECONDS).until(() -> Thread.activeCount() < threadCount);
+        }
+
+        @Override
+        public void beforeEach(ExtensionContext context) throws Exception {
+            context.getStore(ExtensionContext.Namespace.create(AwaitThreadFinish.class)).put(Thread.class,
+                Thread.activeCount());
+        }
     }
-
-    @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
-      context.getStore(ExtensionContext.Namespace.create(AwaitThreadFinish.class)).put(Thread.class,
-        Thread.activeCount());
-    }
-  }
 }

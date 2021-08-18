@@ -6,14 +6,13 @@ package org.openstreetmap.josm.plugins.mapillary.actions;
  * threads.
  *
  * @author nokutu
- *
  */
 public interface WalkListener {
 
-  /**
-   * Called when a new walk thread is started.
-   *
-   * @param thread The thread executing the walk.
-   */
-  void walkStarted(WalkThread thread);
+    /**
+     * Called when a new walk thread is started.
+     *
+     * @param thread The thread executing the walk.
+     */
+    void walkStarted(WalkThread thread);
 }

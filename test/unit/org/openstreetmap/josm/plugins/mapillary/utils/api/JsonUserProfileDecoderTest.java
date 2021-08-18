@@ -29,65 +29,65 @@ import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 class JsonUserProfileDecoderTest {
 
-  @RegisterExtension
-  static JOSMTestRules rules = new MapillaryTestRules().preferences();
+    @RegisterExtension
+    static JOSMTestRules rules = new MapillaryTestRules().preferences();
 
-  private static Object getFakeAvatar() {
-    return TestUtil.getPrivateFieldValue(JsonUserProfileDecoder.class, null, "FAKE_AVATAR");
-  }
-
-  @Test
-  void testUtilityClass() {
-    TestUtil.testUtilityClass(JsonUserProfileDecoder.class);
-  }
-
-  private static InputStream getJsonInputStream(final String path) throws IOException, URISyntaxException {
-    String fileContent = String.join("\n", Files
-      .readAllLines(Paths.get(JsonUserProfileDecoderTest.class.getResource(path).toURI()), StandardCharsets.UTF_8));
-    fileContent = fileContent.replace("https://d4vkkeqw582u.cloudfront.net/3f9f044b34b498ddfb9afbb6/profile.png",
-      JsonUserProfileDecoder.class.getResource("/images/fake-avatar.png").toString());
-    fileContent = fileContent.replace("https://example.org",
-      JsonUserProfileDecoder.class.getResource("/api/v3/responses/userProfile.json").toString());
-    return new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
-  }
-
-  @Test
-  void testDecodeUserProfile() throws IOException, URISyntaxException, IllegalArgumentException {
-    try (InputStream inputStream = getJsonInputStream("/api/v3/responses/userProfile.json");
-      JsonReader reader = Json.createReader(inputStream)) {
-      UserProfile profile = JsonUserProfileDecoder.decodeUserProfile(reader.readObject());
-      assertEquals("2BJl04nvnfW1y2GNaj7x5w", profile.getKey());
-      assertEquals("gyllen", profile.getUsername());
-      assertNotNull(profile.getAvatar());
-      assertNotSame(getFakeAvatar(), profile.getAvatar());
+    private static Object getFakeAvatar() {
+        return TestUtil.getPrivateFieldValue(JsonUserProfileDecoder.class, null, "FAKE_AVATAR");
     }
-  }
 
-  @Test
-  void testDecodeUserProfile2() throws IOException, URISyntaxException, IllegalArgumentException {
-    try (InputStream inputStream = getJsonInputStream("/api/v3/responses/userProfile2.json");
-      JsonReader reader = Json.createReader(inputStream)) {
-      UserProfile profile = JsonUserProfileDecoder.decodeUserProfile(reader.readObject());
-      assertEquals("abcdefg1", profile.getKey());
-      assertEquals("mapillary_userÄ2!", profile.getUsername());
-      assertSame(getFakeAvatar(), profile.getAvatar());
+    @Test
+    void testUtilityClass() {
+        TestUtil.testUtilityClass(JsonUserProfileDecoder.class);
     }
-  }
 
-  @Test
-  void testDecodeInvalidUserProfile() throws IllegalArgumentException, SecurityException {
-    assertNull(JsonUserProfileDecoder.decodeUserProfile(null));
-    assertNull(JsonUserProfileDecoder.decodeUserProfile(JsonUtil.string2jsonObject("{}")));
-    assertNull(JsonUserProfileDecoder.decodeUserProfile(JsonUtil.string2jsonObject("{\"key\":\"arbitrary_key\"}")));
+    private static InputStream getJsonInputStream(final String path) throws IOException, URISyntaxException {
+        String fileContent = String.join("\n", Files.readAllLines(
+            Paths.get(JsonUserProfileDecoderTest.class.getResource(path).toURI()), StandardCharsets.UTF_8));
+        fileContent = fileContent.replace("https://d4vkkeqw582u.cloudfront.net/3f9f044b34b498ddfb9afbb6/profile.png",
+            JsonUserProfileDecoder.class.getResource("/images/fake-avatar.png").toString());
+        fileContent = fileContent.replace("https://example.org",
+            JsonUserProfileDecoder.class.getResource("/api/v3/responses/userProfile.json").toString());
+        return new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
+    }
 
-    UserProfile profile = JsonUserProfileDecoder.decodeUserProfile(
-      JsonUtil.string2jsonObject("{\"key\":\"arbitrary_key\", \"username\":\"arbitrary_username\"}"));
-    assertNotNull(profile);
-    assertSame(getFakeAvatar(), profile.getAvatar());
+    @Test
+    void testDecodeUserProfile() throws IOException, URISyntaxException, IllegalArgumentException {
+        try (InputStream inputStream = getJsonInputStream("/api/v3/responses/userProfile.json");
+            JsonReader reader = Json.createReader(inputStream)) {
+            UserProfile profile = JsonUserProfileDecoder.decodeUserProfile(reader.readObject());
+            assertEquals("2BJl04nvnfW1y2GNaj7x5w", profile.getKey());
+            assertEquals("gyllen", profile.getUsername());
+            assertNotNull(profile.getAvatar());
+            assertNotSame(getFakeAvatar(), profile.getAvatar());
+        }
+    }
 
-    profile = JsonUserProfileDecoder.decodeUserProfile(JsonUtil.string2jsonObject(
-      "{\"key\":\"arbitrary_key\", \"username\":\"arbitrary_username\", \"avatar\":\"https://127.0.0.1/nonExistingAvatarFile\"}"));
-    assertNotNull(profile);
-    assertSame(getFakeAvatar(), profile.getAvatar());
-  }
+    @Test
+    void testDecodeUserProfile2() throws IOException, URISyntaxException, IllegalArgumentException {
+        try (InputStream inputStream = getJsonInputStream("/api/v3/responses/userProfile2.json");
+            JsonReader reader = Json.createReader(inputStream)) {
+            UserProfile profile = JsonUserProfileDecoder.decodeUserProfile(reader.readObject());
+            assertEquals("abcdefg1", profile.getKey());
+            assertEquals("mapillary_userÄ2!", profile.getUsername());
+            assertSame(getFakeAvatar(), profile.getAvatar());
+        }
+    }
+
+    @Test
+    void testDecodeInvalidUserProfile() throws IllegalArgumentException, SecurityException {
+        assertNull(JsonUserProfileDecoder.decodeUserProfile(null));
+        assertNull(JsonUserProfileDecoder.decodeUserProfile(JsonUtil.string2jsonObject("{}")));
+        assertNull(JsonUserProfileDecoder.decodeUserProfile(JsonUtil.string2jsonObject("{\"key\":\"arbitrary_key\"}")));
+
+        UserProfile profile = JsonUserProfileDecoder.decodeUserProfile(
+            JsonUtil.string2jsonObject("{\"key\":\"arbitrary_key\", \"username\":\"arbitrary_username\"}"));
+        assertNotNull(profile);
+        assertSame(getFakeAvatar(), profile.getAvatar());
+
+        profile = JsonUserProfileDecoder.decodeUserProfile(JsonUtil.string2jsonObject(
+            "{\"key\":\"arbitrary_key\", \"username\":\"arbitrary_username\", \"avatar\":\"https://127.0.0.1/nonExistingAvatarFile\"}"));
+        assertNotNull(profile);
+        assertSame(getFakeAvatar(), profile.getAvatar());
+    }
 }

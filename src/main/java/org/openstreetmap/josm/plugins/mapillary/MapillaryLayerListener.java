@@ -16,40 +16,40 @@ import java.util.stream.Stream;
  * @author Taylor Smock
  */
 public class MapillaryLayerListener implements Destroyable, LayerManager.LayerChangeListener {
-  private final LayerManager layerManager;
+    private final LayerManager layerManager;
 
-  public MapillaryLayerListener(LayerManager layerManager) {
-    this.layerManager = layerManager;
-    this.layerManager.addAndFireLayerChangeListener(this);
-  }
-
-  @Override
-  public void layerAdded(LayerManager.LayerAddEvent e) {
-    if (e.getAddedLayer() instanceof MapillaryLayer) {
-      VectorDataSet dataSet = ((MapillaryLayer) e.getAddedLayer()).getData();
-      dataSet.addSelectionListener((VectorDataSelectionListener) ImageInfoPanel.getInstance());
-      dataSet.addSelectionListener(MapillaryMainDialog.getInstance());
-      Stream.of(MapillaryPlugin.getMapillaryDataListeners()).forEach(dataSet::addSelectionListener);
+    public MapillaryLayerListener(LayerManager layerManager) {
+        this.layerManager = layerManager;
+        this.layerManager.addAndFireLayerChangeListener(this);
     }
-  }
 
-  @Override
-  public void layerRemoving(LayerManager.LayerRemoveEvent e) {
-    if (e.getRemovedLayer() instanceof MapillaryLayer) {
-      VectorDataSet dataSet = ((MapillaryLayer) e.getRemovedLayer()).getData();
-      dataSet.removeSelectionListener((VectorDataSelectionListener) ImageInfoPanel.getInstance());
-      dataSet.removeSelectionListener(MapillaryMainDialog.getInstance());
-      Stream.of(MapillaryPlugin.getMapillaryDataListeners()).forEach(dataSet::removeSelectionListener);
+    @Override
+    public void layerAdded(LayerManager.LayerAddEvent e) {
+        if (e.getAddedLayer() instanceof MapillaryLayer) {
+            VectorDataSet dataSet = ((MapillaryLayer) e.getAddedLayer()).getData();
+            dataSet.addSelectionListener((VectorDataSelectionListener) ImageInfoPanel.getInstance());
+            dataSet.addSelectionListener(MapillaryMainDialog.getInstance());
+            Stream.of(MapillaryPlugin.getMapillaryDataListeners()).forEach(dataSet::addSelectionListener);
+        }
     }
-  }
 
-  @Override
-  public void layerOrderChanged(LayerManager.LayerOrderChangeEvent e) {
-    // Don't care
-  }
+    @Override
+    public void layerRemoving(LayerManager.LayerRemoveEvent e) {
+        if (e.getRemovedLayer() instanceof MapillaryLayer) {
+            VectorDataSet dataSet = ((MapillaryLayer) e.getRemovedLayer()).getData();
+            dataSet.removeSelectionListener((VectorDataSelectionListener) ImageInfoPanel.getInstance());
+            dataSet.removeSelectionListener(MapillaryMainDialog.getInstance());
+            Stream.of(MapillaryPlugin.getMapillaryDataListeners()).forEach(dataSet::removeSelectionListener);
+        }
+    }
 
-  @Override
-  public void destroy() {
-    this.layerManager.removeAndFireLayerChangeListener(this);
-  }
+    @Override
+    public void layerOrderChanged(LayerManager.LayerOrderChangeEvent e) {
+        // Don't care
+    }
+
+    @Override
+    public void destroy() {
+        this.layerManager.removeAndFireLayerChangeListener(this);
+    }
 }

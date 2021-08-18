@@ -20,54 +20,55 @@ import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
  * @author Taylor Smock
  */
 public class DatePickerSwing implements IDatePicker<JosmTextField> {
-  private Instant date;
-  private final JosmTextField component = new DisableShortcutsOnFocusGainedTextField("", 12);
+    private Instant date;
+    private final JosmTextField component = new DisableShortcutsOnFocusGainedTextField("", 12);
 
-  public DatePickerSwing() {
-    super();
-    component.setToolTipText("YYYY-MM-DD");
-  }
-
-  @Override
-  public void setInstant(Instant date) {
-    this.date = date;
-    if (date != null) {
-      this.component.setText(DateTimeFormatter.ISO_DATE.format(ZonedDateTime.ofInstant(this.date, ZoneOffset.UTC)));
-    } else {
-      component.setText("");
+    public DatePickerSwing() {
+        super();
+        component.setToolTipText("YYYY-MM-DD");
     }
-  }
 
-  @Override
-  public Instant getInstant() {
-    return this.date;
-  }
+    @Override
+    public void setInstant(Instant date) {
+        this.date = date;
+        if (date != null) {
+            this.component
+                .setText(DateTimeFormatter.ISO_DATE.format(ZonedDateTime.ofInstant(this.date, ZoneOffset.UTC)));
+        } else {
+            component.setText("");
+        }
+    }
 
-  @Override
-  public JosmTextField getComponent() {
-    return component;
-  }
+    @Override
+    public Instant getInstant() {
+        return this.date;
+    }
 
-  @Override
-  public void reset() {
-    component.setText("");
-  }
+    @Override
+    public JosmTextField getComponent() {
+        return component;
+    }
 
-  @Override
-  public void addEventHandler(Consumer<IDatePicker<?>> function) {
-    component.addFocusListener(new FocusListener() {
+    @Override
+    public void reset() {
+        component.setText("");
+    }
 
-      @Override
-      public void focusGained(FocusEvent e) {
-        // Do nothing
-      }
+    @Override
+    public void addEventHandler(Consumer<IDatePicker<?>> function) {
+        component.addFocusListener(new FocusListener() {
 
-      @Override
-      public void focusLost(FocusEvent e) {
-        setInstant(null);
-        function.accept(DatePickerSwing.this);
-      }
-    });
-  }
+            @Override
+            public void focusGained(FocusEvent e) {
+                // Do nothing
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                setInstant(null);
+                function.accept(DatePickerSwing.this);
+            }
+        });
+    }
 
 }

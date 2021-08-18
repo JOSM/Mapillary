@@ -7,15 +7,17 @@ package org.openstreetmap.josm.plugins.mapillary.oauth;
  * Such listeners can be registered e.g. at a {@link OAuthPortListener}.
  */
 public interface MapillaryLoginListener {
-  /**
-   * Should be called whenever the user logs into a mapillary account.
-   * E.g. for updating the GUI to reflect the login status.
-   * @param username the username that the user is now logged in with
-   */
-  void onLogin(final String username);
-  /**
-   * Should be called whenever the user logs out of a mapillary account.
-   * E.g. for updating the GUI to reflect the login status.
-   */
-  void onLogout();
+    /**
+     * Should be called whenever the user logs into a mapillary account.
+     * E.g. for updating the GUI to reflect the login status.
+     *
+     * @param username the username that the user is now logged in with
+     */
+    void onLogin(final String username);
+
+    /**
+     * Should be called whenever the user logs out of a mapillary account.
+     * E.g. for updating the GUI to reflect the login status.
+     */
+    void onLogout();
 }

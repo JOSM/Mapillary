@@ -14,35 +14,35 @@ import org.openstreetmap.josm.data.osm.OsmPrimitive;
  */
 public class AddMapillaryObjectCommand extends Command {
 
-  private final Command updateTagsCommand;
-  private final GenericCommand<?, ?, ?, ?, ?> deleteOriginal;
+    private final Command updateTagsCommand;
+    private final GenericCommand<?, ?, ?, ?, ?> deleteOriginal;
 
-  public AddMapillaryObjectCommand(GenericCommand<?, ?, ?, ?, ?> deleteOriginal, Command updateTagsCommand) {
-    super(updateTagsCommand.getAffectedDataSet());
-    this.updateTagsCommand = updateTagsCommand;
-    this.deleteOriginal = deleteOriginal;
-  }
+    public AddMapillaryObjectCommand(GenericCommand<?, ?, ?, ?, ?> deleteOriginal, Command updateTagsCommand) {
+        super(updateTagsCommand.getAffectedDataSet());
+        this.updateTagsCommand = updateTagsCommand;
+        this.deleteOriginal = deleteOriginal;
+    }
 
-  @Override
-  public boolean executeCommand() {
-    return super.executeCommand() && updateTagsCommand.executeCommand() && deleteOriginal.executeCommand();
-  }
+    @Override
+    public boolean executeCommand() {
+        return super.executeCommand() && updateTagsCommand.executeCommand() && deleteOriginal.executeCommand();
+    }
 
-  @Override
-  public void undoCommand() {
-    super.undoCommand();
-    updateTagsCommand.undoCommand();
-    deleteOriginal.undoCommand();
-  }
+    @Override
+    public void undoCommand() {
+        super.undoCommand();
+        updateTagsCommand.undoCommand();
+        deleteOriginal.undoCommand();
+    }
 
-  @Override
-  public void fillModifiedData(Collection<OsmPrimitive> modified, Collection<OsmPrimitive> deleted,
-    Collection<OsmPrimitive> added) {
-    updateTagsCommand.fillModifiedData(modified, deleted, added);
-  }
+    @Override
+    public void fillModifiedData(Collection<OsmPrimitive> modified, Collection<OsmPrimitive> deleted,
+        Collection<OsmPrimitive> added) {
+        updateTagsCommand.fillModifiedData(modified, deleted, added);
+    }
 
-  @Override
-  public String getDescriptionText() {
-    return tr("Mapillary Smart Edit: Add objects");
-  }
+    @Override
+    public String getDescriptionText() {
+        return tr("Mapillary Smart Edit: Add objects");
+    }
 }

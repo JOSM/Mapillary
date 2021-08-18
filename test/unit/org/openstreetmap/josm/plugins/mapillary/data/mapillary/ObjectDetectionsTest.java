@@ -28,60 +28,60 @@ import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
  */
 @BasicPreferences
 class ObjectDetectionsTest {
-  @RegisterExtension
-  static JOSMTestRules rule = new JOSMTestRules().presets();
-  static Field osmKey;
+    @RegisterExtension
+    static JOSMTestRules rule = new JOSMTestRules().presets();
+    static Field osmKey;
 
-  @BeforeAll
-  static void beforeClass() throws ReflectiveOperationException {
-    osmKey = ObjectDetections.class.getDeclaredField("osmKey");
-    osmKey.setAccessible(true);
-    ObjectDetections.updatePresets();
-  }
+    @BeforeAll
+    static void beforeClass() throws ReflectiveOperationException {
+        osmKey = ObjectDetections.class.getDeclaredField("osmKey");
+        osmKey.setAccessible(true);
+        ObjectDetections.updatePresets();
+    }
 
-  /**
-   * Get production object detections for testing
-   *
-   * @return A stream of arguments for object detections that can be added <i>and</i> should be addable by default.
-   */
-  static Stream<Arguments> provideObjectDetections() {
-    // Ensure that we are only testing production object detections
-    // Both ExpertToggleAction and DeveloperToggleAction have instances
-    ExpertToggleAction.getInstance().setExpert(false);
-    DeveloperToggleAction.getInstance().setDeveloper(false);
-    assertFalse(ExpertToggleAction.isExpert());
-    assertFalse(DeveloperToggleAction.isDeveloper());
-    return Stream.of(ObjectDetections.values()).filter(d -> {
-      try {
-        return osmKey.get(d) != null;
-      } catch (ReflectiveOperationException e) {
-        return false;
-      }
-    }).filter(ObjectDetections::shouldBeAddable).map(Arguments::of);
-  }
+    /**
+     * Get production object detections for testing
+     *
+     * @return A stream of arguments for object detections that can be added <i>and</i> should be addable by default.
+     */
+    static Stream<Arguments> provideObjectDetections() {
+        // Ensure that we are only testing production object detections
+        // Both ExpertToggleAction and DeveloperToggleAction have instances
+        ExpertToggleAction.getInstance().setExpert(false);
+        DeveloperToggleAction.getInstance().setDeveloper(false);
+        assertFalse(ExpertToggleAction.isExpert());
+        assertFalse(DeveloperToggleAction.isDeveloper());
+        return Stream.of(ObjectDetections.values()).filter(d -> {
+            try {
+                return osmKey.get(d) != null;
+            } catch (ReflectiveOperationException e) {
+                return false;
+            }
+        }).filter(ObjectDetections::shouldBeAddable).map(Arguments::of);
+    }
 
-  @ParameterizedTest
-  // Preferred method would be @EnumSource(ObjectDetections.class), but at ~0.5s per operation, it was too slow (~14.5
-  // minutes to run).
-  @MethodSource("org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetectionsTest#provideObjectDetections")
-  void testGetTaggingPreset(ObjectDetections detection) {
-    assertNotEquals(0, ObjectDetections.getTaggingPresetsFor(detection.getKey()).length);
-    assertEquals(detection.name().toLowerCase(Locale.ROOT).replace('_', '-'), detection.toString());
-  }
+    @ParameterizedTest
+    // Preferred method would be @EnumSource(ObjectDetections.class), but at ~0.5s per operation, it was too slow (~14.5
+    // minutes to run).
+    @MethodSource("org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetectionsTest#provideObjectDetections")
+    void testGetTaggingPreset(ObjectDetections detection) {
+        assertNotEquals(0, ObjectDetections.getTaggingPresetsFor(detection.getKey()).length);
+        assertEquals(detection.name().toLowerCase(Locale.ROOT).replace('_', '-'), detection.toString());
+    }
 
-  /**
-   * Test a specific smart-add object for sanity, and as a faster check than {@link #testGetTaggingPreset}.
-   */
-  @Test
-  void testFireHydrant() {
-    ObjectDetections fireHydrant = ObjectDetections.OBJECT__FIRE_HYDRANT;
-    assertEquals("object--fire-hydrant", fireHydrant.getKey());
-    assertNotEquals(0, ObjectDetections.getTaggingPresetsFor(fireHydrant.getKey()).length);
-  }
+    /**
+     * Test a specific smart-add object for sanity, and as a faster check than {@link #testGetTaggingPreset}.
+     */
+    @Test
+    void testFireHydrant() {
+        ObjectDetections fireHydrant = ObjectDetections.OBJECT__FIRE_HYDRANT;
+        assertEquals("object--fire-hydrant", fireHydrant.getKey());
+        assertNotEquals(0, ObjectDetections.getTaggingPresetsFor(fireHydrant.getKey()).length);
+    }
 
-  @Test
-  void superficialEnumCoverageTest() {
-    assertDoesNotThrow(() -> TestUtils.superficialEnumCodeCoverage(ObjectDetections.class));
-  }
+    @Test
+    void superficialEnumCoverageTest() {
+        assertDoesNotThrow(() -> TestUtils.superficialEnumCodeCoverage(ObjectDetections.class));
+    }
 
 }

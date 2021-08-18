@@ -45,153 +45,159 @@ import org.openstreetmap.josm.testutils.JOSMTestRules;
 @MapillaryURLWireMock
 class JsonMapObjectDecoderTest {
 
-  @RegisterExtension
-  static JOSMTestRules rules = new MapillaryTestRules().preferences();
+    @RegisterExtension
+    static JOSMTestRules rules = new MapillaryTestRules().preferences();
 
-  @Test
-  void testDecodeMapObject() throws IOException {
-    final JsonObject jsonObject = OAuthUtils.getWithHeader(new URL(MapillaryURL.APIv4
-      .getMapFeatureInformation(496980935069177L, MapillaryMapFeatureUtils.MapFeatureProperties.values())));
-    final VectorNode node1 = new VectorNode("test");
-    Collection<VectorPrimitive> exampleMapObjects = JsonDecoder.decodeData(jsonObject,
-      json -> JsonMapObjectDecoder.decodeMapFeatureObject(json, node1));
-    assertEquals(1, exampleMapObjects.size());
+    @Test
+    void testDecodeMapObject() throws IOException {
+        final JsonObject jsonObject = OAuthUtils.getWithHeader(new URL(MapillaryURL.APIv4
+            .getMapFeatureInformation(496980935069177L, MapillaryMapFeatureUtils.MapFeatureProperties.values())));
+        final VectorNode node1 = new VectorNode("test");
+        Collection<VectorPrimitive> exampleMapObjects = JsonDecoder.decodeData(jsonObject,
+            json -> JsonMapObjectDecoder.decodeMapFeatureObject(json, node1));
+        assertEquals(1, exampleMapObjects.size());
 
-    final VectorPrimitive exampleMapObject = exampleMapObjects.iterator().next();
-    assertSame(node1, exampleMapObject);
-    // 2017-08-23T21:32:26 UTC -- both are currently the same time
-    assertEquals(1_503_523_946L, MapillaryMapFeatureUtils.getFirstSeenAt(node1).getEpochSecond());
-    assertEquals(1_503_523_946L, MapillaryMapFeatureUtils.getLastSeenAt(node1).getEpochSecond());
-    assertEquals("complementary--both-directions--g2", MapillaryMapFeatureUtils.getValue(node1));
-    assertEquals(496980935069177L, node1.getUniqueId());
-    assertEquals(new LatLon(41.341166490122, -83.417193328459), node1.getCoor());
+        final VectorPrimitive exampleMapObject = exampleMapObjects.iterator().next();
+        assertSame(node1, exampleMapObject);
+        // 2017-08-23T21:32:26 UTC -- both are currently the same time
+        assertEquals(1_503_523_946L, MapillaryMapFeatureUtils.getFirstSeenAt(node1).getEpochSecond());
+        assertEquals(1_503_523_946L, MapillaryMapFeatureUtils.getLastSeenAt(node1).getEpochSecond());
+        assertEquals("complementary--both-directions--g2", MapillaryMapFeatureUtils.getValue(node1));
+        assertEquals(496980935069177L, node1.getUniqueId());
+        assertEquals(new LatLon(41.341166490122, -83.417193328459), node1.getCoor());
 
-    final long[] images = MapillaryMapFeatureUtils.getImageIds(node1);
-    assertTrue(LongStream.of(images).anyMatch(l -> l == 828_719_391_332_432L));
-    assertTrue(LongStream.of(images).anyMatch(l -> l == 512_146_709_982_392L));
-    assertTrue(LongStream.of(images).anyMatch(l -> l == 133_075_088_816_573L));
+        final long[] images = MapillaryMapFeatureUtils.getImageIds(node1);
+        assertTrue(LongStream.of(images).anyMatch(l -> l == 828_719_391_332_432L));
+        assertTrue(LongStream.of(images).anyMatch(l -> l == 512_146_709_982_392L));
+        assertTrue(LongStream.of(images).anyMatch(l -> l == 133_075_088_816_573L));
 
-    // Note: The layer does not get updated at this time. Change this if it does.
-    assertNotEquals("trafficsign", exampleMapObject.getLayer());
-  }
-
-  @Test
-  void testNoOverwriteFromInitialVector() throws IOException {
-    final JsonObject jsonObject = OAuthUtils.getWithHeader(new URL(MapillaryURL.APIv4
-      .getMapFeatureInformation(496980935069177L, MapillaryMapFeatureUtils.MapFeatureProperties.values())));
-    final VectorNode node1 = new VectorNode("test");
-    node1.setCoor(new LatLon(12, 2));
-    node1.put(MapillaryMapFeatureUtils.MapFeatureProperties.FIRST_SEEN_AT.toString(), Long.toString(1_000_000_000L));
-    node1.put(MapillaryMapFeatureUtils.MapFeatureProperties.LAST_SEEN_AT.toString(), Long.toString(2_000_000_000L));
-    node1.put(MapillaryMapFeatureUtils.MapFeatureProperties.VALUE.toString(), "test--g1");
-    Collection<VectorPrimitive> exampleMapObjects = JsonDecoder.decodeData(jsonObject,
-      json -> JsonMapObjectDecoder.decodeMapFeatureObject(json, node1));
-    assertEquals(1, exampleMapObjects.size());
-    assertEquals(0,
-      JsonDecoder.decodeData(jsonObject, json -> JsonMapObjectDecoder.decodeMapFeatureObject(json, null)).size());
-
-    final VectorPrimitive exampleMapObject = exampleMapObjects.iterator().next();
-    assertSame(node1, exampleMapObject);
-
-    assertEquals(1_000_000_000L, MapillaryMapFeatureUtils.getFirstSeenAt(node1).toEpochMilli()); // 2017-08-23T21:32:26
-                                                                                                 // UTC
-    assertEquals(2_000_000_000L, MapillaryMapFeatureUtils.getLastSeenAt(node1).toEpochMilli()); // 2017-08-23T21:32:34
-                                                                                                // UTC
-    assertEquals("complementary--both-directions--g2", MapillaryMapFeatureUtils.getValue(node1));
-    assertEquals(496980935069177L, MapillaryMapFeatureUtils.getId(node1));
-    assertEquals(new LatLon(41.341166490122, -83.417193328459), node1.getCoor());
-
-    final long[] images = MapillaryMapFeatureUtils.getImageIds(node1);
-    assertTrue(LongStream.of(images).anyMatch(l -> l == 828_719_391_332_432L));
-    assertTrue(LongStream.of(images).anyMatch(l -> l == 512_146_709_982_392L));
-    assertTrue(LongStream.of(images).anyMatch(l -> l == 133_075_088_816_573L));
-
-    // Note: The layer does not get updated at this time. Change this if it does.
-    assertNotEquals("trafficsign", exampleMapObject.getLayer());
-  }
-
-  @ParameterizedTest
-  @NullSource
-  @ValueSource(strings = { "[]", "{}" })
-  void testDecodeMapObjectInvalid(final String json) throws IOException {
-    final VectorNode vectorNode = new VectorNode("test");
-    if (json != null) {
-      try (JsonReader reader = Json.createReader(new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)))) {
-        final JsonValue jsonValue = reader.readValue();
-        assertDoesNotThrow(() -> JsonMapObjectDecoder.decodeMapFeatureObject(jsonValue, vectorNode));
-      }
-    } else {
-      JsonMapObjectDecoder.decodeMapFeatureObject(null, vectorNode);
+        // Note: The layer does not get updated at this time. Change this if it does.
+        assertNotEquals("trafficsign", exampleMapObject.getLayer());
     }
-    assertFalse(vectorNode.getCoor().isValid());
-    assertEquals("test", vectorNode.getLayer());
-    assertTrue(vectorNode.getKeys().isEmpty());
-  }
 
-  static Stream<Arguments> testGeometrySource() {
-    return Stream.of(Arguments.of(new LatLon(0, 0), "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[0, 0]}}"),
-      Arguments.of(new LatLon(1, 0), "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[0, 1]}}"),
-      Arguments.of(new LatLon(0, 1), "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[1, 0]}}"),
-      Arguments.of(new LatLon(-30, -20), "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[-20, -30]}}"));
-  }
+    @Test
+    void testNoOverwriteFromInitialVector() throws IOException {
+        final JsonObject jsonObject = OAuthUtils.getWithHeader(new URL(MapillaryURL.APIv4
+            .getMapFeatureInformation(496980935069177L, MapillaryMapFeatureUtils.MapFeatureProperties.values())));
+        final VectorNode node1 = new VectorNode("test");
+        node1.setCoor(new LatLon(12, 2));
+        node1.put(MapillaryMapFeatureUtils.MapFeatureProperties.FIRST_SEEN_AT.toString(),
+            Long.toString(1_000_000_000L));
+        node1.put(MapillaryMapFeatureUtils.MapFeatureProperties.LAST_SEEN_AT.toString(), Long.toString(2_000_000_000L));
+        node1.put(MapillaryMapFeatureUtils.MapFeatureProperties.VALUE.toString(), "test--g1");
+        Collection<VectorPrimitive> exampleMapObjects = JsonDecoder.decodeData(jsonObject,
+            json -> JsonMapObjectDecoder.decodeMapFeatureObject(json, node1));
+        assertEquals(1, exampleMapObjects.size());
+        assertEquals(0,
+            JsonDecoder.decodeData(jsonObject, json -> JsonMapObjectDecoder.decodeMapFeatureObject(json, null)).size());
 
-  @ParameterizedTest
-  @MethodSource("testGeometrySource")
-  void testGeometry(final LatLon expected, final String jsonString) {
-    final VectorNode testNode = new VectorNode("test");
-    try (JsonReader reader = Json.createReader(new ByteArrayInputStream(jsonString.getBytes(StandardCharsets.UTF_8)))) {
-      JsonMapObjectDecoder.decodeMapFeatureObject(reader.readValue(), testNode);
+        final VectorPrimitive exampleMapObject = exampleMapObjects.iterator().next();
+        assertSame(node1, exampleMapObject);
+
+        assertEquals(1_000_000_000L, MapillaryMapFeatureUtils.getFirstSeenAt(node1).toEpochMilli()); // 2017-08-23T21:32:26
+                                                                                                     // UTC
+        assertEquals(2_000_000_000L, MapillaryMapFeatureUtils.getLastSeenAt(node1).toEpochMilli()); // 2017-08-23T21:32:34
+                                                                                                    // UTC
+        assertEquals("complementary--both-directions--g2", MapillaryMapFeatureUtils.getValue(node1));
+        assertEquals(496980935069177L, MapillaryMapFeatureUtils.getId(node1));
+        assertEquals(new LatLon(41.341166490122, -83.417193328459), node1.getCoor());
+
+        final long[] images = MapillaryMapFeatureUtils.getImageIds(node1);
+        assertTrue(LongStream.of(images).anyMatch(l -> l == 828_719_391_332_432L));
+        assertTrue(LongStream.of(images).anyMatch(l -> l == 512_146_709_982_392L));
+        assertTrue(LongStream.of(images).anyMatch(l -> l == 133_075_088_816_573L));
+
+        // Note: The layer does not get updated at this time. Change this if it does.
+        assertNotEquals("trafficsign", exampleMapObject.getLayer());
     }
-    assertEquals(expected, testNode.getCoor());
-  }
 
-  @ParameterizedTest
-  @ValueSource(strings = { "{\"geometry\":{\"type\":\"Point\",\"coordinates\":{}}}",
-    "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[0]}}",
-    "{\"geometry\":{\"type\":\"Point\",\"bad_coordinates\":[0, 0]}}",
-    "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[0, 0, 0]}}",
-    "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[[0, 0], [1, 1]]}}",
-    "{\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[0, 0], [1, 1]]}}",
-    "{\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[0, 0]]}}" })
-  void testBadGeometryNode(final String jsonString) {
-    final VectorNode testNode = new VectorNode("test");
-    try (JsonReader reader = Json.createReader(new ByteArrayInputStream(jsonString.getBytes(StandardCharsets.UTF_8)))) {
-      final JsonValue jsonValue = reader.readValue();
-      assertThrows(IllegalArgumentException.class,
-        () -> JsonMapObjectDecoder.decodeMapFeatureObject(jsonValue, testNode));
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = { "[]", "{}" })
+    void testDecodeMapObjectInvalid(final String json) throws IOException {
+        final VectorNode vectorNode = new VectorNode("test");
+        if (json != null) {
+            try (JsonReader reader = Json
+                .createReader(new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)))) {
+                final JsonValue jsonValue = reader.readValue();
+                assertDoesNotThrow(() -> JsonMapObjectDecoder.decodeMapFeatureObject(jsonValue, vectorNode));
+            }
+        } else {
+            JsonMapObjectDecoder.decodeMapFeatureObject(null, vectorNode);
+        }
+        assertFalse(vectorNode.getCoor().isValid());
+        assertEquals("test", vectorNode.getLayer());
+        assertTrue(vectorNode.getKeys().isEmpty());
     }
-  }
 
-  @ParameterizedTest
-  @ValueSource(strings = { "{\"geometry\":{\"type\":\"Point\",\"coordinates\":{}}}",
-    "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[0]}}",
-    "{\"geometry\":{\"type\":\"Point\",\"bad_coordinates\":[0, 0]}}",
-    "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[0, 0, 0]}}",
-    "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[[0, 0], [1, 1]]}}",
-    "{\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[0, 0], [1, 1, 1]]}}",
-    "{\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[0, 0]]}}" })
-  void testBadGeometryWay(final String jsonString) {
-    final VectorWay testWay = new VectorWay("test");
-    try (JsonReader reader = Json.createReader(new ByteArrayInputStream(jsonString.getBytes(StandardCharsets.UTF_8)))) {
-      final JsonValue jsonValue = reader.readValue();
-      assertThrows(IllegalArgumentException.class,
-        () -> JsonMapObjectDecoder.decodeMapFeatureObject(jsonValue, testWay));
+    static Stream<Arguments> testGeometrySource() {
+        return Stream.of(Arguments.of(new LatLon(0, 0), "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[0, 0]}}"),
+            Arguments.of(new LatLon(1, 0), "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[0, 1]}}"),
+            Arguments.of(new LatLon(0, 1), "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[1, 0]}}"),
+            Arguments.of(new LatLon(-30, -20), "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[-20, -30]}}"));
     }
-  }
 
-  @ParameterizedTest
-  @ValueSource(strings = { "{\"images\":{}}", "{\"images\":[{\"id\":\"8\"}]}", "{\"images\":{\"data\":[]}}",
-    "{\"images\":{\"data\":[{\"tid\":\"8\"}]}}", "{\"images\":{\"data\":[8]}}", })
-  void testBadImages(final String jsonString) {
-    final VectorNode testNode = new VectorNode("test");
-    try (JsonReader reader = Json.createReader(new ByteArrayInputStream(jsonString.getBytes(StandardCharsets.UTF_8)))) {
-      assertDoesNotThrow(() -> JsonMapObjectDecoder.decodeMapFeatureObject(reader.readValue(), testNode));
+    @ParameterizedTest
+    @MethodSource("testGeometrySource")
+    void testGeometry(final LatLon expected, final String jsonString) {
+        final VectorNode testNode = new VectorNode("test");
+        try (JsonReader reader = Json
+            .createReader(new ByteArrayInputStream(jsonString.getBytes(StandardCharsets.UTF_8)))) {
+            JsonMapObjectDecoder.decodeMapFeatureObject(reader.readValue(), testNode);
+        }
+        assertEquals(expected, testNode.getCoor());
     }
-    assertEquals(0, MapillaryMapFeatureUtils.getImageIds(testNode).length);
-  }
 
-  @Test
-  void testUtilityClass() {
-    TestUtil.testUtilityClass(JsonMapObjectDecoder.class);
-  }
+    @ParameterizedTest
+    @ValueSource(strings = { "{\"geometry\":{\"type\":\"Point\",\"coordinates\":{}}}",
+        "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[0]}}",
+        "{\"geometry\":{\"type\":\"Point\",\"bad_coordinates\":[0, 0]}}",
+        "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[0, 0, 0]}}",
+        "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[[0, 0], [1, 1]]}}",
+        "{\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[0, 0], [1, 1]]}}",
+        "{\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[0, 0]]}}" })
+    void testBadGeometryNode(final String jsonString) {
+        final VectorNode testNode = new VectorNode("test");
+        try (JsonReader reader = Json
+            .createReader(new ByteArrayInputStream(jsonString.getBytes(StandardCharsets.UTF_8)))) {
+            final JsonValue jsonValue = reader.readValue();
+            assertThrows(IllegalArgumentException.class,
+                () -> JsonMapObjectDecoder.decodeMapFeatureObject(jsonValue, testNode));
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "{\"geometry\":{\"type\":\"Point\",\"coordinates\":{}}}",
+        "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[0]}}",
+        "{\"geometry\":{\"type\":\"Point\",\"bad_coordinates\":[0, 0]}}",
+        "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[0, 0, 0]}}",
+        "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[[0, 0], [1, 1]]}}",
+        "{\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[0, 0], [1, 1, 1]]}}",
+        "{\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[0, 0]]}}" })
+    void testBadGeometryWay(final String jsonString) {
+        final VectorWay testWay = new VectorWay("test");
+        try (JsonReader reader = Json
+            .createReader(new ByteArrayInputStream(jsonString.getBytes(StandardCharsets.UTF_8)))) {
+            final JsonValue jsonValue = reader.readValue();
+            assertThrows(IllegalArgumentException.class,
+                () -> JsonMapObjectDecoder.decodeMapFeatureObject(jsonValue, testWay));
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "{\"images\":{}}", "{\"images\":[{\"id\":\"8\"}]}", "{\"images\":{\"data\":[]}}",
+        "{\"images\":{\"data\":[{\"tid\":\"8\"}]}}", "{\"images\":{\"data\":[8]}}", })
+    void testBadImages(final String jsonString) {
+        final VectorNode testNode = new VectorNode("test");
+        try (JsonReader reader = Json
+            .createReader(new ByteArrayInputStream(jsonString.getBytes(StandardCharsets.UTF_8)))) {
+            assertDoesNotThrow(() -> JsonMapObjectDecoder.decodeMapFeatureObject(reader.readValue(), testNode));
+        }
+        assertEquals(0, MapillaryMapFeatureUtils.getImageIds(testNode).length);
+    }
+
+    @Test
+    void testUtilityClass() {
+        TestUtil.testUtilityClass(JsonMapObjectDecoder.class);
+    }
 }

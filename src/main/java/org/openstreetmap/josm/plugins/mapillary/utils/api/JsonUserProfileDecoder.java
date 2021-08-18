@@ -18,37 +18,37 @@ import org.openstreetmap.josm.tools.Logging;
  * Takes a {@link JsonObject} and {@link #decodeUserProfile(JsonObject)} tries to convert it to a {@link UserProfile}.
  */
 public final class JsonUserProfileDecoder {
-  private static final ImageIcon FAKE_AVATAR = new ImageProvider("fake-avatar").get();
+    private static final ImageIcon FAKE_AVATAR = new ImageProvider("fake-avatar").get();
 
-  private JsonUserProfileDecoder() {
-    // Private constructor to avoid instantiation
-  }
-
-  public static UserProfile decodeUserProfile(JsonObject json) {
-    if (json == null) {
-      return null;
-    }
-    String username = json.getString("username", null);
-    String key = json.getString("key", null);
-    if (key == null || username == null) {
-      return null;
+    private JsonUserProfileDecoder() {
+        // Private constructor to avoid instantiation
     }
 
-    String avatar = json.getString("avatar", null);
-    ImageIcon icon = null;
-    if (avatar != null) {
-      try {
-        BufferedImage img = ImageIO.read(new URL(avatar));
-        if (img != null) {
-          icon = new ImageIcon(img);
+    public static UserProfile decodeUserProfile(JsonObject json) {
+        if (json == null) {
+            return null;
         }
-      } catch (IOException e) {
-        Logging.debug(e);
-      }
+        String username = json.getString("username", null);
+        String key = json.getString("key", null);
+        if (key == null || username == null) {
+            return null;
+        }
+
+        String avatar = json.getString("avatar", null);
+        ImageIcon icon = null;
+        if (avatar != null) {
+            try {
+                BufferedImage img = ImageIO.read(new URL(avatar));
+                if (img != null) {
+                    icon = new ImageIcon(img);
+                }
+            } catch (IOException e) {
+                Logging.debug(e);
+            }
+        }
+        if (icon == null) {
+            icon = FAKE_AVATAR;
+        }
+        return new UserProfile(key, username, icon);
     }
-    if (icon == null) {
-      icon = FAKE_AVATAR;
-    }
-    return new UserProfile(key, username, icon);
-  }
 }

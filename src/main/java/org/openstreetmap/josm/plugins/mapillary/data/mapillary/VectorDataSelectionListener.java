@@ -11,5 +11,5 @@ import org.openstreetmap.josm.data.vector.VectorWay;
  * A convenient listener for selection events in vector data
  */
 public interface VectorDataSelectionListener
-  extends IDataSelectionListener<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> {
+    extends IDataSelectionListener<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> {
 }

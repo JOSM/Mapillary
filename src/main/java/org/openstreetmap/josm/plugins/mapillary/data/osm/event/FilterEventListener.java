@@ -29,42 +29,44 @@ import org.openstreetmap.josm.tools.Logging;
  * @author Taylor Smock
  */
 public class FilterEventListener implements TableModelListener {
-  private final Layer layer;
-  private final OsmData<? extends IFilterablePrimitive, ?, ?, ?> data;
-  public final FilterMatcher matcher;
+    private final Layer layer;
+    private final OsmData<? extends IFilterablePrimitive, ?, ?, ?> data;
+    public final FilterMatcher matcher;
 
-  public FilterEventListener(Layer layer, OsmData<? extends IFilterablePrimitive, ?, ?, ?> data) {
-    this.layer = layer;
-    this.data = data;
-    matcher = new FilterMatcher();
-  }
+    public FilterEventListener(Layer layer, OsmData<? extends IFilterablePrimitive, ?, ?, ?> data) {
+        this.layer = layer;
+        this.data = data;
+        matcher = new FilterMatcher();
+    }
 
-  @Override
-  public void tableChanged(TableModelEvent e) {
-    updateAndRunFilters();
-  }
+    @Override
+    public void tableChanged(TableModelEvent e) {
+        updateAndRunFilters();
+    }
 
-  public synchronized void updateAndRunFilters() {
-    matcher.reset();
-    for (List<Filter> filters : Arrays.asList(MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters(),
-      MainApplication.getMap().filterDialog.getFilterModel().getFilters())) {
-      for (Filter filter : filters) {
-        try {
-          matcher.add(filter);
-        } catch (SearchParseError e1) {
-          Logging.error(e1);
+    public synchronized void updateAndRunFilters() {
+        matcher.reset();
+        for (List<Filter> filters : Arrays.asList(
+            MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters(),
+            MainApplication.getMap().filterDialog.getFilterModel().getFilters())) {
+            for (Filter filter : filters) {
+                try {
+                    matcher.add(filter);
+                } catch (SearchParseError e1) {
+                    Logging.error(e1);
+                }
+            }
         }
-      }
+        // Work around JOSM #21043. Use r19_000, since it should be fixed by then.
+        if (Version.getInstance().getVersion() < 19_000 || Boolean.FALSE.equals(MapillaryProperties.DEVELOPER.get())) {
+            // This should just be allPrimitives.
+            FilterWorker.executeFilters(
+                data.allPrimitives().stream().filter(p -> p.getReferrers().isEmpty()).collect(Collectors.toList()),
+                matcher);
+        } else {
+            throw new IllegalArgumentException(
+                "Has JOSM r21043 been fixed yet? If so, remove/update workaround, or update number.");
+        }
+        SwingUtilities.invokeLater(layer::invalidate);
     }
-    // Work around JOSM #21043. Use r19_000, since it should be fixed by then.
-    if (Version.getInstance().getVersion() < 19_000 || Boolean.FALSE.equals(MapillaryProperties.DEVELOPER.get())) {
-      // This should just be allPrimitives.
-      FilterWorker.executeFilters(
-        data.allPrimitives().stream().filter(p -> p.getReferrers().isEmpty()).collect(Collectors.toList()), matcher);
-    } else {
-      throw new IllegalArgumentException(
-        "Has JOSM r21043 been fixed yet? If so, remove/update workaround, or update number.");
-    }
-    SwingUtilities.invokeLater(layer::invalidate);
-  }
 }

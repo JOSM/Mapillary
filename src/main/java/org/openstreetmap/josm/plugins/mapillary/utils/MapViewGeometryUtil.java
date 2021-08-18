@@ -17,30 +17,31 @@ import java.awt.geom.Path2D;
  * can then easily be drawn on a {@link MapView}s {@link Graphics2D}-context.
  */
 public final class MapViewGeometryUtil {
-  private MapViewGeometryUtil() {
-    // Private constructor to avoid instantiation
-  }
+    private MapViewGeometryUtil() {
+        // Private constructor to avoid instantiation
+    }
 
-  /**
-   * Converts a {@link IWay} into a {@link Path2D} that can be drawn
-   * on the specified {@link NavigatableComponent}'s {@link Graphics2D}-context.
-   *
-   * @param nc the {@link NavigatableComponent} for which this conversion should be performed, typically a
-   *        {@link MapView}
-   * @param seq the sequence to convert
-   * @return the {@link Path2D} object to which the {@link IWay} has been converted
-   */
-  public static Path2D getSequencePath(NavigatableComponent nc, IWay<?> seq) {
-    final Path2D.Double path = new Path2D.Double();
-    final boolean anyVisible = seq.getNodes().stream().anyMatch(IPrimitive::isVisible);
-    seq.getNodes().stream().filter(node -> node.isVisible() || anyVisible && seq.isFirstLastNode(node)).forEach(img -> {
-      Point p = nc.getPoint(img.getCoor());
-      if (path.getCurrentPoint() == null) {
-        path.moveTo(p.getX(), p.getY());
-      } else {
-        path.lineTo(p.getX(), p.getY());
-      }
-    });
-    return path;
-  }
+    /**
+     * Converts a {@link IWay} into a {@link Path2D} that can be drawn
+     * on the specified {@link NavigatableComponent}'s {@link Graphics2D}-context.
+     *
+     * @param nc the {@link NavigatableComponent} for which this conversion should be performed, typically a
+     *        {@link MapView}
+     * @param seq the sequence to convert
+     * @return the {@link Path2D} object to which the {@link IWay} has been converted
+     */
+    public static Path2D getSequencePath(NavigatableComponent nc, IWay<?> seq) {
+        final Path2D.Double path = new Path2D.Double();
+        final boolean anyVisible = seq.getNodes().stream().anyMatch(IPrimitive::isVisible);
+        seq.getNodes().stream().filter(node -> node.isVisible() || anyVisible && seq.isFirstLastNode(node))
+            .forEach(img -> {
+                Point p = nc.getPoint(img.getCoor());
+                if (path.getCurrentPoint() == null) {
+                    path.moveTo(p.getX(), p.getY());
+                } else {
+                    path.lineTo(p.getX(), p.getY());
+                }
+            });
+        return path;
+    }
 }

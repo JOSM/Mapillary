@@ -35,135 +35,135 @@ import org.openstreetmap.josm.tools.Logging;
  * {@link ImageDetection}.
  */
 public final class JsonImageDetectionDecoder {
-  private JsonImageDetectionDecoder() {
-    // Private constructor to avoid instantiation
-  }
-
-  /**
-   * Convert a json value into a collection of image detections
-   *
-   * @param json The json to convert
-   * @return A collection of image detections
-   */
-  @Nonnull
-  public static Collection<ImageDetection<?>> decodeImageDetection(@Nullable final JsonValue json) {
-    if (json == null) {
-      return Collections.emptyList();
-    } else if (json.getValueType() == JsonValue.ValueType.ARRAY) {
-      final List<ImageDetection<?>> returnList = new ArrayList<>(json.asJsonArray().size());
-      for (JsonValue value : json.asJsonArray()) {
-        returnList.addAll(decodeImageDetection(value));
-      }
-      returnList.removeIf(Objects::isNull);
-      return Collections.unmodifiableList(returnList);
-    } else if (json.getValueType() != JsonValue.ValueType.OBJECT) {
-      return Collections.emptyList();
+    private JsonImageDetectionDecoder() {
+        // Private constructor to avoid instantiation
     }
-    final JsonObject jsonObject = json.asJsonObject();
 
-    final long key = Long.parseLong(jsonObject.getString("id", "0"));
-    final Long imageKey = decodeImageIds(jsonObject.get("image"));
-    final String value = jsonObject.getString("value", null);
-    final Shape shape = decodeShape(jsonObject.get("geometry"));
-    if (shape != null && imageKey != null && key != 0 && value != null) {
-      try {
-        return Collections.singletonList(new ImageDetection<>(shape, imageKey, key, value));
-      } catch (IllegalArgumentException e) {
-        if (e.getMessage().startsWith("Unknown detection")) {
-          Logging.error(e.getMessage());
-        } else {
-          throw e;
+    /**
+     * Convert a json value into a collection of image detections
+     *
+     * @param json The json to convert
+     * @return A collection of image detections
+     */
+    @Nonnull
+    public static Collection<ImageDetection<?>> decodeImageDetection(@Nullable final JsonValue json) {
+        if (json == null) {
+            return Collections.emptyList();
+        } else if (json.getValueType() == JsonValue.ValueType.ARRAY) {
+            final List<ImageDetection<?>> returnList = new ArrayList<>(json.asJsonArray().size());
+            for (JsonValue value : json.asJsonArray()) {
+                returnList.addAll(decodeImageDetection(value));
+            }
+            returnList.removeIf(Objects::isNull);
+            return Collections.unmodifiableList(returnList);
+        } else if (json.getValueType() != JsonValue.ValueType.OBJECT) {
+            return Collections.emptyList();
         }
-      }
-    }
-    return Collections.emptyList();
-  }
+        final JsonObject jsonObject = json.asJsonObject();
 
-  /**
-   * Decode image ids (mostly so we can select the appropriate image)
-   *
-   * @param jsonValue The value to decode
-   * @return The image id
-   */
-  @Nullable
-  private static Long decodeImageIds(@Nullable JsonValue jsonValue) {
-    if (jsonValue != null && jsonValue.getValueType() == JsonValue.ValueType.OBJECT) {
-      final JsonObject jsonObject = jsonValue.asJsonObject();
-      if (jsonObject.containsKey("id")) {
-        final JsonValue id = jsonObject.get("id");
-        if (id.getValueType() == JsonValue.ValueType.STRING) {
-          return Long.parseLong(((JsonString) id).getString());
+        final long key = Long.parseLong(jsonObject.getString("id", "0"));
+        final Long imageKey = decodeImageIds(jsonObject.get("image"));
+        final String value = jsonObject.getString("value", null);
+        final Shape shape = decodeShape(jsonObject.get("geometry"));
+        if (shape != null && imageKey != null && key != 0 && value != null) {
+            try {
+                return Collections.singletonList(new ImageDetection<>(shape, imageKey, key, value));
+            } catch (IllegalArgumentException e) {
+                if (e.getMessage().startsWith("Unknown detection")) {
+                    Logging.error(e.getMessage());
+                } else {
+                    throw e;
+                }
+            }
         }
-      }
+        return Collections.emptyList();
     }
-    return null;
-  }
 
-  /**
-   * Decode a shape from a json value
-   *
-   * @param json The json value (should be a {@link JsonString})
-   * @return The decoded shape or {@code null}
-   */
-  @Nullable
-  private static Shape decodeShape(@Nullable JsonValue json) {
-    if (json instanceof JsonString) {
-      // v4 API returns geometry base64 encoded
-      final byte[] base64Decode = Base64.getDecoder().decode(((JsonString) json).getString());
-      final Collection<Shape> shapes = getShapes(base64Decode);
-      if (shapes.size() == 1) {
-        return shapes.iterator().next();
-      } else if (!shapes.isEmpty()) {
-        final Path2D.Double path = new Path2D.Double();
-        for (Shape shape : shapes) {
-          path.append(shape, false);
+    /**
+     * Decode image ids (mostly so we can select the appropriate image)
+     *
+     * @param jsonValue The value to decode
+     * @return The image id
+     */
+    @Nullable
+    private static Long decodeImageIds(@Nullable JsonValue jsonValue) {
+        if (jsonValue != null && jsonValue.getValueType() == JsonValue.ValueType.OBJECT) {
+            final JsonObject jsonObject = jsonValue.asJsonObject();
+            if (jsonObject.containsKey("id")) {
+                final JsonValue id = jsonObject.get("id");
+                if (id.getValueType() == JsonValue.ValueType.STRING) {
+                    return Long.parseLong(((JsonString) id).getString());
+                }
+            }
         }
-        return path;
-      }
+        return null;
     }
-    return null;
-  }
 
-  /**
-   * Get the shapes from a byte array
-   *
-   * @param base64Decode The decoded byte array
-   * @return The shapes from the vector tile (if there is only one feature)
-   */
-  @Nonnull
-  private static Collection<Shape> getShapes(@Nonnull final byte[] base64Decode) {
-    // The decoded bytes are further encoded in the Mapbox Vector Tile format
-    try (ProtobufParser parser = new ProtobufParser(base64Decode)) {
-      final Collection<ProtobufRecord> layerRecord = parser.allRecords();
-      // the layer field is 3
-      if (layerRecord.size() == 1 && layerRecord.iterator().next().getField() == 3) {
-        try (ProtobufParser layerParser = new ProtobufParser(layerRecord.iterator().next().getBytes())) {
-          final Layer layer = new Layer(layerParser.allRecords());
-          final Optional<Feature> feature = layer.getFeatures().stream().findFirst();
-          if (layer.getFeatures().size() == 1 && feature.isPresent()) {
-            return resizeShapes(feature.get().getGeometryObject().getShapes(), layer.getExtent());
-          }
+    /**
+     * Decode a shape from a json value
+     *
+     * @param json The json value (should be a {@link JsonString})
+     * @return The decoded shape or {@code null}
+     */
+    @Nullable
+    private static Shape decodeShape(@Nullable JsonValue json) {
+        if (json instanceof JsonString) {
+            // v4 API returns geometry base64 encoded
+            final byte[] base64Decode = Base64.getDecoder().decode(((JsonString) json).getString());
+            final Collection<Shape> shapes = getShapes(base64Decode);
+            if (shapes.size() == 1) {
+                return shapes.iterator().next();
+            } else if (!shapes.isEmpty()) {
+                final Path2D.Double path = new Path2D.Double();
+                for (Shape shape : shapes) {
+                    path.append(shape, false);
+                }
+                return path;
+            }
         }
-      }
-    } catch (IOException e) {
-      // This should never be hit -- the IOException should not occur when reading a byte array.
-      // So throw a runtime exception if it happens.
-      throw new JosmRuntimeException(e);
+        return null;
     }
-    return Collections.emptyList();
-  }
 
-  /**
-   * Resize shapes such that only one scale instance needs to be created to draw in the image viewer
-   * (i.e., we don't need to pass the extent around)
-   *
-   * @param shapes The shapes to transform
-   * @param extent The extent of the vector tile
-   * @return The resized shapes
-   */
-  @Nonnull
-  private static Collection<Shape> resizeShapes(@Nonnull final Collection<Shape> shapes, final int extent) {
-    final AffineTransform scale = AffineTransform.getScaleInstance(1d / extent, 1d / extent);
-    return shapes.stream().map(scale::createTransformedShape).collect(Collectors.toList());
-  }
+    /**
+     * Get the shapes from a byte array
+     *
+     * @param base64Decode The decoded byte array
+     * @return The shapes from the vector tile (if there is only one feature)
+     */
+    @Nonnull
+    private static Collection<Shape> getShapes(@Nonnull final byte[] base64Decode) {
+        // The decoded bytes are further encoded in the Mapbox Vector Tile format
+        try (ProtobufParser parser = new ProtobufParser(base64Decode)) {
+            final Collection<ProtobufRecord> layerRecord = parser.allRecords();
+            // the layer field is 3
+            if (layerRecord.size() == 1 && layerRecord.iterator().next().getField() == 3) {
+                try (ProtobufParser layerParser = new ProtobufParser(layerRecord.iterator().next().getBytes())) {
+                    final Layer layer = new Layer(layerParser.allRecords());
+                    final Optional<Feature> feature = layer.getFeatures().stream().findFirst();
+                    if (layer.getFeatures().size() == 1 && feature.isPresent()) {
+                        return resizeShapes(feature.get().getGeometryObject().getShapes(), layer.getExtent());
+                    }
+                }
+            }
+        } catch (IOException e) {
+            // This should never be hit -- the IOException should not occur when reading a byte array.
+            // So throw a runtime exception if it happens.
+            throw new JosmRuntimeException(e);
+        }
+        return Collections.emptyList();
+    }
+
+    /**
+     * Resize shapes such that only one scale instance needs to be created to draw in the image viewer
+     * (i.e., we don't need to pass the extent around)
+     *
+     * @param shapes The shapes to transform
+     * @param extent The extent of the vector tile
+     * @return The resized shapes
+     */
+    @Nonnull
+    private static Collection<Shape> resizeShapes(@Nonnull final Collection<Shape> shapes, final int extent) {
+        final AffineTransform scale = AffineTransform.getScaleInstance(1d / extent, 1d / extent);
+        return shapes.stream().map(scale::createTransformedShape).collect(Collectors.toList());
+    }
 }

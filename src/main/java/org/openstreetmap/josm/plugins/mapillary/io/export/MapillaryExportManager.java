@@ -33,95 +33,95 @@ import static org.openstreetmap.josm.tools.I18n.tr;
  */
 public class MapillaryExportManager<T extends INode> extends PleaseWaitRunnable {
 
-  private final ArrayBlockingQueue<BufferedImage> queue = new ArrayBlockingQueue<>(10);
-  private final ArrayBlockingQueue<INode> queueImages = new ArrayBlockingQueue<>(10);
+    private final ArrayBlockingQueue<BufferedImage> queue = new ArrayBlockingQueue<>(10);
+    private final ArrayBlockingQueue<INode> queueImages = new ArrayBlockingQueue<>(10);
 
-  private int amount;
-  private final Set<T> images;
-  private final String path;
+    private int amount;
+    private final Set<T> images;
+    private final String path;
 
-  private Thread writer;
-  private ThreadPoolExecutor ex;
+    private Thread writer;
+    private ThreadPoolExecutor ex;
 
-  /**
-   * Main constructor.
-   *
-   * @param images Set of {@link INode} objects to be exported.
-   * @param path Export path.
-   */
-  public MapillaryExportManager(Collection<T> images, String path) {
-    super(tr("Downloading…"), new PleaseWaitProgressMonitor(tr("Exporting Mapillary Images…")), true);
-    this.images = images == null ? new HashSet<>() : new HashSet<>(images);
-    this.path = path;
-    this.amount = this.images.size();
-  }
-
-  /**
-   * Constructor used to rewrite imported images.
-   *
-   * @param images
-   *        The set of {@link INode} object that is going to
-   *        be rewritten. (see {@link MapillaryImageUtils#IMPORTED_KEY}
-   * @throws IOException
-   *         If the file of one of the {@link INode} objects
-   *         doesn't contain a picture.
-   */
-  public MapillaryExportManager(Collection<T> images) throws IOException {
-    this(new HashSet<>(images), null);
-    this.amount = images.size();
-  }
-
-  @Override
-  protected void cancel() {
-    this.writer.interrupt();
-    this.ex.shutdown();
-  }
-
-  @Override
-  protected void realRun() throws IOException {
-    // Starts a writer thread in order to write the pictures on the disk.
-    this.writer = new MapillaryExportWriterThread(this.path, this.queue, this.queueImages, this.amount,
-      this.getProgressMonitor());
-    this.writer.start();
-    if (this.path == null) {
-      try {
-        this.writer.join();
-      } catch (InterruptedException e) {
-        Logging.error(e);
-        Thread.currentThread().interrupt();
-      }
-      return;
+    /**
+     * Main constructor.
+     *
+     * @param images Set of {@link INode} objects to be exported.
+     * @param path Export path.
+     */
+    public MapillaryExportManager(Collection<T> images, String path) {
+        super(tr("Downloading…"), new PleaseWaitProgressMonitor(tr("Exporting Mapillary Images…")), true);
+        this.images = images == null ? new HashSet<>() : new HashSet<>(images);
+        this.path = path;
+        this.amount = this.images.size();
     }
-    ArrayBlockingQueue<Runnable> executionQueue = new ArrayBlockingQueue<>(10);
-    this.ex = new ThreadPoolExecutor(20, 35, 25, TimeUnit.SECONDS, executionQueue);
-    for (INode image : this.images) {
-      if (MapillaryImageUtils.IS_IMAGE.test(image)) {
-        try {
-          while (this.ex.getQueue().remainingCapacity() == 0) {
-            synchronized (this.queue) {
-              try {
-                this.queue.wait(1000);
-              } catch (InterruptedException e) {
+
+    /**
+     * Constructor used to rewrite imported images.
+     *
+     * @param images
+     *        The set of {@link INode} object that is going to
+     *        be rewritten. (see {@link MapillaryImageUtils#IMPORTED_KEY}
+     * @throws IOException
+     *         If the file of one of the {@link INode} objects
+     *         doesn't contain a picture.
+     */
+    public MapillaryExportManager(Collection<T> images) throws IOException {
+        this(new HashSet<>(images), null);
+        this.amount = images.size();
+    }
+
+    @Override
+    protected void cancel() {
+        this.writer.interrupt();
+        this.ex.shutdown();
+    }
+
+    @Override
+    protected void realRun() throws IOException {
+        // Starts a writer thread in order to write the pictures on the disk.
+        this.writer = new MapillaryExportWriterThread(this.path, this.queue, this.queueImages, this.amount,
+            this.getProgressMonitor());
+        this.writer.start();
+        if (this.path == null) {
+            try {
+                this.writer.join();
+            } catch (InterruptedException e) {
                 Logging.error(e);
                 Thread.currentThread().interrupt();
-              }
             }
-          }
-          this.ex.execute(new MapillaryExportDownloadThread(image, this.queue, this.queueImages));
-        } catch (RejectedExecutionException e) {
-          Logging.error(e);
+            return;
         }
-      }
+        ArrayBlockingQueue<Runnable> executionQueue = new ArrayBlockingQueue<>(10);
+        this.ex = new ThreadPoolExecutor(20, 35, 25, TimeUnit.SECONDS, executionQueue);
+        for (INode image : this.images) {
+            if (MapillaryImageUtils.IS_IMAGE.test(image)) {
+                try {
+                    while (this.ex.getQueue().remainingCapacity() == 0) {
+                        synchronized (this.queue) {
+                            try {
+                                this.queue.wait(1000);
+                            } catch (InterruptedException e) {
+                                Logging.error(e);
+                                Thread.currentThread().interrupt();
+                            }
+                        }
+                    }
+                    this.ex.execute(new MapillaryExportDownloadThread(image, this.queue, this.queueImages));
+                } catch (RejectedExecutionException e) {
+                    Logging.error(e);
+                }
+            }
+        }
+        try {
+            this.writer.join();
+        } catch (InterruptedException e) {
+            Logging.error(e);
+            Thread.currentThread().interrupt();
+        }
     }
-    try {
-      this.writer.join();
-    } catch (InterruptedException e) {
-      Logging.error(e);
-      Thread.currentThread().interrupt();
-    }
-  }
 
-  @Override
-  protected void finish() {
-  }
+    @Override
+    protected void finish() {
+    }
 }

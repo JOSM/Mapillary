@@ -8,12 +8,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 class CachesTest {
-  // Preferences are needed to get the cache directories
-  @RegisterExtension
-  JOSMTestRules rule = new JOSMTestRules().preferences();
+    // Preferences are needed to get the cache directories
+    @RegisterExtension
+    JOSMTestRules rule = new JOSMTestRules().preferences();
 
-  @Test
-  void testUtilityClass() {
-    TestUtil.testUtilityClass(Caches.class);
-  }
+    @Test
+    void testUtilityClass() {
+        TestUtil.testUtilityClass(Caches.class);
+    }
 }

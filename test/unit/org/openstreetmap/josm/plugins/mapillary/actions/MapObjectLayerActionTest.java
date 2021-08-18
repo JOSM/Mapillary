@@ -17,22 +17,22 @@ import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 @BasicPreferences
 class MapObjectLayerActionTest {
 
-  @RegisterExtension
-  static JOSMTestRules rules = new MapillaryTestRules().main().projection();
+    @RegisterExtension
+    static JOSMTestRules rules = new MapillaryTestRules().main().projection();
 
-  @Test
-  void testAction() {
-    assertEquals(0, MainApplication.getLayerManager().getLayers().size());
-    new MapObjectLayerAction().actionPerformed(null);
-    assertEquals(0, MainApplication.getLayerManager().getLayers().size());
-    MainApplication.getLayerManager().addLayer(new OsmDataLayer(new DataSet(), "Test", null));
-    new MapObjectLayerAction().actionPerformed(null);
-    assertEquals(2, MainApplication.getLayerManager().getLayers().size());
-    new MapObjectLayerAction().actionPerformed(null);
-    assertEquals(2, MainApplication.getLayerManager().getLayers().size());
-    MainApplication.getLayerManager()
-      .setActiveLayer(MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).get(0));
-    new MapObjectLayerAction().actionPerformed(null);
-    assertEquals(2, MainApplication.getLayerManager().getLayers().size());
-  }
+    @Test
+    void testAction() {
+        assertEquals(0, MainApplication.getLayerManager().getLayers().size());
+        new MapObjectLayerAction().actionPerformed(null);
+        assertEquals(0, MainApplication.getLayerManager().getLayers().size());
+        MainApplication.getLayerManager().addLayer(new OsmDataLayer(new DataSet(), "Test", null));
+        new MapObjectLayerAction().actionPerformed(null);
+        assertEquals(2, MainApplication.getLayerManager().getLayers().size());
+        new MapObjectLayerAction().actionPerformed(null);
+        assertEquals(2, MainApplication.getLayerManager().getLayers().size());
+        MainApplication.getLayerManager()
+            .setActiveLayer(MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).get(0));
+        new MapObjectLayerAction().actionPerformed(null);
+        assertEquals(2, MainApplication.getLayerManager().getLayers().size());
+    }
 }

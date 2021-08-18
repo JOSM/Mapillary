@@ -24,32 +24,32 @@ import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 @ExtendWith(MapillaryCaches.MapillaryCachesExtension.class)
 @BasicPreferences
 public @interface MapillaryCaches {
-  class MapillaryCachesExtension implements AfterEachCallback, BeforeEachCallback {
-    @Override
-    public void afterEach(ExtensionContext context) throws Exception {
-      for (Field field : Caches.class.getDeclaredFields()) {
-        if (field.getType().equals(Caches.MapillaryCacheAccess.class)) {
-          final Caches.MapillaryCacheAccess<?> mapillaryCacheAccess = ((Caches.MapillaryCacheAccess<?>) field
-            .get(null));
-          mapillaryCacheAccess.getICacheAccess().clear();
-          final Field rateLimited = Caches.MapillaryCacheAccess.class.getDeclaredField("rateLimited");
-          rateLimited.setAccessible(true);
-          rateLimited.setBoolean(mapillaryCacheAccess, false);
+    class MapillaryCachesExtension implements AfterEachCallback, BeforeEachCallback {
+        @Override
+        public void afterEach(ExtensionContext context) throws Exception {
+            for (Field field : Caches.class.getDeclaredFields()) {
+                if (field.getType().equals(Caches.MapillaryCacheAccess.class)) {
+                    final Caches.MapillaryCacheAccess<?> mapillaryCacheAccess = ((Caches.MapillaryCacheAccess<?>) field
+                        .get(null));
+                    mapillaryCacheAccess.getICacheAccess().clear();
+                    final Field rateLimited = Caches.MapillaryCacheAccess.class.getDeclaredField("rateLimited");
+                    rateLimited.setAccessible(true);
+                    rateLimited.setBoolean(mapillaryCacheAccess, false);
+                }
+            }
+            // Clear image detection cache
+            final Field imageDetectionCache = ImageDetection.class.getDeclaredField("DETECTION_CACHE");
+            imageDetectionCache.setAccessible(true);
+            if (imageDetectionCache.getType().equals(CacheAccess.class)) {
+                ((CacheAccess<?, ?>) imageDetectionCache.get(null)).clear();
+            } else {
+                fail("Unknown type: " + imageDetectionCache.getType().getName());
+            }
         }
-      }
-      // Clear image detection cache
-      final Field imageDetectionCache = ImageDetection.class.getDeclaredField("DETECTION_CACHE");
-      imageDetectionCache.setAccessible(true);
-      if (imageDetectionCache.getType().equals(CacheAccess.class)) {
-        ((CacheAccess<?, ?>) imageDetectionCache.get(null)).clear();
-      } else {
-        fail("Unknown type: " + imageDetectionCache.getType().getName());
-      }
-    }
 
-    @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
-      afterEach(context);
+        @Override
+        public void beforeEach(ExtensionContext context) throws Exception {
+            afterEach(context);
+        }
     }
-  }
 }

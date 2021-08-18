@@ -25,69 +25,69 @@ import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
  */
 @BasicPreferences
 class AdditionalInstructionsTest {
-  @RegisterExtension
-  static JOSMTestRules josmTestRules = new JOSMTestRules().projection();
-  private DataSet dataSet;
-
-  @BeforeEach
-  void setUp() {
-    this.dataSet = new DataSet();
-  }
-
-  /**
-   * Test class for {@link AdditionalInstructions.SnapToRoad}
-   */
-  @Nested
-  class SnapToRoadTest {
-    AdditionalInstructions.SnapToRoad snapToRoad;
+    @RegisterExtension
+    static JOSMTestRules josmTestRules = new JOSMTestRules().projection();
+    private DataSet dataSet;
 
     @BeforeEach
     void setUp() {
-      this.snapToRoad = new AdditionalInstructions.SnapToRoad();
+        this.dataSet = new DataSet();
     }
 
-    @Test
-    void testApplyNull() {
-      assertNull(this.snapToRoad.apply(null));
-      final Node node = new Node(LatLon.ZERO);
-      assertNull(this.snapToRoad.apply(node));
-      AdditionalInstructionsTest.this.dataSet.addPrimitive(node);
-      assertNull(this.snapToRoad.apply(node));
-    }
+    /**
+     * Test class for {@link AdditionalInstructions.SnapToRoad}
+     */
+    @Nested
+    class SnapToRoadTest {
+        AdditionalInstructions.SnapToRoad snapToRoad;
 
-    @JOSMTestRules.OverrideAssumeRevision("18108\n")
-    @Test
-    void testApplyHighway() {
-      this.applyHighwayCommon();
-    }
+        @BeforeEach
+        void setUp() {
+            this.snapToRoad = new AdditionalInstructions.SnapToRoad();
+        }
 
-    @JOSMTestRules.OverrideAssumeRevision("18109\n")
-    @Test
-    void testApplyHighway18109() {
-      this.applyHighwayCommon();
-    }
+        @Test
+        void testApplyNull() {
+            assertNull(this.snapToRoad.apply(null));
+            final Node node = new Node(LatLon.ZERO);
+            assertNull(this.snapToRoad.apply(node));
+            AdditionalInstructionsTest.this.dataSet.addPrimitive(node);
+            assertNull(this.snapToRoad.apply(node));
+        }
 
-    private void applyHighwayCommon() {
-      final Node node = new Node(LatLon.ZERO);
-      AdditionalInstructionsTest.this.dataSet.addPrimitive(node);
-      final Way way = new Way();
-      way.addNode(new Node(new LatLon(0, 0.001)));
-      way.addNode(new Node(new LatLon(0, -0.001)));
-      way.getNodes().forEach(AdditionalInstructionsTest.this.dataSet::addPrimitive);
-      AdditionalInstructionsTest.this.dataSet.addPrimitive(way);
-      assertNull(this.snapToRoad.apply(node));
+        @JOSMTestRules.OverrideAssumeRevision("18108\n")
+        @Test
+        void testApplyHighway() {
+            this.applyHighwayCommon();
+        }
 
-      way.put("highway", "residential");
-      assertNotNull(this.snapToRoad.apply(node));
-      Command command = this.snapToRoad.apply(node);
-      assertEquals(2, way.getNodesCount());
-      command.executeCommand();
-      assertEquals(3, way.getNodesCount());
-      assertTrue(way.getNodes().contains(node));
-      assertEquals(1, way.getNodes().indexOf(node));
-      command.undoCommand();
-      assertEquals(2, way.getNodesCount());
-      assertFalse(way.getNodes().contains(node));
+        @JOSMTestRules.OverrideAssumeRevision("18109\n")
+        @Test
+        void testApplyHighway18109() {
+            this.applyHighwayCommon();
+        }
+
+        private void applyHighwayCommon() {
+            final Node node = new Node(LatLon.ZERO);
+            AdditionalInstructionsTest.this.dataSet.addPrimitive(node);
+            final Way way = new Way();
+            way.addNode(new Node(new LatLon(0, 0.001)));
+            way.addNode(new Node(new LatLon(0, -0.001)));
+            way.getNodes().forEach(AdditionalInstructionsTest.this.dataSet::addPrimitive);
+            AdditionalInstructionsTest.this.dataSet.addPrimitive(way);
+            assertNull(this.snapToRoad.apply(node));
+
+            way.put("highway", "residential");
+            assertNotNull(this.snapToRoad.apply(node));
+            Command command = this.snapToRoad.apply(node);
+            assertEquals(2, way.getNodesCount());
+            command.executeCommand();
+            assertEquals(3, way.getNodesCount());
+            assertTrue(way.getNodes().contains(node));
+            assertEquals(1, way.getNodes().indexOf(node));
+            command.undoCommand();
+            assertEquals(2, way.getNodesCount());
+            assertFalse(way.getNodes().contains(node));
+        }
     }
-  }
 }

@@ -31,50 +31,52 @@ import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
  */
 @BasicPreferences
 class MapillaryFilterModelTest {
-  static Stream<Arguments> testExecuteFilters() {
-    final VectorNode vectorNode = new VectorNode("testExecuteFilters");
-    vectorNode.setCoor(LatLon.ZERO);
-    final Node node = new Node(LatLon.ZERO);
-    node.setOsmId(1, 1);
-    return Stream.of(Arguments.of(new DataSet(), node), Arguments.of(new VectorDataSet(), vectorNode));
-  }
+    static Stream<Arguments> testExecuteFilters() {
+        final VectorNode vectorNode = new VectorNode("testExecuteFilters");
+        vectorNode.setCoor(LatLon.ZERO);
+        final Node node = new Node(LatLon.ZERO);
+        node.setOsmId(1, 1);
+        return Stream.of(Arguments.of(new DataSet(), node), Arguments.of(new VectorDataSet(), vectorNode));
+    }
 
-  @ParameterizedTest(name = "[{index}] {0}")
-  @MethodSource
-  <O extends IPrimitive & IFilterablePrimitive> void testExecuteFilters(final OsmData<O, ?, ?, ?> dataSet,
-    final O primitive) {
-    assumeTrue(primitive instanceof OsmPrimitive, "Hiding filter ");
-    final MapillaryFilterModel mapillaryFilterModel = new MapillaryFilterModel();
-    final Filter filter = new Filter(Filter.readFromString("type:node and highway=crossing"));
-    filter.enable = true;
-    mapillaryFilterModel.addFilter(filter);
-    dataSet.addPrimitive(primitive);
+    @ParameterizedTest(name = "[{index}] {0}")
+    @MethodSource
+    <O extends IPrimitive & IFilterablePrimitive> void testExecuteFilters(final OsmData<O, ?, ?, ?> dataSet,
+        final O primitive) {
+        assumeTrue(primitive instanceof OsmPrimitive, "Hiding filter ");
+        final MapillaryFilterModel mapillaryFilterModel = new MapillaryFilterModel();
+        final Filter filter = new Filter(Filter.readFromString("type:node and highway=crossing"));
+        filter.enable = true;
+        mapillaryFilterModel.addFilter(filter);
+        dataSet.addPrimitive(primitive);
 
-    assertTrue(dataSet.allPrimitives().stream().noneMatch(IPrimitive::isDisabled));
-    mapillaryFilterModel.executeFilters(dataSet);
-    assertTrue(dataSet.allPrimitives().stream().noneMatch(IPrimitive::isDisabled));
+        assertTrue(dataSet.allPrimitives().stream().noneMatch(IPrimitive::isDisabled));
+        mapillaryFilterModel.executeFilters(dataSet);
+        assertTrue(dataSet.allPrimitives().stream().noneMatch(IPrimitive::isDisabled));
 
-    dataSet.allPrimitives().iterator().next().put("highway", "crossing");
-    assertTrue(dataSet.allPrimitives().stream().noneMatch(IPrimitive::isDisabled));
-    mapillaryFilterModel.executeFilters(dataSet);
-    assertEquals(1, dataSet.allPrimitives().stream().filter(IPrimitive::isDisabled).count());
-  }
+        dataSet.allPrimitives().iterator().next().put("highway", "crossing");
+        assertTrue(dataSet.allPrimitives().stream().noneMatch(IPrimitive::isDisabled));
+        mapillaryFilterModel.executeFilters(dataSet);
+        assertEquals(1, dataSet.allPrimitives().stream().filter(IPrimitive::isDisabled).count());
+    }
 
-  static Stream<Arguments> testExecuteFiltersNull() {
-    final MapillaryFilterModel mapillaryFilterModel = new MapillaryFilterModel();
-    return Stream.of(Arguments.of("Null dataset", (Runnable) () -> mapillaryFilterModel.executeFilters((DataSet) null)),
-      Arguments.of("Null collection",
-        (Runnable) () -> mapillaryFilterModel.executeFilters((Collection<? extends OsmPrimitive>) null)),
-      Arguments.of("Null dataset and collection", (Runnable) () -> mapillaryFilterModel.executeFilters(null, null)),
-      Arguments.of("Null dataset and non-null collection",
-        (Runnable) () -> mapillaryFilterModel.executeFilters(null, Collections.emptyList())),
-      Arguments.of("Non-null dataset and null collection",
-        (Runnable) () -> mapillaryFilterModel.executeFilters(new DataSet(), null)));
-  }
+    static Stream<Arguments> testExecuteFiltersNull() {
+        final MapillaryFilterModel mapillaryFilterModel = new MapillaryFilterModel();
+        return Stream.of(
+            Arguments.of("Null dataset", (Runnable) () -> mapillaryFilterModel.executeFilters((DataSet) null)),
+            Arguments.of("Null collection",
+                (Runnable) () -> mapillaryFilterModel.executeFilters((Collection<? extends OsmPrimitive>) null)),
+            Arguments.of("Null dataset and collection",
+                (Runnable) () -> mapillaryFilterModel.executeFilters(null, null)),
+            Arguments.of("Null dataset and non-null collection",
+                (Runnable) () -> mapillaryFilterModel.executeFilters(null, Collections.emptyList())),
+            Arguments.of("Non-null dataset and null collection",
+                (Runnable) () -> mapillaryFilterModel.executeFilters(new DataSet(), null)));
+    }
 
-  @ParameterizedTest(name = "[{index}] {0}")
-  @MethodSource
-  void testExecuteFiltersNull(final String message, final Runnable supplier) {
-    assertDoesNotThrow(supplier::run, message);
-  }
+    @ParameterizedTest(name = "[{index}] {0}")
+    @MethodSource
+    void testExecuteFiltersNull(final String message, final Runnable supplier) {
+        assertDoesNotThrow(supplier::run, message);
+    }
 }

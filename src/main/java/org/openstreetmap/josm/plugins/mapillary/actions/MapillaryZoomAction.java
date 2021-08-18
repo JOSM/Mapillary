@@ -28,41 +28,41 @@ import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
  */
 public class MapillaryZoomAction extends JosmAction implements VectorDataSelectionListener {
 
-  private static final long serialVersionUID = -6050566219765623059L;
+    private static final long serialVersionUID = -6050566219765623059L;
 
-  /**
-   * Main constructor.
-   */
-  public MapillaryZoomAction() {
-    super(tr("Zoom to selected image"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
-      tr("Zoom to the currently selected Mapillary image"), null, false, "mapillaryZoom", true);
-  }
-
-  @Override
-  public void actionPerformed(ActionEvent arg0) {
-    INode selected = MapillaryLayer.getInstance().getData().getSelectedNodes().stream()
-      .filter(MapillaryImageUtils.IS_IMAGE).findFirst().orElse(null);
-    if (selected == null) {
-      throw new IllegalStateException();
+    /**
+     * Main constructor.
+     */
+    public MapillaryZoomAction() {
+        super(tr("Zoom to selected image"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
+            tr("Zoom to the currently selected Mapillary image"), null, false, "mapillaryZoom", true);
     }
-    MainApplication.getMap().mapView.zoomTo(selected.getCoor());
-  }
 
-  @Override
-  protected boolean listenToSelectionChange() {
-    return false;
-  }
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+        INode selected = MapillaryLayer.getInstance().getData().getSelectedNodes().stream()
+            .filter(MapillaryImageUtils.IS_IMAGE).findFirst().orElse(null);
+        if (selected == null) {
+            throw new IllegalStateException();
+        }
+        MainApplication.getMap().mapView.zoomTo(selected.getCoor());
+    }
 
-  @Override
-  protected void updateEnabledState() {
-    super.updateEnabledState();
-    setEnabled(MapillaryLayer.hasInstance()
-      && MapillaryLayer.getInstance().getData().getSelectedNodes().stream().anyMatch(MapillaryImageUtils.IS_IMAGE));
-  }
+    @Override
+    protected boolean listenToSelectionChange() {
+        return false;
+    }
 
-  @Override
-  public void selectionChanged(
-    IDataSelectionListener.SelectionChangeEvent<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> event) {
-    updateEnabledState();
-  }
+    @Override
+    protected void updateEnabledState() {
+        super.updateEnabledState();
+        setEnabled(MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().getData().getSelectedNodes().stream()
+            .anyMatch(MapillaryImageUtils.IS_IMAGE));
+    }
+
+    @Override
+    public void selectionChanged(
+        IDataSelectionListener.SelectionChangeEvent<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> event) {
+        updateEnabledState();
+    }
 }

@@ -40,89 +40,89 @@ import org.openstreetmap.josm.tools.Logging;
 @MapillaryCaches
 class MapillaryCacheTest {
 
-  @RegisterExtension
-  static JOSMTestRules rules = new MapillaryTestRules().main();
+    @RegisterExtension
+    static JOSMTestRules rules = new MapillaryTestRules().main();
 
-  @Test
-  void test() {
-    // Use 135511895288847 since that is an image we have real information for
-    VectorNode image = JsonImageDetailsDecoderTest.createDownloadedImage(135511895288847L,
-      new LatLon(39.068354972222, -108.57081597222), 0, false);
-    VectorDataSet vectorDataSet = new VectorDataSet();
-    vectorDataSet.addPrimitive(image);
-    MapillaryCache cache = new MapillaryCache(image);
-    assertNotNull(cache.getUrl());
-    assertNotNull(cache.getCacheKey());
+    @Test
+    void test() {
+        // Use 135511895288847 since that is an image we have real information for
+        VectorNode image = JsonImageDetailsDecoderTest.createDownloadedImage(135511895288847L,
+            new LatLon(39.068354972222, -108.57081597222), 0, false);
+        VectorDataSet vectorDataSet = new VectorDataSet();
+        vectorDataSet.addPrimitive(image);
+        MapillaryCache cache = new MapillaryCache(image);
+        assertNotNull(cache.getUrl());
+        assertNotNull(cache.getCacheKey());
 
-    assertFalse(cache.isObjectLoadable());
+        assertFalse(cache.isObjectLoadable());
 
-    cache = new MapillaryCache(null);
-    assertNull(cache.getCacheKey());
-    assertNull(cache.getUrl());
-  }
-
-  /**
-   * Non-regression test for JOSM #21035: IAE due to API request limit reached
-   * IAE: No url returned at {@link CacheUtils#submit(INode, ICachedLoaderListener)}
-   */
-  @Test
-  @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.APPLICATION_REQUEST_LIMIT_REACHED)
-  void testNonRegression21035() {
-    final VectorDataSet vectorDataSet = createSampleData();
-    final VectorNode image2 = vectorDataSet.getNodes().stream().filter(node -> 311799370533334L == node.getId())
-      .findFirst().orElseThrow(() -> new AssertionFailedError("Image 311799370533334 not found"));
-    Logging.clearLastErrorAndWarnings();
-    MapillaryCache.cacheSurroundingImages(image2);
-    Awaitility.await().pollDelay(Durations.ONE_HUNDRED_MILLISECONDS).catchUncaughtExceptions().ignoreNoExceptions()
-      .until(() -> true);
-    final List<String> errors = new ArrayList<>(Logging.getLastErrorAndWarnings());
-    errors.removeIf(string -> !string.contains("Exception"));
-    assertTrue(errors.isEmpty(), errors.stream().collect(Collectors.joining(System.lineSeparator())));
-  }
-
-  /**
-   * Non-regression test for IAE found when creating test for {@link #testNonRegression21035()}.
-   */
-  @Test
-  @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.APPLICATION_REQUEST_LIMIT_REACHED)
-  void testIAEInSubmit() {
-    final VectorDataSet vectorDataSet = createSampleData();
-    final VectorNode image2 = vectorDataSet.getNodes().stream().filter(node -> 311799370533334L == node.getId())
-      .findFirst().orElseThrow(() -> new AssertionFailedError("Image 311799370533334 not found"));
-    Logging.clearLastErrorAndWarnings();
-    CacheUtils.submit(image2, null);
-    Awaitility.await().pollDelay(Durations.ONE_HUNDRED_MILLISECONDS).catchUncaughtExceptions().ignoreNoExceptions()
-      .until(() -> true);
-    final List<String> errors = new ArrayList<>(Logging.getLastErrorAndWarnings());
-    errors.removeIf(string -> !string.contains("IllegalArgumentException"));
-    assertTrue(errors.isEmpty(), errors.stream().collect(Collectors.joining(System.lineSeparator())));
-  }
-
-  private static VectorDataSet createSampleData() {
-    final VectorDataSet vectorDataSet = new VectorDataSet();
-    final VectorNode image1 = new VectorNode("mapillary-images");
-    final VectorNode image2 = new VectorNode(image1.getLayer());
-    final VectorNode image3 = new VectorNode(image1.getLayer());
-    final String idKey = MapillaryImageUtils.ImageProperties.ID.toString();
-    image1.put(idKey, "148137757289079");
-    image2.put(idKey, "311799370533334");
-    image3.put(idKey, "4235112816526838");
-    for (VectorNode i : Arrays.asList(image1, image2, image3)) {
-      i.setOsmId(MapillaryImageUtils.getKey(i), 1);
+        cache = new MapillaryCache(null);
+        assertNull(cache.getCacheKey());
+        assertNull(cache.getUrl());
     }
-    image1.setCoor(new LatLon(39.065738749246, -108.57077016445));
-    image2.setCoor(new LatLon(39.065986975316, -108.57079091664));
-    image3.setCoor(new LatLon(39.066878001959, -108.57081199999));
-    final VectorWay sequence = new VectorWay("mapillary-sequences");
-    sequence.put(MapillarySequenceUtils.KEY, "7nfcwfvjdtphz7yj6zat6a");
-    sequence.setNodes(Arrays.asList(image1, image2, image3));
-    sequence.getNodes().forEach(vectorDataSet::addPrimitive);
-    vectorDataSet.addPrimitive(sequence);
-    return vectorDataSet;
-  }
 
-  @Test
-  void testMapillaryCacheTypes() {
-    TestUtils.superficialEnumCodeCoverage(MapillaryCache.Type.class);
-  }
+    /**
+     * Non-regression test for JOSM #21035: IAE due to API request limit reached
+     * IAE: No url returned at {@link CacheUtils#submit(INode, ICachedLoaderListener)}
+     */
+    @Test
+    @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.APPLICATION_REQUEST_LIMIT_REACHED)
+    void testNonRegression21035() {
+        final VectorDataSet vectorDataSet = createSampleData();
+        final VectorNode image2 = vectorDataSet.getNodes().stream().filter(node -> 311799370533334L == node.getId())
+            .findFirst().orElseThrow(() -> new AssertionFailedError("Image 311799370533334 not found"));
+        Logging.clearLastErrorAndWarnings();
+        MapillaryCache.cacheSurroundingImages(image2);
+        Awaitility.await().pollDelay(Durations.ONE_HUNDRED_MILLISECONDS).catchUncaughtExceptions().ignoreNoExceptions()
+            .until(() -> true);
+        final List<String> errors = new ArrayList<>(Logging.getLastErrorAndWarnings());
+        errors.removeIf(string -> !string.contains("Exception"));
+        assertTrue(errors.isEmpty(), errors.stream().collect(Collectors.joining(System.lineSeparator())));
+    }
+
+    /**
+     * Non-regression test for IAE found when creating test for {@link #testNonRegression21035()}.
+     */
+    @Test
+    @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.APPLICATION_REQUEST_LIMIT_REACHED)
+    void testIAEInSubmit() {
+        final VectorDataSet vectorDataSet = createSampleData();
+        final VectorNode image2 = vectorDataSet.getNodes().stream().filter(node -> 311799370533334L == node.getId())
+            .findFirst().orElseThrow(() -> new AssertionFailedError("Image 311799370533334 not found"));
+        Logging.clearLastErrorAndWarnings();
+        CacheUtils.submit(image2, null);
+        Awaitility.await().pollDelay(Durations.ONE_HUNDRED_MILLISECONDS).catchUncaughtExceptions().ignoreNoExceptions()
+            .until(() -> true);
+        final List<String> errors = new ArrayList<>(Logging.getLastErrorAndWarnings());
+        errors.removeIf(string -> !string.contains("IllegalArgumentException"));
+        assertTrue(errors.isEmpty(), errors.stream().collect(Collectors.joining(System.lineSeparator())));
+    }
+
+    private static VectorDataSet createSampleData() {
+        final VectorDataSet vectorDataSet = new VectorDataSet();
+        final VectorNode image1 = new VectorNode("mapillary-images");
+        final VectorNode image2 = new VectorNode(image1.getLayer());
+        final VectorNode image3 = new VectorNode(image1.getLayer());
+        final String idKey = MapillaryImageUtils.ImageProperties.ID.toString();
+        image1.put(idKey, "148137757289079");
+        image2.put(idKey, "311799370533334");
+        image3.put(idKey, "4235112816526838");
+        for (VectorNode i : Arrays.asList(image1, image2, image3)) {
+            i.setOsmId(MapillaryImageUtils.getKey(i), 1);
+        }
+        image1.setCoor(new LatLon(39.065738749246, -108.57077016445));
+        image2.setCoor(new LatLon(39.065986975316, -108.57079091664));
+        image3.setCoor(new LatLon(39.066878001959, -108.57081199999));
+        final VectorWay sequence = new VectorWay("mapillary-sequences");
+        sequence.put(MapillarySequenceUtils.KEY, "7nfcwfvjdtphz7yj6zat6a");
+        sequence.setNodes(Arrays.asList(image1, image2, image3));
+        sequence.getNodes().forEach(vectorDataSet::addPrimitive);
+        vectorDataSet.addPrimitive(sequence);
+        return vectorDataSet;
+    }
+
+    @Test
+    void testMapillaryCacheTypes() {
+        TestUtils.superficialEnumCodeCoverage(MapillaryCache.Type.class);
+    }
 }

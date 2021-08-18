@@ -33,169 +33,169 @@ import org.openstreetmap.josm.tools.GBC;
  * @author Taylor Smock
  */
 public class ImageCheckBoxButton extends JPanel implements Destroyable, TableModelListener {
-  private static final long serialVersionUID = 3659377445718790107L;
-  private final transient Filter filter;
-  private final JCheckBox jcheckbox;
-  private final JButton image;
-  private final String detection;
-  private final String[] splitName;
-  private final ObjectDetections[] detections;
+    private static final long serialVersionUID = 3659377445718790107L;
+    private final transient Filter filter;
+    private final JCheckBox jcheckbox;
+    private final JButton image;
+    private final String detection;
+    private final String[] splitName;
+    private final ObjectDetections[] detections;
 
-  public ImageCheckBoxButton(ImageIcon icon, String detection, ObjectDetections... detections) {
-    super(new GridBagLayout());
-    this.detection = detection;
-    this.detections = detections;
-    MapillaryExpertFilterDialog.getInstance().getFilterModel().addTableModelListener(this);
-    splitName = detection.split("--", -1);
-    image = new JButton();
-    image.setIcon(icon);
-    add(image, GBC.std().anchor(GridBagConstraints.WEST));
-    String name = splitName[splitName.length - 1].replace(".svg", "");
-    if (name.matches("g[0-9]+")) {
-      name = splitName[splitName.length - 2];
+    public ImageCheckBoxButton(ImageIcon icon, String detection, ObjectDetections... detections) {
+        super(new GridBagLayout());
+        this.detection = detection;
+        this.detections = detections;
+        MapillaryExpertFilterDialog.getInstance().getFilterModel().addTableModelListener(this);
+        splitName = detection.split("--", -1);
+        image = new JButton();
+        image.setIcon(icon);
+        add(image, GBC.std().anchor(GridBagConstraints.WEST));
+        String name = splitName[splitName.length - 1].replace(".svg", "");
+        if (name.matches("g[0-9]+")) {
+            name = splitName[splitName.length - 2];
+        }
+
+        name = name.replace("-", " ");
+        String filterText = "value:\"" + detection + "\"";
+        filter = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().parallelStream()
+            .filter(f -> f.text.equals(filterText)).findAny().orElse(makeNewFilter());
+        filter.text = filterText;
+
+        jcheckbox = new JCheckBox(name);
+        add(jcheckbox, GBC.eol().fill());
+        image.addActionListener(l -> {
+            updateCheckBox(jcheckbox, filter);
+            updateTooltips(detection, image, jcheckbox);
+        });
+        jcheckbox.addActionListener(l -> {
+            updateFilters(jcheckbox, filter);
+            updateTooltips(detection, image, jcheckbox);
+        });
+
+        updateTooltips(detection, image, jcheckbox);
+
+        tableChanged(null);
     }
 
-    name = name.replace("-", " ");
-    String filterText = "value:\"" + detection + "\"";
-    filter = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().parallelStream()
-      .filter(f -> f.text.equals(filterText)).findAny().orElse(makeNewFilter());
-    filter.text = filterText;
-
-    jcheckbox = new JCheckBox(name);
-    add(jcheckbox, GBC.eol().fill());
-    image.addActionListener(l -> {
-      updateCheckBox(jcheckbox, filter);
-      updateTooltips(detection, image, jcheckbox);
-    });
-    jcheckbox.addActionListener(l -> {
-      updateFilters(jcheckbox, filter);
-      updateTooltips(detection, image, jcheckbox);
-    });
-
-    updateTooltips(detection, image, jcheckbox);
-
-    tableChanged(null);
-  }
-
-  private static void updateTooltips(String detection, JButton image, JCheckBox jcheckbox) {
-    image.setToolTipText(tr("{0}: {1}", detection, jcheckbox.isSelected() ? tr("hidden") : tr("shown")));
-    jcheckbox.setToolTipText(image.getToolTipText());
-  }
-
-  private static Filter makeNewFilter() {
-    Filter filter = new Filter();
-    filter.hiding = true;
-    return filter;
-  }
-
-  private static void updateCheckBox(JCheckBox jcheckbox, Filter filter) {
-    jcheckbox.setSelected(!jcheckbox.isSelected());
-    updateFilters(jcheckbox, filter);
-  }
-
-  private static void updateFilters(JCheckBox jcheckbox, Filter filter) {
-    int index = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().indexOf(filter);
-    if (jcheckbox.isSelected()) {
-      filter.enable = true;
-    } else if (!jcheckbox.isSelected()) {
-      filter.enable = false;
-      MapillaryExpertFilterDialog.getInstance().getFilterModel().removeFilter(index);
+    private static void updateTooltips(String detection, JButton image, JCheckBox jcheckbox) {
+        image.setToolTipText(tr("{0}: {1}", detection, jcheckbox.isSelected() ? tr("hidden") : tr("shown")));
+        jcheckbox.setToolTipText(image.getToolTipText());
     }
-    if (index < 0 && filter.enable) {
-      MapillaryExpertFilterDialog.getInstance().getFilterModel().addFilter(filter);
+
+    private static Filter makeNewFilter() {
+        Filter filter = new Filter();
+        filter.hiding = true;
+        return filter;
     }
-  }
 
-  @Override
-  public void destroy() {
-    MapillaryExpertFilterDialog.getInstance().getFilterModel().removeTableModelListener(this);
-  }
-
-  @Override
-  public void tableChanged(TableModelEvent e) {
-    if (filter == null) {
-      return;
+    private static void updateCheckBox(JCheckBox jcheckbox, Filter filter) {
+        jcheckbox.setSelected(!jcheckbox.isSelected());
+        updateFilters(jcheckbox, filter);
     }
-    final int index = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().indexOf(filter);
-    if (index < 0) {
-      filter.enable = false;
+
+    private static void updateFilters(JCheckBox jcheckbox, Filter filter) {
+        int index = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().indexOf(filter);
+        if (jcheckbox.isSelected()) {
+            filter.enable = true;
+        } else if (!jcheckbox.isSelected()) {
+            filter.enable = false;
+            MapillaryExpertFilterDialog.getInstance().getFilterModel().removeFilter(index);
+        }
+        if (index < 0 && filter.enable) {
+            MapillaryExpertFilterDialog.getInstance().getFilterModel().addFilter(filter);
+        }
     }
-    if (e != null && (e.getFirstRow() > index || e.getLastRow() < index) && e.getType() != TableModelEvent.DELETE) {
-      return;
+
+    @Override
+    public void destroy() {
+        MapillaryExpertFilterDialog.getInstance().getFilterModel().removeTableModelListener(this);
     }
-    if (SwingUtilities.isEventDispatchThread()) {
-      jcheckbox.setSelected(filter.enable);
-    } else {
-      // Invoke in GUI, but don't wait for it (may be blocked)
-      GuiHelper.runInEDT(() -> jcheckbox.setSelected(filter.enable));
+
+    @Override
+    public void tableChanged(TableModelEvent e) {
+        if (filter == null) {
+            return;
+        }
+        final int index = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().indexOf(filter);
+        if (index < 0) {
+            filter.enable = false;
+        }
+        if (e != null && (e.getFirstRow() > index || e.getLastRow() < index) && e.getType() != TableModelEvent.DELETE) {
+            return;
+        }
+        if (SwingUtilities.isEventDispatchThread()) {
+            jcheckbox.setSelected(filter.enable);
+        } else {
+            // Invoke in GUI, but don't wait for it (may be blocked)
+            GuiHelper.runInEDT(() -> jcheckbox.setSelected(filter.enable));
+        }
     }
-  }
 
-  /**
-   * Get the name of the detection
-   *
-   * @return The detection name
-   */
-  public String getDetectionName() {
-    return this.detection;
-  }
+    /**
+     * Get the name of the detection
+     *
+     * @return The detection name
+     */
+    public String getDetectionName() {
+        return this.detection;
+    }
 
-  /**
-   * Get the detections for this button
-   *
-   * @return The detections
-   */
-  public ObjectDetections[] getDetections() {
-    return this.detections;
-  }
+    /**
+     * Get the detections for this button
+     *
+     * @return The detections
+     */
+    public ObjectDetections[] getDetections() {
+        return this.detections;
+    }
 
-  /**
-   * Check if the button is filtered
-   *
-   * @param searchString The string
-   * @return true if the button shouldn't be visible
-   */
-  public boolean isFiltered(String searchString) {
-    String[] searchSplit = searchString.split(" ", -1);
-    return Stream.of(splitName).parallel()
-      .anyMatch(n -> Stream.of(searchSplit).parallel().anyMatch(s -> s.contains(n) || n.contains(s)));
-  }
+    /**
+     * Check if the button is filtered
+     *
+     * @param searchString The string
+     * @return true if the button shouldn't be visible
+     */
+    public boolean isFiltered(String searchString) {
+        String[] searchSplit = searchString.split(" ", -1);
+        return Stream.of(splitName).parallel()
+            .anyMatch(n -> Stream.of(searchSplit).parallel().anyMatch(s -> s.contains(n) || n.contains(s)));
+    }
 
-  /**
-   * Set the box as selected
-   *
-   * @param selected Set the checkbox state to the selected boolean
-   * @return A future to indicate if the call finished
-   */
-  public Future<Void> setSelected(boolean selected) {
-    CompletableFuture<Void> completableFuture = new CompletableFuture<>();
-    GuiHelper.runInEDT(() -> {
-      jcheckbox.setSelected(selected);
-      updateTooltips(this.detection, this.image, this.jcheckbox);
-      updateFilters(jcheckbox, filter);
-      completableFuture.complete(null);
-    });
-    return completableFuture;
-  }
+    /**
+     * Set the box as selected
+     *
+     * @param selected Set the checkbox state to the selected boolean
+     * @return A future to indicate if the call finished
+     */
+    public Future<Void> setSelected(boolean selected) {
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+        GuiHelper.runInEDT(() -> {
+            jcheckbox.setSelected(selected);
+            updateTooltips(this.detection, this.image, this.jcheckbox);
+            updateFilters(jcheckbox, filter);
+            completableFuture.complete(null);
+        });
+        return completableFuture;
+    }
 
-  /**
-   * Check if the box is selected
-   *
-   * @return {@code true} if selected (see {@link JCheckBox#isSelected}).
-   */
-  public boolean isSelected() {
-    return jcheckbox.isSelected();
-  }
+    /**
+     * Check if the box is selected
+     *
+     * @return {@code true} if selected (see {@link JCheckBox#isSelected}).
+     */
+    public boolean isSelected() {
+        return jcheckbox.isSelected();
+    }
 
-  /**
-   * Check if the button is relevant
-   *
-   * @return {@code true} if a point object layer has it. Or if there are no point object layers.
-   */
-  public boolean isRelevant() {
-    List<PointObjectLayer> layers = MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class);
-    return layers.isEmpty()
-      || layers.parallelStream().map(PointObjectLayer::getData).flatMap(ds -> ds.allPrimitives().parallelStream())
-        .filter(p -> p.hasKey("value")).map(p -> p.get("value")).anyMatch(p -> p.contains(detection));
-  }
+    /**
+     * Check if the button is relevant
+     *
+     * @return {@code true} if a point object layer has it. Or if there are no point object layers.
+     */
+    public boolean isRelevant() {
+        List<PointObjectLayer> layers = MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class);
+        return layers.isEmpty()
+            || layers.parallelStream().map(PointObjectLayer::getData).flatMap(ds -> ds.allPrimitives().parallelStream())
+                .filter(p -> p.hasKey("value")).map(p -> p.get("value")).anyMatch(p -> p.contains(detection));
+    }
 }

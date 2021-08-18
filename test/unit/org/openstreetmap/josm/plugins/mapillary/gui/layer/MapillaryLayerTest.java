@@ -36,129 +36,130 @@ import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 @MapillaryLayerAnnotation
 class MapillaryLayerTest {
 
-  @RegisterExtension
-  static JOSMTestRules rules = new MapillaryTestRules().main().projection();
+    @RegisterExtension
+    static JOSMTestRules rules = new MapillaryTestRules().main().projection();
 
-  private static Layer getDummyLayer() {
-    return ImageryLayer.create(new ImageryInfo("dummy", "https://example.org"));
-  }
+    private static Layer getDummyLayer() {
+        return ImageryLayer.create(new ImageryInfo("dummy", "https://example.org"));
+    }
 
-  @BeforeEach
-  void setUp() {
-    if (MapillaryLayer.hasInstance()) {
-      try {
-        MapillaryLayer.getInstance().destroy();
-      } catch (IllegalArgumentException illegalArgumentException) {
-        // Some other test pollutes MapillaryLayer.getInstance, and LayerChangeAdaptor is cleaned up.
-        // This causes destroy() to fail on the first test.
-        if (!illegalArgumentException.getMessage().contains("Listener was not registered before")) {
-          throw illegalArgumentException;
+    @BeforeEach
+    void setUp() {
+        if (MapillaryLayer.hasInstance()) {
+            try {
+                MapillaryLayer.getInstance().destroy();
+            } catch (IllegalArgumentException illegalArgumentException) {
+                // Some other test pollutes MapillaryLayer.getInstance, and LayerChangeAdaptor is cleaned up.
+                // This causes destroy() to fail on the first test.
+                if (!illegalArgumentException.getMessage().contains("Listener was not registered before")) {
+                    throw illegalArgumentException;
+                }
+            }
         }
-      }
-    }
-  }
-
-  @AfterEach
-  void tearDown() {
-    this.setUp();
-  }
-
-  @Test
-  void testGetIcon() {
-    assertNotNull(MapillaryLayer.getInstance().getIcon());
-  }
-
-  @Test
-  void testIsMergable() {
-    assertFalse(MapillaryLayer.getInstance().isMergable(getDummyLayer()));
-  }
-
-  @Test
-  void testMergeFrom() {
-    Layer dummyLayer = getDummyLayer();
-    MapillaryLayer instance = MapillaryLayer.getInstance();
-    assertThrows(UnsupportedOperationException.class, () -> instance.mergeFrom(dummyLayer));
-  }
-
-  @Test
-  void testSetVisible() {
-    MapillaryLayer.getInstance().getData()
-      .addPrimitive(JsonImageDetailsDecoderTest.createImportedImage("", new LatLon(0.0, 0.0), 0.0, false));
-    MapillaryLayer.getInstance().getData()
-      .addPrimitive(JsonImageDetailsDecoderTest.createImportedImage("", new LatLon(0.0, 0.0), 0.0, false));
-    VectorNode invisibleImage = JsonImageDetailsDecoderTest.createImportedImage("", new LatLon(0.0, 0.0), 0.0, false);
-    invisibleImage.setVisible(false);
-    MapillaryLayer.getInstance().getData().addPrimitive(invisibleImage);
-
-    MapillaryLayer.getInstance().setVisible(false);
-    for (INode img : MapillaryLayer.getInstance().getData().getNodes()) {
-      if (MapillaryImageUtils.IS_IMAGE.test(img)) {
-        assertFalse(img.isVisible(), MessageFormat.format("Failed on image {0}/{1}", MapillaryImageUtils.getKey(img),
-          MapillaryImageUtils.getFile(img)));
-      }
     }
 
-    MapillaryLayer.getInstance().setVisible(true);
-    for (INode img : MapillaryLayer.getInstance().getData().getNodes()) {
-      if (MapillaryImageUtils.IS_IMAGE.test(img)) {
-        assertTrue(img.isVisible());
-      }
+    @AfterEach
+    void tearDown() {
+        this.setUp();
     }
-  }
 
-  @Test
-  void testGetInfoComponent() {
-    Object comp = MapillaryLayer.getInstance().getInfoComponent();
-    assertTrue(comp instanceof String);
-    assertTrue(((String) comp).length() >= 9);
-  }
+    @Test
+    void testGetIcon() {
+        assertNotNull(MapillaryLayer.getInstance().getIcon());
+    }
 
-  @Test
-  void testSetImageViewed() {
-    INode image = JsonImageDetailsDecoderTest.createDownloadedImage("1", LatLon.ZERO, 0, false);
-    assertFalse(MapillaryLayer.getInstance().setImageViewed(null),
-      "An image should not be set as viewed if there is no image or dataset");
-    assertFalse(MapillaryLayer.getInstance().setImageViewed(image),
-      "An image should not be set as viewed if there is no dataset to edit");
-    MainApplication.getLayerManager().addLayer(new OsmDataLayer(new DataSet(), "Test Layer", null));
-    assertFalse(MapillaryLayer.getInstance().setImageViewed(null),
-      "An image should not be set as viewed if there is no image (i.e., image is null)");
-    assertTrue(MapillaryLayer.getInstance().setImageViewed(image),
-      "An image should be set as viewed if there is an image and a dataset");
-  }
+    @Test
+    void testIsMergable() {
+        assertFalse(MapillaryLayer.getInstance().isMergable(getDummyLayer()));
+    }
 
-  @Test
-  void testGetChangesetSourceTag() {
-    String actualChangesetSourceTag = MapillaryLayer.getInstance().getChangesetSourceTag();
-    assertNull(actualChangesetSourceTag,
-      "OpenStreetmap changeset source for Mapillary layer should be 'null' when there is no dataset");
-    DataSet ds = new DataSet();
-    Node node = new Node(LatLon.ZERO);
-    ds.addPrimitive(node);
-    node.setModified(true);
-    INode image = JsonImageDetailsDecoderTest.createDownloadedImage("1", LatLon.ZERO, 0, false);
-    MainApplication.getLayerManager().addLayer(new OsmDataLayer(ds, "Test Layer", null));
-    MapillaryLayer.getInstance().setImageViewed(image);
-    actualChangesetSourceTag = MapillaryLayer.getInstance().getChangesetSourceTag();
-    assertEquals("Mapillary", actualChangesetSourceTag,
-      "OpenStreetmap changeset source for Mapillary layer should be 'Mapillary'");
-    node.setCoor(LatLon.NORTH_POLE);
-    actualChangesetSourceTag = MapillaryLayer.getInstance().getChangesetSourceTag();
-    assertNull(actualChangesetSourceTag,
-      "OpenStreetmap changeset source for Mapillary layer should be 'null' when the viewed images are very far from the modified objects");
-    node.setCoor(new LatLon(0.0049, 0.0049));
-    actualChangesetSourceTag = MapillaryLayer.getInstance().getChangesetSourceTag();
-    assertNull(actualChangesetSourceTag,
-      "OpenStreetmap changeset source for Mapillary layer should be 'null' when the viewed images are more than 30.0m away (default)");
-  }
+    @Test
+    void testMergeFrom() {
+        Layer dummyLayer = getDummyLayer();
+        MapillaryLayer instance = MapillaryLayer.getInstance();
+        assertThrows(UnsupportedOperationException.class, () -> instance.mergeFrom(dummyLayer));
+    }
 
-  @Test
-  void testClearInstance() {
-    MapillaryLayer.getInstance();
-    assertTrue(MapillaryLayer.hasInstance());
-    MapillaryLayer.getInstance().destroy();
-    assertFalse(MapillaryLayer.hasInstance());
-    MapillaryLayer.getInstance();
-    assertTrue(MapillaryLayer.hasInstance());
-  }
+    @Test
+    void testSetVisible() {
+        MapillaryLayer.getInstance().getData()
+            .addPrimitive(JsonImageDetailsDecoderTest.createImportedImage("", new LatLon(0.0, 0.0), 0.0, false));
+        MapillaryLayer.getInstance().getData()
+            .addPrimitive(JsonImageDetailsDecoderTest.createImportedImage("", new LatLon(0.0, 0.0), 0.0, false));
+        VectorNode invisibleImage = JsonImageDetailsDecoderTest.createImportedImage("", new LatLon(0.0, 0.0), 0.0,
+            false);
+        invisibleImage.setVisible(false);
+        MapillaryLayer.getInstance().getData().addPrimitive(invisibleImage);
+
+        MapillaryLayer.getInstance().setVisible(false);
+        for (INode img : MapillaryLayer.getInstance().getData().getNodes()) {
+            if (MapillaryImageUtils.IS_IMAGE.test(img)) {
+                assertFalse(img.isVisible(), MessageFormat.format("Failed on image {0}/{1}",
+                    MapillaryImageUtils.getKey(img), MapillaryImageUtils.getFile(img)));
+            }
+        }
+
+        MapillaryLayer.getInstance().setVisible(true);
+        for (INode img : MapillaryLayer.getInstance().getData().getNodes()) {
+            if (MapillaryImageUtils.IS_IMAGE.test(img)) {
+                assertTrue(img.isVisible());
+            }
+        }
+    }
+
+    @Test
+    void testGetInfoComponent() {
+        Object comp = MapillaryLayer.getInstance().getInfoComponent();
+        assertTrue(comp instanceof String);
+        assertTrue(((String) comp).length() >= 9);
+    }
+
+    @Test
+    void testSetImageViewed() {
+        INode image = JsonImageDetailsDecoderTest.createDownloadedImage("1", LatLon.ZERO, 0, false);
+        assertFalse(MapillaryLayer.getInstance().setImageViewed(null),
+            "An image should not be set as viewed if there is no image or dataset");
+        assertFalse(MapillaryLayer.getInstance().setImageViewed(image),
+            "An image should not be set as viewed if there is no dataset to edit");
+        MainApplication.getLayerManager().addLayer(new OsmDataLayer(new DataSet(), "Test Layer", null));
+        assertFalse(MapillaryLayer.getInstance().setImageViewed(null),
+            "An image should not be set as viewed if there is no image (i.e., image is null)");
+        assertTrue(MapillaryLayer.getInstance().setImageViewed(image),
+            "An image should be set as viewed if there is an image and a dataset");
+    }
+
+    @Test
+    void testGetChangesetSourceTag() {
+        String actualChangesetSourceTag = MapillaryLayer.getInstance().getChangesetSourceTag();
+        assertNull(actualChangesetSourceTag,
+            "OpenStreetmap changeset source for Mapillary layer should be 'null' when there is no dataset");
+        DataSet ds = new DataSet();
+        Node node = new Node(LatLon.ZERO);
+        ds.addPrimitive(node);
+        node.setModified(true);
+        INode image = JsonImageDetailsDecoderTest.createDownloadedImage("1", LatLon.ZERO, 0, false);
+        MainApplication.getLayerManager().addLayer(new OsmDataLayer(ds, "Test Layer", null));
+        MapillaryLayer.getInstance().setImageViewed(image);
+        actualChangesetSourceTag = MapillaryLayer.getInstance().getChangesetSourceTag();
+        assertEquals("Mapillary", actualChangesetSourceTag,
+            "OpenStreetmap changeset source for Mapillary layer should be 'Mapillary'");
+        node.setCoor(LatLon.NORTH_POLE);
+        actualChangesetSourceTag = MapillaryLayer.getInstance().getChangesetSourceTag();
+        assertNull(actualChangesetSourceTag,
+            "OpenStreetmap changeset source for Mapillary layer should be 'null' when the viewed images are very far from the modified objects");
+        node.setCoor(new LatLon(0.0049, 0.0049));
+        actualChangesetSourceTag = MapillaryLayer.getInstance().getChangesetSourceTag();
+        assertNull(actualChangesetSourceTag,
+            "OpenStreetmap changeset source for Mapillary layer should be 'null' when the viewed images are more than 30.0m away (default)");
+    }
+
+    @Test
+    void testClearInstance() {
+        MapillaryLayer.getInstance();
+        assertTrue(MapillaryLayer.hasInstance());
+        MapillaryLayer.getInstance().destroy();
+        assertFalse(MapillaryLayer.hasInstance());
+        MapillaryLayer.getInstance();
+        assertTrue(MapillaryLayer.hasInstance());
+    }
 }

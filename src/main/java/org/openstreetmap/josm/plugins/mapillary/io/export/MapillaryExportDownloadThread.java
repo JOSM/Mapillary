@@ -30,65 +30,67 @@ import static org.openstreetmap.josm.tools.I18n.tr;
  */
 public class MapillaryExportDownloadThread implements Runnable, ICachedLoaderListener {
 
-  private final ArrayBlockingQueue<BufferedImage> queue;
-  private final ArrayBlockingQueue<INode> queueImages;
+    private final ArrayBlockingQueue<BufferedImage> queue;
+    private final ArrayBlockingQueue<INode> queueImages;
 
-  private final INode image;
+    private final INode image;
 
-  /**
-   * Main constructor.
-   *
-   * @param image
-   *        Image to be downloaded.
-   * @param queue
-   *        Queue of {@link BufferedImage} objects for the
-   *        {@link MapillaryExportWriterThread}.
-   * @param queueImages
-   *        Queue of {@link INode} objects for the
-   *        {@link MapillaryExportWriterThread}.
-   */
-  public MapillaryExportDownloadThread(INode image, ArrayBlockingQueue<BufferedImage> queue,
-    ArrayBlockingQueue<INode> queueImages) {
-    this.queue = queue;
-    this.image = image;
-    this.queueImages = queueImages;
-  }
+    /**
+     * Main constructor.
+     *
+     * @param image
+     *        Image to be downloaded.
+     * @param queue
+     *        Queue of {@link BufferedImage} objects for the
+     *        {@link MapillaryExportWriterThread}.
+     * @param queueImages
+     *        Queue of {@link INode} objects for the
+     *        {@link MapillaryExportWriterThread}.
+     */
+    public MapillaryExportDownloadThread(INode image, ArrayBlockingQueue<BufferedImage> queue,
+        ArrayBlockingQueue<INode> queueImages) {
+        this.queue = queue;
+        this.image = image;
+        this.queueImages = queueImages;
+    }
 
-  @Override
-  public void run() {
-    if (MapillaryImageUtils.getKey(this.image) != 0) {
-      CacheUtils.submit(this.image, this);
-    } else if (this.image.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
-      synchronized (MapillaryExportDownloadThread.class) {
-        try {
-          this.queue.put(ImageIO.read(new FileInputStream(this.image.get(MapillaryImageUtils.IMPORTED_KEY))));
-          this.queueImages.put(this.image);
-        } catch (InterruptedException e) {
-          Logging.error(e);
-          Thread.currentThread().interrupt();
-        } catch (IOException e) {
-          Logging.error(e);
+    @Override
+    public void run() {
+        if (MapillaryImageUtils.getKey(this.image) != 0) {
+            CacheUtils.submit(this.image, this);
+        } else if (this.image.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
+            synchronized (MapillaryExportDownloadThread.class) {
+                try {
+                    this.queue.put(ImageIO.read(new FileInputStream(this.image.get(MapillaryImageUtils.IMPORTED_KEY))));
+                    this.queueImages.put(this.image);
+                } catch (InterruptedException e) {
+                    Logging.error(e);
+                    Thread.currentThread().interrupt();
+                } catch (IOException e) {
+                    Logging.error(e);
+                }
+            }
+        } else {
+            throw new UnsupportedOperationException(tr("We cannot export {0}",
+                image.getInterestingTags().entrySet().stream()
+                    .map(entry -> String.join("=", entry.getKey(), entry.getValue()))
+                    .collect(Collectors.joining(", "))));
         }
-      }
-    } else {
-      throw new UnsupportedOperationException(tr("We cannot export {0}", image.getInterestingTags().entrySet().stream()
-        .map(entry -> String.join("=", entry.getKey(), entry.getValue())).collect(Collectors.joining(", "))));
     }
-  }
 
-  @Override
-  public synchronized void loadingFinished(CacheEntry data, CacheEntryAttributes attributes, LoadResult result) {
-    try {
-      synchronized (this.queue) {
-        this.queue.put(ImageIO.read(new ByteArrayInputStream(data.getContent())));
-        this.queueImages.put(this.image);
-        this.queue.notifyAll();
-      }
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      Logging.error(e);
-    } catch (IOException e) {
-      Logging.error(e);
+    @Override
+    public synchronized void loadingFinished(CacheEntry data, CacheEntryAttributes attributes, LoadResult result) {
+        try {
+            synchronized (this.queue) {
+                this.queue.put(ImageIO.read(new ByteArrayInputStream(data.getContent())));
+                this.queueImages.put(this.image);
+                this.queue.notifyAll();
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            Logging.error(e);
+        } catch (IOException e) {
+            Logging.error(e);
+        }
     }
-  }
 }

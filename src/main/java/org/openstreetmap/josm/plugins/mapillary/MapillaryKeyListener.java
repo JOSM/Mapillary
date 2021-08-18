@@ -43,135 +43,137 @@ import org.openstreetmap.josm.tools.ImageProvider;
  */
 public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
 
-  private JPopupMenu menu;
-  private PropertiesDialog properties;
-  private final Map<JPopupMenu, List<String>> addedValues = new HashMap<>();
-  private final Map<JPopupMenu, List<Component>> addedComponents = new HashMap<>();
+    private JPopupMenu menu;
+    private PropertiesDialog properties;
+    private final Map<JPopupMenu, List<String>> addedValues = new HashMap<>();
+    private final Map<JPopupMenu, List<Component>> addedComponents = new HashMap<>();
 
-  public MapillaryKeyListener(PropertiesDialog properties, JPopupMenu menu) {
-    this.menu = menu;
-    this.properties = properties;
-    menu.addPopupMenuListener(this);
-  }
-
-  @Override
-  public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-    JPopupMenu popup = (JPopupMenu) e.getSource();
-    properties.visitSelectedProperties((primitive, key, value) -> addAction(popup, key, value));
-  }
-
-  @Override
-  public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-    JPopupMenu popup = (JPopupMenu) e.getSource();
-    if (addedValues.containsKey(popup) && addedComponents.containsKey(popup)) {
-      addedValues.remove(popup);
-      addedComponents.get(popup).forEach(popup::remove);
-      addedComponents.remove(popup);
-    }
-  }
-
-  @Override
-  public void popupMenuCanceled(PopupMenuEvent e) {
-    // Do nothing
-  }
-
-  private void addAction(JPopupMenu popup, String key, String value) {
-    if (value == null || value.trim().isEmpty() || !MapillaryLayer.hasInstance()) {
-      return;
-    }
-    String lowerKey = key.toLowerCase(Locale.ENGLISH);
-    if (Arrays.asList("mapillary", "mapillary:image").contains(lowerKey)) {
-      List<String> strings = addedValues.computeIfAbsent(popup, p -> new ArrayList<>());
-      List<Component> components = addedComponents.computeIfAbsent(popup, p -> new ArrayList<>());
-      if (!strings.contains(value)) {
-        strings.add(value);
-        components.add(popup.add(new MapillaryImageKeyAction(value)));
-      }
-      // TODO only if not filtering map features
-    } else if ("mapillary:map_feature".equals(lowerKey)
-      && !MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).isEmpty()) {
-      List<String> strings = addedValues.computeIfAbsent(popup, p -> new ArrayList<>());
-      List<Component> components = addedComponents.computeIfAbsent(popup, p -> new ArrayList<>());
-      if (!strings.contains(value)) {
-        strings.add(value);
-        components.add(popup.add(new MapillaryDetectionKeyAction(value)));
-      }
-    }
-  }
-
-  @Override
-  public void destroy() {
-    if (menu != null) {
-      menu.removePopupMenuListener(this);
-    }
-    properties = null;
-    menu = null;
-  }
-
-  static class MapillaryImageKeyAction extends AbstractAction {
-    private static final long serialVersionUID = -4129937925620244251L;
-    private final String imageKey;
-
-    MapillaryImageKeyAction(String imageKey) {
-      new ImageProvider("mapillary-logo").getResource().attachImageIcon(this, true);
-      this.imageKey = imageKey;
-      putValue(NAME, tr("Select Mapillary Image ({0})", this.imageKey));
-      putValue(SHORT_DESCRIPTION, tr("Select the Mapillary Image {0} on the {1} layer (downloads if needed)",
-        this.imageKey, MapillaryLayer.getInstance().getName()));
+    public MapillaryKeyListener(PropertiesDialog properties, JPopupMenu menu) {
+        this.menu = menu;
+        this.properties = properties;
+        menu.addPopupMenuListener(this);
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-      VectorDataSet data = MapillaryLayer.getInstance().getData();
-      Map<Long, VectorNode> map = data.getNodes().stream().filter(image -> MapillaryImageUtils.getKey(image) != 0)
-        .collect(Collectors.toMap(MapillaryImageUtils::getKey, i -> i));
-      long[] missingImages = Stream.of(this.imageKey.split(";", 0)).mapToLong(Long::parseLong)
-        .filter(i -> !map.containsKey(i)).toArray();
-      map.clear(); // deallocate map
-      if (missingImages.length != 0) {
-        MapillaryDownloader
-          .downloadSequences(MapillaryDownloader.downloadImages(missingImages).keySet().toArray(new String[0]));
-      }
-      Map<Long, VectorNode> newMap = data.getNodes().stream().filter(image -> MapillaryImageUtils.getKey(image) != 0)
-        .collect(Collectors.toMap(MapillaryImageUtils::getKey, i -> i));
-      GuiHelper.runInEDT(() -> MapillaryLayer.getInstance().getData().setSelected(Stream.of(this.imageKey.split(";", 0))
-        .mapToLong(Long::parseLong).mapToObj(newMap::get).collect(Collectors.toSet())));
-    }
-  }
-
-  static class MapillaryDetectionKeyAction extends AbstractAction {
-    private static final long serialVersionUID = -4129937925620244252L;
-    private final long[] detection;
-
-    MapillaryDetectionKeyAction(String detection) {
-      new ImageProvider("mapillary-logo").getResource().attachImageIcon(this, true);
-      this.detection = Stream.of(detection.split(";", 0)).mapToLong(Long::valueOf).toArray();
-      putValue(NAME, tr("Select Mapillary Detection ({0})", detection));
-      putValue(SHORT_DESCRIPTION, tr("Select the Mapillary Detection {0}", detection));
+    public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+        JPopupMenu popup = (JPopupMenu) e.getSource();
+        properties.visitSelectedProperties((primitive, key, value) -> addAction(popup, key, value));
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-      final VectorDataSet data = MapillaryLayer.getInstance().getData();
-      final Collection<IPrimitive> detections = MainApplication.getLayerManager()
-        .getLayersOfType(PointObjectLayer.class).stream().map(PointObjectLayer::getData)
-        .flatMap(d -> d.allNonDeletedPrimitives().stream()).filter(p -> p.getId() != 0)
-        .filter(p -> LongStream.of(this.detection).anyMatch(d -> d == p.getId())).collect(Collectors.toSet());
-      final long[] images = detections.stream()
-        .flatMapToLong(d -> LongStream.of(MapillaryMapFeatureUtils.getImageIds(d))).distinct().toArray();
-      final long[] missingImages = LongStream.of(images)
-        .filter(i -> data.getPrimitiveById(i, OsmPrimitiveType.NODE) == null).toArray();
-      if (missingImages.length != 0) {
-        MapillaryDownloader
-          .downloadSequences(MapillaryDownloader.downloadImages(missingImages).keySet().toArray(new String[0]));
-      }
-      Map<OsmData<?, ?, ?, ?>, List<IPrimitive>> selections = detections.stream()
-        .collect(Collectors.groupingBy(IPrimitive::getDataSet));
-      GuiHelper.runInEDT(() -> {
-        for (Map.Entry<OsmData<?, ?, ?, ?>, List<IPrimitive>> selection : selections.entrySet()) {
-          selection.getKey().setSelected(selection.getValue());
+    public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+        JPopupMenu popup = (JPopupMenu) e.getSource();
+        if (addedValues.containsKey(popup) && addedComponents.containsKey(popup)) {
+            addedValues.remove(popup);
+            addedComponents.get(popup).forEach(popup::remove);
+            addedComponents.remove(popup);
         }
-      });
     }
-  }
+
+    @Override
+    public void popupMenuCanceled(PopupMenuEvent e) {
+        // Do nothing
+    }
+
+    private void addAction(JPopupMenu popup, String key, String value) {
+        if (value == null || value.trim().isEmpty() || !MapillaryLayer.hasInstance()) {
+            return;
+        }
+        String lowerKey = key.toLowerCase(Locale.ENGLISH);
+        if (Arrays.asList("mapillary", "mapillary:image").contains(lowerKey)) {
+            List<String> strings = addedValues.computeIfAbsent(popup, p -> new ArrayList<>());
+            List<Component> components = addedComponents.computeIfAbsent(popup, p -> new ArrayList<>());
+            if (!strings.contains(value)) {
+                strings.add(value);
+                components.add(popup.add(new MapillaryImageKeyAction(value)));
+            }
+            // TODO only if not filtering map features
+        } else if ("mapillary:map_feature".equals(lowerKey)
+            && !MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).isEmpty()) {
+            List<String> strings = addedValues.computeIfAbsent(popup, p -> new ArrayList<>());
+            List<Component> components = addedComponents.computeIfAbsent(popup, p -> new ArrayList<>());
+            if (!strings.contains(value)) {
+                strings.add(value);
+                components.add(popup.add(new MapillaryDetectionKeyAction(value)));
+            }
+        }
+    }
+
+    @Override
+    public void destroy() {
+        if (menu != null) {
+            menu.removePopupMenuListener(this);
+        }
+        properties = null;
+        menu = null;
+    }
+
+    static class MapillaryImageKeyAction extends AbstractAction {
+        private static final long serialVersionUID = -4129937925620244251L;
+        private final String imageKey;
+
+        MapillaryImageKeyAction(String imageKey) {
+            new ImageProvider("mapillary-logo").getResource().attachImageIcon(this, true);
+            this.imageKey = imageKey;
+            putValue(NAME, tr("Select Mapillary Image ({0})", this.imageKey));
+            putValue(SHORT_DESCRIPTION, tr("Select the Mapillary Image {0} on the {1} layer (downloads if needed)",
+                this.imageKey, MapillaryLayer.getInstance().getName()));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            VectorDataSet data = MapillaryLayer.getInstance().getData();
+            Map<Long, VectorNode> map = data.getNodes().stream().filter(image -> MapillaryImageUtils.getKey(image) != 0)
+                .collect(Collectors.toMap(MapillaryImageUtils::getKey, i -> i));
+            long[] missingImages = Stream.of(this.imageKey.split(";", 0)).mapToLong(Long::parseLong)
+                .filter(i -> !map.containsKey(i)).toArray();
+            map.clear(); // deallocate map
+            if (missingImages.length != 0) {
+                MapillaryDownloader.downloadSequences(
+                    MapillaryDownloader.downloadImages(missingImages).keySet().toArray(new String[0]));
+            }
+            Map<Long, VectorNode> newMap = data.getNodes().stream()
+                .filter(image -> MapillaryImageUtils.getKey(image) != 0)
+                .collect(Collectors.toMap(MapillaryImageUtils::getKey, i -> i));
+            GuiHelper.runInEDT(
+                () -> MapillaryLayer.getInstance().getData().setSelected(Stream.of(this.imageKey.split(";", 0))
+                    .mapToLong(Long::parseLong).mapToObj(newMap::get).collect(Collectors.toSet())));
+        }
+    }
+
+    static class MapillaryDetectionKeyAction extends AbstractAction {
+        private static final long serialVersionUID = -4129937925620244252L;
+        private final long[] detection;
+
+        MapillaryDetectionKeyAction(String detection) {
+            new ImageProvider("mapillary-logo").getResource().attachImageIcon(this, true);
+            this.detection = Stream.of(detection.split(";", 0)).mapToLong(Long::valueOf).toArray();
+            putValue(NAME, tr("Select Mapillary Detection ({0})", detection));
+            putValue(SHORT_DESCRIPTION, tr("Select the Mapillary Detection {0}", detection));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            final VectorDataSet data = MapillaryLayer.getInstance().getData();
+            final Collection<IPrimitive> detections = MainApplication.getLayerManager()
+                .getLayersOfType(PointObjectLayer.class).stream().map(PointObjectLayer::getData)
+                .flatMap(d -> d.allNonDeletedPrimitives().stream()).filter(p -> p.getId() != 0)
+                .filter(p -> LongStream.of(this.detection).anyMatch(d -> d == p.getId())).collect(Collectors.toSet());
+            final long[] images = detections.stream()
+                .flatMapToLong(d -> LongStream.of(MapillaryMapFeatureUtils.getImageIds(d))).distinct().toArray();
+            final long[] missingImages = LongStream.of(images)
+                .filter(i -> data.getPrimitiveById(i, OsmPrimitiveType.NODE) == null).toArray();
+            if (missingImages.length != 0) {
+                MapillaryDownloader.downloadSequences(
+                    MapillaryDownloader.downloadImages(missingImages).keySet().toArray(new String[0]));
+            }
+            Map<OsmData<?, ?, ?, ?>, List<IPrimitive>> selections = detections.stream()
+                .collect(Collectors.groupingBy(IPrimitive::getDataSet));
+            GuiHelper.runInEDT(() -> {
+                for (Map.Entry<OsmData<?, ?, ?, ?>, List<IPrimitive>> selection : selections.entrySet()) {
+                    selection.getKey().setSelected(selection.getValue());
+                }
+            });
+        }
+    }
 }

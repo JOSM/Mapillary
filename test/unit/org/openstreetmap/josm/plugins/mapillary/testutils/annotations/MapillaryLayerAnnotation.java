@@ -22,31 +22,31 @@ import org.openstreetmap.josm.tools.Logging;
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @ExtendWith(MapillaryLayerAnnotation.MapillaryLayerExtension.class)
 public @interface MapillaryLayerAnnotation {
-  class MapillaryLayerExtension implements AfterEachCallback, BeforeEachCallback {
+    class MapillaryLayerExtension implements AfterEachCallback, BeforeEachCallback {
 
-    @Override
-    public void afterEach(ExtensionContext context) throws Exception {
-      this.beforeEach(context);
-    }
-
-    @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
-      try {
-        cleanup();
-      } catch (IllegalArgumentException illegalArgumentException) {
-        // This happens when the layer isn't properly destroyed in a previous test
-        Logging.trace(illegalArgumentException);
-      }
-    }
-
-    void cleanup() {
-      if (MapillaryLayer.hasInstance()) {
-        final MapillaryLayer layer = MapillaryLayer.getInstance();
-        if (MainApplication.getLayerManager().containsLayer(layer)) {
-          MainApplication.getLayerManager().removeLayer(layer);
+        @Override
+        public void afterEach(ExtensionContext context) throws Exception {
+            this.beforeEach(context);
         }
-        layer.destroy();
-      }
+
+        @Override
+        public void beforeEach(ExtensionContext context) throws Exception {
+            try {
+                cleanup();
+            } catch (IllegalArgumentException illegalArgumentException) {
+                // This happens when the layer isn't properly destroyed in a previous test
+                Logging.trace(illegalArgumentException);
+            }
+        }
+
+        void cleanup() {
+            if (MapillaryLayer.hasInstance()) {
+                final MapillaryLayer layer = MapillaryLayer.getInstance();
+                if (MainApplication.getLayerManager().containsLayer(layer)) {
+                    MainApplication.getLayerManager().removeLayer(layer);
+                }
+                layer.destroy();
+            }
+        }
     }
-  }
 }

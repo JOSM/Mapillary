@@ -49,152 +49,157 @@ import java.util.stream.Stream;
  * @author nokutu
  */
 public final class MapillaryDownloader {
-  private MapillaryDownloader() {
-    // Private constructor to avoid instantiation
-  }
-
-  /**
-   * Download a specific set of images
-   *
-   * @param images The images to download
-   * @return The downloaded images
-   */
-  public static Map<String, Collection<VectorNode>> downloadImages(long... images) {
-    return realDownloadImages(MapillaryLayer.getInstance().getData(), images);
-  }
-
-  /**
-   * Download a specific set of images
-   *
-   * @param images The images to download and update
-   */
-  public static void downloadImages(final VectorNode... images) {
-    final Map<VectorDataSet, List<VectorNode>> groups = Stream.of(images)
-      .collect(Collectors.groupingBy(VectorNode::getDataSet));
-    for (Map.Entry<VectorDataSet, List<VectorNode>> entry : groups.entrySet()) {
-      realDownloadImages(entry.getKey(), entry.getValue().stream().mapToLong(MapillaryImageUtils::getKey).toArray());
+    private MapillaryDownloader() {
+        // Private constructor to avoid instantiation
     }
-  }
 
-  private static Map<String, Collection<VectorNode>> realDownloadImages(final VectorDataSet dataSet,
-    final long... images) {
-    if (images.length == 0) {
-      return Collections.emptyMap();
+    /**
+     * Download a specific set of images
+     *
+     * @param images The images to download
+     * @return The downloaded images
+     */
+    public static Map<String, Collection<VectorNode>> downloadImages(long... images) {
+        return realDownloadImages(MapillaryLayer.getInstance().getData(), images);
     }
-    final Caches.MapillaryCacheAccess<String> metaDataCache = Caches.META_DATA_CACHE;
-    String url = MapillaryURL.APIv4.getImageInformation(images);
-    String stringJson = metaDataCache.get(url, () -> {
-      final JsonObject jsonObject = getUrlResponse(url);
-      return jsonObject != null ? jsonObject.toString() : null;
-    });
-    final Collection<VectorNode> nodes;
-    if (stringJson != null) {
-      try (JsonReader jsonReader = Json
-        .createReader(new ByteArrayInputStream(stringJson.getBytes(StandardCharsets.UTF_8)))) {
-        final JsonObject jsonObject = jsonReader.readObject();
-        nodes = JsonDecoder.decodeData(jsonObject, json -> JsonImageDetailsDecoder.decodeImageInfos(json, dataSet));
-        // OK. Cache each image separately as well.
-        if (images.length > 1) {
-          separatelyCacheDownloadedImages(jsonObject);
+
+    /**
+     * Download a specific set of images
+     *
+     * @param images The images to download and update
+     */
+    public static void downloadImages(final VectorNode... images) {
+        final Map<VectorDataSet, List<VectorNode>> groups = Stream.of(images)
+            .collect(Collectors.groupingBy(VectorNode::getDataSet));
+        for (Map.Entry<VectorDataSet, List<VectorNode>> entry : groups.entrySet()) {
+            realDownloadImages(entry.getKey(),
+                entry.getValue().stream().mapToLong(MapillaryImageUtils::getKey).toArray());
         }
-      }
-    } else {
-      nodes = Collections.emptyList();
     }
-    return Collections.unmodifiableMap(
-      nodes.stream().sorted(Comparator.comparingLong(image -> MapillaryImageUtils.getDate(image).toEpochMilli()))
-        .collect(Collector.of(
-          HashMap<String, Collection<VectorNode>>::new, (map, node) -> map
-            .computeIfAbsent(MapillaryImageUtils.getSequenceKey(node), key -> new ArrayList<>()).add(node),
-          (rMap, oMap) -> {
-            rMap.putAll(oMap);
-            return rMap;
-          })));
-  }
 
-  private static void separatelyCacheDownloadedImages(final JsonObject jsonObject) {
-    final String dataString = "data";
-    if (jsonObject.containsKey(dataString) && jsonObject.get(dataString).getValueType() == JsonValue.ValueType.ARRAY) {
-      for (JsonObject entry : jsonObject.get(dataString).asJsonArray().getValuesAs(JsonObject.class)) {
-        final JsonValue idValue = entry.get("id");
-        final long id;
-        if (idValue.getValueType() == JsonValue.ValueType.STRING) {
-          id = Long.parseLong(((JsonString) idValue).getString());
-        } else if (idValue.getValueType() == JsonValue.ValueType.NUMBER) {
-          id = ((JsonNumber) idValue).longValue();
+    private static Map<String, Collection<VectorNode>> realDownloadImages(final VectorDataSet dataSet,
+        final long... images) {
+        if (images.length == 0) {
+            return Collections.emptyMap();
+        }
+        final Caches.MapillaryCacheAccess<String> metaDataCache = Caches.META_DATA_CACHE;
+        String url = MapillaryURL.APIv4.getImageInformation(images);
+        String stringJson = metaDataCache.get(url, () -> {
+            final JsonObject jsonObject = getUrlResponse(url);
+            return jsonObject != null ? jsonObject.toString() : null;
+        });
+        final Collection<VectorNode> nodes;
+        if (stringJson != null) {
+            try (JsonReader jsonReader = Json
+                .createReader(new ByteArrayInputStream(stringJson.getBytes(StandardCharsets.UTF_8)))) {
+                final JsonObject jsonObject = jsonReader.readObject();
+                nodes = JsonDecoder.decodeData(jsonObject,
+                    json -> JsonImageDetailsDecoder.decodeImageInfos(json, dataSet));
+                // OK. Cache each image separately as well.
+                if (images.length > 1) {
+                    separatelyCacheDownloadedImages(jsonObject);
+                }
+            }
         } else {
-          throw new IllegalArgumentException("id value not understood: " + jsonObject);
+            nodes = Collections.emptyList();
         }
-        final String entryUrl = MapillaryURL.APIv4.getImageInformation(id);
-        Caches.META_DATA_CACHE.getICacheAccess().put(entryUrl, entry.toString());
-      }
+        return Collections.unmodifiableMap(
+            nodes.stream().sorted(Comparator.comparingLong(image -> MapillaryImageUtils.getDate(image).toEpochMilli()))
+                .collect(Collector.of(HashMap<String, Collection<VectorNode>>::new,
+                    (map, node) -> map
+                        .computeIfAbsent(MapillaryImageUtils.getSequenceKey(node), key -> new ArrayList<>()).add(node),
+                    (rMap, oMap) -> {
+                        rMap.putAll(oMap);
+                        return rMap;
+                    })));
     }
-  }
 
-  /**
-   * Download a specific set of sequences
-   *
-   * @param sequences The sequences to download
-   * @return The downloaded sequences
-   */
-  public static Collection<VectorWay> downloadSequences(String... sequences) {
-    return downloadSequences(true, sequences);
-  }
+    private static void separatelyCacheDownloadedImages(final JsonObject jsonObject) {
+        final String dataString = "data";
+        if (jsonObject.containsKey(dataString)
+            && jsonObject.get(dataString).getValueType() == JsonValue.ValueType.ARRAY) {
+            for (JsonObject entry : jsonObject.get(dataString).asJsonArray().getValuesAs(JsonObject.class)) {
+                final JsonValue idValue = entry.get("id");
+                final long id;
+                if (idValue.getValueType() == JsonValue.ValueType.STRING) {
+                    id = Long.parseLong(((JsonString) idValue).getString());
+                } else if (idValue.getValueType() == JsonValue.ValueType.NUMBER) {
+                    id = ((JsonNumber) idValue).longValue();
+                } else {
+                    throw new IllegalArgumentException("id value not understood: " + jsonObject);
+                }
+                final String entryUrl = MapillaryURL.APIv4.getImageInformation(id);
+                Caches.META_DATA_CACHE.getICacheAccess().put(entryUrl, entry.toString());
+            }
+        }
+    }
 
-  /**
-   * Download a specific set of sequences
-   *
-   * @param sequences The sequences to download
-   * @param force Force the download if the sequence has already been downloaded once.
-   * @return The downloaded sequences
-   */
-  public static Collection<VectorWay> downloadSequences(boolean force, String... sequences) {
-    // prevent infinite loops. See #20470.
-    if (Arrays.stream(Thread.currentThread().getStackTrace())
-      .skip(/* getStackTrace, downloadSequences(sequences), downloadSequences(force, sequences) */ 3)
-      .filter(element -> MapillaryDownloader.class.getName().equals(element.getClassName()))
-      .filter(element -> "downloadSequences".equals(element.getMethodName())).count() > 2) {
-      return Collections.emptyList();
+    /**
+     * Download a specific set of sequences
+     *
+     * @param sequences The sequences to download
+     * @return The downloaded sequences
+     */
+    public static Collection<VectorWay> downloadSequences(String... sequences) {
+        return downloadSequences(true, sequences);
     }
-    String[] toGet = sequences != null
-      ? Stream.of(sequences).filter(Objects::nonNull).filter(s -> !s.trim().isEmpty()).toArray(String[]::new)
-      : new String[0];
-    if (MapillaryLayer.hasInstance() && !force) {
-      VectorDataSet data = MapillaryLayer.getInstance().getData();
-      Set<String> previousSequences = data.getWays().stream().map(MapillarySequenceUtils::getKey)
-        .collect(Collectors.toSet());
-      toGet = Stream.of(toGet).filter(seq -> !previousSequences.contains(seq)).toArray(String[]::new);
-    }
-    if (toGet.length > 0) {
-      return Stream.of(toGet).map(MapillaryURL.APIv4::getImagesBySequences)
-        .map(url -> Caches.META_DATA_CACHE.get(url, () -> getUrlResponse(url).toString())).map(string -> {
-          try (
-            JsonReader reader = Json.createReader(new ByteArrayInputStream(string.getBytes(StandardCharsets.UTF_8)))) {
-            return reader.readObject();
-          }
-        }).flatMap(jsonObject -> JsonDecoder.decodeData(jsonObject, JsonSequencesDecoder::decodeSequence).stream())
-        .collect(Collectors.toSet());
-    }
-    return Collections.emptyList();
-  }
 
-  @Nullable
-  private static JsonObject getUrlResponse(@Nonnull URL url) {
-    try {
-      return OAuthUtils.getWithHeader(url);
-    } catch (IOException e) {
-      Logging.trace(e);
-      return null;
+    /**
+     * Download a specific set of sequences
+     *
+     * @param sequences The sequences to download
+     * @param force Force the download if the sequence has already been downloaded once.
+     * @return The downloaded sequences
+     */
+    public static Collection<VectorWay> downloadSequences(boolean force, String... sequences) {
+        // prevent infinite loops. See #20470.
+        if (Arrays.stream(Thread.currentThread().getStackTrace())
+            .skip(/* getStackTrace, downloadSequences(sequences), downloadSequences(force, sequences) */ 3)
+            .filter(element -> MapillaryDownloader.class.getName().equals(element.getClassName()))
+            .filter(element -> "downloadSequences".equals(element.getMethodName())).count() > 2) {
+            return Collections.emptyList();
+        }
+        String[] toGet = sequences != null
+            ? Stream.of(sequences).filter(Objects::nonNull).filter(s -> !s.trim().isEmpty()).toArray(String[]::new)
+            : new String[0];
+        if (MapillaryLayer.hasInstance() && !force) {
+            VectorDataSet data = MapillaryLayer.getInstance().getData();
+            Set<String> previousSequences = data.getWays().stream().map(MapillarySequenceUtils::getKey)
+                .collect(Collectors.toSet());
+            toGet = Stream.of(toGet).filter(seq -> !previousSequences.contains(seq)).toArray(String[]::new);
+        }
+        if (toGet.length > 0) {
+            return Stream.of(toGet).map(MapillaryURL.APIv4::getImagesBySequences)
+                .map(url -> Caches.META_DATA_CACHE.get(url, () -> getUrlResponse(url).toString())).map(string -> {
+                    try (JsonReader reader = Json
+                        .createReader(new ByteArrayInputStream(string.getBytes(StandardCharsets.UTF_8)))) {
+                        return reader.readObject();
+                    }
+                })
+                .flatMap(
+                    jsonObject -> JsonDecoder.decodeData(jsonObject, JsonSequencesDecoder::decodeSequence).stream())
+                .collect(Collectors.toSet());
+        }
+        return Collections.emptyList();
     }
-  }
 
-  @Nullable
-  private static JsonObject getUrlResponse(@Nonnull String url) {
-    try {
-      return getUrlResponse(new URL(url));
-    } catch (MalformedURLException e) {
-      Logging.error(e);
+    @Nullable
+    private static JsonObject getUrlResponse(@Nonnull URL url) {
+        try {
+            return OAuthUtils.getWithHeader(url);
+        } catch (IOException e) {
+            Logging.trace(e);
+            return null;
+        }
     }
-    return null;
-  }
+
+    @Nullable
+    private static JsonObject getUrlResponse(@Nonnull String url) {
+        try {
+            return getUrlResponse(new URL(url));
+        } catch (MalformedURLException e) {
+            Logging.error(e);
+        }
+        return null;
+    }
 }

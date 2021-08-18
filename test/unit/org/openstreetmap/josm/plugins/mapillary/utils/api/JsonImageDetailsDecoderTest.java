@@ -35,140 +35,140 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @MapillaryURLWireMock
 public class JsonImageDetailsDecoderTest {
 
-  @RegisterExtension
-  static JOSMTestRules rules = new MapillaryTestRules().preferences();
+    @RegisterExtension
+    static JOSMTestRules rules = new MapillaryTestRules().preferences();
 
-  @Test
-  void testUtilityClass() {
-    TestUtil.testUtilityClass(JsonImageDetailsDecoder.class);
-  }
-
-  @ParameterizedTest(name = "{index}: using computed locations: {0}")
-  @ValueSource(booleans = { true, false })
-  void testDecodeImageInfos(boolean computedLocations) throws IOException {
-    MapillaryProperties.USE_COMPUTED_LOCATIONS.put(computedLocations);
-    final long[] images = new long[] { 135511895288847L };
-
-    final VectorDataSet data = new VectorDataMock();
-    LongStream.of(images)
-      .mapToObj(image -> createDownloadedImage(image, new LatLon(39.068354912098, -108.57081597085), 0, false))
-      .forEach(data::addPrimitive);
-
-    for (long image : images) {
-      final URL url = new URL(
-        MapillaryURL.APIv4.getImageInformation(image, MapillaryImageUtils.ImageProperties.values()));
-      JsonDecoder.decodeData(OAuthUtils.getWithHeader(url),
-        value -> JsonImageDetailsDecoder.decodeImageInfos(value, data));
+    @Test
+    void testUtilityClass() {
+        TestUtil.testUtilityClass(JsonImageDetailsDecoder.class);
     }
 
-    final VectorNode i_135511895288847 = data.getNodes().stream().filter(image -> 135511895288847L == image.getId())
-      .findFirst().get();
-    // JOSM currently (2021-06-09) only stores timestamps to the second level, not millisecond level
-    assertEquals(Instant.ofEpochMilli(1_563_721_072_184L).getEpochSecond(),
-      MapillaryImageUtils.getDate(i_135511895288847).getEpochSecond());
-    assertEquals(i_135511895288847.getInstant(), MapillaryImageUtils.getDate(i_135511895288847));
-    assertEquals(135511895288847L, i_135511895288847.getUniqueId());
-    final double delta = 0.000_000_000_1;
-    assertEquals(1399.5043095825, Double.parseDouble(i_135511895288847.get("computed_altitude")), delta);
-    assertEquals(1364.617, Double.parseDouble(i_135511895288847.get("altitude")), delta);
-    assertEquals(0.7561310782241d, MapillaryImageUtils.getQuality(i_135511895288847), delta);
-    assertEquals("7nfcwfvjdtphz7yj6zat6a", MapillaryImageUtils.getSequenceKey(i_135511895288847));
-    if (Boolean.TRUE.equals(MapillaryProperties.USE_COMPUTED_LOCATIONS.get())) {
-      assertEquals(Math.toRadians(1.2865829255371), MapillaryImageUtils.getAngle(i_135511895288847), delta);
-      assertEquals(-108.57081597085, i_135511895288847.lon(), delta);
-      assertEquals(39.068354912098, i_135511895288847.lat(), delta);
-    } else {
-      assertEquals(Math.toRadians(336.74), MapillaryImageUtils.getAngle(i_135511895288847), delta);
-      assertEquals(-108.57081597222, i_135511895288847.lon(), delta);
-      assertEquals(39.068354972222, i_135511895288847.lat(), delta);
-    }
-  }
+    @ParameterizedTest(name = "{index}: using computed locations: {0}")
+    @ValueSource(booleans = { true, false })
+    void testDecodeImageInfos(boolean computedLocations) throws IOException {
+        MapillaryProperties.USE_COMPUTED_LOCATIONS.put(computedLocations);
+        final long[] images = new long[] { 135511895288847L };
 
-  @Test
-  @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.APPLICATION_REQUEST_LIMIT_REACHED)
-  void testDecodeImageInfosWithFetchErrorsApplicationRequestLimitReached() throws IOException {
-    final long[] images = new long[] { 148137757289079L, 311799370533334L, 4235112816526838L, 464249047982277L,
-      308609047601518L, 135511895288847L, 311681117131457L, };
+        final VectorDataSet data = new VectorDataMock();
+        LongStream.of(images)
+            .mapToObj(image -> createDownloadedImage(image, new LatLon(39.068354912098, -108.57081597085), 0, false))
+            .forEach(data::addPrimitive);
 
-    final VectorDataSet data = new VectorDataMock();
-    LongStream.of(images).mapToObj(image -> createDownloadedImage(image, LatLon.ZERO, 0, false))
-      .forEach(data::addPrimitive);
+        for (long image : images) {
+            final URL url = new URL(
+                MapillaryURL.APIv4.getImageInformation(image, MapillaryImageUtils.ImageProperties.values()));
+            JsonDecoder.decodeData(OAuthUtils.getWithHeader(url),
+                value -> JsonImageDetailsDecoder.decodeImageInfos(value, data));
+        }
 
-    for (long image : images) {
-      final URL url = new URL(
-        MapillaryURL.APIv4.getImageInformation(image, MapillaryImageUtils.ImageProperties.values()));
-      assertDoesNotThrow(() -> JsonDecoder.decodeData(OAuthUtils.getWithHeader(url),
-        value -> JsonImageDetailsDecoder.decodeImageInfos(value, data)));
-    }
-  }
-
-  public static VectorNode createDownloadedImage(String key, LatLon latLon, double cameraAngle, boolean pano) {
-    return createDownloadedImage(Long.parseLong(key), latLon, cameraAngle, pano);
-  }
-
-  public static VectorNode createDownloadedImage(long key, LatLon latLon, double cameraAngle, boolean pano) {
-    VectorNode image = new VectorNode("test");
-    image.setOsmId(key, 1);
-    image.put(MapillaryImageUtils.ImageProperties.ID.toString(), Long.toString(key));
-    image.setCoor(latLon);
-    image.put(MapillaryImageUtils.ImageProperties.COMPASS_ANGLE.toString(), Double.toString(cameraAngle));
-    image.put(MapillaryImageUtils.ImageProperties.IS_PANO.toString(),
-      pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
-    return image;
-  }
-
-  public static VectorNode createImportedImage(String file, LatLon latLon, double cameraAngle, boolean pano) {
-    VectorNode image = new VectorNode("test");
-    image.put(MapillaryImageUtils.IMPORTED_KEY, file);
-    image.setCoor(latLon);
-    image.put(MapillaryImageUtils.ImageProperties.COMPASS_ANGLE.toString(), Double.toString(cameraAngle));
-    image.put(MapillaryImageUtils.ImageProperties.IS_PANO.toString(),
-      pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
-    return image;
-  }
-
-  @Test
-  void testInvalidImageInfos() {
-    VectorDataMock data = new VectorDataMock();
-    JsonImageDetailsDecoder.decodeImageInfos(null, data);
-    JsonImageDetailsDecoder.decodeImageInfos(JsonUtil.string2jsonObject("{}"), null);
-    JsonImageDetailsDecoder.decodeImageInfos(JsonUtil.string2jsonObject("{}"), data);
-    JsonImageDetailsDecoder
-      .decodeImageInfos(JsonUtil.string2jsonObject("{\"type\":\"FeatureCollection\", \"features\":0}"), data);
-    JsonImageDetailsDecoder
-      .decodeImageInfos(JsonUtil.string2jsonObject("{\"type\":\"FeatureCollection\", \"features\":[0, null]}"), data);
-    assertEquals(0, data.getNumImageRetrievals());
-  }
-
-  @Test
-  void testInvalidImageInfo() throws NoSuchMethodException, SecurityException, IllegalAccessException,
-    IllegalArgumentException, InvocationTargetException {
-    Method decodeImageInfo = JsonImageDetailsDecoder.class.getDeclaredMethod("decodeImageInfo", JsonObject.class,
-      org.openstreetmap.josm.data.vector.VectorDataSet.class);
-    VectorDataMock data = new VectorDataMock();
-    decodeImageInfo.setAccessible(true);
-    decodeImageInfo.invoke(null, null, data);
-    decodeImageInfo.invoke(null, JsonUtil.string2jsonObject("{}"), null);
-    decodeImageInfo.invoke(null, JsonUtil.string2jsonObject("{\"properties\":null}"), data);
-    decodeImageInfo.invoke(null, JsonUtil.string2jsonObject("{\"properties\":{}}"), data);
-    decodeImageInfo.invoke(null, JsonUtil.string2jsonObject("{\"properties\":{\"key\":\"arbitrary_key\"}}"), data);
-    assertEquals(0, data.getNumImageRetrievals());
-  }
-
-  static class VectorDataMock extends org.openstreetmap.josm.data.vector.VectorDataSet {
-    private int imageRetrievals;
-
-    /**
-     * @return how often the method {@link #getNodes()} has been accessed for this instance.
-     */
-    public int getNumImageRetrievals() {
-      return imageRetrievals;
+        final VectorNode i_135511895288847 = data.getNodes().stream().filter(image -> 135511895288847L == image.getId())
+            .findFirst().get();
+        // JOSM currently (2021-06-09) only stores timestamps to the second level, not millisecond level
+        assertEquals(Instant.ofEpochMilli(1_563_721_072_184L).getEpochSecond(),
+            MapillaryImageUtils.getDate(i_135511895288847).getEpochSecond());
+        assertEquals(i_135511895288847.getInstant(), MapillaryImageUtils.getDate(i_135511895288847));
+        assertEquals(135511895288847L, i_135511895288847.getUniqueId());
+        final double delta = 0.000_000_000_1;
+        assertEquals(1399.5043095825, Double.parseDouble(i_135511895288847.get("computed_altitude")), delta);
+        assertEquals(1364.617, Double.parseDouble(i_135511895288847.get("altitude")), delta);
+        assertEquals(0.7561310782241d, MapillaryImageUtils.getQuality(i_135511895288847), delta);
+        assertEquals("7nfcwfvjdtphz7yj6zat6a", MapillaryImageUtils.getSequenceKey(i_135511895288847));
+        if (Boolean.TRUE.equals(MapillaryProperties.USE_COMPUTED_LOCATIONS.get())) {
+            assertEquals(Math.toRadians(1.2865829255371), MapillaryImageUtils.getAngle(i_135511895288847), delta);
+            assertEquals(-108.57081597085, i_135511895288847.lon(), delta);
+            assertEquals(39.068354912098, i_135511895288847.lat(), delta);
+        } else {
+            assertEquals(Math.toRadians(336.74), MapillaryImageUtils.getAngle(i_135511895288847), delta);
+            assertEquals(-108.57081597222, i_135511895288847.lon(), delta);
+            assertEquals(39.068354972222, i_135511895288847.lat(), delta);
+        }
     }
 
-    @Override
-    public synchronized Collection<VectorNode> getNodes() {
-      imageRetrievals++;
-      return super.getNodes();
+    @Test
+    @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.APPLICATION_REQUEST_LIMIT_REACHED)
+    void testDecodeImageInfosWithFetchErrorsApplicationRequestLimitReached() throws IOException {
+        final long[] images = new long[] { 148137757289079L, 311799370533334L, 4235112816526838L, 464249047982277L,
+            308609047601518L, 135511895288847L, 311681117131457L, };
+
+        final VectorDataSet data = new VectorDataMock();
+        LongStream.of(images).mapToObj(image -> createDownloadedImage(image, LatLon.ZERO, 0, false))
+            .forEach(data::addPrimitive);
+
+        for (long image : images) {
+            final URL url = new URL(
+                MapillaryURL.APIv4.getImageInformation(image, MapillaryImageUtils.ImageProperties.values()));
+            assertDoesNotThrow(() -> JsonDecoder.decodeData(OAuthUtils.getWithHeader(url),
+                value -> JsonImageDetailsDecoder.decodeImageInfos(value, data)));
+        }
     }
-  }
+
+    public static VectorNode createDownloadedImage(String key, LatLon latLon, double cameraAngle, boolean pano) {
+        return createDownloadedImage(Long.parseLong(key), latLon, cameraAngle, pano);
+    }
+
+    public static VectorNode createDownloadedImage(long key, LatLon latLon, double cameraAngle, boolean pano) {
+        VectorNode image = new VectorNode("test");
+        image.setOsmId(key, 1);
+        image.put(MapillaryImageUtils.ImageProperties.ID.toString(), Long.toString(key));
+        image.setCoor(latLon);
+        image.put(MapillaryImageUtils.ImageProperties.COMPASS_ANGLE.toString(), Double.toString(cameraAngle));
+        image.put(MapillaryImageUtils.ImageProperties.IS_PANO.toString(),
+            pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
+        return image;
+    }
+
+    public static VectorNode createImportedImage(String file, LatLon latLon, double cameraAngle, boolean pano) {
+        VectorNode image = new VectorNode("test");
+        image.put(MapillaryImageUtils.IMPORTED_KEY, file);
+        image.setCoor(latLon);
+        image.put(MapillaryImageUtils.ImageProperties.COMPASS_ANGLE.toString(), Double.toString(cameraAngle));
+        image.put(MapillaryImageUtils.ImageProperties.IS_PANO.toString(),
+            pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
+        return image;
+    }
+
+    @Test
+    void testInvalidImageInfos() {
+        VectorDataMock data = new VectorDataMock();
+        JsonImageDetailsDecoder.decodeImageInfos(null, data);
+        JsonImageDetailsDecoder.decodeImageInfos(JsonUtil.string2jsonObject("{}"), null);
+        JsonImageDetailsDecoder.decodeImageInfos(JsonUtil.string2jsonObject("{}"), data);
+        JsonImageDetailsDecoder
+            .decodeImageInfos(JsonUtil.string2jsonObject("{\"type\":\"FeatureCollection\", \"features\":0}"), data);
+        JsonImageDetailsDecoder.decodeImageInfos(
+            JsonUtil.string2jsonObject("{\"type\":\"FeatureCollection\", \"features\":[0, null]}"), data);
+        assertEquals(0, data.getNumImageRetrievals());
+    }
+
+    @Test
+    void testInvalidImageInfo() throws NoSuchMethodException, SecurityException, IllegalAccessException,
+        IllegalArgumentException, InvocationTargetException {
+        Method decodeImageInfo = JsonImageDetailsDecoder.class.getDeclaredMethod("decodeImageInfo", JsonObject.class,
+            org.openstreetmap.josm.data.vector.VectorDataSet.class);
+        VectorDataMock data = new VectorDataMock();
+        decodeImageInfo.setAccessible(true);
+        decodeImageInfo.invoke(null, null, data);
+        decodeImageInfo.invoke(null, JsonUtil.string2jsonObject("{}"), null);
+        decodeImageInfo.invoke(null, JsonUtil.string2jsonObject("{\"properties\":null}"), data);
+        decodeImageInfo.invoke(null, JsonUtil.string2jsonObject("{\"properties\":{}}"), data);
+        decodeImageInfo.invoke(null, JsonUtil.string2jsonObject("{\"properties\":{\"key\":\"arbitrary_key\"}}"), data);
+        assertEquals(0, data.getNumImageRetrievals());
+    }
+
+    static class VectorDataMock extends org.openstreetmap.josm.data.vector.VectorDataSet {
+        private int imageRetrievals;
+
+        /**
+         * @return how often the method {@link #getNodes()} has been accessed for this instance.
+         */
+        public int getNumImageRetrievals() {
+            return imageRetrievals;
+        }
+
+        @Override
+        public synchronized Collection<VectorNode> getNodes() {
+            imageRetrievals++;
+            return super.getNodes();
+        }
+    }
 }

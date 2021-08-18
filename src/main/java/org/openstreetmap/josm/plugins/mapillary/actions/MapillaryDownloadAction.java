@@ -28,59 +28,60 @@ import org.openstreetmap.josm.tools.Shortcut;
  */
 public class MapillaryDownloadAction extends JosmAction {
 
-  private static final long serialVersionUID = 325060354730454948L;
-  public static final Shortcut SHORTCUT = Shortcut.registerShortcut("Mapillary", tr("Open Mapillary layer"),
-    KeyEvent.VK_COMMA, Shortcut.SHIFT);
+    private static final long serialVersionUID = 325060354730454948L;
+    public static final Shortcut SHORTCUT = Shortcut.registerShortcut("Mapillary", tr("Open Mapillary layer"),
+        KeyEvent.VK_COMMA, Shortcut.SHIFT);
 
-  /**
-   * Main constructor.
-   */
-  public MapillaryDownloadAction() {
-    super(tr("Mapillary"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
-      tr("Open Mapillary layer"), SHORTCUT, false, "mapillaryDownload", true);
-  }
-
-  @Override
-  public void actionPerformed(ActionEvent ae) {
-    if (!MapillaryLayer.hasInstance()
-      || !MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {
-      addLayer();
-      return;
+    /**
+     * Main constructor.
+     */
+    public MapillaryDownloadAction() {
+        super(tr("Mapillary"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
+            tr("Open Mapillary layer"), SHORTCUT, false, "mapillaryDownload", true);
     }
 
-    try {
-      // Successive calls to this action toggle the active layer between the OSM data layer and the mapillary layer
-      OsmDataLayer editLayer = MainApplication.getLayerManager().getEditLayer();
-      if (MainApplication.getLayerManager().getActiveLayer() != MapillaryLayer.getInstance()) {
-        MainApplication.getLayerManager().setActiveLayer(MapillaryLayer.getInstance());
-      } else if (editLayer != null) {
-        MainApplication.getLayerManager().setActiveLayer(editLayer);
-      }
-    } catch (IllegalArgumentException e) {
-      // If the MapillaryLayer is not managed by LayerManager but you try to set it as active layer
-      Logging.warn(e);
-    }
-  }
+    @Override
+    public void actionPerformed(ActionEvent ae) {
+        if (!MapillaryLayer.hasInstance()
+            || !MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {
+            addLayer();
+            return;
+        }
 
-  @Override
-  public void updateEnabledState() {
-    super.setEnabled(MainApplication.isDisplayingMapView());
-  }
-
-  /**
-   * Add the MapillaryLayer to the JOSM layer manager
-   */
-  public static void addLayer() {
-    LayerListModel model = LayerListDialog.getInstance().getModel();
-    model.getLayerManager().addLayer(MapillaryLayer.getInstance());
-    List<Layer> selected = model.getSelectedLayers();
-    int index = model.getLayers().indexOf(model.getLayerManager().getActiveDataLayer());
-    model.setSelectedLayer(MapillaryLayer.getInstance());
-    int mapillaryLayerIndex = model.getLayers().indexOf(MapillaryLayer.getInstance());
-    while (mapillaryLayerIndex < index && mapillaryLayerIndex < model.getLayers().size()) {
-      model.moveDown(mapillaryLayerIndex);
-      mapillaryLayerIndex++;
+        try {
+            // Successive calls to this action toggle the active layer between the OSM data layer and the mapillary
+            // layer
+            OsmDataLayer editLayer = MainApplication.getLayerManager().getEditLayer();
+            if (MainApplication.getLayerManager().getActiveLayer() != MapillaryLayer.getInstance()) {
+                MainApplication.getLayerManager().setActiveLayer(MapillaryLayer.getInstance());
+            } else if (editLayer != null) {
+                MainApplication.getLayerManager().setActiveLayer(editLayer);
+            }
+        } catch (IllegalArgumentException e) {
+            // If the MapillaryLayer is not managed by LayerManager but you try to set it as active layer
+            Logging.warn(e);
+        }
     }
-    selected.forEach(model::setSelectedLayer);
-  }
+
+    @Override
+    public void updateEnabledState() {
+        super.setEnabled(MainApplication.isDisplayingMapView());
+    }
+
+    /**
+     * Add the MapillaryLayer to the JOSM layer manager
+     */
+    public static void addLayer() {
+        LayerListModel model = LayerListDialog.getInstance().getModel();
+        model.getLayerManager().addLayer(MapillaryLayer.getInstance());
+        List<Layer> selected = model.getSelectedLayers();
+        int index = model.getLayers().indexOf(model.getLayerManager().getActiveDataLayer());
+        model.setSelectedLayer(MapillaryLayer.getInstance());
+        int mapillaryLayerIndex = model.getLayers().indexOf(MapillaryLayer.getInstance());
+        while (mapillaryLayerIndex < index && mapillaryLayerIndex < model.getLayers().size()) {
+            model.moveDown(mapillaryLayerIndex);
+            mapillaryLayerIndex++;
+        }
+        selected.forEach(model::setSelectedLayer);
+    }
 }

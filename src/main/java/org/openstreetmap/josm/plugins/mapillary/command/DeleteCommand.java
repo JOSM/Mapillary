@@ -22,69 +22,69 @@ import org.openstreetmap.josm.data.osm.OsmPrimitive;
  * @param <D> The data set class
  */
 public class DeleteCommand<O extends IPrimitive, N extends INode, W extends IWay<N>, R extends IRelation<?>, D extends OsmData<O, N, W, R>>
-  extends GenericCommand<O, N, W, R, D> {
-  private final O primitive;
+    extends GenericCommand<O, N, W, R, D> {
+    private final O primitive;
 
-  /**
-   * Create a new delete command for a dataset
-   *
-   * @param dataSet The dataset to use
-   * @param primitive The primitive to delete
-   */
-  public DeleteCommand(final D dataSet, final O primitive) {
-    super(dataSet);
-    this.primitive = primitive;
-  }
-
-  @Override
-  public String getDescriptionText() {
-    return tr("Delete Mapillary object");
-  }
-
-  @Override
-  public Collection<? extends OsmPrimitive> getParticipatingPrimitives() {
-    if (this.primitive instanceof OsmPrimitive) {
-      return Collections.singleton((OsmPrimitive) this.primitive);
+    /**
+     * Create a new delete command for a dataset
+     *
+     * @param dataSet The dataset to use
+     * @param primitive The primitive to delete
+     */
+    public DeleteCommand(final D dataSet, final O primitive) {
+        super(dataSet);
+        this.primitive = primitive;
     }
-    return Collections.emptyList();
-  }
 
-  @Override
-  public boolean executeCommand() {
-    final D data = this.getAffectedDataSet();
-    final boolean locked = data.isLocked();
-    try {
-      data.unlock();
-      this.primitive.setDeleted(true);
-    } finally {
-      if (locked) {
-        data.lock();
-      }
+    @Override
+    public String getDescriptionText() {
+        return tr("Delete Mapillary object");
     }
-    return true;
-  }
 
-  @Override
-  public void undoCommand() {
-    final D data = this.getAffectedDataSet();
-    final boolean locked = data.isLocked();
-    try {
-      data.unlock();
-      this.primitive.setDeleted(false);
-    } finally {
-      if (locked) {
-        data.lock();
-      }
+    @Override
+    public Collection<? extends OsmPrimitive> getParticipatingPrimitives() {
+        if (this.primitive instanceof OsmPrimitive) {
+            return Collections.singleton((OsmPrimitive) this.primitive);
+        }
+        return Collections.emptyList();
     }
-  }
 
-  @Override
-  public Collection<O> getParticipatingIPrimitives() {
-    return Collections.singleton(this.primitive);
-  }
+    @Override
+    public boolean executeCommand() {
+        final D data = this.getAffectedDataSet();
+        final boolean locked = data.isLocked();
+        try {
+            data.unlock();
+            this.primitive.setDeleted(true);
+        } finally {
+            if (locked) {
+                data.lock();
+            }
+        }
+        return true;
+    }
 
-  @Override
-  public void fillModifiedData(Collection<O> modified, Collection<O> deleted, Collection<O> added) {
-    deleted.add(this.primitive);
-  }
+    @Override
+    public void undoCommand() {
+        final D data = this.getAffectedDataSet();
+        final boolean locked = data.isLocked();
+        try {
+            data.unlock();
+            this.primitive.setDeleted(false);
+        } finally {
+            if (locked) {
+                data.lock();
+            }
+        }
+    }
+
+    @Override
+    public Collection<O> getParticipatingIPrimitives() {
+        return Collections.singleton(this.primitive);
+    }
+
+    @Override
+    public void fillModifiedData(Collection<O> modified, Collection<O> deleted, Collection<O> added) {
+        deleted.add(this.primitive);
+    }
 }
