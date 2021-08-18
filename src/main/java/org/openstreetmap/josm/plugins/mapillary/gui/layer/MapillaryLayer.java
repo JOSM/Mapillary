@@ -140,10 +140,10 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     /** The nearest images to the selected image from different sequences sorted by distance from selection. */
     // Use ArrayList instead of an array, since there will not be thousands of instances, and allows for better
     // synchronization
-    private final List<INode> nearestImages = Collections.synchronizedList(new ArrayList<>());
+    private final List<INode> nearestImages = Collections.synchronizedList(new ArrayList<>(2));
 
     /** The images that have been viewed since the last upload */
-    private final ConcurrentHashMap<DataSet, Set<INode>> imageViewedMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<DataSet, Set<INode>> imageViewedMap = new ConcurrentHashMap<>(1);
 
     /** {@code true} if this layer is destroyed */
     private boolean destroyed;
@@ -255,7 +255,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     public boolean setImageViewed(INode image) {
         DataSet ds = MainApplication.getLayerManager().getActiveDataSet();
         if (image != null && ds != null) {
-            Set<INode> imageViewedList = imageViewedMap.getOrDefault(ds, Collections.synchronizedSet(new HashSet<>()));
+            Set<INode> imageViewedList = imageViewedMap.getOrDefault(ds, Collections.synchronizedSet(new HashSet<>(1)));
             imageViewedMap.putIfAbsent(ds, imageViewedList);
             return imageViewedList.add(image);
         }
@@ -533,7 +533,8 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         if (ds != null) {
             Collection<OsmPrimitive> primitives = ds.allModifiedPrimitives();
             final double maxDistance = MapillaryProperties.MAXIMUM_DISTANCE_FOR_CHANGESET_SOURCE.get();
-            Set<INode> imageViewedList = imageViewedMap.getOrDefault(ds, Collections.emptySet());
+            Set<INode> imageViewedList = imageViewedMap.getOrDefault(ds,
+                Collections.synchronizedSet(Collections.emptySet()));
             synchronized (imageViewedList) {
                 for (INode image : imageViewedList) {
                     BBox bbox = new BBox();
