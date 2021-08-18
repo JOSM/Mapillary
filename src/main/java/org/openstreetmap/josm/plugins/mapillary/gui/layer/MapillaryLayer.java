@@ -1,6 +1,10 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.layer;
 
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -31,11 +35,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.SwingUtilities;
 
 import org.openstreetmap.gui.jmapviewer.Tile;
 import org.openstreetmap.gui.jmapviewer.TileXY;
@@ -196,17 +195,32 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
      *
      * @return The unique instance of this class.
      */
-    public static synchronized MapillaryLayer getInstance() {
-        if (instance != null) {
+    public static MapillaryLayer getInstance() {
+        synchronized (MapillaryLayer.class) {
+            if (instance != null) {
+                return instance;
+            }
+            // Running in the EDT can help avoid deadlocks due to synchronization in LayerManager
+            GuiHelper.runInEDT(() -> {
+                final MapillaryLayer layer = new MapillaryLayer();
+                layer.init();
+                synchronized (MapillaryLayer.class) {
+                    // Only set instance field after initialization is complete
+                    instance = layer;
+                    // Finally, wake up threads.
+                    MapillaryLayer.class.notifyAll();
+                }
+            });
+            while (instance == null) {
+                try {
+                    MapillaryLayer.class.wait(50);
+                } catch (InterruptedException e) {
+                    Logging.error(e);
+                    Thread.currentThread().interrupt();
+                }
+            }
             return instance;
         }
-        // Running in the EDT can help avoid deadlocks due to synchronization
-        return GuiHelper.runInEDTAndWaitAndReturn(() -> {
-            final MapillaryLayer layer = new MapillaryLayer();
-            layer.init();
-            instance = layer; // Only set instance field after initialization is complete
-            return instance;
-        });
     }
 
     /**
