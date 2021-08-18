@@ -235,13 +235,20 @@ spotbugs {
 jacoco {
   toolVersion = "0.8.7"
 }
-val jacocoTestReport by tasks.getting(JacocoReport::class) {
+
+tasks.jacocoTestReport {
   reports {
     xml.isEnabled = true
     html.destination = file("$buildDir/reports/jacoco")
   }
 }
-tasks.build.get().dependsOn(jacocoTestReport)
+
+tasks.test {
+  extensions.configure(JacocoTaskExtension::class) {
+    // We need to excluse ObjectDetections from coverage -- it is too large for instrumentation, which means that it will always have 0% coverage, despite having tests.
+    excludes = listOf("org/openstreetmap/josm/plugins/mapillary/data/mapillary/ObjectDetections.class")
+  }
+}
 
 // PMD config
 pmd {
