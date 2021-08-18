@@ -124,7 +124,7 @@ public class WalkThread extends Thread implements Serializable, VectorDataSelect
      * Await the download of an image
      *
      * @param curImage The image waiting on download
-     * @throws IOException See {@link MapillaryCache#submit(ICachedLoaderListener, boolean)}
+     * @throws IOException See {@link MapillaryCache#submit}
      * @throws InterruptedException See {@link #wait(long)}
      */
     private static void awaitImageDownload(@Nonnull final INode curImage) throws IOException, InterruptedException {

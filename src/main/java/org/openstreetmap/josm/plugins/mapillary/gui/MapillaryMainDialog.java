@@ -7,7 +7,6 @@ import static org.openstreetmap.josm.tools.I18n.trc;
 
 import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
-import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
@@ -136,7 +135,7 @@ public final class MapillaryMainDialog extends ToggleDialog
     private final VerifyRejectAction rejectAction = new VerifyRejectAction(DetectionVerification.TYPE.REJECT);
 
     /**
-     * This is copied from {@link ImageViewerDialog#createNavigationButton(AbstractAction, Dimension)}
+     * This is copied from {@link ImageViewerDialog} in #createNavigationButton(AbstractAction, Dimension)
      *
      * @param action The action to put in a {@link JButton}
      * @param buttonDim The dimensions of the button
