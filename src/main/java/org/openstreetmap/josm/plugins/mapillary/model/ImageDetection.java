@@ -235,9 +235,8 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
         @Override
         protected boolean exec() {
             if (!this.isCancelled()) {
-                List<ImageDetection<?>> detections = new ArrayList<>();
                 final List<ImageDetection<?>> layerDetections = DETECTION_CACHE.get(key, () -> getDetections(key));
-                detections.addAll(layerDetections);
+                final List<ImageDetection<?>> detections = new ArrayList<>(layerDetections);
                 if (listener != null) {
                     listener.accept(key, detections);
                 }
