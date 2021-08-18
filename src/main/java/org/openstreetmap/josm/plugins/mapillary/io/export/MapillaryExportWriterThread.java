@@ -75,7 +75,7 @@ public class MapillaryExportWriterThread extends Thread {
         this.monitor.setCustomText("Downloaded 0/" + this.amount);
         BufferedImage img;
         INode mimg;
-        String finalPath = "";
+        String finalPath;
         for (int i = 0; i < this.amount; i++) {
             try {
                 img = this.queue.take();
