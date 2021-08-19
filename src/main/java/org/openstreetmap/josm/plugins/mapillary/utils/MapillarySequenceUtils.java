@@ -100,7 +100,7 @@ public class MapillarySequenceUtils {
         } else {
             way = null;
         }
-        if (nodeOnCurrentSequence != null && !MapillaryImageUtils.IS_IMAGE.test(nodeOnCurrentSequence) && way != null
+        if (nodeOnCurrentSequence != null && !MapillaryImageUtils.isImage(nodeOnCurrentSequence) && way != null
             && way.isFirstLastNode(nodeOnCurrentSequence)) {
             // We are probably on a tile boundary.
             final BBox searchBBox = new BBox();
@@ -118,7 +118,7 @@ public class MapillarySequenceUtils {
                 IWay<?> newWay = ways.get(0);
                 INode newNode = newWay.getNodes().stream()
                     .filter(tNode -> nodeOnCurrentSequence.getCoor().equals(tNode.getCoor())).findFirst().orElse(null);
-                if (MapillaryImageUtils.IS_IMAGE.test(newNode)) {
+                if (MapillaryImageUtils.isImage(newNode)) {
                     return newNode;
                 } else if (newNode != null) {
                     return getNextOrPrevious(newNode, next);

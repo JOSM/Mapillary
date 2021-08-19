@@ -364,7 +364,7 @@ public final class MapillaryMainDialog extends ToggleDialog
             @Override
             public void actionPerformed(ActionEvent e) {
                 INode currentImage = MapillaryMainDialog.getInstance().getImage();
-                if (MapillaryImageUtils.IS_IMAGE.test(currentImage)
+                if (MapillaryImageUtils.isImage(currentImage)
                     && Boolean.TRUE.equals(MapillaryProperties.MOVE_TO_IMG.get())) {
                     MainApplication.getMap().mapView.zoomTo(currentImage.getCoor());
                 }
@@ -555,7 +555,7 @@ public final class MapillaryMainDialog extends ToggleDialog
      */
     public synchronized void updateButtonStates(INode currentImage) {
         // Enables/disables next/previous buttons
-        final boolean isImage = MapillaryImageUtils.IS_IMAGE.test(currentImage);
+        final boolean isImage = MapillaryImageUtils.isImage(currentImage);
         for (AbstractButton jButton : this.buttonCollection) {
             Action action = jButton.getAction();
             if (action instanceof SelectNextImageAction) {
@@ -819,7 +819,7 @@ public final class MapillaryMainDialog extends ToggleDialog
     @Override
     public void selectionChanged(SelectionChangeEvent event) {
         INode newImage = MapillaryLayer.getInstance().getData().getSelectedNodes().stream()
-            .filter(MapillaryImageUtils.IS_IMAGE).findFirst().orElse(null);
+            .filter(MapillaryImageUtils::isImage).findFirst().orElse(null);
         setImage(newImage);
     }
 

@@ -44,9 +44,6 @@ public final class MapillaryImageUtils {
     /** The base image url key pattern (v4 sizes are 256, 1024, 2048) */
     public static final Pattern BASE_IMAGE_KEY = Pattern.compile("^thumb_([0-9]+)_url$");
     // Image specific
-    /** Check if the node has one of the Mapillary keys */
-    public static final Predicate<IPrimitive> IS_IMAGE = node -> node instanceof INode
-        && (node.hasKey(ImageProperties.ID.toString()) || node.hasKey(MapillaryImageUtils.IMPORTED_KEY));
     /** Check if the node is for a panoramic image */
     public static final Predicate<INode> IS_PANORAMIC = node -> node != null
         && MapillaryKeys.PANORAMIC_TRUE.equals(node.get(ImageProperties.IS_PANO.toString()));
@@ -265,6 +262,17 @@ public final class MapillaryImageUtils {
                 .filter(key -> key != 0).toArray();
             downloadImageDetails(keys);
         });
+    }
+
+    /**
+     * Check if the node has one of the Mapillary keys
+     *
+     * @param node The node to check
+     * @return {@code true} if the node is for an image
+     */
+    public static boolean isImage(@Nullable IPrimitive node) {
+        return node instanceof INode
+            && (node.hasKey(ImageProperties.ID.toString()) || node.hasKey(MapillaryImageUtils.IMPORTED_KEY));
     }
 
     /**

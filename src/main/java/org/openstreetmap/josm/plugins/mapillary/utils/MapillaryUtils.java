@@ -140,7 +140,7 @@ public final class MapillaryUtils {
      * database.
      */
     public static void showAllPictures() {
-        showPictures(MapillaryLayer.getInstance().getData().getNodes().stream().filter(MapillaryImageUtils.IS_IMAGE)
+        showPictures(MapillaryLayer.getInstance().getData().getNodes().stream().filter(MapillaryImageUtils::isImage)
             .collect(Collectors.toSet()), false);
     }
 
@@ -191,7 +191,7 @@ public final class MapillaryUtils {
         }
         StringBuilder ret = new StringBuilder();
         if (MapillaryLayer.hasInstance()
-            && MapillaryLayer.getInstance().getData().getNodes().stream().anyMatch(MapillaryImageUtils.IS_IMAGE)) {
+            && MapillaryLayer.getInstance().getData().getNodes().stream().anyMatch(MapillaryImageUtils::isImage)) {
             ret.append(I18n.tr("Total Mapillary images: {0}", MapillaryLayer.getInstance().getToolTipText()));
         } else {
             ret.append(I18n.tr("No images found"));

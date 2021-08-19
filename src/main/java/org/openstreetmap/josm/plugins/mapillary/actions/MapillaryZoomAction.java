@@ -41,7 +41,7 @@ public class MapillaryZoomAction extends JosmAction implements VectorDataSelecti
     @Override
     public void actionPerformed(ActionEvent arg0) {
         INode selected = MapillaryLayer.getInstance().getData().getSelectedNodes().stream()
-            .filter(MapillaryImageUtils.IS_IMAGE).findFirst().orElse(null);
+            .filter(MapillaryImageUtils::isImage).findFirst().orElse(null);
         if (selected == null) {
             throw new IllegalStateException();
         }
@@ -57,7 +57,7 @@ public class MapillaryZoomAction extends JosmAction implements VectorDataSelecti
     protected void updateEnabledState() {
         super.updateEnabledState();
         setEnabled(MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().getData().getSelectedNodes().stream()
-            .anyMatch(MapillaryImageUtils.IS_IMAGE));
+            .anyMatch(MapillaryImageUtils::isImage));
     }
 
     @Override

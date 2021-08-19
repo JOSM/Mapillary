@@ -93,7 +93,7 @@ class MapillaryLayerTest {
 
         MapillaryLayer.getInstance().setVisible(false);
         for (INode img : MapillaryLayer.getInstance().getData().getNodes()) {
-            if (MapillaryImageUtils.IS_IMAGE.test(img)) {
+            if (MapillaryImageUtils.isImage(img)) {
                 assertFalse(img.isVisible(), MessageFormat.format("Failed on image {0}/{1}",
                     MapillaryImageUtils.getKey(img), MapillaryImageUtils.getFile(img)));
             }
@@ -101,7 +101,7 @@ class MapillaryLayerTest {
 
         MapillaryLayer.getInstance().setVisible(true);
         for (INode img : MapillaryLayer.getInstance().getData().getNodes()) {
-            if (MapillaryImageUtils.IS_IMAGE.test(img)) {
+            if (MapillaryImageUtils.isImage(img)) {
                 assertTrue(img.isVisible());
             }
         }

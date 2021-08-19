@@ -409,7 +409,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
         this.shouldHidePredicate.updateLayerVisible();
         this.shouldHidePredicate.smartAdd = Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get());
         Predicate<INode> shouldHide = this.getShouldHidePredicate();
-        nodeStream.filter(MapillaryImageUtils.IS_IMAGE).forEach(img -> img.setVisible(!shouldHide.test(img)));
+        nodeStream.filter(MapillaryImageUtils::isImage).forEach(img -> img.setVisible(!shouldHide.test(img)));
         GuiHelper.runInEDT(MapillaryLayer::invalidateInstance);
     }
 

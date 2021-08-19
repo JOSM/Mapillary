@@ -107,7 +107,7 @@ public class MapillaryWalkAction extends JosmAction implements VectorDataSelecti
     protected void updateEnabledState() {
         super.updateEnabledState();
         setEnabled(MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().getData().getSelectedNodes().stream()
-            .anyMatch(MapillaryImageUtils.IS_IMAGE));
+            .anyMatch(MapillaryImageUtils::isImage));
     }
 
     @Override

@@ -219,9 +219,9 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
             isSelected = node -> true;
         }
         final INode oldImage = Utils.filteredCollection(selectionChanged.getOldSelection(), VectorNode.class).stream()
-            .filter(MapillaryImageUtils.IS_IMAGE).findFirst().orElse(null);
+            .filter(MapillaryImageUtils::isImage).findFirst().orElse(null);
         final INode newImage = Utils.filteredCollection(selectionChanged.getSelection(), VectorNode.class).stream()
-            .filter(MapillaryImageUtils.IS_IMAGE).filter(isSelected).findFirst().orElse(null);
+            .filter(MapillaryImageUtils::isImage).filter(isSelected).findFirst().orElse(null);
         selectedImageChanged(oldImage, newImage);
     }
 

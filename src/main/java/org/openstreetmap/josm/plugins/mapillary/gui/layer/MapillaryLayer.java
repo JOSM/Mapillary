@@ -287,7 +287,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         if (this.getData() == null) {
             return;
         }
-        this.getData().getNodes().parallelStream().filter(MapillaryImageUtils.IS_IMAGE)
+        this.getData().getNodes().parallelStream().filter(MapillaryImageUtils::isImage)
             .forEach(img -> img.setVisible(visible));
         if (MainApplication.getMap() != null) {
             MapillaryFilterDialog.getInstance().refresh();
@@ -651,7 +651,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
             }
             if (image == null) {
                 image = event.getSelection().stream().filter(INode.class::isInstance).map(INode.class::cast)
-                    .filter(MapillaryImageUtils.IS_IMAGE).findFirst().orElse(null);
+                    .filter(MapillaryImageUtils::isImage).findFirst().orElse(null);
             }
             MapillaryMainDialog.getInstance().setImage(image);
         }
@@ -766,7 +766,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
 
     @Override
     public void finishedLoading(final MVTTile tile) {
-        tile.getData().getAllPrimitives().stream().filter(MapillaryImageUtils.IS_IMAGE)
+        tile.getData().getAllPrimitives().stream().filter(MapillaryImageUtils::isImage)
             .forEach(primitive -> primitive.setOsmId(MapillaryImageUtils.getKey(primitive, true), 1));
         // We need to ensure that the primitives are reset
         final Set<VectorPrimitive> primitives = new HashSet<>(tile.getData().getAllPrimitives());

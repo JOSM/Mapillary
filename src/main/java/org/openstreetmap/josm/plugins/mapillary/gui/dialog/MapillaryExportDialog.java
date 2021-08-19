@@ -81,7 +81,7 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
         this.sequence.setEnabled(data.getAllSelected().stream().filter(INode.class::isInstance).map(INode.class::cast)
             .anyMatch(node -> MapillaryImageUtils.getSequenceKey(node) != null));
         this.selected.setEnabled(data.getAllSelected().stream().filter(INode.class::isInstance).map(INode.class::cast)
-            .anyMatch(MapillaryImageUtils.IS_IMAGE));
+            .anyMatch(MapillaryImageUtils::isImage));
         this.rewrite
             .setEnabled(data.getNodes().parallelStream().anyMatch(img -> img.hasKey(MapillaryImageUtils.IMPORTED_KEY)));
 
