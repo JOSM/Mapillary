@@ -9,9 +9,10 @@ import org.openstreetmap.josm.gradle.plugin.task.MarkdownToHtml
 import java.net.URL
 
 plugins {
-  id("com.diffplug.spotless") version "5.14.1"
+  id("application")
+  id("com.diffplug.spotless") version "5.14.2"
   id("com.github.ben-manes.versions") version "0.39.0"
-  id("com.github.spotbugs") version "4.7.2"
+  id("com.github.spotbugs") version "4.7.3"
   id("net.ltgt.errorprone") version "2.0.2"
   id("org.openstreetmap.josm") version "0.7.1"
   id("org.sonarqube") version "3.3"
@@ -29,7 +30,7 @@ repositories {
 
 // Set up ErrorProne
 dependencies {
-  errorprone("com.google.errorprone:error_prone_core:2.7.0")
+  errorprone("com.google.errorprone:error_prone_core:2.8.1")
   if (!JavaVersion.current().isJava9Compatible) {
     errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
   }
@@ -61,7 +62,7 @@ val versions = mapOf(
   "jdatepicker" to "1.3.4",
   "jmockit" to "1.49",
   "junit" to "5.7.2",
-  "spotbugs" to "4.3.0",
+  "spotbugs" to "4.4.0",
   "wiremock" to "2.27.2"
 )
 
