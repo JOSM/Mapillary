@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openstreetmap.josm.gui.tagging.presets.TaggingPresets;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
+import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 
 /**
  * Annotation for ObjectDetections (ensures they have the appropriate presets)
@@ -22,12 +23,12 @@ import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 @ExtendWith(ObjectDetectionsAnnotation.ObjectDetectionsExtension.class)
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
+@BasicPreferences
 public @interface ObjectDetectionsAnnotation {
     class ObjectDetectionsExtension implements AfterAllCallback, BeforeAllCallback {
 
         @Override
         public void afterAll(ExtensionContext context) {
-            TaggingPresets.destroy();
             this.beforeAll(context);
         }
 
