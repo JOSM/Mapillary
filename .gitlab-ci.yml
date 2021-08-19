@@ -8,6 +8,9 @@ cache:
     - .gradle/wrapper
     - .gradle/caches
 
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+
 #############################
 # Various additional Checks #
 #############################
