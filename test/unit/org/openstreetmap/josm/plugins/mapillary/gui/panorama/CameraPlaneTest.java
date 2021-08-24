@@ -6,14 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 
@@ -34,10 +29,9 @@ class CameraPlaneTest {
         Vector3D vec = new Vector3D(0, 0, 1);
         cameraPlane.setRotation(vec);
         Rotation out = cameraPlane.getRotation();
-        double[] xyz = out.getAngles(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR);
-        assertEquals(0, xyz[0], 0.001);
-        assertEquals(0, xyz[1], 0.001);
-        assertEquals(1, xyz[2], 0.001);
+        assertEquals(0, out.getRadialDistance(), 0.001);
+        assertEquals(0, out.getPolarAngle(), 0.001);
+        assertEquals(1, out.getAzimuthalAngle(), 0.001);
     }
 
     @Test

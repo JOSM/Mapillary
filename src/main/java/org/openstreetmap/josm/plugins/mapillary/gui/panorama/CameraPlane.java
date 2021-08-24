@@ -8,12 +8,6 @@ import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferInt;
 import java.util.stream.IntStream;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.util.FastMath;
-
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -59,14 +53,14 @@ public class CameraPlane {
         // This is a slightly faster than just doing the (brute force) method of Math.max(Math.min)). Reduces if
         // statements
         // by 1 per call.
-        final long x = FastMath.round(rotatedVector.getX() / rotatedVector.getZ() * distance + width / 2d);
-        long y = FastMath.round(rotatedVector.getY() / rotatedVector.getZ() * distance + height / 2d);
+        final long x = Math.round(rotatedVector.getX() / rotatedVector.getZ() * distance + width / 2d);
+        long y = Math.round(rotatedVector.getY() / rotatedVector.getZ() * distance + height / 2d);
 
         try {
-            return new Point(FastMath.toIntExact(x), FastMath.toIntExact(y));
+            return new Point(Math.toIntExact(x), Math.toIntExact(y));
         } catch (ArithmeticException e) {
-            return new Point((int) FastMath.max(Integer.MIN_VALUE, FastMath.min(Integer.MAX_VALUE, x)),
-                (int) FastMath.max(Integer.MIN_VALUE, FastMath.min(Integer.MAX_VALUE, y)));
+            return new Point((int) Math.max(Integer.MIN_VALUE, Math.min(Integer.MAX_VALUE, x)),
+                (int) Math.max(Integer.MIN_VALUE, Math.min(Integer.MAX_VALUE, y)));
         }
     }
 
@@ -75,7 +69,7 @@ public class CameraPlane {
         try {
             res = rotate(vectors[p.x][p.y]);
         } catch (Exception e) {
-            res = new Vector3D(0, 0);
+            res = Vector3D.DEFAULT_VECTOR_3D;
         }
         return res;
     }
@@ -95,9 +89,9 @@ public class CameraPlane {
             Vector3D t1 = vectors[to.x][to.y];
             // TODO switch to all apache math
             // rotation = new Rotation(f1, t1).applyTo(rotation);
-            double deltaTheta = FastMath.atan2(f1.getX(), f1.getZ()) - FastMath.atan2(t1.getX(), t1.getZ());
-            double deltaPhi = FastMath.atan2(f1.getY(), FastMath.sqrt(f1.getX() * f1.getX() + f1.getZ() * f1.getZ()))
-                - FastMath.atan2(t1.getY(), FastMath.sqrt(t1.getX() * t1.getX() + t1.getZ() * t1.getZ()));
+            double deltaTheta = Math.atan2(f1.getX(), f1.getZ()) - Math.atan2(t1.getX(), t1.getZ());
+            double deltaPhi = Math.atan2(f1.getY(), Math.sqrt(f1.getX() * f1.getX() + f1.getZ() * f1.getZ()))
+                - Math.atan2(t1.getY(), Math.sqrt(t1.getX() * t1.getX() + t1.getZ() * t1.getZ()));
             double newTheta = theta + deltaTheta;
             // Prevent flipping the 360 viewer accidentally
             double newPhi = Math.max(Math.min(phi + deltaPhi, HALF_PI), -HALF_PI);
@@ -116,8 +110,8 @@ public class CameraPlane {
     public void setRotation(Vector3D vec) {
         double theta, phi;
         try {
-            theta = FastMath.atan2(vec.getX(), vec.getZ());
-            phi = FastMath.atan2(vec.getY(), FastMath.sqrt(vec.getX() * vec.getX() + vec.getZ() * vec.getZ()));
+            theta = Math.atan2(vec.getX(), vec.getZ());
+            phi = Math.atan2(vec.getY(), Math.sqrt(vec.getX() * vec.getX() + vec.getZ() * vec.getZ()));
         } catch (Exception e) {
             theta = 0;
             phi = 0;
@@ -127,10 +121,9 @@ public class CameraPlane {
 
     public Rotation getRotation() {
         // TODO use this.rotation -- not currently used due to other issues (largely rotation such that the image
-        // appears
-        // skewed)
+        // appears skewed)
         // TODO don't forget to re-enable the test!
-        return new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, this.phi, 0, this.theta);
+        return new Rotation(this.distance, this.phi, this.theta);
     }
 
     synchronized void setRotation(double theta, double phi) {
@@ -141,11 +134,11 @@ public class CameraPlane {
         } else {
             this.theta = theta;
         }
-        this.sinTheta = FastMath.sin(this.theta);
-        this.cosTheta = FastMath.cos(this.theta);
+        this.sinTheta = Math.sin(this.theta);
+        this.cosTheta = Math.cos(this.theta);
         this.phi = phi;
-        this.sinPhi = FastMath.sin(this.phi);
-        this.cosPhi = FastMath.cos(this.phi);
+        this.sinPhi = Math.sin(this.phi);
+        this.cosPhi = Math.cos(this.phi);
     }
 
     private Vector3D rotate(final Vector3D vec) {

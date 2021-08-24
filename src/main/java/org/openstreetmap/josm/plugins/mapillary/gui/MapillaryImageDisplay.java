@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
@@ -45,9 +44,6 @@ import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageViewUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
-
-import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 
 /**
  * This object is a responsible JComponent which lets you zoom and drag. It is
@@ -730,9 +726,7 @@ public final class MapillaryImageDisplay extends JPanel {
      */
     public double getRotation() {
         if (this.pano && this.cameraPlane != null) {
-            double[] rotation = this.cameraPlane.getRotation().getAngles(RotationOrder.XYZ,
-                RotationConvention.VECTOR_OPERATOR);
-            return rotation[2];
+            return this.cameraPlane.getRotation().getAzimuthalAngle();
         }
         // Default to 0 for standard images
         return 0;
