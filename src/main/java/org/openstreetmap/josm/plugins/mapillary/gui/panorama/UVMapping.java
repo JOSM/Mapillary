@@ -15,7 +15,7 @@ public final class UVMapping {
      * @return a point on the texture image somewhere in the rectangle between (0, 0) and (1, 1)
      */
     public static Point2D.Double getTextureCoordinate(final Vector3D vector) {
-        final double u = 0.5 + (Math.atan2(vector.getX(), vector.getZ()) / (2 * Math.PI));
+        final double u = 0.5 + (Math.atan2(vector.getX(), vector.getZ()) / (CameraPlane.TWO_PI));
         final double v = 0.5 + (Math.asin(vector.getY()) / Math.PI);
         return new Point2D.Double(u, v);
     }
@@ -30,7 +30,8 @@ public final class UVMapping {
      */
     public static Vector3D getVector(final double u, final double v) {
         final double vectorY = Math.cos(v * Math.PI);
-        return new Vector3D(-Math.sin(2 * Math.PI * u) * Math.sqrt(1 - vectorY * vectorY), -vectorY,
-            -Math.cos(2 * Math.PI * u) * Math.sqrt(1 - vectorY * vectorY));
+        final double vectorYSquared = Math.pow(vectorY, 2);
+        return new Vector3D(-Math.sin(CameraPlane.TWO_PI * u) * Math.sqrt(1 - vectorYSquared), -vectorY,
+            -Math.cos(CameraPlane.TWO_PI * u) * Math.sqrt(1 - vectorYSquared));
     }
 }

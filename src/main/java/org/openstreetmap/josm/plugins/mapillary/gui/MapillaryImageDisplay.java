@@ -39,6 +39,7 @@ import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.panorama.CameraPlane;
+import org.openstreetmap.josm.plugins.mapillary.gui.panorama.Rotation;
 import org.openstreetmap.josm.plugins.mapillary.gui.panorama.UVMapping;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageViewUtil;
@@ -56,7 +57,6 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 public final class MapillaryImageDisplay extends JPanel {
 
     private static final long serialVersionUID = 3369727203329307716L;
-    static final double PANORAMA_FOV = Math.toRadians(110);
 
     private final transient Collection<ImageDetection<?>> detections = Collections.synchronizedList(new ArrayList<>());
     private final transient Collection<Painter<Graphics, BufferedImage, Rectangle>> additionalPainters = Collections
@@ -166,6 +166,12 @@ public final class MapillaryImageDisplay extends JPanel {
 
                 synchronized (MapillaryImageDisplay.this) {
                     MapillaryImageDisplay.this.visibleRect = mouseVisibleRect;
+                }
+
+                if (cameraPlane != null) {
+                    final double zoom = (Math.max(getWidth() / (double) mouseVisibleRect.width,
+                        getHeight() / (double) mouseVisibleRect.height));
+                    cameraPlane.setZoom(zoom);
                 }
                 MapillaryImageDisplay.this.repaint();
             }
@@ -573,6 +579,7 @@ public final class MapillaryImageDisplay extends JPanel {
             g2d.setColor(d.getColor());
             final PathIterator pathIt = d.getShape().getPathIterator(null);
             Point prevPoint = null;
+            Point moveTo = null;
             while (!pathIt.isDone()) {
                 final double[] buffer = new double[6];
                 final int segmentType = pathIt.currentSegment(buffer);
@@ -590,6 +597,11 @@ public final class MapillaryImageDisplay extends JPanel {
                     prevPoint = curPoint;
                 } else if (segmentType == PathIterator.SEG_MOVETO) {
                     prevPoint = cameraPlane.getPoint(UVMapping.getVector(buffer[0], buffer[1]));
+                    moveTo = prevPoint;
+                } else if (segmentType == PathIterator.SEG_CLOSE && moveTo != null && prevPoint != null) {
+                    g2d.drawLine(prevPoint.x, prevPoint.y, moveTo.x, moveTo.y);
+                    prevPoint = null;
+                    moveTo = null;
                 } else {
                     prevPoint = null;
                 }
@@ -659,9 +671,15 @@ public final class MapillaryImageDisplay extends JPanel {
                 final MapillaryImageDisplay imgDisplay = (MapillaryImageDisplay) component;
                 imgDisplay.offscreenImage = new BufferedImage(e.getComponent().getWidth(), e.getComponent().getHeight(),
                     BufferedImage.TYPE_3BYTE_BGR);
-                final double cameraPlaneDistance = (e.getComponent().getWidth() / 2d) / Math.tan(PANORAMA_FOV / 2);
-                imgDisplay.cameraPlane = new CameraPlane(e.getComponent().getWidth(), e.getComponent().getHeight(),
-                    cameraPlaneDistance);
+                Rotation currentRotation = null;
+                if (imgDisplay.cameraPlane != null) {
+                    currentRotation = imgDisplay.cameraPlane.getRotation();
+                }
+                imgDisplay.cameraPlane = new CameraPlane(e.getComponent().getWidth(), e.getComponent().getHeight());
+                if (currentRotation != null) {
+                    imgDisplay.cameraPlane.setRotation(currentRotation);
+                }
+                imgDisplay.invalidate();
             }
         }
     }

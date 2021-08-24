@@ -25,7 +25,7 @@ class CameraPlaneTest {
     @Test
     @Disabled("Apache math + custom code is not currently playing well together")
     void testSetRotation() {
-        cameraPlane = new CameraPlane(800, 400, CAMERA_PLANE_DISTANCE);
+        cameraPlane = new CameraPlane(800, 400);
         Vector3D vec = new Vector3D(0, 0, 1);
         cameraPlane.setRotation(vec);
         Rotation out = cameraPlane.getRotation();
@@ -36,7 +36,7 @@ class CameraPlaneTest {
 
     @Test
     void testGetVector3D() {
-        cameraPlane = new CameraPlane(800, 600, CAMERA_PLANE_DISTANCE);
+        cameraPlane = new CameraPlane(800, 600);
         Vector3D vec = new Vector3D(0, 0, 1);
         cameraPlane.setRotation(vec);
         Vector3D out = cameraPlane.getVector3D(new Point(400, 300));
@@ -47,7 +47,7 @@ class CameraPlaneTest {
 
     @Test
     void testMapping() {
-        cameraPlane = new CameraPlane(800, 600, CAMERA_PLANE_DISTANCE);
+        cameraPlane = new CameraPlane(800, 600);
         Vector3D vec = new Vector3D(0, 0, 1);
         cameraPlane.setRotation(vec);
         Vector3D out = cameraPlane.getVector3D(new Point(300, 200));
