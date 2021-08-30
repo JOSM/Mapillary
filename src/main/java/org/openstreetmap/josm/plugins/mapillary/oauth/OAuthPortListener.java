@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.stream.JsonParsingException;
 
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.HttpClient;
@@ -88,6 +89,9 @@ public class OAuthPortListener extends Thread {
                     Logging.info("Mapillary: Failed to login: {0}", jsonObject);
                     return;
                 }
+            } catch (JsonParsingException jsonParsingException) {
+                Logging.error(response.fetchContent());
+                throw jsonParsingException;
             }
 
             String username = MapillaryUser.getUsername();
