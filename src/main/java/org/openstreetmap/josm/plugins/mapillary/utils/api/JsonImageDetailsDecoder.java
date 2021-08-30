@@ -92,9 +92,11 @@ public final class JsonImageDetailsDecoder {
                 return null;
             }
             final long id = Long.parseLong(key);
-            final LatLon coordinates = JsonDecoder.decodeLatLon(
-                json.getJsonObject(useComputedData ? MapillaryImageUtils.ImageProperties.COMPUTED_GEOMETRY.toString()
-                    : MapillaryImageUtils.ImageProperties.GEOMETRY.toString()).getJsonArray("coordinates"));
+            final LatLon coordinates = JsonDecoder.decodeLatLon(json.getJsonObject(
+                useComputedData && json.containsKey(MapillaryImageUtils.ImageProperties.COMPUTED_GEOMETRY.toString())
+                    ? MapillaryImageUtils.ImageProperties.COMPUTED_GEOMETRY.toString()
+                    : MapillaryImageUtils.ImageProperties.GEOMETRY.toString())
+                .getJsonArray("coordinates"));
             final BBox searchBBox = new BBox(coordinates);
             searchBBox.addLatLon(coordinates, 0.001);
             VectorNode image = (VectorNode) data.getPrimitiveById(id, OsmPrimitiveType.NODE);

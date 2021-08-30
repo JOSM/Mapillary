@@ -1,6 +1,27 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.util.Collection;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.LongStream;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+
+import org.awaitility.Awaitility;
+import org.awaitility.Durations;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -8,6 +29,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
+import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMockErrors;
@@ -19,18 +41,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
-
-import javax.json.JsonObject;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.time.Instant;
-import java.util.Collection;
-import java.util.stream.LongStream;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.openstreetmap.josm.tools.Logging;
 
 @MapillaryURLWireMock
 public class JsonImageDetailsDecoderTest {
@@ -81,6 +92,33 @@ public class JsonImageDetailsDecoderTest {
             assertEquals(Math.toRadians(336.74), MapillaryImageUtils.getAngle(i_135511895288847), delta);
             assertEquals(-108.57081597222, i_135511895288847.lon(), delta);
             assertEquals(39.068354972222, i_135511895288847.lat(), delta);
+        }
+    }
+
+    /**
+     * This is a non-regression test for JOSM #21265
+     */
+    @RepeatedTest(5)
+    void testComputedGeometryPreferenceNoComputedGeometry() {
+        MapillaryProperties.USE_COMPUTED_LOCATIONS.put(true);
+        final String jsonString = "{" + "\"data\": [{" + "\"altitude\": 75.864,"
+            + "\"thumb_2048_url\": \"https://example.org/thumb_2048_url\"," + "\"captured_at\": 1622825444500,"
+            + "\"compass_angle\": 0," + "\"exif_orientation\": 1," + "\"geometry\": {" + "\"type\": \"Point\","
+            + "\"coordinates\": [13.7501999, 52.328779699972]" + "}," + "\"id\": \"159513816194268\","
+            + "\"quality_score\": 0.3649667405765," + "\"sequence\": \"uzciytp7uccdlxn016q0i9\","
+            + "\"thumb_256_url\": \"https://example.org/thumb_256_url\"" + "}]}";
+        try (JsonReader jsonReader = Json
+            .createReader(new ByteArrayInputStream(jsonString.getBytes(StandardCharsets.UTF_8)))) {
+            final VectorDataSet data = new VectorDataMock();
+            Logging.clearLastErrorAndWarnings();
+            assertDoesNotThrow(() -> JsonDecoder.decodeData(jsonReader.readObject(),
+                json -> JsonImageDetailsDecoder.decodeImageInfos(json, data)));
+            // This is needed to ensure that the EDT finishes.
+            AtomicBoolean edtFinished = new AtomicBoolean();
+            GuiHelper.runInEDTAndWait(() -> edtFinished.set(true));
+            Awaitility.await().atLeast(Durations.ONE_HUNDRED_MILLISECONDS).atMost(Durations.ONE_SECOND)
+                .until(edtFinished::get);
+            assertTrue(Logging.getLastErrorAndWarnings().isEmpty());
         }
     }
 
