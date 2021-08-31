@@ -1638,6 +1638,7 @@ public enum ObjectDetections {
   OBJECT__SIGN__ADVERTISEMENT(DetectionType.POINT),
   OBJECT__SIGN__INFORMATION(DetectionType.POINT),
   OBJECT__SIGN__STORE(DetectionType.POINT),
+  OBJECT_SIGN_OTHER(DetectionType.POINT),
   OBJECT__STREET_LIGHT("highway=street_lamp", TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.POINT, DetectionType.SEGMENTATION }, DataType.PRODUCTION),
 
@@ -1668,6 +1669,7 @@ public enum ObjectDetections {
   OBJECT__WATER_VALVE(DetectionType.POINT, DetectionType.SEGMENTATION),
   // End point features
   // Begin line features
+  CONSTRUCTION__BARRIER__CONCRETE_BLOCK(DetectionType.LINE, DetectionType.SEGMENTATION),
   CONSTRUCTION__BARRIER__CURB(DetectionType.LINE, DetectionType.SEGMENTATION),
   CONSTRUCTION__BARRIER__FENCE(DetectionType.LINE, DetectionType.SEGMENTATION),
   CONSTRUCTION__BARRIER__GUARD_RAIL(DetectionType.LINE, DetectionType.SEGMENTATION),
