@@ -23,16 +23,19 @@ import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.data.projection.datum.WGS84Datum;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.gui.preferences.SubPreferenceSetting;
 import org.openstreetmap.josm.gui.preferences.TabPreferenceSetting;
 import org.openstreetmap.josm.gui.preferences.plugin.PluginPreference;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryLoginListener;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.GBC;
@@ -226,7 +229,15 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
         }
 
         // Restart is never required, unless we are toggling computed locations.
-        return MapillaryProperties.USE_COMPUTED_LOCATIONS.put(this.useComputedLocations.isSelected());
+        if (MapillaryProperties.USE_COMPUTED_LOCATIONS.put(this.useComputedLocations.isSelected())
+            && MapillaryLayer.hasInstance()) {
+            if (MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {
+                MainApplication.getLayerManager().removeLayer(MapillaryLayer.getInstance());
+            }
+            MapillaryLayer.getInstance().destroy();
+            MapillaryKeys.MAPILLARY_IMAGES.setUrl(MapillaryURL.APIv4.getImages());
+        }
+        return false;
     }
 
     @Override
