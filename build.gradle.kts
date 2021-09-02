@@ -125,6 +125,7 @@ spotless {
     indentWithSpaces(4)
     endWithNewline()
     removeUnusedImports()
+    importOrder("java", "javax", "")
     eclipse().configFile("config/format/code_format.xml")
   }
 }
