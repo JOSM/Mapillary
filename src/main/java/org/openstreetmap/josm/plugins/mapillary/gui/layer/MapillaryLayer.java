@@ -1,10 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.layer;
 
-import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.SwingUtilities;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -35,6 +31,11 @@ import java.util.concurrent.Future;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 
 import org.openstreetmap.gui.jmapviewer.Tile;
 import org.openstreetmap.gui.jmapviewer.TileXY;
@@ -347,7 +348,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
             .collect(Collectors.toList());
         if (images.size() < MapillaryProperties.MAXIMUM_DRAW_IMAGES.get()) {
             for (INode imageAbs : images) {
-                if (imageAbs.isVisible()) {
+                if (imageAbs.isVisible() && MapillaryImageUtils.isImage(imageAbs)) {
                     drawImageMarker(g, imageAbs);
                 }
             }
