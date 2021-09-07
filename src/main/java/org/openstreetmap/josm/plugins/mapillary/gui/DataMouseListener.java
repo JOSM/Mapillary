@@ -2,9 +2,19 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import static org.openstreetmap.josm.data.projection.Ellipsoid.WGS84;
 
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.stream.Collectors;
+
+import javax.swing.SwingUtilities;
+import javax.swing.event.MouseInputAdapter;
+
 import org.openstreetmap.josm.data.Version;
 import org.openstreetmap.josm.data.coor.ILatLon;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.osm.AbstractPrimitive;
 import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.projection.ProjectionRegistry;
@@ -18,14 +28,6 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.Geometry;
 import org.openstreetmap.josm.tools.HiDPISupport;
-
-import javax.swing.SwingUtilities;
-import javax.swing.event.MouseInputAdapter;
-import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.stream.Collectors;
 
 /**
  * A basic class to listen for mouse events in the map
@@ -49,7 +51,7 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
                 continue;
             }
             Collection<VectorNode> nodes = layer.getData().searchNodes(searchBBox).stream().distinct()
-                .collect(Collectors.toList());
+                .filter(AbstractPrimitive::isVisible).collect(Collectors.toList());
             if (!nodes.isEmpty()) {
                 // This is needed since Mapillary ids are only unique within a tile.
                 layer.getData().setSelected(nodes);
