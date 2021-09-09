@@ -1,7 +1,7 @@
 # Translations for the JOSM plugin 'Mapillary' (pt_BR)
 # Copyright (C) 2020
 # This file is distributed under the same license as the josm-plugin_Mapillary package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# FIRST AUTHOR, YEAR.
 #
 #
 msgid ""
