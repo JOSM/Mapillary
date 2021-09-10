@@ -215,7 +215,8 @@ public final class MapillaryImageUtils {
             if (image.getUniqueId() > 0 && !ignoreId) {
                 return image.getId();
             }
-            if (image.hasKey(ImageProperties.ID.toString())) {
+            if (image.hasKey(ImageProperties.ID.toString())
+                && NUMBERS.matcher(image.get(ImageProperties.ID.toString())).matches()) {
                 final long id = Long.parseLong(image.get(ImageProperties.ID.toString()));
                 image.setOsmId(id, 1);
                 return id;
