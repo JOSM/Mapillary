@@ -8,18 +8,25 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.function.BiConsumer;
 
+import javax.annotation.Nullable;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
+import org.apache.commons.jcs3.access.CacheAccess;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
@@ -39,12 +46,20 @@ import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetectionDeco
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Pair;
 
-import org.apache.commons.jcs3.access.CacheAccess;
-
 /**
  * A store for ImageDetection information
  */
 public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
+
+    public enum Options {
+        /** Wait for the fetch to complete. Implies {@link #FETCH} */
+        WAIT,
+        /** Fetch the detections */
+        FETCH
+    }
+
+    private static final Timer DETECTION_TIMER = new Timer();
+    private static TimerTask currentTask;
     private static final String DETECTIONS = "detections";
 
     /**
@@ -77,21 +92,42 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
     }
 
     /**
+     * Get detections at some later time
+     *
+     * @param key The key to use
+     * @param listener The listener to notify
+     * @param timeout The time to wait prior to getting the detections (milliseconds)
+     */
+    public static void getDetectionsLaterOptional(final long key,
+        final BiConsumer<Long, List<ImageDetection<?>>> listener, long timeout) {
+
+        synchronized (DETECTION_TIMER) {
+            if (currentTask != null) {
+                currentTask.cancel();
+            }
+            currentTask = new ImageDetectionWaitTask(new ImageDetectionForkJoinTask(key, listener));
+            DETECTION_TIMER.schedule(currentTask, timeout);
+        }
+    }
+
+    /**
      * Get the detections for an image key
      *
      * @param key The image key
-     * @param wait {@code true} to wait for the detections
+     * @param options The option(s) to use. May be {@code null}
      * @return The image detections
      */
-    public static List<ImageDetection<?>> getDetections(long key, boolean wait) {
-        if (wait) {
+    public static List<ImageDetection<?>> getDetections(final long key, @Nullable final Options... options) {
+        final EnumSet<Options> optionSet = EnumSet.noneOf(Options.class);
+        Optional.ofNullable(options).map(Arrays::asList).ifPresent(optionSet::addAll);
+        if (optionSet.contains(Options.WAIT)) {
             final ImageDetectionForkJoinTask task = new ImageDetectionForkJoinTask(key, null);
             task.fork();
             return task.join();
         } else {
             if (key != 0 && DETECTION_CACHE.get(key) != null) {
                 return Collections.unmodifiableList(new ArrayList<>(DETECTION_CACHE.get(key)));
-            } else if (key != 0) {
+            } else if (key != 0 && optionSet.contains(Options.FETCH)) {
                 final ImageDetectionForkJoinTask task = new ImageDetectionForkJoinTask(key, null);
                 ForkJoinPool.commonPool().execute(task);
             }
@@ -164,8 +200,8 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
     public Color getColor() {
         if (MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).parallelStream()
             .map(PointObjectLayer::getData).map(VectorDataSet::getSelected).flatMap(Collection::stream)
-            .mapToLong(IPrimitive::getId).mapToObj(id -> ImageDetection.getDetections(id, false))
-            .flatMap(Collection::stream).filter(Objects::nonNull).anyMatch(id -> id.getKey().equals(this.getKey()))) {
+            .mapToLong(IPrimitive::getId).mapToObj(ImageDetection::getDetections).flatMap(Collection::stream)
+            .filter(Objects::nonNull).anyMatch(id -> id.getKey().equals(this.getKey()))) {
             return isRejected() || Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()) ? Color.RED : Color.CYAN;
         }
         if (this.isTrafficSign())
@@ -207,6 +243,22 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), this.approvalType, this.originalValue, this.rejected, this.value);
+    }
+
+    /**
+     * Class for delayed get of image detections
+     */
+    private static class ImageDetectionWaitTask extends TimerTask {
+        private final ImageDetectionForkJoinTask task;
+
+        public ImageDetectionWaitTask(final ImageDetectionForkJoinTask task) {
+            this.task = task;
+        }
+
+        @Override
+        public void run() {
+            MapillaryUtils.getForkJoinPool().execute(this.task);
+        }
     }
 
     /**

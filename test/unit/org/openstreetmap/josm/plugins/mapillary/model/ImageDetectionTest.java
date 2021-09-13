@@ -9,15 +9,14 @@ import java.awt.geom.Path2D;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.extension.RegisterExtension;
-import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
-import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryCaches;
-import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
-
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
+import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryCaches;
+import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 @MapillaryURLWireMock
@@ -55,14 +54,14 @@ class ImageDetectionTest {
     @ParameterizedTest
     @MethodSource("getDetectionsArguments")
     void testGetDetectionsWait(long id, int expectedDetections) {
-        List<ImageDetection<?>> detections = ImageDetection.getDetections(id, true);
+        List<ImageDetection<?>> detections = ImageDetection.getDetections(id, ImageDetection.Options.WAIT);
         assertEquals(expectedDetections, detections.size());
     }
 
     @ParameterizedTest
     @MethodSource("getDetectionsArguments")
-    void testGetDetectionsNoWait(long id, int expectedDetections) {
-        List<ImageDetection<?>> detections = ImageDetection.getDetections(id, false);
+    void testGetDetectionsNoWait(long id) {
+        List<ImageDetection<?>> detections = ImageDetection.getDetections(id, ImageDetection.Options.FETCH);
         assertTrue(detections.isEmpty());
     }
 }

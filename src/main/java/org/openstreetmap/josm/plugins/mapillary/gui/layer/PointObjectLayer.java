@@ -607,9 +607,9 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
         Collection<VectorPrimitive> currentSelection = data.getSelected();
         final VectorNode newImage = event.getSelection().stream().filter(VectorNode.class::isInstance)
             .map(VectorNode.class::cast).findFirst().orElse(null);
-        if (newImage != null && !ImageDetection.getDetections(newImage.getId(), false).isEmpty()) {
+        if (newImage != null && !ImageDetection.getDetections(newImage.getId()).isEmpty()) {
             final long key = newImage.getId();
-            final Collection<IPrimitive> nodes = ImageDetection.getDetections(key, false).parallelStream()
+            final Collection<IPrimitive> nodes = ImageDetection.getDetections(key).parallelStream()
                 .map(detection -> data.getPrimitiveById(detection.getKey(), OsmPrimitiveType.NODE))
                 .collect(Collectors.toList());
 

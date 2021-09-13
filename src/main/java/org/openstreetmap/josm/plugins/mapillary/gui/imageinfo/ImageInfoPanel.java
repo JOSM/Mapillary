@@ -246,14 +246,15 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
             imgKeyValue.setText(newImageKey);
 
             // First, set the detections number that we currently have
-            List<ImageDetection<?>> detections = ImageDetection.getDetections(MapillaryImageUtils.getKey(newImage),
-                false);
+            List<ImageDetection<?>> detections = ImageDetection.getDetections(MapillaryImageUtils.getKey(newImage));
             numDetectionsLabel
                 .setText(tr("{0} detections", detections.stream().filter(ImageDetection::isTrafficSign).count()));
             // Then, set the detections number that we get
-            ImageDetection.getDetections(MapillaryImageUtils.getKey(newImage),
-                (key, detectionList) -> GuiHelper.runInEDT(() -> numDetectionsLabel.setText(
-                    tr("{0} detections", detectionList.stream().filter(ImageDetection::isTrafficSign).count()))));
+            ImageDetection
+                .getDetectionsLaterOptional(MapillaryImageUtils.getKey(newImage),
+                    (key, detectionList) -> GuiHelper.runInEDT(() -> numDetectionsLabel.setText(
+                        tr("{0} detections", detectionList.stream().filter(ImageDetection::isTrafficSign).count()))),
+                    1000);
             copyImgKeyAction.setContents(new StringSelection(newImageKey));
             addMapillaryTagAction.setTag(new Tag("mapillary", newImageKey));
         } else {

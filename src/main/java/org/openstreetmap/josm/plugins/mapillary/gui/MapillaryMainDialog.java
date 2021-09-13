@@ -5,16 +5,6 @@ import static org.openstreetmap.josm.tools.I18n.marktr;
 import static org.openstreetmap.josm.tools.I18n.tr;
 import static org.openstreetmap.josm.tools.I18n.trc;
 
-import javax.annotation.Nonnull;
-import javax.imageio.ImageIO;
-import javax.swing.AbstractButton;
-import javax.swing.Action;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JToggleButton;
-import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -39,6 +29,17 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import javax.annotation.Nonnull;
+import javax.imageio.ImageIO;
+import javax.swing.AbstractButton;
+import javax.swing.Action;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JToggleButton;
+import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
@@ -98,7 +99,6 @@ public final class MapillaryMainDialog extends ToggleDialog
     private final PlayAction playAction = new PlayAction();
     private final PauseAction pauseAction = new PauseAction();
     private final StopAction stopAction = new StopAction();
-    private ImageDetection.ImageDetectionForkJoinTask futureDetections;
 
     /**
      * Buttons mode.
@@ -491,19 +491,13 @@ public final class MapillaryMainDialog extends ToggleDialog
                 };
 
                 ForkJoinPool pool = MapillaryUtils.getForkJoinPool();
-                if (this.futureDetections != null && !this.futureDetections.isDone()
-                    && MapillaryImageUtils.getKey(image) != this.futureDetections.key) {
-                    this.futureDetections.cancel(false);
-                }
-                this.futureDetections = ImageDetection.getDetections(MapillaryImageUtils.getKey(this.image),
-                    (key, detections) -> {
-                        INode tImage = this.image;
-                        if (tImage != null && key.equals(MapillaryImageUtils.getKey(tImage))) {
-                            this.updateDetections(imageFullCache, tImage, detections);
-                        }
-                    });
-                List<ImageDetection<?>> detections = ImageDetection.getDetections(MapillaryImageUtils.getKey(image),
-                    false);
+                ImageDetection.getDetectionsLaterOptional(MapillaryImageUtils.getKey(this.image), (key, detections) -> {
+                    INode tImage = this.image;
+                    if (tImage != null && key.equals(MapillaryImageUtils.getKey(tImage))) {
+                        this.updateDetections(imageFullCache, tImage, detections);
+                    }
+                }, 5000);
+                List<ImageDetection<?>> detections = ImageDetection.getDetections(MapillaryImageUtils.getKey(image));
                 if (imageFullCache.get() != null) {
                     setDisplayImage(() -> getImage.apply(imageFullCache.get()), detections,
                         MapillaryImageUtils.IS_PANORAMIC.test(currentImage));
@@ -807,7 +801,7 @@ public final class MapillaryMainDialog extends ToggleDialog
                     Logging.error(e);
                 }
                 return null;
-            }, ImageDetection.getDetections(MapillaryImageUtils.getKey(mai), false),
+            }, ImageDetection.getDetections(MapillaryImageUtils.getKey(mai)),
                 MapillaryImageUtils.IS_PANORAMIC.test(mai));
             if (mai != null) {
                 ImageDetection.getDetections(MapillaryImageUtils.getKey(mai),

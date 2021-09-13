@@ -17,11 +17,11 @@ import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.tools.Logging;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.tools.Logging;
 
 public final class MapillaryURL {
     /**
