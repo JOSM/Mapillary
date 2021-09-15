@@ -1,22 +1,30 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.layer;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-
+import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.imagery.ImageryInfo;
+import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.Node;
@@ -25,6 +33,7 @@ import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.ImageryLayer;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
+import org.openstreetmap.josm.gui.layer.imagery.MVTLayer;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryLayerAnnotation;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
@@ -161,5 +170,41 @@ class MapillaryLayerTest {
         assertFalse(MapillaryLayer.hasInstance());
         MapillaryLayer.getInstance();
         assertTrue(MapillaryLayer.hasInstance());
+    }
+
+    /**
+     * Non-regression test for JOSM #21329: IAE when setting osm id
+     */
+    @Test
+    void testNonRegression21329() {
+        final MapillaryLayer layer = MapillaryLayer.getInstance();
+        TileSource tileSource = null;
+        MVTTile mvtTile = null;
+        try {
+            final Method method = MVTLayer.class.getDeclaredMethod("getTileSource");
+            method.setAccessible(true);
+            tileSource = (TileSource) method.invoke(layer);
+
+            mvtTile = new MVTTile(tileSource, 3251, 6258, 14);
+            final Field field = MVTTile.class.getDeclaredField("layers");
+            field.setAccessible(true);
+            field.set(mvtTile, Collections.emptyList());
+        } catch (ReflectiveOperationException e) {
+            fail(e);
+        }
+        final VectorNode vectorNodeZero = new VectorNode("test");
+        final VectorNode vectorNodeOne = new VectorNode("test");
+        vectorNodeZero.setCoor(LatLon.ZERO);
+        vectorNodeOne.setCoor(LatLon.ZERO);
+        vectorNodeZero.put(MapillaryImageUtils.ImageProperties.ID.toString(), "0");
+        vectorNodeOne.put(MapillaryImageUtils.ImageProperties.ID.toString(), "100");
+        for (VectorNode node : Arrays.asList(vectorNodeZero, vectorNodeOne)) {
+            mvtTile.getData().getAllPrimitives().add(node);
+            mvtTile.getData().getPrimitivesMap().put(node.getPrimitiveId(), node);
+            mvtTile.getData().getStore().addPrimitive(node);
+        }
+        final MVTTile finalTile = mvtTile;
+        assertDoesNotThrow(() -> layer.finishedLoading(finalTile));
+        assertAll(() -> assertEquals(0, vectorNodeZero.getOsmId()), () -> assertEquals(100, vectorNodeOne.getOsmId()));
     }
 }
