@@ -174,9 +174,11 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
             this.dataMouseListener = new DataMouseListener();
             this.destroyables.add(this.dataMouseListener);
         } else if (oldFrame != null && newFrame == null) { // map frame removed
-            this.destroyables.remove(this.dataMouseListener);
-            this.dataMouseListener.destroy();
-            this.dataMouseListener = null;
+            if (this.dataMouseListener != null) {
+                this.destroyables.remove(this.dataMouseListener);
+                this.dataMouseListener.destroy();
+                this.dataMouseListener = null;
+            }
             if (this.popupHandler != null) {
                 this.destroyables.remove(this.popupHandler);
                 this.popupHandler.destroy();

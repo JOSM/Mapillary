@@ -1,28 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.download;
 
-import org.openstreetmap.josm.data.vector.VectorDataSet;
-import org.openstreetmap.josm.data.vector.VectorNode;
-import org.openstreetmap.josm.data.vector.VectorWay;
-import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
-import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
-import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoder;
-import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoder;
-import org.openstreetmap.josm.tools.Logging;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.json.Json;
-import javax.json.JsonNumber;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonString;
-import javax.json.JsonValue;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -41,6 +19,29 @@ import java.util.Set;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.json.Json;
+import javax.json.JsonNumber;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonString;
+import javax.json.JsonValue;
+
+import org.openstreetmap.josm.data.vector.VectorDataSet;
+import org.openstreetmap.josm.data.vector.VectorNode;
+import org.openstreetmap.josm.data.vector.VectorWay;
+import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoder;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoder;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Class that concentrates all the ways of downloading of the plugin. All the
@@ -170,7 +171,10 @@ public final class MapillaryDownloader {
         }
         if (toGet.length > 0) {
             return Stream.of(toGet).map(MapillaryURL.APIv4::getImagesBySequences)
-                .map(url -> Caches.META_DATA_CACHE.get(url, () -> getUrlResponse(url).toString())).map(string -> {
+                .map(url -> Caches.META_DATA_CACHE.get(url, () -> {
+                    final JsonObject response = getUrlResponse(url);
+                    return response == null ? null : response.toString();
+                })).filter(Objects::nonNull).map(string -> {
                     try (JsonReader reader = Json
                         .createReader(new ByteArrayInputStream(string.getBytes(StandardCharsets.UTF_8)))) {
                         return reader.readObject();
