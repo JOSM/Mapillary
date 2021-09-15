@@ -1,10 +1,28 @@
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+
 import org.apache.commons.jcs3.access.CacheAccess;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IWay;
+import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
@@ -13,21 +31,6 @@ import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoder;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Utils;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class MapillarySequenceUtils {
     /**
@@ -169,12 +172,12 @@ public class MapillarySequenceUtils {
         if (sequence == null) {
             sequence = downloadSequence(key);
             // Ensure that we don't cache a null sequence -- this will throw an InvalidArgumentException if the sequence
-            // is
-            // null
-            // which is why we cannot use {@link CacheAccess#get(Object, Supplier)}
+            // is null which is why we cannot use {@link CacheAccess#get(Object, Supplier)}
             if (sequence != null) {
                 SEQUENCE_CACHE.put(key, sequence);
             }
+        } else if (sequence.getKeys().isEmpty()) {
+            downloadSequence(key);
         }
         return sequence;
     }
@@ -205,12 +208,32 @@ public class MapillarySequenceUtils {
             JsonObject json = jsonReader.readObject();
             Collection<VectorWay> seq = JsonDecoder.decodeData(json, JsonSequencesDecoder::decodeSequence);
             VectorWay sequence = seq.stream().findFirst().orElse(null);
-            if (sequence != null && MapillaryLayer.hasInstance()) {
-                MapillaryLayer.getInstance().getData().addPrimitive(sequence);
-                if (sequence.getDataSet() != null) {
-                    sequence.getNodes().stream().filter(node -> node.getDataSet() == null)
-                        .forEach(node -> sequence.getDataSet().addPrimitive(node));
+            if (MapillaryLayer.hasInstance() && sequence != null) {
+                final VectorWay alreadyAdded = MapillaryLayer.getInstance().getData().searchWays(sequence.getBBox())
+                    .stream().filter(way -> getKey(way).equals(getKey(sequence))).findFirst().orElse(null);
+                sequence.put(KEY, key);
+                if (alreadyAdded != null) {
+                    alreadyAdded.setNodes(sequence.getNodes());
+                    sequence.setNodes(Collections.emptyList());
+                    alreadyAdded.setKeys(sequence.getKeys());
+                } else {
+                    MapillaryLayer.getInstance().getData().addPrimitive(sequence);
+                    if (sequence.getDataSet() != null) {
+                        sequence.getNodes().stream().filter(node -> node.getDataSet() == null)
+                            .forEach(node -> sequence.getDataSet().addPrimitive(node));
+                    }
                 }
+                // Remove referrers to other sequences
+                final List<VectorWay> modifiedWays = new ArrayList<>();
+                sequence.getNodes().stream().filter(node -> node.getReferrers().size() > 1)
+                    .forEach(node -> node.getReferrers().stream().filter(referrer -> !sequence.equals(referrer))
+                        .filter(VectorWay.class::isInstance).map(VectorWay.class::cast).forEach(way -> {
+                            List<VectorNode> nodes = new ArrayList<>(way.getNodes());
+                            nodes.remove(node);
+                            way.setNodes(nodes);
+                            modifiedWays.add(way);
+                        }));
+                modifiedWays.stream().filter(way -> way.getNodesCount() == 0).forEach(way -> way.setDeleted(true));
             }
             return sequence;
         }

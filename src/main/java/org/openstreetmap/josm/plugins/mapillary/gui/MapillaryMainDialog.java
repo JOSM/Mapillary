@@ -575,6 +575,7 @@ public final class MapillaryMainDialog extends ToggleDialog
         Objects.requireNonNull(cache, "Cache cannot be null");
         Objects.requireNonNull(detections, "Detections cannot be null");
         final Object syncObject = this.image != null ? this.image : MapillaryMainDialog.class;
+        MapillaryImageUtils.ensureProperlyDownloaded(image);
         synchronized (syncObject) {
             // Comprehensively fix GitHub #165
             if (image.equals(this.image) && cache.get() != null) {

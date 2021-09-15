@@ -328,6 +328,22 @@ public final class MapillaryImageUtils {
     }
 
     /**
+     * This ensures that the node has been properly downloaded (also affects sequences)
+     *
+     * @param image The image to check
+     * @param <N> The node type
+     */
+    public static <N extends INode> void ensureProperlyDownloaded(@Nullable N image) {
+        if (!isImage(image)) {
+            return;
+        }
+        // Get the sequence if it isn't already downloaded
+        if (image.getReferrers().isEmpty() || !MapillarySequenceUtils.hasKey(MapillaryImageUtils.getSequence(image))) {
+            MapillarySequenceUtils.getSequence(MapillaryImageUtils.getSequenceKey(image));
+        }
+    }
+
+    /**
      * Properties for images
      */
     public enum ImageProperties {
