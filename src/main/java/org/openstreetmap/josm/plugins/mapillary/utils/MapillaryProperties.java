@@ -23,7 +23,7 @@ public final class MapillaryProperties {
     public static final BooleanProperty SHOW_DETECTED_SIGNS = new BooleanProperty("mapillary.show-detected-signs",
         true);
     public static final BooleanProperty SHOW_DETECTION_OUTLINES = new BooleanProperty(
-        "mapillary.show-detection-outlines", true);
+        "mapillary.show-detection-outlines", false);
 
     public static final IntegerProperty PICTURE_DRAG_BUTTON = new IntegerProperty("mapillary.picture-drag-button", 3);
     public static final IntegerProperty PICTURE_OPTION_BUTTON = new IntegerProperty("mapillary.picture-option-button",
