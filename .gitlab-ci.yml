@@ -25,6 +25,9 @@ stages:
   - deploy
   - release
 
+variables:
+  PLUGIN_NAME: "Mapillary"
+
 ###############
 # Build stage #
 ###############
@@ -50,9 +53,9 @@ assemble with java 11:
     expire_in: 1 day
   interruptible: true
 
-assemble with java 15:
+assemble with java 17:
   stage: build
-  image: registry.gitlab.com/josm/docker-library/openjdk-15-josmplugin:latest
+  image: registry.gitlab.com/josm/docker-library/openjdk-17-josmplugin:latest
   script:
     - ./gradlew assemble --stacktrace
   artifacts:
@@ -72,6 +75,10 @@ code_navigation:
   artifacts:
     reports:
       lsif: dump.lsif
+  rules:
+    - if: '$CI_PIPELINE_SOURCE != "schedule" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: always
+  allow_failure: true
   interruptible: true
 
 ##############
@@ -85,7 +92,11 @@ build:
   artifacts:
     paths:
     - build
+    expire_in: 1 day
   needs: ["assemble"]
+  dependencies:
+    - assemble
+  interruptible: true
 
 test:
   stage: test
@@ -154,16 +165,16 @@ build with java 11:
     - assemble with java 11
   interruptible: true
 
-build with java 15:
+build with java 17:
   stage: test
-  image: registry.gitlab.com/josm/docker-library/openjdk-15-josmplugin:latest
+  image: registry.gitlab.com/josm/docker-library/openjdk-17-josmplugin:latest
   script:
     - ./gradlew build --stacktrace
-  needs: ["java 15 assemble"]
+  needs: ["java 17 assemble"]
   allow_failure: true
-  needs: ["assemble with java 15"]
+  needs: ["assemble with java 17"]
   dependencies:
-    - assemble with java 15
+    - assemble with java 17
   interruptible: true
 
 ################
@@ -175,7 +186,7 @@ transifex.com:
   stage: deploy
   environment:
     name: transifex.com
-    url: https://www.transifex.com/josm/josm/josm-plugin_Mapillary/
+    url: https://www.transifex.com/josm/josm/josm-plugin_$PLUGIN_NAME/
   script:
     - TX_TOKEN="$TRANSIFEX_TOKEN" tx push -s --no-interactive
   needs: ["translate"]
@@ -190,7 +201,7 @@ codecov.io:
   stage: deploy
   environment:
     name: codecov.io
-    url: https://codecov.io/gh/JOSM/Mapillary
+    url: https://codecov.io/gh/JOSM/$PLUGIN_NAME
   before_script:
     - apk add --update curl bash
   script:
@@ -208,7 +219,7 @@ sonarcloud.io:
   stage: deploy
   environment:
     name: sonarcloud.io
-    url: https://sonarcloud.io/dashboard?id=org.openstreetmap.josm.plugins%3AMapillary
+    url: https://sonarcloud.io/dashboard?id=org.openstreetmap.josm.plugins%3A$PLUGIN_NAME
   script:
     - git fetch --unshallow || echo "Already unshallowed"
     - ./gradlew -Dsonar.login=$SONAR_TOKEN sonarqube
@@ -225,23 +236,23 @@ GitLab Maven repo:
   stage: deploy
   environment:
     name: GitLab.com / Maven packages
-    url: https://gitlab.com/JOSM/plugin/Mapillary/-/packages
+    url: $CI_PROJECT_URL/-/packages
   script:
     - ./gradlew publishAllPublicationsToGitlabRepository
   needs: ["build", "compile against min JOSM", "compile against latest JOSM"]
   only:
-    - tags@JOSM/plugin/Mapillary
+    - tags@$CI_PROJECT_PATH
 
 release:
   stage: deploy
   environment:
     name: GitLab.com / pages branch
-    url: https://gitlab.com/JOSM/plugin/Mapillary/tree/pages/dist
+    url: ${CI_PAGES_URL}/${CI_PROJECT_NAME}
   script:
   - |
     base64 --decode "$SSH_PRIVATE_DEPLOY_KEY" > ~/.ssh/id_rsa
     chmod 600 ~/.ssh/id_rsa
-    git clone --depth 1 --branch pages git@gitlab.com:JOSM/plugin/Mapillary.git pages
+    git clone --depth 1 --branch pages git@${CI_SERVER_HOST}:${CI_PROJECT_PATH} pages
   - |
     version=`git describe --always --dirty`
     longVersion=`git describe --always --long --dirty`
@@ -253,14 +264,14 @@ release:
     ln -s "./$version" "pages/dist/latest"
   - |
     cd pages/
-    git config user.name "GitLab CI for JOSM/plugin/Mapillary"
+    git config user.name "GitLab CI for $CI_PROJECT_PATH"
     git config user.email "incoming+josm-plugin-mapillary-8564565-issue-@incoming.gitlab.com"
     git stage .
     git commit -a -m "$commitMessage"
     git push origin pages
   needs: ["build", "compile against min JOSM", "compile against latest JOSM"]
   only:
-    - tags@JOSM/plugin/Mapillary
+    - tags@$CI_PROJECT_PATH
 
 
 #################
@@ -271,9 +282,9 @@ release to Gitlab.com:
   stage: release
   environment:
     name: GitLab.com / Releases
-    url: https://gitlab.com/JOSM/plugin/Mapillary/-/releases
+    url: $CI_PROJECT_URL/-/releases
   script:
     - ./gradlew releaseToGitlab
   needs: ["GitLab Maven repo"]
   only:
-    - tags@JOSM/plugin/Mapillary
+    - tags@$CI_PROJECT_PATH
