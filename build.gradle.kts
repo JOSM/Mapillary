@@ -216,6 +216,13 @@ spotbugs {
   reportLevel.set(Confidence.LOW)
   reportsDir.set(File(buildDir, "reports/spotbugs"))
 }
+tasks.withType(SpotBugsTask::class) {
+  reports.create("html") {
+    outputLocation.set(File(spotbugs.reportsDir.get().asFile, "$baseName.html"))
+    setStylesheet("color.xsl")
+  }
+}
+
 
 // JaCoCo config
 jacoco {
