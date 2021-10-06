@@ -10,9 +10,9 @@ import java.net.URL
 
 plugins {
   id("application")
-  id("com.diffplug.spotless") version "5.14.2"
+  id("com.diffplug.spotless") version "5.16.0"
   id("com.github.ben-manes.versions") version "0.39.0"
-  id("com.github.spotbugs") version "4.7.3"
+  id("com.github.spotbugs") version "4.7.6"
   id("net.ltgt.errorprone") version "2.0.2"
   id("org.openstreetmap.josm") version "0.7.1"
   id("org.sonarqube") version "3.3"
@@ -30,7 +30,7 @@ repositories {
 
 // Set up ErrorProne
 dependencies {
-  errorprone("com.google.errorprone:error_prone_core:2.8.1")
+  errorprone("com.google.errorprone:error_prone_core:2.9.0")
   if (!JavaVersion.current().isJava9Compatible) {
     errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
   }
@@ -61,8 +61,8 @@ val versions = mapOf(
   "awaitility" to "4.1.0",
   "jdatepicker" to "1.3.4",
   "jmockit" to "1.49",
-  "junit" to "5.7.2",
-  "spotbugs" to "4.4.0",
+  "junit" to "5.8.1",
+  "spotbugs" to "4.4.1",
   "wiremock" to "2.27.2"
 )
 
@@ -140,10 +140,6 @@ josm {
   i18n {
     pathTransformer = getPathTransformer(project.projectDir, "gitlab.com/JOSM/plugin/Mapillary/blob")
   }
-  initialPreferences.set(
-    "<tag key='mapillary.developer' value='true'/> <tag key='mapillary.access-token' value='MLYARAQoQptKvMW5jvw8Ckl4rfXl6Bw4Mkj7sNpdgGMl7h6GfzpwXQ0KEzTqO3FAF0p6uAnmVKmWBZBgulqFX5pmAZCfg74dXBvWfQgtJdmDidluHCjreW0FXdBSosQZDZD'/> <tag key='mapillary.access-token.expires-at' value='1630359994'/> <tag key='mapillary.access-token.refresh-in' value='604800'/>"
-
-  )
 }
 
 eclipse {
