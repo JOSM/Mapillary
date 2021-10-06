@@ -135,19 +135,7 @@ josm {
   debugPort = 7051
   manifest {
     // See https://floscher.gitlab.io/gradle-josm-plugin/kdoc/latest/gradle-josm-plugin/org.openstreetmap.josm.gradle.plugin.config/-josm-manifest/old-version-download-link.html
-    oldVersionDownloadLink(17460, "v1.5.37.6", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.37.6/Mapillary.jar"))
-    oldVersionDownloadLink(17084, "v1.5.36.4", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.36.4/Mapillary.jar"))
-    oldVersionDownloadLink(16402, "v1.5.23", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.23/Mapillary.jar"))
-    oldVersionDownloadLink(16114, "v1.5.22", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.22/Mapillary.jar"))
-    oldVersionDownloadLink(15909, "v1.5.20", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.20/Mapillary.jar"))
-    oldVersionDownloadLink(14149, "v1.5.16", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.16/Mapillary.jar"))
-    oldVersionDownloadLink(13733, "v1.5.15", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.15/Mapillary.jar"))
-    oldVersionDownloadLink(13643, "v1.5.14", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.14/Mapillary.jar"))
-    oldVersionDownloadLink(13558, "v1.5.12+pre13643", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.12%2Bpre13643/Mapillary.jar"))
-    oldVersionDownloadLink(12987, "v1.5.10", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.10/Mapillary.jar"))
-    oldVersionDownloadLink(12675, "v1.5.7", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.7/Mapillary.jar"))
-    oldVersionDownloadLink(12128, "v1.5.5", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.5/Mapillary.jar"))
-    oldVersionDownloadLink(10824, "v1.5.3", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.3/Mapillary.jar"))
+    oldVersionDownloadLink(17903, "v2.0.0-alpha.36", URL("https://github.com/JOSM/Mapillary/releases/download/v2.0.0-alpha.36/Mapillary.jar"))
   }
   i18n {
     pathTransformer = getPathTransformer(project.projectDir, "gitlab.com/JOSM/plugin/Mapillary/blob")

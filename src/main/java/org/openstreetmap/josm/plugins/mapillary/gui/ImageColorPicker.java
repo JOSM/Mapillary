@@ -6,7 +6,6 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -30,19 +29,20 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 
-import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryImageDisplay.Painter;
+import org.openstreetmap.josm.gui.layer.geoimage.ImageDisplay;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ClipboardAction;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
 
 /**
  * UI to get color code from image.
+ * TODO move to JOSM core
  *
  * @author Kishan
+ * @deprecated This needs to move to JOSM core
  */
+@Deprecated
 public class ImageColorPicker extends JPanel {
     private final JPanel colorPanel;
     private final JPanel tempColorPanel;
@@ -55,7 +55,7 @@ public class ImageColorPicker extends JPanel {
     private boolean mouseIsDragging;
     private Point pointInComponent;
     private JToggleButton eyeDropperButton;
-    private final Painter<Graphics, BufferedImage, Rectangle> dropperConsumer = new ImageColorPickerPainter();
+    // private final Painter<Graphics, BufferedImage, Rectangle> dropperConsumer = new ImageColorPickerPainter();
 
     private Boolean detectionOutlines;
     private Boolean detectedSigns;
@@ -87,8 +87,10 @@ public class ImageColorPicker extends JPanel {
         panel.add(eyeDropperButton, GBC.std().anchor(GridBagConstraints.LINE_END));
 
         setLayout(new GridBagLayout());
-        MapillaryMainDialog.getInstance().imageViewer.setPreferredSize(new Dimension(1000, 1000));
-        add(MapillaryMainDialog.getInstance().imageViewer, GBC.std().insets(5).weight(1, 1).fill());
+        /*
+         * MapillaryMainDialog.getInstance().imageViewer.setPreferredSize(new Dimension(1000, 1000));
+         * add(MapillaryMainDialog.getInstance().imageViewer, GBC.std().insets(5).weight(1, 1).fill());
+         */
         add(panel, GBC.eol().insets(5));
     }
 
@@ -103,50 +105,45 @@ public class ImageColorPicker extends JPanel {
     }
 
     public void addEyeDropper() {
-        MapillaryImageDisplay imageViewer = MapillaryMainDialog.hasInstance()
-            ? MapillaryMainDialog.getInstance().imageViewer
-            : null;
-        if (imageViewer != null) {
-            imageViewer.setZoomPanEnabled(false);
-            eyeDropper = new EyeDropper(imageViewer);
-            imageViewer.addMouseListener(eyeDropper);
-            imageViewer.addMouseMotionListener(eyeDropper);
-            imageViewer.addAdditionalFunction(this.dropperConsumer);
-            // TODO store current in local variables
-            if (MapillaryProperties.SHOW_DETECTED_SIGNS.isSet()) {
-                this.detectedSigns = MapillaryProperties.SHOW_DETECTED_SIGNS.get();
-            }
-            MainApplication.worker.execute(() -> MapillaryProperties.SHOW_DETECTED_SIGNS.put(false));
-            if (MapillaryProperties.SHOW_DETECTION_OUTLINES.isSet()) {
-                this.detectionOutlines = MapillaryProperties.SHOW_DETECTION_OUTLINES.get();
-            }
-            MainApplication.worker.execute(() -> MapillaryProperties.SHOW_DETECTION_OUTLINES.put(false));
-        }
+        /*
+         * ImageViewerDialog imageViewer = MapillaryMainDialog.hasInstance()
+         * ? MapillaryMainDialog.getInstance().imageViewer
+         * : null;
+         * if (imageViewer != null) {
+         * imageViewer.setZoomPanEnabled(false);
+         * eyeDropper = new EyeDropper(imageViewer);
+         * imageViewer.addMouseListener(eyeDropper);
+         * imageViewer.addMouseMotionListener(eyeDropper);
+         * imageViewer.addAdditionalFunction(this.dropperConsumer);
+         * }
+         */
     }
 
     public void removeEyeDropper() {
-        MapillaryImageDisplay imageViewer = MapillaryMainDialog.hasInstance()
-            ? MapillaryMainDialog.getInstance().imageViewer
-            : null;
-        if (imageViewer != null && eyeDropper != null) {
-            imageViewer.removeMouseListener(eyeDropper);
-            imageViewer.removeMouseMotionListener(eyeDropper);
-            imageViewer.setZoomPanEnabled(true);
-            imageViewer.removeAdditionalFunction(this.dropperConsumer);
-            // TODO use store from local variables
-            if (this.detectedSigns != null) {
-                MainApplication.worker.execute(() -> MapillaryProperties.SHOW_DETECTED_SIGNS.put(this.detectedSigns));
-            } else {
-                MainApplication.worker.execute(MapillaryProperties.SHOW_DETECTED_SIGNS::remove);
-            }
-            if (this.detectionOutlines != null) {
-                MainApplication.worker
-                    .execute(() -> MapillaryProperties.SHOW_DETECTION_OUTLINES.put(this.detectionOutlines));
-            } else {
-                MainApplication.worker.execute(MapillaryProperties.SHOW_DETECTION_OUTLINES::remove);
-            }
-            this.eyeDropper = null;
-        }
+        /*
+         * MapillaryImageDisplay imageViewer = MapillaryMainDialog.hasInstance()
+         * ? MapillaryMainDialog.getInstance().imageViewer
+         * : null;
+         * if (imageViewer != null && eyeDropper != null) {
+         * imageViewer.removeMouseListener(eyeDropper);
+         * imageViewer.removeMouseMotionListener(eyeDropper);
+         * imageViewer.setZoomPanEnabled(true);
+         * imageViewer.removeAdditionalFunction(this.dropperConsumer);
+         * // TODO use store from local variables
+         * if (this.detectedSigns != null) {
+         * MainApplication.worker.execute(() -> MapillaryProperties.SHOW_DETECTED_SIGNS.put(this.detectedSigns));
+         * } else {
+         * MainApplication.worker.execute(MapillaryProperties.SHOW_DETECTED_SIGNS::remove);
+         * }
+         * if (this.detectionOutlines != null) {
+         * MainApplication.worker
+         * .execute(() -> MapillaryProperties.SHOW_DETECTION_OUTLINES.put(this.detectionOutlines));
+         * } else {
+         * MainApplication.worker.execute(MapillaryProperties.SHOW_DETECTION_OUTLINES::remove);
+         * }
+         * this.eyeDropper = null;
+         * }
+         */
     }
 
     private void drawColorIndicator(Graphics2D g, BufferedImage i, Rectangle visibleRectangle, Point p, Color current,
@@ -204,8 +201,8 @@ public class ImageColorPicker extends JPanel {
         private transient BufferedImage screenShot;
         private Rectangle visibleRectangle;
 
-        public EyeDropper(MapillaryImageDisplay panel) {
-            this.updateScreenshot(panel.image, panel.visibleRect);
+        public EyeDropper(ImageDisplay panel) {
+            // this.updateScreenshot(panel.image, panel.visibleRect);
         }
 
         @Override
@@ -256,8 +253,9 @@ public class ImageColorPicker extends JPanel {
                 if (inWindow) {
                     mouseIsDragging = true;
                     int buffer = 1;
-                    Point p = MapillaryMainDialog.getInstance().imageViewer.comp2imgCoord(visibleRectangle, e.getX(),
-                        e.getY());
+                    Point p = e.getPoint();
+                    // MapillaryMainDialog.getInstance().imageViewer.comp2imgCoord(visibleRectangle, e.getX(),
+                    // e.getY());
                     buffer = Math.min(buffer, getImage().getHeight() - p.y);
                     buffer = Math.min(buffer, getImage().getWidth() - p.x);
                     int[] surroundingPixels = getImage().getRGB(p.x, p.y, buffer, buffer, null, 0, buffer);
@@ -300,13 +298,13 @@ public class ImageColorPicker extends JPanel {
         }
     }
 
-    /**
+    /*
      * A class for painting the image color picker
+     * private final class ImageColorPickerPainter implements Painter<Graphics, BufferedImage, Rectangle> {
+     * @Override
+     * public void accept(Graphics graphics, BufferedImage bufferedImage, Rectangle rectangle) {
+     * drawColorIndicator((Graphics2D) graphics, bufferedImage, rectangle, pointInComponent, color, tempColor);
+     * }
+     * }
      */
-    private final class ImageColorPickerPainter implements Painter<Graphics, BufferedImage, Rectangle> {
-        @Override
-        public void accept(Graphics graphics, BufferedImage bufferedImage, Rectangle rectangle) {
-            drawColorIndicator((Graphics2D) graphics, bufferedImage, rectangle, pointInComponent, color, tempColor);
-        }
-    }
 }

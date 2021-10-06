@@ -14,7 +14,6 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -51,13 +50,9 @@ import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
-import org.openstreetmap.josm.data.osm.event.IDataSelectionListener;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
-import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorPrimitive;
-import org.openstreetmap.josm.data.vector.VectorRelation;
-import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
@@ -70,16 +65,16 @@ import org.openstreetmap.josm.gui.layer.LayerManager.LayerRemoveEvent;
 import org.openstreetmap.josm.gui.layer.MainLayerManager.ActiveLayerChangeEvent;
 import org.openstreetmap.josm.gui.layer.MainLayerManager.ActiveLayerChangeListener;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
+import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
 import org.openstreetmap.josm.gui.layer.imagery.MVTLayer;
 import org.openstreetmap.josm.gui.mappaint.Range;
 import org.openstreetmap.josm.gui.mappaint.mapcss.Selector;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
-import org.openstreetmap.josm.plugins.mapillary.actions.SelectNextImageAction;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.OldVersionDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.geoimage.MapillaryImageEntry;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapViewGeometryUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
@@ -101,8 +96,8 @@ import org.openstreetmap.josm.tools.Logging;
  *
  * @author nokutu
  */
-public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeListener, LayerChangeListener,
-    UploadHook, IDataSelectionListener<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> {
+public final class MapillaryLayer extends MVTLayer
+    implements ActiveLayerChangeListener, LayerChangeListener, UploadHook {
 
     /** The radius of the image marker */
     private static final int IMG_MARKER_RADIUS = 7;
@@ -170,14 +165,6 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
      */
     private void init() {
         MainApplication.getLayerManager().addActiveLayerChangeListener(this);
-
-        // Does not execute when in headless mode
-        if (MainApplication.getMainFrame() != null && !MapillaryMainDialog.getInstance().isShowing()) {
-            MapillaryMainDialog.getInstance().showDialog();
-        }
-        if (MapillaryPlugin.getMapView() != null) {
-            MapillaryMainDialog.getInstance().imageViewer.repaint();
-        }
         invalidate();
     }
 
@@ -271,9 +258,10 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
             }
             this.getData().clearSelection();
             clearInstance();
-            if (MapillaryMainDialog.hasInstance()) {
-                MapillaryMainDialog.getInstance().setImage(null);
-                MapillaryMainDialog.getInstance().updateImage();
+            if (MainApplication.getMap() != null
+                && MainApplication.getMap().getToggleDialog(ImageViewerDialog.class) != null
+                && ImageViewerDialog.getCurrentImage() instanceof MapillaryImageEntry) {
+                ImageViewerDialog.getInstance().displayImage(null);
             }
             UploadAction.unregisterUploadHook(this);
             super.destroy();
@@ -465,8 +453,11 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
             double angle = MapillaryImageUtils.getAngle(img);
 
             angle = Double.isNaN(angle) ? 0 : angle;
-            if (Objects.equals(selectedImg, img))
-                angle += MapillaryMainDialog.getInstance().imageViewer.getRotation();
+            // TODO update
+            /*
+             * if (Objects.equals(selectedImg, img))
+             * angle += MapillaryMainDialog.getInstance().imageViewer.getRotation();
+             */
             g.setTransform(getTransform(angle, p, getOriginalCentroid(i), backup));
             g.drawImage(i, p.x, p.y, null);
             g.setTransform(backup);
@@ -628,37 +619,6 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         // Don't care about this
     }
 
-    @Override
-    public void selectionChanged(
-        IDataSelectionListener.SelectionChangeEvent<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> event) {
-        // Fix a RejectedExecutionException on JOSM shutdown
-        if (!MainApplication.worker.isShutdown()) {
-            MainApplication.worker.execute(this::updateNearestImages);
-        }
-        if (MapillaryMainDialog.hasInstance()) {
-            INode image = null;
-            for (SelectNextImageAction action : Arrays.asList(SelectNextImageAction.NEXT_ACTION,
-                SelectNextImageAction.PREVIOUS_ACTION, SelectNextImageAction.BLUE_ACTION,
-                SelectNextImageAction.RED_ACTION)) {
-                INode possible = action.getDestinationImageSupplier().get();
-                // possible is always null initially
-                if (possible != null) {
-                    Optional<INode> node = event.getSelection().stream().filter(INode.class::isInstance)
-                        .map(INode.class::cast).filter(possible::equals).findFirst();
-                    if (node.isPresent()) {
-                        image = node.get();
-                    }
-                }
-            }
-            if (image == null) {
-                image = event.getSelection().stream().filter(INode.class::isInstance).map(INode.class::cast)
-                    .filter(MapillaryImageUtils::isImage).findFirst().orElse(null);
-            }
-            MapillaryMainDialog.getInstance().setImage(image);
-        }
-        this.invalidate();
-    }
-
     /**
      * Returns the closest images belonging to a different sequence and
      * different from the specified target image.
@@ -684,36 +644,6 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         img != null && img.getCoor()
             .greatCircleDistance(target.getCoor()) < MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get())
             .sorted(new NearestImgToTargetComparator(target)).limit(limit).toArray(INode[]::new);
-    }
-
-    private void updateNearestImages() {
-        final INode selected;
-        if (MapillaryMainDialog.hasInstance()) {
-            selected = MapillaryMainDialog.getInstance().getImage();
-        } else {
-            selected = this.getData().getSelectedNodes().stream().findFirst().orElse(null);
-        }
-        INode[] newNearestImages;
-        if (MapillaryImageUtils.getKey(selected) != 0) {
-            newNearestImages = getNearestImagesFromDifferentSequences(selected, 2);
-        } else {
-            newNearestImages = new INode[0];
-        }
-        synchronized (this.nearestImages) {
-            this.nearestImages.clear();
-            Stream.of(newNearestImages).filter(Objects::nonNull).forEach(this.nearestImages::add);
-
-            if (MainApplication.isDisplayingMapView()) {
-                GuiHelper.runInEDT(this::updateRedBlueButtons);
-            }
-        }
-        this.invalidate();
-    }
-
-    private void updateRedBlueButtons() {
-        synchronized (this.nearestImages) {
-            MapillaryMainDialog.getInstance().updateButtonStates(MapillaryMainDialog.getInstance().getImage());
-        }
     }
 
     @Override

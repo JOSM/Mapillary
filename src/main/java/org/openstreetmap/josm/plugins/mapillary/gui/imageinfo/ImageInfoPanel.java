@@ -42,11 +42,11 @@ import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.gui.ExtendedDialog;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
+import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.ImageColorPicker;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.SelectableLabel;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
@@ -329,7 +329,13 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
             abc.addWindowFocusListener(new WindowAdapter() {
                 @Override
                 public void windowLostFocus(WindowEvent e) {
-                    MapillaryMainDialog.getInstance().setMode(MapillaryMainDialog.MODE.NORMAL);
+                    // Force a refresh -- the code here originally reused the same graphics display as the image viewer,
+                    // and it needed (still needs?) to be refreshed
+                    if (MapillaryLayer.hasInstance()) {
+                        ImageViewerDialog.getInstance().displayImage(ImageViewerDialog.getCurrentImage());
+                    } else {
+                        ImageViewerDialog.getInstance().displayImage(null);
+                    }
                 }
             });
         }

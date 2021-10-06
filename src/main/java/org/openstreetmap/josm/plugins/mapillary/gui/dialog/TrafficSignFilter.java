@@ -49,11 +49,10 @@ import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.gui.widgets.FilterField;
 import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ImageMode;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.gui.DeveloperToggleAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.ImageCheckBoxButton;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog.MODE;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddListener;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
@@ -178,11 +177,10 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
         if (MapillaryFilterDialog.getInstance() != null) {
             MapillaryFilterDialog.getInstance().refresh();
         }
-        if (MapillaryMainDialog.hasInstance()) {
-            if (this.smartEditMode)
-                MapillaryMainDialog.getInstance().setMode(MODE.SMART_EDIT);
-            else
-                MapillaryMainDialog.getInstance().setMode(MODE.NORMAL);
+        if (this.smartEditMode) {
+            ImageMode.setMode(ImageMode.SMART_EDIT);
+        } else {
+            ImageMode.setMode(ImageMode.NORMAL);
         }
     }
 

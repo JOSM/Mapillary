@@ -20,7 +20,6 @@ import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 
-import org.openstreetmap.josm.data.Version;
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.Feature;
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.Layer;
 import org.openstreetmap.josm.data.protobuf.ProtobufParser;
@@ -142,16 +141,7 @@ public final class JsonImageDetectionDecoder {
                     final Layer layer = new Layer(layerParser.allRecords());
                     final Optional<Feature> feature = layer.getFeatures().stream().findFirst();
                     if (layer.getFeatures().size() == 1 && feature.isPresent()) {
-                        try {
-                            return resizeShapes(feature.get().getGeometryObject().getShapes(), layer.getExtent());
-                        } catch (IllegalArgumentException e) {
-                            // See JOSM #21254 -- the fix should be in the next latest (current is 18182)
-                            if (Version.getInstance().getVersion() > 18183) {
-                                throw e;
-                            }
-                            // Otherwise, swallow the exception and continue on.
-                            Logging.trace(e);
-                        }
+                        return resizeShapes(feature.get().getGeometryObject().getShapes(), layer.getExtent());
                     }
                 }
             }

@@ -43,6 +43,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetectionDecoder;
+import org.openstreetmap.josm.tools.ListenerList;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Pair;
 
@@ -59,7 +60,7 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
     }
 
     private static final Timer DETECTION_TIMER = new Timer();
-    private static TimerTask currentTask;
+    private static ImageDetectionWaitTask currentTask;
     private static final String DETECTIONS = "detections";
 
     /**
@@ -102,11 +103,20 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
         final BiConsumer<Long, List<ImageDetection<?>>> listener, long timeout) {
 
         synchronized (DETECTION_TIMER) {
-            if (currentTask != null) {
+            if (currentTask != null && currentTask.task.key != key) {
                 currentTask.cancel();
             }
-            currentTask = new ImageDetectionWaitTask(new ImageDetectionForkJoinTask(key, listener));
-            DETECTION_TIMER.schedule(currentTask, timeout);
+            if (currentTask != null && currentTask.task.isDone() && currentTask.task.key == key) {
+                listener.accept(currentTask.task.key, currentTask.task.results);
+            } else if (currentTask != null && currentTask.task.key == key) {
+                if (!currentTask.task.listenerList.containsListener(listener)) {
+                    currentTask.task.listenerList.addListener(listener);
+                }
+            } else {
+                currentTask = new ImageDetectionWaitTask(new ImageDetectionForkJoinTask(key, listener));
+                DETECTION_TIMER.schedule(currentTask, timeout);
+            }
+
         }
     }
 
@@ -265,13 +275,15 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
      * A ForkJoinTask that can be cancelled
      */
     public static class ImageDetectionForkJoinTask extends ForkJoinTask<List<ImageDetection<?>>> {
-        private final BiConsumer<Long, List<ImageDetection<?>>> listener;
+        private final ListenerList<BiConsumer<Long, List<ImageDetection<?>>>> listenerList = ListenerList.create();
         public final long key;
         private List<ImageDetection<?>> results;
 
         public ImageDetectionForkJoinTask(long key, BiConsumer<Long, List<ImageDetection<?>>> listener) {
             this.key = key;
-            this.listener = listener;
+            if (listener != null) {
+                this.listenerList.addListener(listener);
+            }
         }
 
         @Override
@@ -289,9 +301,7 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
             if (!this.isCancelled()) {
                 final List<ImageDetection<?>> layerDetections = DETECTION_CACHE.get(key, () -> getDetections(key));
                 final List<ImageDetection<?>> detections = new ArrayList<>(layerDetections);
-                if (listener != null) {
-                    listener.accept(key, detections);
-                }
+                this.listenerList.fireEvent(listener -> listener.accept(key, detections));
                 this.complete(detections);
                 return true;
             }

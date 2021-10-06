@@ -31,11 +31,9 @@ import org.openstreetmap.josm.plugins.mapillary.actions.MapPointObjectLayerActio
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryExportAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction;
-import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryWalkAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryZoomAction;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.DataMouseListener;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
@@ -59,8 +57,6 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
 
     /** Zoom action */
     private static final MapillaryZoomAction ZOOM_ACTION = new MapillaryZoomAction();
-    /** Walk action */
-    private static final MapillaryWalkAction WALK_ACTION = new MapillaryWalkAction();
 
     private final List<ToggleDialog> toggleDialog = new ArrayList<>();
 
@@ -100,9 +96,6 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
         MainMenu.add(menu.viewMenu, ZOOM_ACTION, false, 15);
         destroyables.add(ZOOM_ACTION);
 
-        MainMenu.add(menu.moreToolsMenu, WALK_ACTION, false);
-        destroyables.add(WALK_ACTION);
-
         MapObjectLayerAction mapObjectLayerAction = new MapObjectLayerAction();
         MainMenu.add(menu.imagerySubMenu, mapObjectLayerAction, false);
         mapObjectLayerAction.updateEnabledState();
@@ -124,16 +117,7 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
     }
 
     public static VectorDataSelectionListener[] getMapillaryDataListeners() {
-        return new VectorDataSelectionListener[] { WALK_ACTION, ZOOM_ACTION };
-    }
-
-    /**
-     * Get the walk action
-     *
-     * @return the {@link MapillaryWalkAction} for the plugin
-     */
-    public static MapillaryWalkAction getWalkAction() {
-        return WALK_ACTION;
+        return new VectorDataSelectionListener[] { ZOOM_ACTION };
     }
 
     /**
@@ -144,8 +128,6 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
         if (oldFrame == null && newFrame != null) { // map frame added
             toggleDialog.forEach(ToggleDialog::destroy);
             toggleDialog.clear();
-            toggleDialog.add(MapillaryMainDialog.getInstance());
-            newFrame.addToggleDialog(MapillaryMainDialog.getInstance(), false);
             toggleDialog.add(MapillaryFilterDialog.getInstance());
             newFrame.addToggleDialog(MapillaryFilterDialog.getInstance(), false);
             newFrame.addToggleDialog(MapillaryExpertFilterDialog.getInstance(), true);

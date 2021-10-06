@@ -104,7 +104,7 @@ public final class MapillaryDownloader {
         } else {
             nodes = Collections.emptyList();
         }
-        return Collections.unmodifiableMap(
+        final Map<String, Collection<VectorNode>> sequenceMap = Collections.unmodifiableMap(
             nodes.stream().sorted(Comparator.comparingLong(image -> MapillaryImageUtils.getDate(image).toEpochMilli()))
                 .collect(Collector.of(HashMap<String, Collection<VectorNode>>::new,
                     (map, node) -> map
@@ -113,6 +113,25 @@ public final class MapillaryDownloader {
                         rMap.putAll(oMap);
                         return rMap;
                     })));
+        sequenceMap.forEach((sequenceKey, vectorNodes) -> {
+            Set<VectorWay> ways = vectorNodes.stream().map(VectorNode::getReferrers).filter(VectorWay.class::isInstance)
+                .map(VectorWay.class::cast).collect(Collectors.toSet());
+            if (ways.size() != 1) {
+                ways.forEach(way -> way.setDeleted(true));
+                ways.forEach(way -> way.setNodes(Collections.emptyList()));
+                ways.stream().filter(way -> way.getDataSet() != null)
+                    .forEach(way -> way.getDataSet().removePrimitive(way));
+                vectorNodes.stream().map(MapillaryImageUtils::getSequenceKey).distinct()
+                    .map(MapillaryDownloader::downloadSequences).flatMap(Collection::stream).forEach(way -> {
+                        // We need to clear the cached bbox
+                        if (way.getDataSet() != null) {
+                            way.getDataSet().removePrimitive(way);
+                        }
+                        dataSet.addPrimitive(way);
+                    });
+            }
+        });
+        return sequenceMap;
     }
 
     private static void separatelyCacheDownloadedImages(final JsonObject jsonObject) {

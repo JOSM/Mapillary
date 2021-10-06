@@ -2,9 +2,11 @@ package org.openstreetmap.josm.plugins.mapillary;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import javax.swing.JPopupMenu;
 import java.lang.reflect.Field;
 
+import javax.swing.JPopupMenu;
+
+import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,14 +31,13 @@ import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 import org.openstreetmap.josm.testutils.annotations.BasicWiremock;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
-
 /**
  * Test class for {@link MapillaryKeyListener}
  *
  * @author Taylor Smock
  */
 @BasicPreferences
+@BasicWiremock // TODO remove when it is inheritable (see #21139)
 @MapillaryURLWireMock
 @MapillaryLayerAnnotation
 class MapillaryKeyListenerTest {

@@ -77,6 +77,7 @@ import org.openstreetmap.josm.gui.layer.LayerManager.LayerChangeListener;
 import org.openstreetmap.josm.gui.layer.LayerManager.LayerOrderChangeEvent;
 import org.openstreetmap.josm.gui.layer.LayerManager.LayerRemoveEvent;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
+import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
 import org.openstreetmap.josm.gui.layer.imagery.MVTLayer;
 import org.openstreetmap.josm.gui.mappaint.MapPaintStyles;
 import org.openstreetmap.josm.gui.mappaint.loader.MapPaintStyleLoader;
@@ -87,7 +88,6 @@ import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.SmartEditAddAction;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
 import org.openstreetmap.josm.plugins.mapillary.data.osm.event.FilterEventListener;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddEventSource;
@@ -597,7 +597,7 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
                 mapillaryData.setSelected(toSelect);
             }
         }
-        GuiHelper.runInEDT(() -> MapillaryMainDialog.getInstance().imageViewer.repaint());
+        ImageViewerDialog.getInstance().repaint();
         GuiHelper.runInEDT(() -> MapillaryFilterDialog.getInstance().updateFilteredImages());
     }
 

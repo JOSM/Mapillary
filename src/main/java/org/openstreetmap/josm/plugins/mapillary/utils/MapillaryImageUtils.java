@@ -25,7 +25,6 @@ import javax.json.JsonReader;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IWay;
-import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
@@ -165,6 +164,11 @@ public final class MapillaryImageUtils {
             return completableFuture;
         } else if (image.hasKey(IMPORTED_KEY)) {
             return MainApplication.worker.submit(() -> ImageIO.read(new File(image.get(IMPORTED_KEY))));
+        } else if (getKey(image) > 0) {
+            downloadImageDetails(image);
+            if (MapillaryImageUtils.IS_DOWNLOADABLE.test(image)) {
+                return getImage(image);
+            }
         }
         return CompletableFuture.completedFuture(null);
     }
@@ -250,8 +254,8 @@ public final class MapillaryImageUtils {
      *
      * @param images The image details to download
      */
-    public static void downloadImageDetails(@Nonnull Collection<VectorNode> images) {
-        downloadImageDetails(images.toArray(new VectorNode[0]));
+    public static void downloadImageDetails(@Nonnull Collection<INode> images) {
+        downloadImageDetails(images.toArray(new INode[0]));
     }
 
     /**
@@ -259,7 +263,7 @@ public final class MapillaryImageUtils {
      *
      * @param images The image(s) to get additional details for
      */
-    public static void downloadImageDetails(@Nonnull VectorNode... images) {
+    public static void downloadImageDetails(@Nonnull INode... images) {
         MapillaryUtils.getForkJoinPool().execute(() -> {
             final long[] keys = Stream.of(images).filter(Objects::nonNull).mapToLong(IPrimitive::getId)
                 .filter(key -> key != 0).toArray();
@@ -285,6 +289,7 @@ public final class MapillaryImageUtils {
      */
     private static void downloadImageDetails(long... keys) {
         Objects.requireNonNull(keys, "Image keys cannot be null");
+        MapillaryURL.APIv4.getImageInformation(keys);
         for (long key : keys) {
             final String imageUrl = MapillaryURL.APIv4.getImageInformation(key);
             final String cacheData = Caches.META_DATA_CACHE.get(imageUrl, () -> {
