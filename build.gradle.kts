@@ -1,12 +1,14 @@
 import com.github.spotbugs.snom.Confidence
 import com.github.spotbugs.snom.Effort
 import com.github.spotbugs.snom.SpotBugsTask
+import kotlinx.serialization.serializer
 import net.ltgt.gradle.errorprone.CheckSeverity
 import net.ltgt.gradle.errorprone.errorprone
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.openstreetmap.josm.gradle.plugin.task.MarkdownToHtml
 import java.net.URL
+import kotlin.reflect.full.starProjectedType
 
 plugins {
   id("application")
@@ -26,6 +28,7 @@ plugins {
 
 repositories {
   jcenter()
+  mavenCentral()
 }
 
 // Set up ErrorProne
@@ -108,6 +111,42 @@ tasks {
     }
     from(md2html)
   }
+}
+
+/**
+ * Get a specific property, either from gradle or from the environment
+ */
+fun getProperty(key: String): Any? {
+    if (hasProperty(key)) {
+        return findProperty(key)
+    }
+    return System.getenv(key)
+}
+
+tasks.register("generateApiKeyFile") {
+    val apiKeyFileDir = "$buildDir/resources/main"
+    val apiKeyFileName = "mapillary_api_keys.json"
+    doLast {
+        val jsonEncoder = kotlinx.serialization.json.Json { encodeDefaults = true }
+        file(apiKeyFileDir).mkdirs()
+        val environmentToMap = mutableMapOf<String, kotlinx.serialization.json.JsonElement>()
+        for (environment in listOf("MAPILLARY_CLIENT_TOKEN", "MAPILLARY_CLIENT_SECRET", "MAPILLARY_CLIENT_ID")) {
+            if (getProperty(environment) != null) {
+                val prop = getProperty(environment)
+                environmentToMap[environment] = jsonEncoder.encodeToJsonElement(serializer(prop!!::class.starProjectedType), prop)
+            } else {
+                logger.warn("$environment not set in environment. Some functionality may not work.")
+            }
+        }
+        //val apiJson = StringBuilder().append("{")
+        //apiJson.append("}")
+        file("$apiKeyFileDir/$apiKeyFileName").writeText(kotlinx.serialization.json.JsonObject(environmentToMap).toString())
+    }
+}
+if (getProperty("MAPILLARY_CLIENT_TOKEN") != null) {
+    tasks["processResources"].dependsOn("generateApiKeyFile")
+} else {
+    logger.warn("MAPILLARY_CLIENT_TOKEN not set in the environment. Build only usable for tests.")
 }
 
 spotless {
@@ -261,7 +300,7 @@ sonarqube {
     property("sonar.organization", "josm")
     property("sonar.projectVersion", project.version)
     //property("sonar.projectDescription", "Allows the user to work with pictures hosted at mapillary.com")
-    property("sonar.projectDescription", findProperty("plugin.description"))
+    findProperty("plugin.description")?.let { property("sonar.projectDescription", it) }
     property("sonar.sources", listOf("src"))
   }
 }

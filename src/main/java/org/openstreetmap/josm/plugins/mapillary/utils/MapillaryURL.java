@@ -1,6 +1,8 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,11 +21,60 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.ResourceProvider;
+import org.openstreetmap.josm.tools.Utils;
 
 public final class MapillaryURL {
+    private static final class ApiKeyReader {
+        private static final String API_KEY_FILE = "mapillary_api_keys.json";
+
+        static String readValue(final String key) {
+            // Prefer system property (this is something that can be changed fairly easily)
+            if (System.getProperty(key) != null) {
+                return System.getProperty(key);
+            }
+            // Then check if there was something stored in JOSM preferences
+            if (Config.getPref() != null && !Utils.isBlank(Config.getPref().get("mapillary.api." + key))) {
+                return Config.getPref().get("mapillary.api." + key);
+            }
+            // Then check and see if the api key file has the key
+            final InputStream fileStream = ResourceProvider.getResourceAsStream(API_KEY_FILE);
+            if (fileStream != null) {
+                try (JsonReader reader = Json.createReader(fileStream)) {
+                    final JsonObject object = reader.readObject();
+                    if (object.containsKey(key)) {
+                        return object.getString(key);
+                    }
+                } finally {
+                    try {
+                        fileStream.close();
+                    } catch (IOException e) {
+                        Logging.error(e);
+                    }
+                }
+            }
+            // Finally, return "test" no value has been found
+            return "test";
+        }
+
+        static long readMapillaryClientId() {
+            try {
+                final String stringValue = readValue("MAPILLARY_CLIENT_ID");
+                return Long.parseLong(stringValue);
+            } catch (NumberFormatException numberFormatException) {
+                Logging.error(numberFormatException);
+            }
+            return 4_280_585_711_960_869L;
+        }
+    }
+
     /**
      * Mapillary v4 API
      *
@@ -31,20 +82,18 @@ public final class MapillaryURL {
      */
     public static final class APIv4 {
         /**
-         * The API key for v4 -- cannot be final since tests need to change it (the '|' characters kill WireMock's
-         * pattern
-         * replacement). Please don't write to this, except in unit tests.
+         * The API key for v4
          */
-        public static String ACCESS_ID = "MLY|4223665974375089|d62822dd792b6a823d0794ef26450398";
+        public static final String ACCESS_ID = ApiKeyReader.readValue("MAPILLARY_CLIENT_TOKEN");
         /**
          * This is the client id for the application, used solely for authentication
          */
-        public static final long CLIENT_ID = 4_280_585_711_960_869L;
+        public static final long CLIENT_ID = ApiKeyReader.readMapillaryClientId();
 
         /**
          * This is the client secret for the application, used solely for authentication
          */
-        public static final String CLIENT_SECRET = "CLIENT_SECRET_TO_REPLACE_ON_BUILD";
+        public static final String CLIENT_SECRET = ApiKeyReader.readValue("MAPILLARY_CLIENT_SECRET");
 
         private APIv4() {
             // Hide constructor

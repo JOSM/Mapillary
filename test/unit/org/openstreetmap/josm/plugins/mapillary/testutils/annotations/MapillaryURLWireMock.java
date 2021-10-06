@@ -3,15 +3,6 @@ package org.openstreetmap.josm.plugins.mapillary.testutils.annotations;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import javax.imageio.ImageIO;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonReader;
-import javax.json.JsonString;
-import javax.json.JsonValue;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -32,16 +23,15 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.extension.AfterAllCallback;
-import org.junit.jupiter.api.extension.AfterEachCallback;
-import org.junit.jupiter.api.extension.BeforeAllCallback;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.platform.commons.support.AnnotationSupport;
-import org.openstreetmap.josm.TestUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
-import org.openstreetmap.josm.tools.Logging;
-import org.openstreetmap.josm.tools.Utils;
+import javax.imageio.ImageIO;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonReader;
+import javax.json.JsonString;
+import javax.json.JsonValue;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -57,6 +47,16 @@ import com.github.tomakehurst.wiremock.matching.AnythingPattern;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.platform.commons.support.AnnotationSupport;
+import org.openstreetmap.josm.TestUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.Utils;
 
 /**
  * Mock Mapillary API calls
@@ -84,24 +84,19 @@ public @interface MapillaryURLWireMock {
     class MapillaryURLMockExtension implements AfterAllCallback, AfterEachCallback, BeforeAllCallback {
         private static final String defaultBaseMetaDataUrl;
         private static final String defaultBaseTileUrl;
-        private static final String defaultAccessKey;
         static {
             String baseMetaDataUrl;
             String baseTileUrl;
-            String accessKey;
             try {
                 baseMetaDataUrl = (String) TestUtils.getPrivateStaticField(MapillaryURL.APIv4.class, "baseMetaDataUrl");
                 baseTileUrl = (String) TestUtils.getPrivateStaticField(MapillaryURL.APIv4.class, "baseTileUrl");
-                accessKey = (String) TestUtils.getPrivateStaticField(MapillaryURL.APIv4.class, "ACCESS_ID");
             } catch (ReflectiveOperationException e) {
                 Logging.error(e);
                 baseMetaDataUrl = null;
                 baseTileUrl = null;
-                accessKey = null;
             }
             defaultBaseTileUrl = baseTileUrl;
             defaultBaseMetaDataUrl = baseMetaDataUrl;
-            defaultAccessKey = accessKey;
         }
 
         @Override
@@ -112,7 +107,6 @@ public @interface MapillaryURLWireMock {
             // Ensure things throw if this isn't called
             TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseMetaDataUrl", null);
             TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseTileUrl", null);
-            TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "ACCESS_ID", null);
         }
 
         @Override
@@ -212,14 +206,11 @@ public @interface MapillaryURLWireMock {
                 && context.getTags().contains(IntegrationTest.TAG)) {
                 TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseMetaDataUrl", defaultBaseMetaDataUrl);
                 TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseTileUrl", defaultBaseTileUrl);
-                TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "ACCESS_ID", defaultAccessKey);
             } else {
                 TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseMetaDataUrl",
                     server.baseUrl() + "/api/v4/graph/");
                 TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseTileUrl",
                     server.baseUrl() + "/api/v4/coverageTiles/");
-                // Wiremock pattern matching has issues with the actual key. So replace it with a "test_key".
-                TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "ACCESS_ID", "test_key");
             }
         }
 

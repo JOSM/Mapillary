@@ -21,7 +21,11 @@
 
 /test/data/preferences/
 
-#Netbeans
+# Netbeans
 /.nb-gradle/
 
 /bin-test/
+
+# Private key files
+/src/main/resources/mapillary_api_keys.json
+

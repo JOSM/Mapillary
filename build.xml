@@ -33,4 +33,22 @@
     <include name="apache-commons.jar"/>
     <include name="apache-http.jar"/>
   </fileset>
+  <condition property="mapillary_secrets">
+    <and>
+        <isset property="MAPILLARY_CLIENT_ID"/>
+        <isset property="MAPILLARY_CLIENT_SECRET"/>
+        <isset property="MAPILLARY_CLIENT_TOKEN"/>
+    </and>
+  </condition>
+  <echo file="src/main/resources/mapillary_api_keys.json" if:true="${mapillary_secrets}">
+    {
+      "MAPILLARY_CLIENT_ID": "${MAPILLARY_CLIENT_ID}",
+      "MAPILLARY_CLIENT_TOKEN": "${MAPILLARY_CLIENT_TOKEN}",
+      "MAPILLARY_CLIENT_SECRET": "${MAPILLARY_CLIENT_SECRET}"
+    }
+  </echo>
+  <echo unless:true="${mapillary_secrets}">
+      Missing at least one of MAPILLARY_CLIENT_ID, MAPILLARY_CLIENT_TOKEN, and MAPILLARY_CLIENT_SECRET
+      Please provide with -DMAPILLARY_CLIENT_ID="id" -DMAPILLARY_CLIENT_TOKEN="token" -DMAPILLARY_CLIENT_SECRET="secret"
+  </echo>
 </project>
