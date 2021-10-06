@@ -243,8 +243,8 @@ public final class MapillaryLayer extends MVTLayer
     public boolean setImageViewed(INode image) {
         DataSet ds = MainApplication.getLayerManager().getActiveDataSet();
         if (image != null && ds != null) {
-            Set<INode> imageViewedList = imageViewedMap.getOrDefault(ds, Collections.synchronizedSet(new HashSet<>(1)));
-            imageViewedMap.putIfAbsent(ds, imageViewedList);
+            Set<INode> imageViewedList = imageViewedMap.computeIfAbsent(ds,
+                dataSet -> Collections.synchronizedSet(new HashSet<>(1)));
             return imageViewedList.add(image);
         }
         return false;

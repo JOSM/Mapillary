@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.data.mapillary;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -1909,7 +1910,7 @@ public enum ObjectDetections {
     private final DetectionType[] detectionTypes;
     private final String[] osmKey;
     private final Collection<TaggingPresetType> taggingPresetType;
-    private final Supplier<AdditionalInstructions> additionalCommands;
+    private final SerializableSupplier<AdditionalInstructions> additionalCommands;
     private final DataType dataType;
     private final ImageIcon icon;
     // Not final just in case a preset change listener needs to be implemented
@@ -1980,7 +1981,8 @@ public enum ObjectDetections {
      * @param dataType The type of the data (AKA, how ready the detection is)
      */
     ObjectDetections(String osmKey, TaggingPresetType[] taggingPresetType,
-        Supplier<AdditionalInstructions> additionalCommands, DetectionType[] detectionTypes, DataType dataType) {
+        SerializableSupplier<AdditionalInstructions> additionalCommands, DetectionType[] detectionTypes,
+        DataType dataType) {
         this.key = this.name().replace("_", "-").toLowerCase(Locale.ENGLISH);
         this.detectionTypes = detectionTypes;
         // Use two ;; to avoid cases where a delimited list is needed
@@ -2188,5 +2190,10 @@ public enum ObjectDetections {
     private static class Constants {
         private static final String HIGHWAY_TRAFFIC_SIGNALS = "highway=traffic_signals";
         private static final String HIGHWAY_STOP = "highway=stop";
+    }
+
+    @FunctionalInterface
+    private static interface SerializableSupplier<T> extends Serializable, Supplier<T> {
+        // Empty
     }
 }

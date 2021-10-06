@@ -275,7 +275,8 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
      * A ForkJoinTask that can be cancelled
      */
     public static class ImageDetectionForkJoinTask extends ForkJoinTask<List<ImageDetection<?>>> {
-        private final ListenerList<BiConsumer<Long, List<ImageDetection<?>>>> listenerList = ListenerList.create();
+        private final transient ListenerList<BiConsumer<Long, List<ImageDetection<?>>>> listenerList = ListenerList
+            .create();
         public final long key;
         private List<ImageDetection<?>> results;
 

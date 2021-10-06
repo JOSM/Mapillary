@@ -112,7 +112,7 @@ public class MapillaryImageEntry
         // it should be livable, since it will be more cache-friendly.
         MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(this.image));
         // Then get the information for the rest of the sequence
-        MainApplication.worker.submit(() -> Optional.ofNullable(sequence).map(IWay::getNodes)
+        MainApplication.worker.execute(() -> Optional.ofNullable(sequence).map(IWay::getNodes)
             .map(nodes -> nodes.stream().mapToLong(MapillaryImageUtils::getKey).toArray())
             .ifPresent(MapillaryDownloader::downloadImages));
         this.updateDetections(5_000);
@@ -227,7 +227,7 @@ public class MapillaryImageEntry
         if (this.originalImage == null) {
             try {
                 Future<BufferedImage> future = MapillaryImageUtils.getImage(this.image);
-                MainApplication.worker.submit(() -> preCacheImages(this));
+                MainApplication.worker.execute(() -> preCacheImages(this));
                 this.originalImage = future.get(5, TimeUnit.SECONDS);
             } catch (ExecutionException | TimeoutException exception) {
                 throw new IOException(exception);

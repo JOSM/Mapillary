@@ -92,8 +92,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
     };
 
     /** Reset objects (reset done in order added) */
-    private final ListenerList<ResetListener> resetObjects = ListenerList.create();
-    private final ListenerList<Destroyable> destroyable = ListenerList.create();
+    private final transient ListenerList<ResetListener> resetObjects = ListenerList.create();
+    private final transient ListenerList<Destroyable> destroyable = ListenerList.create();
 
     private final JLabel organizationLabel = new JLabel(tr("Org"));
     final JComboBox<OrganizationRecord> organizations = new JComboBox<>();
@@ -395,7 +395,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
      */
     public void updateFilteredImages() {
         if (MapillaryLayer.hasInstance()) {
-            MainApplication.worker.submit(
+            MainApplication.worker.execute(
                 () -> this.updateFilteredImages(MapillaryLayer.getInstance().getData().getNodes().parallelStream()));
         }
     }

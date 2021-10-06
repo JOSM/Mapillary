@@ -1,11 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.export;
 
-import org.openstreetmap.josm.data.osm.INode;
-import org.openstreetmap.josm.gui.PleaseWaitRunnable;
-import org.openstreetmap.josm.gui.progress.swing.PleaseWaitProgressMonitor;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
-import org.openstreetmap.josm.tools.Logging;
+import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -17,7 +13,11 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import static org.openstreetmap.josm.tools.I18n.tr;
+import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.gui.PleaseWaitRunnable;
+import org.openstreetmap.josm.gui.progress.swing.PleaseWaitProgressMonitor;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Export main thread. Exportation works by creating a
@@ -96,17 +96,17 @@ public class MapillaryExportManager<T extends INode> extends PleaseWaitRunnable 
         this.ex = new ThreadPoolExecutor(20, 35, 25, TimeUnit.SECONDS, executionQueue);
         for (INode image : this.images) {
             if (MapillaryImageUtils.isImage(image)) {
-                try {
+                synchronized (this.queue) {
                     while (this.ex.getQueue().remainingCapacity() == 0) {
-                        synchronized (this.queue) {
-                            try {
-                                this.queue.wait(1000);
-                            } catch (InterruptedException e) {
-                                Logging.error(e);
-                                Thread.currentThread().interrupt();
-                            }
+                        try {
+                            this.queue.wait(1000);
+                        } catch (InterruptedException e) {
+                            Logging.error(e);
+                            Thread.currentThread().interrupt();
                         }
                     }
+                }
+                try {
                     this.ex.execute(new MapillaryExportDownloadThread(image, this.queue, this.queueImages));
                 } catch (RejectedExecutionException e) {
                     Logging.error(e);

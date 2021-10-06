@@ -1,6 +1,21 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.export;
 
+import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Paths;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.ArrayBlockingQueue;
+
+import javax.imageio.ImageIO;
+
 import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.ImageWriteException;
 import org.apache.commons.imaging.Imaging;
@@ -18,20 +33,6 @@ import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.gui.progress.swing.PleaseWaitProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.tools.Logging;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Paths;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * Writes the images from the queue in the file system.
@@ -144,8 +145,12 @@ public class MapillaryExportWriterThread extends Thread {
                 File file = new File(finalPath + ".jpg");
                 File parentFile = file.getParentFile();
                 if (!parentFile.exists() && !parentFile.isDirectory()) {
-                    parentFile.mkdirs();
-                    parentFile.setLastModified(MapillaryImageUtils.getDate(mimg).toEpochMilli());
+                    if (!parentFile.mkdirs()) {
+                        throw new IOException("Directory could not be created: " + parentFile.getPath());
+                    }
+                    if (!parentFile.setLastModified(MapillaryImageUtils.getDate(mimg).toEpochMilli())) {
+                        throw new IOException("Could not set last modified date: " + parentFile.getPath());
+                    }
                 }
                 try (OutputStream os = new BufferedOutputStream(new FileOutputStream(file))) {
                     new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);

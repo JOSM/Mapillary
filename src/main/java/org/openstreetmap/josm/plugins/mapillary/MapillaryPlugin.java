@@ -2,19 +2,14 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
 import java.awt.Component;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MainMenu;
 import org.openstreetmap.josm.gui.MapFrame;
@@ -43,10 +38,10 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.remotecontrol.MapillaryRemoteControl;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.plugins.mapillary.utils.ReflectionUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.SecurityManagerUtils;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.ImageProvider;
-import org.openstreetmap.josm.tools.Logging;
 
 /**
  * This is the main class of the Mapillary plugin.
@@ -143,15 +138,11 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
 
             PropertiesDialog properties = newFrame.propertiesDialog;
 
-            try {
-                Field tagMenuField = PropertiesDialog.class.getDeclaredField("tagMenu");
-                tagMenuField.setAccessible(true);
-                JPopupMenu tagMenu = (JPopupMenu) tagMenuField.get(properties);
-                popupHandler = new MapillaryKeyListener(properties, tagMenu);
-                this.destroyables.add(popupHandler);
-            } catch (ReflectiveOperationException e) {
-                Logging.debug(e);
-            }
+            ReflectionUtils.getDeclaredField(PropertiesDialog.class, "tagMenu", properties, JPopupMenu.class)
+                .ifPresent(tagMenu -> {
+                    popupHandler = new MapillaryKeyListener(properties, tagMenu);
+                    this.destroyables.add(popupHandler);
+                });
 
             this.dataMouseListener = new DataMouseListener();
             this.destroyables.add(this.dataMouseListener);
@@ -210,14 +201,13 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
     }
 
     private void clearMenues(JMenu menu) {
-        final Map<Action, Component> actions = Arrays.stream(menu.getMenuComponents())
-            .filter(JMenuItem.class::isInstance).map(JMenuItem.class::cast).filter(j -> j.getAction() != null)
-            .collect(Collectors.toMap(JMenuItem::getAction, component -> component));
-        final List<JosmAction> menuEntries = destroyables.parallelStream().filter(JosmAction.class::isInstance)
-            .map(JosmAction.class::cast).collect(Collectors.toList());
-        for (final Map.Entry<Action, Component> action : actions.entrySet()) {
-            if (menuEntries.contains(action.getKey())) {
-                menu.remove(action.getValue());
+        for (Component menuComponent : menu.getMenuComponents()) {
+            if (menuComponent instanceof JMenuItem) {
+                JMenuItem jMenu = (JMenuItem) menuComponent;
+                if (jMenu.getAction().getClass().getPackage().getName()
+                    .contains(this.getClass().getPackage().getName())) {
+                    menu.remove(jMenu);
+                }
             }
         }
     }
