@@ -88,7 +88,7 @@ code_navigation:
 build:
   stage: test
   script:
-    - ./gradlew build --stacktrace --debug
+    - ./gradlew build --stacktrace
   artifacts:
     paths:
     - build
