@@ -270,12 +270,19 @@ public @interface MapillaryURLWireMock {
                     return response;
                 }
                 final String origBody = response.getBodyAsString();
+                if (Utils.isBlank(origBody)) {
+                    return response;
+                }
                 String newBody = origBody.replaceAll("https?:\\/\\/.*?\\/", server.baseUrl() + "/");
                 // Replace with ids
                 try (JsonReader reader = Json
                     .createReader(new ByteArrayInputStream(newBody.getBytes(StandardCharsets.UTF_8)))) {
                     final JsonValue value = reader.readValue();
                     if (value instanceof JsonObject) {
+                        // Ensure that we don't modify error codes
+                        if (((JsonObject) value).containsKey("error")) {
+                            return response;
+                        }
                         final JsonValue data = ((JsonObject) value).getOrDefault("data", value);
                         if (data instanceof JsonObject && ((JsonObject) data).containsKey("id")) {
                             newBody = replaceThumbUrls(server, (JsonObject) data).toString();

@@ -1,11 +1,13 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.oauth;
 
+import static org.openstreetmap.josm.tools.I18n.marktr;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
@@ -13,6 +15,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
+import java.util.Optional;
 
 import javax.json.Json;
 import javax.json.JsonException;
@@ -21,6 +24,7 @@ import javax.json.JsonReader;
 import javax.json.JsonStructure;
 import javax.swing.JOptionPane;
 
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.io.CachedFile;
@@ -31,14 +35,20 @@ import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Utils;
 
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-
 /**
  * A set of utilities related to OAuth.
  *
  * @author nokutu
  */
 public final class OAuthUtils {
+    /**
+     * A specific exception for when there is an issue with OAuth
+     */
+    private static final class OAuthUtilsException extends Exception {
+        OAuthUtilsException(Throwable cause) {
+            super(cause);
+        }
+    }
 
     private static final String AUTHORIZATION = "Authorization";
     private static final String BEARER = "OAuth ";
@@ -93,11 +103,25 @@ public final class OAuthUtils {
             if (percentageUsed > 95) {
                 throw new IOException("API Limits reached");
             }
+            validateJsonInformation(response, Optional.of(structure.toString()));
             return structure.asJsonObject();
         } catch (JsonException e) {
             throw new IOException(e);
         } finally {
             client.disconnect();
+        }
+    }
+
+    /**
+     * Check the response, and reset the mapillary user if needed
+     *
+     * @param response The response with response information
+     * @param optionalContent The content
+     */
+    private static void validateJsonInformation(HttpClient.Response response, final Optional<String> optionalContent) {
+        if (response != null && response.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED
+            && optionalContent.filter(str -> str.contains("The user has not authorized application")).isPresent()) {
+            MapillaryUser.reset();
         }
     }
 
@@ -147,6 +171,11 @@ public final class OAuthUtils {
         return httpEntity;
     }
 
+    /**
+     * Get an authorization token
+     *
+     * @return The authorization token
+     */
     private static String getAuthorizationToken() {
         if (MapillaryProperties.ACCESS_TOKEN.isSet() && MapillaryProperties.ACCESS_TOKEN_EXPIRES_AT.isSet()
             && MapillaryProperties.ACCESS_TOKEN_REFRESH_IN.isSet()) {
@@ -157,34 +186,63 @@ public final class OAuthUtils {
                 .minus(Duration.ofSeconds(MapillaryProperties.ACCESS_TOKEN_REFRESH_IN.get())))) {
                 return BEARER + MapillaryProperties.ACCESS_TOKEN.get();
             } else {
-                refreshAuthorization(MapillaryProperties.ACCESS_TOKEN.get());
-                return getAuthorizationToken();
+                try {
+                    refreshAuthorization(MapillaryProperties.ACCESS_TOKEN.get());
+                    return getAuthorizationToken();
+                } catch (OAuthUtilsException e) {
+                    Logging.logWithStackTrace(Logging.LEVEL_TRACE, e);
+                }
             }
         }
         return BEARER + MapillaryURL.APIv4.ACCESS_ID;
     }
 
-    private static void refreshAuthorization(final String authorizationCode) {
+    /**
+     * Refresh authorization
+     *
+     * @param authorizationCode The code to use to refresh auth
+     */
+    private static void refreshAuthorization(final String authorizationCode) throws OAuthUtilsException {
+        HttpClient.Response response = null;
+        String content = null;
         try {
-            final HttpClient client = HttpClient.create(new URL("https://graph.mapillary.com/token"), "POST");
+            final HttpClient client = HttpClient.create(new URL(MapillaryURL.APIv4.getTokenUrl()), "POST");
             client.setHeader(AUTHORIZATION, BEARER + MapillaryURL.APIv4.CLIENT_SECRET);
             client.setRequestBody(("grant_type=refresh_token&client_id=" + Long.toString(MapillaryURL.APIv4.CLIENT_ID)
                 + "&refresh_token=" + authorizationCode).getBytes(StandardCharsets.UTF_8));
 
-            final HttpClient.Response response = client.connect();
-            try (JsonReader jsonReader = Json.createReader(response.getContentReader())) {
-                final JsonObject jsonObject = jsonReader.readObject();
-                OAuthUtils.updateAuthorization(jsonObject);
-            }
+            response = client.connect();
+            content = response.fetchContent();
+            updateAuth(content);
         } catch (IOException e) {
-            MapillaryUser.reset();
+            validateJsonInformation(response, Optional.ofNullable(content));
+            final String notificationMessage = marktr("Could not refresh Mapillary token. HTTP Status Code {0}.");
+            final HttpClient.Response response1 = response;
             GuiHelper.runInEDT(() -> {
                 Notification notification = new Notification();
                 notification.setIcon(JOptionPane.ERROR_MESSAGE);
                 notification.setDuration(Notification.TIME_DEFAULT);
-                notification.setContent(tr("Could not refresh Mapillary token. Logging out."));
+                notification.setContent(tr(notificationMessage,
+                    response1 != null ? response1.getResponseCode() : HttpURLConnection.HTTP_NOT_ACCEPTABLE));
                 notification.show();
             });
+            throw new OAuthUtilsException(e);
+        }
+    }
+
+    /**
+     * Update auth information from a string
+     *
+     * @param content The content
+     * @throws IOException If there is a {@link JsonException}
+     */
+    private static void updateAuth(final String content) throws IOException {
+        try (JsonReader jsonReader = Json
+            .createReader(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)))) {
+            final JsonObject jsonObject = jsonReader.readObject();
+            OAuthUtils.updateAuthorization(jsonObject);
+        } catch (JsonException e) {
+            throw new IOException(content, e);
         }
     }
 

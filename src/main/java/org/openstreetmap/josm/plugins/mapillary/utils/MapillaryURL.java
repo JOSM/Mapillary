@@ -247,6 +247,15 @@ public final class MapillaryURL {
         public static URL getUserInformation() {
             return string2URL(baseMetaDataUrl, "me", queryString(null));
         }
+
+        /**
+         * The token url, which is used to obtain login and refresh tokens.
+         *
+         * @return The token url
+         */
+        public static String getTokenUrl() {
+            return baseMetaDataUrl + "token";
+        }
     }
 
     public static final class APIv3 {
