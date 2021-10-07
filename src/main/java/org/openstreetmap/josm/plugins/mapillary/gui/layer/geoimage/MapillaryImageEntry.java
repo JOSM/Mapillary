@@ -45,6 +45,7 @@ import org.openstreetmap.josm.data.preferences.AbstractProperty;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
+import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ImageMode;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
@@ -414,8 +415,10 @@ public class MapillaryImageEntry
             if (reload && this.equals(ImageViewerDialog.getCurrentImage())) {
                 // Clone this entry
                 final MapillaryImageEntry temporaryImageEntry = new MapillaryImageEntry(this);
-                ImageViewerDialog.getInstance().displayImage(temporaryImageEntry);
-                ImageViewerDialog.getInstance().displayImage(this);
+                GuiHelper.runInEDT(() -> {
+                    ImageViewerDialog.getInstance().displayImage(temporaryImageEntry);
+                    ImageViewerDialog.getInstance().displayImage(this);
+                });
             }
         }
     }

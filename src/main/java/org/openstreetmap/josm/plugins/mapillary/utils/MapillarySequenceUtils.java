@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -213,7 +214,8 @@ public class MapillarySequenceUtils {
                     .stream().filter(way -> getKey(way).equals(getKey(sequence))).findFirst().orElse(null);
                 sequence.put(KEY, key);
                 if (alreadyAdded != null) {
-                    alreadyAdded.setNodes(sequence.getNodes());
+                    alreadyAdded
+                        .setNodes(sequence.getNodes().stream().filter(Objects::nonNull).collect(Collectors.toList()));
                     sequence.setNodes(Collections.emptyList());
                     alreadyAdded.setKeys(sequence.getKeys());
                 } else {
