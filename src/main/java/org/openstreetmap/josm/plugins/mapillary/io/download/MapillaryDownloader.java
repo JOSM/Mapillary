@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -38,6 +39,7 @@ import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.plugins.mapillary.utils.SynchronizedLocalObject;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoder;
@@ -121,13 +123,17 @@ public final class MapillaryDownloader {
                 ways.forEach(way -> way.setNodes(Collections.emptyList()));
                 ways.stream().filter(way -> way.getDataSet() != null)
                     .forEach(way -> way.getDataSet().removePrimitive(way));
+                SynchronizedLocalObject<VectorDataSet> synchronizedDataSet = new SynchronizedLocalObject<>(dataSet);
                 vectorNodes.stream().map(MapillaryImageUtils::getSequenceKey).distinct()
                     .map(MapillaryDownloader::downloadSequences).flatMap(Collection::stream).forEach(way -> {
                         // We need to clear the cached bbox
-                        if (way.getDataSet() != null) {
-                            way.getDataSet().removePrimitive(way);
+                        final VectorDataSet ds = way.getDataSet();
+                        // We specifically want to synchronize on the datasets, as those are what matter
+                        if (ds != null && ds.containsWay(way)) {
+                            SynchronizedLocalObject<VectorDataSet> synchDs = new SynchronizedLocalObject<>(ds);
+                            synchDs.execute((Consumer<VectorDataSet>) vds -> vds.removePrimitive(way));
                         }
-                        dataSet.addPrimitive(way);
+                        synchronizedDataSet.execute((Consumer<VectorDataSet>) vds -> vds.addPrimitive(way));
                     });
             }
         });

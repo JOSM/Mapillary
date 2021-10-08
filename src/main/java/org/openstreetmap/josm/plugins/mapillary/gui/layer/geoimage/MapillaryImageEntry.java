@@ -25,10 +25,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiConsumer;
+import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -59,24 +62,32 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.MemoryManager;
+import org.openstreetmap.josm.tools.Utils;
 import org.openstreetmap.josm.tools.date.DateUtils;
 
 public class MapillaryImageEntry
     implements IImageEntry<MapillaryImageEntry>, BiConsumer<Long, List<ImageDetection<?>>> {
+    /** A pattern to use to check for numbers (avoids NumberFormatException) */
+    private static final Pattern NUMBER_PATTERN = Pattern.compile("^[0-9]+$");
     private static final CacheAccess<Long, MapillaryImageEntry> CACHE = JCSCacheManager
         .getCache("mapillary:mapillaryimageentry");
     private static final String BASE_TITLE = marktr("Mapillary image");
     private static final String MESSAGE_SEPARATOR = " — ";
+    /** This is the estimated memory used per image */
+    private static final int MEMORY_PER_IMAGE_2048 = 2048 * 2048 * 4;
     private final INode image;
     private final List<ImageDetection<?>> imageDetections = new ArrayList<>();
+    private MapillaryImageEntry next;
+    private MapillaryImageEntry previous;
     private BufferedImage originalImage;
     private BufferedImage layeredImage;
 
-    private static class MapillaryValueChangeListener implements AbstractProperty.ValueChangeListener {
+    private static class MapillaryValueChangeListener implements AbstractProperty.ValueChangeListener<Boolean> {
         static MapillaryValueChangeListener instance = new MapillaryValueChangeListener();
 
         @Override
-        public void valueChanged(AbstractProperty.ValueChangeEvent e) {
+        public void valueChanged(AbstractProperty.ValueChangeEvent<? extends Boolean> e) {
             Optional.ofNullable(ImageViewerDialog.getCurrentImage()).filter(MapillaryImageEntry.class::isInstance)
                 .map(MapillaryImageEntry.class::cast).ifPresent(entry -> {
                     entry.imageDetections.clear();
@@ -113,9 +124,10 @@ public class MapillaryImageEntry
         // it should be livable, since it will be more cache-friendly.
         MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(this.image));
         // Then get the information for the rest of the sequence
-        MainApplication.worker.execute(() -> Optional.ofNullable(sequence).map(IWay::getNodes)
-            .map(nodes -> nodes.stream().mapToLong(MapillaryImageUtils::getKey).toArray())
-            .ifPresent(MapillaryDownloader::downloadImages));
+        ForkJoinPool.commonPool()
+            .execute(() -> Optional.ofNullable(sequence).map(IWay::getNodes)
+                .map(nodes -> nodes.stream().mapToLong(MapillaryImageUtils::getKey).toArray())
+                .ifPresent(MapillaryDownloader::downloadImages));
         this.updateDetections(5_000);
     }
 
@@ -129,22 +141,37 @@ public class MapillaryImageEntry
         this.imageDetections.addAll(other.imageDetections);
         this.layeredImage = other.layeredImage;
         this.originalImage = other.originalImage;
+        this.nextOrPrevious = other.nextOrPrevious;
+        this.next = other.next;
+        this.previous = other.previous;
     }
 
     @Override
     public MapillaryImageEntry getNextImage() {
-        return Optional
-            .ofNullable(
-                MapillarySequenceUtils.getNextOrPrevious(this.image, MapillarySequenceUtils.NextOrPrevious.NEXT))
-            .map(MapillaryImageEntry::getCachedEntry).orElse(null);
+        if (this.next == null) {
+            this.next = Optional
+                .ofNullable(
+                    MapillarySequenceUtils.getNextOrPrevious(this.image, MapillarySequenceUtils.NextOrPrevious.NEXT))
+                .map(MapillaryImageEntry::getCachedEntry).map(entry -> {
+                    entry.previous = this;
+                    return entry;
+                }).orElse(null);
+        }
+        return next;
     }
 
     @Override
     public MapillaryImageEntry getPreviousImage() {
-        return Optional
-            .ofNullable(
-                MapillarySequenceUtils.getNextOrPrevious(this.image, MapillarySequenceUtils.NextOrPrevious.PREVIOUS))
-            .map(MapillaryImageEntry::getCachedEntry).orElse(null);
+        if (this.previous == null) {
+            this.previous = Optional
+                .ofNullable(MapillarySequenceUtils.getNextOrPrevious(this.image,
+                    MapillarySequenceUtils.NextOrPrevious.PREVIOUS))
+                .map(MapillaryImageEntry::getCachedEntry).map(entry -> {
+                    entry.next = this;
+                    return entry;
+                }).orElse(null);
+        }
+        return this.previous;
     }
 
     @Override
@@ -225,22 +252,75 @@ public class MapillaryImageEntry
         if (this.imageDetections.isEmpty()) {
             this.updateDetections(5_000);
         }
+        ForkJoinPool.commonPool().execute(() -> preCacheImages(this));
         if (this.originalImage == null) {
-            try {
-                Future<BufferedImage> future = MapillaryImageUtils.getImage(this.image);
-                MainApplication.worker.execute(() -> preCacheImages(this));
-                this.originalImage = future.get(5, TimeUnit.SECONDS);
-            } catch (ExecutionException | TimeoutException exception) {
-                throw new IOException(exception);
-            } catch (InterruptedException exception) {
-                Thread.currentThread().interrupt();
-                throw new IOException(exception);
-            }
+            this.loadImage();
+        }
+        if (this.layeredImage == null) {
             this.layeredImage = new BufferedImage(this.originalImage.getWidth(), this.originalImage.getHeight(),
                 this.originalImage.getType());
         }
         this.drawDetections();
         return this.layeredImage;
+    }
+
+    /**
+     * Load the image for this object
+     *
+     * @throws IOException If something happens
+     */
+    private synchronized void loadImage() throws IOException {
+        if (this.originalImage != null) {
+            return;
+        }
+        final int memoryNeeded = getMemoryNeeded();
+        final int actualMemoryNeeded = memoryNeeded > 0 ? memoryNeeded : MEMORY_PER_IMAGE_2048;
+        final List<IOException> exceptions = new ArrayList<>(1);
+        if (MemoryManager.getInstance().isAvailable(actualMemoryNeeded)
+            && MemoryManager.getInstance().getAvailableMemory() > actualMemoryNeeded
+            && Runtime.getRuntime().freeMemory() > actualMemoryNeeded) {
+            try {
+                MemoryManager.MemoryHandle<BufferedImage> handle = MemoryManager.getInstance().allocateMemory(
+                    "MapillaryImageEntry", memoryNeeded != 0 ? memoryNeeded : MEMORY_PER_IMAGE_2048, () -> {
+                        Future<BufferedImage> future = MapillaryImageUtils.getImage(this.image);
+                        try {
+                            return future.get(5, TimeUnit.SECONDS);
+                        } catch (ExecutionException | TimeoutException exception) {
+                            exceptions.add(new IOException(exception));
+                        } catch (InterruptedException exception) {
+                            Thread.currentThread().interrupt();
+                            exceptions.add(new IOException(exception));
+                        }
+                        return null;
+                    });
+                this.originalImage = handle.get();
+                handle.free();
+            } catch (MemoryManager.NotEnoughMemoryException notEnoughMemoryException) {
+                throw new IOException(notEnoughMemoryException);
+            }
+            if (!exceptions.isEmpty()) {
+                throw exceptions.get(0);
+            }
+        }
+    }
+
+    /**
+     * Get the estimated memory needed for an image. Probably high.
+     *
+     * @return The number of bytes needed (width * height * 4, 4 from rgba)
+     */
+    private int getMemoryNeeded() {
+        int width = 0;
+        int height = 0;
+        final String widthString = this.image.get(MapillaryImageUtils.ImageProperties.WIDTH.toString());
+        final String heightString = this.image.get(MapillaryImageUtils.ImageProperties.HEIGHT.toString());
+        if (!Utils.isBlank(widthString) && NUMBER_PATTERN.matcher(widthString).matches()) {
+            width = Integer.parseInt(widthString);
+        }
+        if (!Utils.isBlank(heightString) && NUMBER_PATTERN.matcher(heightString).matches()) {
+            height = Integer.parseInt(heightString);
+        }
+        return width * height * 4;
     }
 
     private static void preCacheImages(final MapillaryImageEntry entry) {
@@ -259,6 +339,47 @@ public class MapillaryImageEntry
             final List<? extends INode> nodes = wayNodes.subList(Math.max(0, index - realPrefetch),
                 Math.min(wayNodes.size(), index + realPrefetch));
             nodes.forEach(MapillaryImageUtils::getImage);
+        }
+        preloadImages(entry, realPrefetch);
+    }
+
+    private static void preloadImages(final MapillaryImageEntry entry, final int preloadNumber) {
+        final List<MapillaryImageEntry> toPreload = new ArrayList<>(preloadNumber);
+        MapillaryImageEntry current = entry;
+        UnaryOperator<MapillaryImageEntry> getNext;
+        if (entry.nextOrPrevious == MapillarySequenceUtils.NextOrPrevious.NEXT) {
+            // Ensure we don't keep stuff around in memory
+            if (entry.previous != null && entry.previous.previous != null) {
+                entry.previous.previous.next = null;
+                entry.previous.previous = null;
+            }
+            getNext = MapillaryImageEntry::getNextImage;
+        } else {
+            // Ensure we don't keep stuff around in memory
+            if (entry.next != null && entry.next.next != null) {
+                entry.next.next.previous = null;
+                entry.next.next = null;
+            }
+            getNext = MapillaryImageEntry::getPreviousImage;
+        }
+        for (int i = 0; i < preloadNumber; i++) {
+            Optional<MapillaryImageEntry> next = Optional.ofNullable(getNext.apply(current));
+            if (next.isPresent()) {
+                current = next.get();
+                toPreload.add(current);
+            } else {
+                break;
+            }
+        }
+        for (MapillaryImageEntry imageToPreload : toPreload) {
+            try {
+                imageToPreload.loadImage();
+            } catch (IOException ioException) {
+                Logging.info(ioException);
+                if (ioException.getCause() instanceof MemoryManager.NotEnoughMemoryException) {
+                    break;
+                }
+            }
         }
     }
 
