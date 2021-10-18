@@ -58,7 +58,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterChooseSigns;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
-import org.openstreetmap.josm.plugins.mapillary.gui.widget.DisableShorcutsOnFocusGainedJSpinnerEditor;
+import org.openstreetmap.josm.plugins.mapillary.gui.widget.DisableShortcutsOnFocusGainedJSpinner;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
@@ -187,8 +187,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
     private void addImageQualityFilters(JPanel panel) {
         final JCheckBox qualityCheck = new JCheckBox(tr("Image Quality"));
         final SpinnerNumberModel spinnerQualityModel = new SpinnerNumberModel(0.6, 0, 1, 0.1);
-        final JSpinner spinnerQuality = new JSpinner(spinnerQualityModel);
-        DisableShorcutsOnFocusGainedJSpinnerEditor.disableShortcutsOnFocusGained(spinnerQuality);
+        final JSpinner spinnerQuality = new DisableShortcutsOnFocusGainedJSpinner(spinnerQualityModel);
         qualityCheck.addItemListener(l -> spinnerQuality.setEnabled(l.getStateChange() == ItemEvent.SELECTED));
         spinnerQuality.setEnabled(qualityCheck.isSelected());
         panel.add(qualityCheck, GBC.std().anchor(GridBagConstraints.LINE_START));
@@ -259,9 +258,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
         final JCheckBox filterByDateCheckbox = new JCheckBox(tr("Not older than: "));
         fromPanel.add(filterByDateCheckbox);
         final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(1.0, 0, 10000, .1);
-        final JSpinner spinner = new JSpinner(spinnerModel);
+        final JSpinner spinner = new DisableShortcutsOnFocusGainedJSpinner(spinnerModel);
         // Set the editor such that we aren't zooming all over the place.
-        DisableShorcutsOnFocusGainedJSpinnerEditor.disableShortcutsOnFocusGained(spinner);
         spinner.setEnabled(false);
         fromPanel.add(spinner);
 
