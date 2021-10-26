@@ -303,7 +303,8 @@ public class MapillaryImageEntry
     @Override
     @Nullable
     public File getFile() {
-        return null;
+        return new File(MapillaryURL.MainWebsite.browseImage(Long.toString(MapillaryImageUtils.getKey(this.image)))
+            .toExternalForm());
     }
 
     @Override
