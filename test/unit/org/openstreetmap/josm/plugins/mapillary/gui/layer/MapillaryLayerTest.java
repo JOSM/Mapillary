@@ -178,7 +178,7 @@ class MapillaryLayerTest {
     @Test
     void testNonRegression21329() {
         final MapillaryLayer layer = MapillaryLayer.getInstance();
-        TileSource tileSource = null;
+        TileSource tileSource;
         MVTTile mvtTile = null;
         try {
             final Method method = MVTLayer.class.getDeclaredMethod("getTileSource");

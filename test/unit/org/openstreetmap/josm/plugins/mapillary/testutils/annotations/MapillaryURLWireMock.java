@@ -110,7 +110,7 @@ public @interface MapillaryURLWireMock {
         }
 
         @Override
-        public void afterEach(final ExtensionContext context) throws Exception {
+        public void afterEach(final ExtensionContext context) {
             final ExtensionContext.Namespace namespace = ExtensionContext.Namespace.create(MapillaryURLWireMock.class);
             final WireMockServer server = context.getStore(namespace).get(WireMockServer.class, WireMockServer.class);
             final List<LoggedRequest> unmatched = server.findAllUnmatchedRequests();

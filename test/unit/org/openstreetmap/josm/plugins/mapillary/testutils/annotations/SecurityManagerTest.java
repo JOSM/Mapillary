@@ -1,11 +1,11 @@
 package org.openstreetmap.josm.plugins.mapillary.testutils.annotations;
 
+import java.security.Permission;
+
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
-
-import java.security.Permission;
 
 /**
  * Used to indicate a security manager should be installed for a test.
@@ -31,15 +31,15 @@ public @interface SecurityManagerTest {
         }
 
         @Override
-        public void afterEach(ExtensionContext context) throws Exception {
+        public void afterEach(ExtensionContext context) {
             SecurityManager sm = System.getSecurityManager();
-            if (sm != null && sm instanceof TestSecurityManager) {
+            if (sm instanceof TestSecurityManager) {
                 System.setSecurityManager(null);
             }
         }
 
         @Override
-        public void beforeEach(ExtensionContext context) throws Exception {
+        public void beforeEach(ExtensionContext context) {
             if (System.getSecurityManager() == null) {
                 TestSecurityManager securityManager = new TestSecurityManager();
                 System.setSecurityManager(securityManager);

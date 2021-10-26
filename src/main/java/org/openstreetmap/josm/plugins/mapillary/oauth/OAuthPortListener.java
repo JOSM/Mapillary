@@ -78,9 +78,8 @@ public class OAuthPortListener extends Thread {
 
             final HttpClient client = HttpClient.create(new URL("https://graph.mapillary.com/token"), "POST");
             client.setHeader("Authorization", "OAuth " + MapillaryURL.APIv4.CLIENT_SECRET);
-            client.setRequestBody(
-                ("grant_type=authorization_code&client_id=" + Long.toString(MapillaryURL.APIv4.CLIENT_ID) + "&code="
-                    + authorizationCode).getBytes(StandardCharsets.UTF_8));
+            client.setRequestBody(("grant_type=authorization_code&client_id=" + MapillaryURL.APIv4.CLIENT_ID + "&code="
+                + authorizationCode).getBytes(StandardCharsets.UTF_8));
 
             final HttpClient.Response response = client.connect();
             try (JsonReader jsonReader = Json.createReader(response.getContentReader())) {

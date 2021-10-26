@@ -50,7 +50,7 @@ public @interface MapillaryURLWireMockErrors {
 
     class WireMockExtension implements BeforeEachCallback {
         @Override
-        public void beforeEach(ExtensionContext context) throws Exception {
+        public void beforeEach(ExtensionContext context) {
             final ExtensionContext.Namespace namespace = ExtensionContext.Namespace.create(MapillaryURLWireMock.class);
             final WireMockServer server = context.getStore(namespace).get(WireMockServer.class, WireMockServer.class);
             final Type type;

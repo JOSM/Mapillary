@@ -30,7 +30,7 @@ public @interface MapillaryLayerAnnotation {
         }
 
         @Override
-        public void beforeEach(ExtensionContext context) throws Exception {
+        public void beforeEach(ExtensionContext context) {
             try {
                 cleanup();
             } catch (IllegalArgumentException illegalArgumentException) {

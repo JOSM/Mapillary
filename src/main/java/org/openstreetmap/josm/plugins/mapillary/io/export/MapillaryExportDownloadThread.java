@@ -1,6 +1,8 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.export;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
@@ -17,8 +19,6 @@ import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.tools.Logging;
-
-import static org.openstreetmap.josm.tools.I18n.tr;
 
 /**
  * This is the thread that downloads one of the images that are going to be
@@ -81,11 +81,8 @@ public class MapillaryExportDownloadThread implements Runnable, ICachedLoaderLis
     @Override
     public synchronized void loadingFinished(CacheEntry data, CacheEntryAttributes attributes, LoadResult result) {
         try {
-            synchronized (this.queue) {
-                this.queue.put(ImageIO.read(new ByteArrayInputStream(data.getContent())));
-                this.queueImages.put(this.image);
-                this.queue.notifyAll();
-            }
+            this.queue.put(ImageIO.read(new ByteArrayInputStream(data.getContent())));
+            this.queueImages.put(this.image);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             Logging.error(e);

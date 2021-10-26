@@ -29,7 +29,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorPrimitive;
@@ -114,7 +113,7 @@ class JsonMapObjectDecoderTest {
     @ParameterizedTest
     @NullSource
     @ValueSource(strings = { "[]", "{}" })
-    void testDecodeMapObjectInvalid(final String json) throws IOException {
+    void testDecodeMapObjectInvalid(final String json) {
         final VectorNode vectorNode = new VectorNode("test");
         if (json != null) {
             try (JsonReader reader = Json

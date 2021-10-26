@@ -2193,7 +2193,7 @@ public enum ObjectDetections {
     }
 
     @FunctionalInterface
-    private static interface SerializableSupplier<T> extends Serializable, Supplier<T> {
+    private interface SerializableSupplier<T> extends Serializable, Supplier<T> {
         // Empty
     }
 }

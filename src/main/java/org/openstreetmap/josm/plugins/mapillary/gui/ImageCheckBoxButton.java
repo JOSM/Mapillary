@@ -146,7 +146,7 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
      * @return The detections
      */
     public ObjectDetections[] getDetections() {
-        return this.detections;
+        return this.detections.clone();
     }
 
     /**

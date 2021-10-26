@@ -15,6 +15,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.LongStream;
+
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
@@ -73,7 +74,7 @@ public class JsonImageDetailsDecoderTest {
         }
 
         final VectorNode i_135511895288847 = data.getNodes().stream().filter(image -> 135511895288847L == image.getId())
-            .findFirst().get();
+            .findFirst().orElse(null);
         // JOSM currently (2021-06-09) only stores timestamps to the second level, not millisecond level
         assertEquals(Instant.ofEpochMilli(1_563_721_072_184L).getEpochSecond(),
             MapillaryImageUtils.getDate(i_135511895288847).getEpochSecond());

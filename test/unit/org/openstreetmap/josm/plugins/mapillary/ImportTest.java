@@ -14,7 +14,6 @@ import javax.imageio.IIOException;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.vector.VectorNode;
@@ -50,7 +49,7 @@ class ImportTest {
      * Test if provided an invalid file, the proper exception is thrown.
      */
     @Test
-    void testInvalidFiles() throws IOException, ExecutionException, InterruptedException {
+    void testInvalidFiles() throws ExecutionException, InterruptedException {
         INode img = new VectorNode("test");
         img.setCoor(new LatLon(0, 0));
         assertNull(MapillaryImageUtils.getImage(img).get());

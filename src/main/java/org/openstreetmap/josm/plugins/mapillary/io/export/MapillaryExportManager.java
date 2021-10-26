@@ -96,10 +96,10 @@ public class MapillaryExportManager<T extends INode> extends PleaseWaitRunnable 
         this.ex = new ThreadPoolExecutor(20, 35, 25, TimeUnit.SECONDS, executionQueue);
         for (INode image : this.images) {
             if (MapillaryImageUtils.isImage(image)) {
-                synchronized (this.queue) {
+                synchronized (this) {
                     while (this.ex.getQueue().remainingCapacity() == 0) {
                         try {
-                            this.queue.wait(1000);
+                            this.wait(1000);
                         } catch (InterruptedException e) {
                             Logging.error(e);
                             Thread.currentThread().interrupt();

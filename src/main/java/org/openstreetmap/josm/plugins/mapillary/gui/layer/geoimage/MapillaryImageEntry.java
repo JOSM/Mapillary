@@ -72,11 +72,11 @@ public class MapillaryImageEntry
     private BufferedImage originalImage;
     private BufferedImage layeredImage;
 
-    private static class MapillaryValueChangeListener implements AbstractProperty.ValueChangeListener {
-        static MapillaryValueChangeListener instance = new MapillaryValueChangeListener();
+    private static class MapillaryValueChangeListener implements AbstractProperty.ValueChangeListener<Boolean> {
+        static final MapillaryValueChangeListener instance = new MapillaryValueChangeListener();
 
         @Override
-        public void valueChanged(AbstractProperty.ValueChangeEvent e) {
+        public void valueChanged(AbstractProperty.ValueChangeEvent<? extends Boolean> e) {
             Optional.ofNullable(ImageViewerDialog.getCurrentImage()).filter(MapillaryImageEntry.class::isInstance)
                 .map(MapillaryImageEntry.class::cast).ifPresent(entry -> {
                     entry.imageDetections.clear();
@@ -89,8 +89,6 @@ public class MapillaryImageEntry
         MapillaryProperties.SHOW_DETECTED_SIGNS.addListener(MapillaryValueChangeListener.instance);
         MapillaryProperties.SHOW_DETECTION_OUTLINES.addListener(MapillaryValueChangeListener.instance);
     }
-
-    private MapillarySequenceUtils.NextOrPrevious nextOrPrevious = MapillarySequenceUtils.NextOrPrevious.NEXT;
 
     public static MapillaryImageEntry getCachedEntry(final INode image) {
         final long id = MapillaryImageUtils.getKey(image);

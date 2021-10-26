@@ -1,5 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary.testutils.annotations;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -33,22 +35,18 @@ public @interface AwaitThreadFinish {
      */
     class AwaitThreadFinishExtension implements AfterEachCallback, BeforeEachCallback {
         @Override
-        public void afterEach(ExtensionContext context) throws Exception {
-            final int threadCount = context.getStore(ExtensionContext.Namespace.create(AwaitThreadFinish.class))
-                .get(Thread.class, Integer.class);
+        public void afterEach(ExtensionContext context) {
             // Wait for everything to finish
             final AtomicBoolean workerDone = new AtomicBoolean();
             MainApplication.worker.submit(() -> workerDone.set(true));
             Awaitility.await().atMost(Durations.FIVE_SECONDS).until(workerDone::get);
 
-            ForkJoinPool.commonPool().awaitQuiescence(5, TimeUnit.SECONDS);
+            assertTrue(ForkJoinPool.commonPool().awaitQuiescence(5, TimeUnit.SECONDS));
             MapillaryUtils.forkJoinPoolsAwaitQuiescence(5, TimeUnit.SECONDS);
-
-            // Awaitility.await().atMost(5, TimeUnit.SECONDS).until(() -> Thread.activeCount() < threadCount);
         }
 
         @Override
-        public void beforeEach(ExtensionContext context) throws Exception {
+        public void beforeEach(ExtensionContext context) {
             context.getStore(ExtensionContext.Namespace.create(AwaitThreadFinish.class)).put(Thread.class,
                 Thread.activeCount());
         }
