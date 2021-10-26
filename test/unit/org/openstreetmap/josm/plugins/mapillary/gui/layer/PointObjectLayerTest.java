@@ -14,7 +14,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
@@ -35,7 +34,6 @@ class PointObjectLayerTest {
     static JOSMTestRules rules = new MapillaryTestRules().timeout(20000).projection().main();
 
     private PointObjectLayer instance;
-    private OsmDataLayer osm;
 
     private static WireMockServer wmRule;
 
@@ -52,7 +50,7 @@ class PointObjectLayerTest {
 
     @BeforeEach
     void setUp() {
-        osm = new OsmDataLayer(new DataSet(), "Test", null);
+        OsmDataLayer osm = new OsmDataLayer(new DataSet(), "Test", null);
         MainApplication.getLayerManager().addLayer(osm);
         instance = new PointObjectLayer(MapillaryKeys.MAPILLARY_POINT_OBJECTS);
     }
