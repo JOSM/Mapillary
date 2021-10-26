@@ -2,23 +2,18 @@
 package org.openstreetmap.josm.plugins.mapillary.oauth;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 
 import org.openstreetmap.josm.data.preferences.AbstractProperty;
-import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
-import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.ListenerList;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -31,15 +26,11 @@ public final class MapillaryUser {
 
     private static final ListenerList<MapillaryLoginListener> LISTENERS = ListenerList.create();
     private static String username;
-    private static JsonObject uploadSession;
     /** If the stored token is valid or not. */
     private static boolean isTokenValid = true;
 
     /** Various user information */
     private static Map<String, String> userInformation;
-
-    /** User organization information */
-    private static List<OrganizationRecord> organizations;
 
     private MapillaryUser() {
         // Private constructor to avoid instantiation
@@ -85,44 +76,11 @@ public final class MapillaryUser {
     }
 
     /**
-     * Get the secrets needed to upload data
-     *
-     * @return A JsonObject containing secrets for upload
-     */
-    public static synchronized JsonObject getSecrets() {
-        if (!isTokenValid)
-            return null;
-        JsonObject session = uploadSession;
-        try {
-            if (session == null) {
-                final HttpClient client = HttpClient.create(MapillaryURL.APIv3.uploadSecretsURL(), "POST");
-                client.setHeader("Content-Type", "application/json");
-                // Currently, this is the only request body and it MUST be present
-                client.setRequestBody("{\"type\": \"images/sequence\"}".getBytes(StandardCharsets.UTF_8));
-                session = OAuthUtils.getWithHeader(client);
-            }
-        } catch (IOException e) {
-            Logging.log(Logging.LEVEL_WARN, "Invalid Mapillary token, resetting field", e);
-            reset();
-        }
-        return session;
-    }
-
-    /**
-     * Finish a secret session (clear upload secrets).
-     */
-    public static synchronized void clearSecrets() {
-        uploadSession = null;
-    }
-
-    /**
      * Resets the MapillaryUser to null values.
      */
     public static synchronized void reset() {
         username = null;
         userInformation = null;
-        organizations = null;
-        uploadSession = null;
         isTokenValid = false;
         for (AbstractProperty<?> property : Arrays.asList(MapillaryProperties.ACCESS_TOKEN,
             MapillaryProperties.ACCESS_TOKEN_EXPIRES_AT, MapillaryProperties.ACCESS_TOKEN_REFRESH_IN)) {
