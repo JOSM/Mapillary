@@ -12,7 +12,7 @@ import kotlin.reflect.full.starProjectedType
 
 plugins {
   id("application")
-  id("com.diffplug.spotless") version "5.17.0"
+  id("com.diffplug.spotless") version "5.17.1"
   id("com.github.ben-manes.versions") version "0.39.0"
   id("com.github.spotbugs") version "4.7.9"
   id("net.ltgt.errorprone") version "2.0.2"
@@ -32,28 +32,23 @@ repositories {
 }
 
 // Set up ErrorProne
-dependencies {
-  errorprone("com.google.errorprone:error_prone_core:2.9.0")
-  if (!JavaVersion.current().isJava9Compatible) {
-    errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
-  }
-}
 tasks.withType(JavaCompile::class).configureEach {
   options.compilerArgs.addAll(listOf("-Xlint:all", "-Xlint:-serial"))
   options.errorprone {
     check("ClassCanBeStatic", CheckSeverity.ERROR)
-    check("StringEquality", CheckSeverity.ERROR)
-    check("WildcardImport", CheckSeverity.ERROR)
-    check("MethodCanBeStatic", CheckSeverity.WARN)
-    check("RemoveUnusedImports", CheckSeverity.WARN)
-    check("PrivateConstructorForUtilityClass", CheckSeverity.WARN)
-    check("LambdaFunctionalInterface", CheckSeverity.WARN)
     check("ConstantField", CheckSeverity.WARN)
-    // TODO remove this on errorprone update
-    if ((JavaVersion.current().majorVersion.toInt()) > 11) {
-      check("Finally", CheckSeverity.OFF)
-      check("UnnecessaryLambda", CheckSeverity.OFF)
-    }
+    check("DefaultCharset", CheckSeverity.ERROR)
+    check("FieldCanBeFinal", CheckSeverity.WARN)
+    check("Finally", CheckSeverity.OFF)
+    check("LambdaFunctionalInterface", CheckSeverity.WARN)
+    check("MethodCanBeStatic", CheckSeverity.WARN)
+    check("MultiVariableDeclaration", CheckSeverity.WARN)
+    check("PrivateConstructorForUtilityClass", CheckSeverity.WARN)
+    check("RemoveUnusedImports", CheckSeverity.WARN)
+    check("StringEquality", CheckSeverity.ERROR)
+    check("UngroupedOverloads", CheckSeverity.WARN)
+    check("UnnecessaryLambda", CheckSeverity.OFF)
+    check("WildcardImport", CheckSeverity.ERROR)
   }
 }
 
@@ -62,22 +57,28 @@ java.targetCompatibility = JavaVersion.VERSION_1_8
 
 val versions = mapOf(
   "awaitility" to "4.1.1",
+  "errorprone" to "2.9.0",
   "jdatepicker" to "1.3.4",
   "jmockit" to "1.49",
   "junit" to "5.8.1",
+  "pmd" to "6.20.0",
   "spotbugs" to "4.4.2",
   "wiremock" to "2.27.2"
 )
 
 dependencies {
+  if (!JavaVersion.current().isJava9Compatible) {
+    errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
+  }
+  errorprone("com.google.errorprone:error_prone_core:${versions["errorprone"]}")
   testImplementation ("org.openstreetmap.josm:josm-unittest:SNAPSHOT"){ isChanging = true }
   testImplementation("com.github.tomakehurst:wiremock:${versions["wiremock"]}")
 
   testImplementation("org.junit.jupiter:junit-jupiter-api:${versions["junit"]}")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${versions["junit"]}")
   // This can be removed once JOSM drops all JUnit4 support. Nothing remaining in Mapillary uses JUnit4.
-  testImplementation("org.junit.vintage:junit-vintage-engine:${versions["junit"]}")
   testImplementation("org.junit.jupiter:junit-jupiter-params:${versions["junit"]}")
+  testImplementation("org.junit.vintage:junit-vintage-engine:${versions["junit"]}")
 
   testImplementation("org.awaitility:awaitility:${versions["awaitility"]}")
   testImplementation("org.jmockit:jmockit:${versions["jmockit"]}")
@@ -284,7 +285,7 @@ tasks.test {
 
 // PMD config
 pmd {
-  toolVersion = "6.23.0"
+  toolVersion = versions["pmd"]
   isIgnoreFailures = true
   ruleSetConfig = resources.text.fromFile("$projectDir/config/pmd/ruleset.xml")
   ruleSets = listOf()

@@ -3,7 +3,7 @@ image: registry.gitlab.com/josm/docker-library/openjdk-8-josmplugin:latest
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
-cache:
+cache: &global_cache
   paths:
     - .gradle/wrapper
     - .gradle/caches
@@ -27,6 +27,7 @@ stages:
 
 variables:
   PLUGIN_NAME: "Mapillary"
+  PLUGIN_JAR_BASE_NAME: "Mapillary"
 
 ###############
 # Build stage #
@@ -80,6 +81,9 @@ code_navigation:
       when: always
   allow_failure: true
   interruptible: true
+  cache:
+    <<: *global_cache
+    policy: pull
 
 ##############
 # Test stage #
@@ -88,7 +92,7 @@ code_navigation:
 build:
   stage: test
   script:
-    - ./gradlew build --stacktrace
+    - ./gradlew build generatePot --stacktrace #--info
   artifacts:
     paths:
     - build
@@ -126,6 +130,9 @@ coverage:
     reports:
       cobertura: "build/reports/jacoco/test/coverage.xml"
   interruptible: true
+  cache:
+    <<: *global_cache
+    policy: pull
 
 translate:
   stage: test
@@ -135,6 +142,9 @@ translate:
     paths:
     - build
   needs: ["assemble"]
+  cache:
+    <<: *global_cache
+    policy: pull
 
 compile against min JOSM:
   stage: test
@@ -144,6 +154,10 @@ compile against min JOSM:
   dependencies:
     - assemble
   interruptible: true
+  allow_failure: true # It should still run against it, but there are some methods if'd around
+  cache:
+    <<: *global_cache
+    policy: pull
 
 compile against latest JOSM:
   stage: test
@@ -153,6 +167,9 @@ compile against latest JOSM:
   dependencies:
     - assemble
   interruptible: true
+  cache:
+    <<: *global_cache
+    policy: pull
 
 build with java 11:
   stage: test
@@ -163,6 +180,9 @@ build with java 11:
   dependencies:
     - assemble with java 11
   interruptible: true
+  cache:
+    <<: *global_cache
+    policy: pull
 
 build with java 17:
   stage: test
@@ -175,6 +195,9 @@ build with java 17:
   dependencies:
     - assemble with java 17
   interruptible: true
+  cache:
+    <<: *global_cache
+    policy: pull
 
 ################
 # Deploy stage #
@@ -194,6 +217,9 @@ transifex.com:
       - master
     variables:
       - $TRANSIFEX_TOKEN
+  cache:
+    <<: *global_cache
+    policy: pull
 
 codecov.io:
   image: alpine:3.10
@@ -227,9 +253,9 @@ sonarcloud.io:
     - test
   only:
     refs:
-      - master
+      - $CI_DEFAULT_BRANCH
     variables:
-      - $SONAR_TOKEN
+      - $SONAR_TOKEN =~ /[0-9a-z]+/
 
 GitLab Maven repo:
   stage: deploy
@@ -239,13 +265,22 @@ GitLab Maven repo:
   script:
     - ./gradlew publishAllPublicationsToGitlabRepository
   needs: ["build", "compile against min JOSM", "compile against latest JOSM"]
-  only:
-    - tags@$CI_PROJECT_PATH
+  rules:
+    - if: '$CI_COMMIT_REF_PROTECTED == "true" && $CI_COMMIT_TAG != null && $CI_PIPELINE_SOURCE != "schedule"'
+      when: always
+  cache:
+    <<: *global_cache
+    policy: pull
+
+
+#################
+# Release stage #
+#################
 
 release:
-  stage: deploy
+  stage: release
   environment:
-    name: GitLab.com / pages branch
+    name: pages branch / dist directory
     url: ${CI_PAGES_URL}/${CI_PROJECT_NAME}
   script:
   - |
@@ -264,18 +299,20 @@ release:
   - |
     cd pages/
     git config user.name "GitLab CI for $CI_PROJECT_PATH"
-    git config user.email "incoming+josm-plugin-mapillary-8564565-issue-@incoming.gitlab.com"
+    git config user.email "${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}@${CI_SERVER_HOST}"
     git stage .
     git commit -a -m "$commitMessage"
     git push origin pages
   needs: ["build", "compile against min JOSM", "compile against latest JOSM"]
-  only:
-    - tags@$CI_PROJECT_PATH
+  dependencies:
+    - build
+  rules:
+    - if: '$SSH_PRIVATE_DEPLOY_KEY != null && $CI_COMMIT_REF_PROTECTED == "true" && $CI_COMMIT_TAG != null && $CI_PIPELINE_SOURCE != "schedule"'
+      when: manual
+  cache:
+    <<: *global_cache
+    policy: pull
 
-
-#################
-# Release stage #
-#################
 
 release to Gitlab.com:
   stage: release
@@ -285,5 +322,9 @@ release to Gitlab.com:
   script:
     - ./gradlew releaseToGitlab
   needs: ["GitLab Maven repo"]
-  only:
-    - tags@$CI_PROJECT_PATH
+  rules:
+    - if: '$CI_COMMIT_REF_PROTECTED == "true" && $CI_COMMIT_TAG != null && $CI_PIPELINE_SOURCE != "schedule" && $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
+      when: always
+  cache:
+    <<: *global_cache
+    policy: pull
