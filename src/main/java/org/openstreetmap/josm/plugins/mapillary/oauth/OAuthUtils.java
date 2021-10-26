@@ -15,8 +15,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
-import java.util.Optional;
 
+import javax.annotation.Nullable;
 import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonObject;
@@ -103,7 +103,7 @@ public final class OAuthUtils {
             if (percentageUsed > 95) {
                 throw new IOException("API Limits reached");
             }
-            validateJsonInformation(response, Optional.of(structure.toString()));
+            validateJsonInformation(response, structure.toString());
             return structure.asJsonObject();
         } catch (JsonException e) {
             throw new IOException(e);
@@ -118,9 +118,10 @@ public final class OAuthUtils {
      * @param response The response with response information
      * @param optionalContent The content
      */
-    private static void validateJsonInformation(HttpClient.Response response, final Optional<String> optionalContent) {
+    private static void validateJsonInformation(@Nullable final HttpClient.Response response,
+        @Nullable final String optionalContent) {
         if (response != null && response.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED
-            && optionalContent.filter(str -> str.contains("The user has not authorized application")).isPresent()) {
+            && optionalContent != null && optionalContent.contains("The user has not authorized application")) {
             MapillaryUser.reset();
         }
     }
@@ -208,14 +209,14 @@ public final class OAuthUtils {
         try {
             final HttpClient client = HttpClient.create(new URL(MapillaryURL.APIv4.getTokenUrl()), "POST");
             client.setHeader(AUTHORIZATION, BEARER + MapillaryURL.APIv4.CLIENT_SECRET);
-            client.setRequestBody(("grant_type=refresh_token&client_id=" + Long.toString(MapillaryURL.APIv4.CLIENT_ID)
+            client.setRequestBody(("grant_type=refresh_token&client_id=" + MapillaryURL.APIv4.CLIENT_ID
                 + "&refresh_token=" + authorizationCode).getBytes(StandardCharsets.UTF_8));
 
             response = client.connect();
             content = response.fetchContent();
             updateAuth(content);
         } catch (IOException e) {
-            validateJsonInformation(response, Optional.ofNullable(content));
+            validateJsonInformation(response, content);
             final String notificationMessage = marktr("Could not refresh Mapillary token. HTTP Status Code {0}.");
             final HttpClient.Response response1 = response;
             GuiHelper.runInEDT(() -> {
