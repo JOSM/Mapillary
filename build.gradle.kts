@@ -12,9 +12,9 @@ import kotlin.reflect.full.starProjectedType
 
 plugins {
   id("application")
-  id("com.diffplug.spotless") version "5.16.0"
+  id("com.diffplug.spotless") version "5.17.0"
   id("com.github.ben-manes.versions") version "0.39.0"
-  id("com.github.spotbugs") version "4.7.6"
+  id("com.github.spotbugs") version "4.7.9"
   id("net.ltgt.errorprone") version "2.0.2"
   id("org.openstreetmap.josm") version "0.7.1"
   id("org.sonarqube") version "3.3"
@@ -61,11 +61,11 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.targetCompatibility = JavaVersion.VERSION_1_8
 
 val versions = mapOf(
-  "awaitility" to "4.1.0",
+  "awaitility" to "4.1.1",
   "jdatepicker" to "1.3.4",
   "jmockit" to "1.49",
   "junit" to "5.8.1",
-  "spotbugs" to "4.4.1",
+  "spotbugs" to "4.4.2",
   "wiremock" to "2.27.2"
 )
 
