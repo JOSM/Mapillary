@@ -160,27 +160,11 @@ public class MapillaryImageEntry
     }
 
     @Override
-    public void selectNextImage(ImageViewerDialog imageViewerDialog) {
-        IImageEntry.super.selectNextImage(imageViewerDialog);
-        this.selectImage(this.getNextImage());
-    }
-
-    @Override
-    public void selectPreviousImage(ImageViewerDialog imageViewerDialog) {
-        IImageEntry.super.selectPreviousImage(imageViewerDialog);
-        this.selectImage(this.getPreviousImage());
-    }
-
-    @Override
-    public void selectFirstImage(ImageViewerDialog imageViewerDialog) {
-        IImageEntry.super.selectFirstImage(imageViewerDialog);
-        this.selectImage(this.getFirstImage());
-    }
-
-    @Override
-    public void selectLastImage(ImageViewerDialog imageViewerDialog) {
-        IImageEntry.super.selectLastImage(imageViewerDialog);
-        this.selectImage(this.getLastImage());
+    public void selectImage(ImageViewerDialog imageViewerDialog, IImageEntry<?> entry) {
+        IImageEntry.super.selectImage(imageViewerDialog, entry);
+        if (entry instanceof MapillaryImageEntry) {
+            this.selectImage((MapillaryImageEntry) entry);
+        }
     }
 
     private void selectImage(@Nullable final MapillaryImageEntry entry) {
