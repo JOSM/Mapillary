@@ -1,16 +1,17 @@
 package org.openstreetmap.josm.plugins.mapillary.gui.dialog;
 
-import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
-import org.openstreetmap.josm.tools.ImageProvider;
+import java.awt.Component;
+import java.awt.Image;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import java.awt.Component;
-import java.awt.Image;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
+import org.openstreetmap.josm.tools.ImageProvider;
 
 /**
  * A cell renderer for organization lists
@@ -26,7 +27,7 @@ public class OrganizationListCellRenderer extends DefaultListCellRenderer {
         JLabel comp = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         if (value instanceof OrganizationRecord) {
             OrganizationRecord organization = (OrganizationRecord) value;
-            if (organization.getNiceName() != null && !organization.getNiceName().isEmpty()
+            if ((organization.getNiceName() != null && !organization.getNiceName().isEmpty())
                 || organization == OrganizationRecord.NULL_RECORD) {
                 comp.setText(organization.getNiceName());
             } else {

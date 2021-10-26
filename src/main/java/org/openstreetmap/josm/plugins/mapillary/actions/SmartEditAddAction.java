@@ -2,8 +2,6 @@ package org.openstreetmap.josm.plugins.mapillary.actions;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,6 +10,9 @@ import java.util.List;
 import java.util.OptionalLong;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.command.AddPrimitivesCommand;
@@ -189,7 +190,7 @@ public class SmartEditAddAction extends JosmAction {
             List<OsmPrimitive> toAdd = new ArrayList<>(way.getNodesCount() + 1);
             toAdd.add(way);
             toAdd.addAll(way.getNodes());
-            return toAdd;
+            return Collections.unmodifiableList(toAdd);
         } else {
             return Collections.emptyList();
         }

@@ -57,6 +57,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.date.DateUtils;
@@ -161,11 +162,11 @@ public class MapillaryImageEntry
     public void selectImage(ImageViewerDialog imageViewerDialog, IImageEntry<?> entry) {
         IImageEntry.super.selectImage(imageViewerDialog, entry);
         if (entry instanceof MapillaryImageEntry) {
-            this.selectImage((MapillaryImageEntry) entry);
+            selectImage((MapillaryImageEntry) entry);
         }
     }
 
-    private void selectImage(@Nullable final MapillaryImageEntry entry) {
+    private static void selectImage(@Nullable final MapillaryImageEntry entry) {
         if (entry != null) {
             MapillaryLayer.getInstance().getData().setSelected(entry.image);
         }
@@ -240,7 +241,16 @@ public class MapillaryImageEntry
             final int index = wayNodes.indexOf(entry.image);
             final List<? extends INode> nodes = wayNodes.subList(Math.max(0, index - realPrefetch),
                 Math.min(wayNodes.size(), index + realPrefetch));
-            nodes.forEach(MapillaryImageUtils::getImage);
+            nodes.stream().map(MapillaryImageUtils::getImage).forEach(future -> {
+                try {
+                    future.get();
+                } catch (InterruptedException e) {
+                    Logging.error(e);
+                    Thread.currentThread().interrupt();
+                } catch (ExecutionException e) {
+                    Logging.error(e);
+                }
+            });
         }
     }
 
@@ -260,9 +270,9 @@ public class MapillaryImageEntry
         graphics.setStroke(new BasicStroke(2));
         for (ImageDetection<?> imageDetection : this.imageDetections) {
             if (MapillaryUtils.checkIfDetectionIsFilteredBasic(detectionLayers, imageDetection)
-                || ImageMode.getMode() == ImageMode.SMART_EDIT && detectionLayers.stream()
+                || (ImageMode.getMode() == ImageMode.SMART_EDIT && detectionLayers.stream()
                     .map(PointObjectLayer::getData).map(VectorDataSet::getSelected).flatMap(Collection::stream)
-                    .map(MapillaryMapFeatureUtils::getId).anyMatch(imageDetection.getKey()::equals)) {
+                    .map(MapillaryMapFeatureUtils::getId).anyMatch(imageDetection.getKey()::equals))) {
                 continue;
             }
             final Color color = imageDetection.getColor();

@@ -16,13 +16,11 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -619,33 +617,6 @@ public final class MapillaryLayer extends MVTLayer
         // Don't care about this
     }
 
-    /**
-     * Returns the closest images belonging to a different sequence and
-     * different from the specified target image.
-     *
-     * @param target the image for which you want to find the nearest other images
-     * @param limit the maximum length of the returned array
-     * @return An array containing the closest images belonging to different sequences sorted by distance from target.
-     */
-    private INode[] getNearestImagesFromDifferentSequences(INode target, int limit) {
-        if (MapillaryImageUtils.getSequenceKey(target) == null) {
-            return new INode[] {};
-        }
-        BBox searchBBox = new BBox();
-        searchBBox.addPrimitive(target, 0.0001);
-        // Locked MapillaryLayer, waiting for a java.util.stream.Nodes$CollectorTask$OfRef
-        return getData().searchWays(searchBBox).parallelStream().filter(seq -> MapillarySequenceUtils.hasKey(seq)
-            && !MapillarySequenceUtils.getKey(seq).equals(MapillaryImageUtils.getSequenceKey(target))).map(seq -> {
-                // Maps sequence to image from sequence that is nearest to target
-                Optional<VectorNode> resImg = seq.getNodes().parallelStream()
-                    .filter(img -> MapillaryImageUtils.getKey(img) > 0).min(new NearestImgToTargetComparator(target));
-                return resImg.orElse(null);
-            }).filter(img -> // Filters out images too far away from target
-        img != null && img.getCoor()
-            .greatCircleDistance(target.getCoor()) < MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get())
-            .sorted(new NearestImgToTargetComparator(target)).limit(limit).toArray(INode[]::new);
-    }
-
     @Override
     public boolean isSavable() {
         // This layer can change at any time, so it isn't worth trying to save
@@ -718,23 +689,5 @@ public final class MapillaryLayer extends MVTLayer
 
     public void removeTileDownloadListener(final MVTTile.TileListener tileListener) {
         this.tileListeners.removeListener(tileListener);
-    }
-
-    private static class NearestImgToTargetComparator implements Comparator<INode> {
-        private final INode target;
-
-        public NearestImgToTargetComparator(INode target) {
-            this.target = target;
-        }
-
-        /*
-         * (non-Javadoc)
-         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-         */
-        @Override
-        public int compare(INode img1, INode img2) {
-            return (int) Math.signum(img1.getCoor().greatCircleDistance(target.getCoor())
-                - img2.getCoor().greatCircleDistance(target.getCoor()));
-        }
     }
 }
