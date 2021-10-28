@@ -169,6 +169,7 @@ public class MapillaryImageEntry
     private static void selectImage(@Nullable final MapillaryImageEntry entry) {
         if (entry != null) {
             MapillaryLayer.getInstance().getData().setSelected(entry.image);
+            MapillaryLayer.getInstance().invalidate();
         }
     }
 
