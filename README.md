@@ -1,3 +1,4 @@
+1
 # [Mapillary](https://mapillary.com)-plugin for [JOSM](https://josm.openstreetmap.de)
 
 [![build status](https://gitlab.com/JOSM/plugin/Mapillary/badges/master/pipeline.svg)](https://gitlab.com/JOSM/plugin/Mapillary/pipelines)
