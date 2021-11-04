@@ -10,6 +10,7 @@ import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -84,17 +85,20 @@ public final class CacheUtils {
      *        The listener that is going to receive the picture.
      */
     public static void submit(INode image, ICachedLoaderListener lis) {
-        try {
-            final MapillaryCache cache = new MapillaryCache(image);
-            if (cache.getUrl() != null) {
-                cache.submit(lis != null ? lis : IGNORE_DOWNLOAD, false);
-            } else {
-                Logging.error("Mapillary: {0} has no url. Maybe API limits have been reached?",
-                    MapillaryImageUtils.getKey(image));
+        // Run the initial cache creation in a separate thread -- it may attempt downloads
+        MapillaryUtils.getForkJoinPool().execute(() -> {
+            try {
+                final MapillaryCache cache = new MapillaryCache(image);
+                if (cache.getUrl() != null) {
+                    cache.submit(lis != null ? lis : IGNORE_DOWNLOAD, false);
+                } else {
+                    Logging.error("Mapillary: {0} has no url. Maybe API limits have been reached?",
+                        MapillaryImageUtils.getKey(image));
+                }
+            } catch (IOException e) {
+                Logging.error(e);
             }
-        } catch (IOException e) {
-            Logging.error(e);
-        }
+        });
     }
 
     static class IgnoreDownload implements ICachedLoaderListener {

@@ -55,7 +55,7 @@ public final class MapillaryProperties {
      * The number of images to be prefetched when a mapillary image is selected
      */
     public static final IntegerProperty PRE_FETCH_IMAGE_COUNT = new IntegerProperty("mapillary.prefetch-image-count",
-        4);
+        12);
 
     /**
      * Download point features (fire hydrants, trees, and so on)

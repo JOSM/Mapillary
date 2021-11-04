@@ -35,6 +35,7 @@ import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
 
 import org.apache.commons.jcs3.access.CacheAccess;
+import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.data.coor.ILatLon;
 import org.openstreetmap.josm.data.imagery.street_level.IImageEntry;
@@ -70,7 +71,9 @@ public class MapillaryImageEntry
     private static final String MESSAGE_SEPARATOR = " — ";
     private final INode image;
     private final List<ImageDetection<?>> imageDetections = new ArrayList<>();
-    private BufferedImage originalImage;
+    /** This exists to avoid getting the same image twice */
+    private volatile Future<BufferedImageCacheEntry> futureImage;
+    private BufferedImageCacheEntry originalImage;
     private BufferedImage layeredImage;
 
     private static class MapillaryValueChangeListener implements AbstractProperty.ValueChangeListener<Boolean> {
@@ -113,13 +116,15 @@ public class MapillaryImageEntry
         MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(this.image));
         // Then get the information for the rest of the sequence
         MainApplication.worker.execute(() -> Optional.ofNullable(sequence).map(IWay::getNodes)
-            .map(nodes -> nodes.stream().mapToLong(MapillaryImageUtils::getKey).toArray())
+            // Avoid CME by putting nodes in ArrayList
+            .map(nodes -> new ArrayList<>(nodes).stream().mapToLong(MapillaryImageUtils::getKey).toArray())
             .ifPresent(MapillaryDownloader::downloadImages));
         this.updateDetections(5_000);
     }
 
     /**
-     * Clone another entry. Mostly useful to avoid != checks
+     * Clone another entry. Mostly useful to avoid != checks. See {@link ImageViewerDialog#displayImages(List)} for a
+     * specific location.
      *
      * @param other The entry to clone
      */
@@ -206,22 +211,34 @@ public class MapillaryImageEntry
 
     @Override
     public BufferedImage read(Dimension target) throws IOException {
-        if (this.imageDetections.isEmpty()) {
-            this.updateDetections(5_000);
-        }
         if (this.originalImage == null) {
+            Future<BufferedImageCacheEntry> future = this.futureImage != null ? this.futureImage
+                : MapillaryImageUtils.getImage(this.image);
+            this.futureImage = future;
             try {
-                Future<BufferedImage> future = MapillaryImageUtils.getImage(this.image);
-                MainApplication.worker.execute(() -> preCacheImages(this));
+                MapillaryUtils.getForkJoinPool().execute(() -> preCacheImages(this));
                 this.originalImage = future.get(5, TimeUnit.SECONDS);
+                if (this.originalImage == null) {
+                    throw new IOException(new NullPointerException("Returned image should not be null"));
+                }
             } catch (ExecutionException | TimeoutException exception) {
                 throw new IOException(exception);
             } catch (InterruptedException exception) {
                 Thread.currentThread().interrupt();
                 throw new IOException(exception);
+            } finally {
+                if (future.equals(this.futureImage)) {
+                    this.futureImage = null;
+                }
             }
-            this.layeredImage = new BufferedImage(this.originalImage.getWidth(), this.originalImage.getHeight(),
-                this.originalImage.getType());
+        }
+        if (this.imageDetections.isEmpty()) {
+            this.updateDetections(5_000);
+            return this.originalImage.getImage();
+        }
+        if (this.layeredImage == null) {
+            this.layeredImage = new BufferedImage(this.originalImage.getImage().getWidth(),
+                this.originalImage.getImage().getHeight(), this.originalImage.getImage().getType());
         }
         this.drawDetections();
         return this.layeredImage;
@@ -242,14 +259,20 @@ public class MapillaryImageEntry
             final int index = wayNodes.indexOf(entry.image);
             final List<? extends INode> nodes = wayNodes.subList(Math.max(0, index - realPrefetch),
                 Math.min(wayNodes.size(), index + realPrefetch));
-            nodes.stream().map(MapillaryImageUtils::getImage).forEach(future -> {
+            nodes.stream().map(MapillaryImageEntry::getCachedEntry).forEach(imageEntry -> {
+                final Future<BufferedImageCacheEntry> future = MapillaryImageUtils.getImage(imageEntry.image);
+                imageEntry.futureImage = future;
                 try {
-                    future.get();
+                    imageEntry.originalImage = future.get();
                 } catch (InterruptedException e) {
                     Logging.error(e);
                     Thread.currentThread().interrupt();
                 } catch (ExecutionException e) {
                     Logging.error(e);
+                } finally {
+                    if (future.equals(imageEntry.futureImage)) {
+                        imageEntry.futureImage = null;
+                    }
                 }
             });
         }
@@ -267,7 +290,7 @@ public class MapillaryImageEntry
         unit2CompTransform.concatenate(AffineTransform.getScaleInstance(width, height));
 
         final Graphics2D graphics = this.layeredImage.createGraphics();
-        graphics.drawImage(this.originalImage, 0, 0, null);
+        graphics.drawImage(this.originalImage.getImage(), 0, 0, null);
         graphics.setStroke(new BasicStroke(2));
         for (ImageDetection<?> imageDetection : this.imageDetections) {
             if (MapillaryUtils.checkIfDetectionIsFilteredBasic(detectionLayers, imageDetection)
@@ -397,7 +420,6 @@ public class MapillaryImageEntry
     @Override
     public void accept(Long key, List<ImageDetection<?>> imageDetections) {
         if (key != null && key == MapillaryImageUtils.getKey(this.image)) {
-            this.originalImage = null;
             boolean reload = !this.imageDetections.containsAll(imageDetections)
                 || !imageDetections.containsAll(this.imageDetections);
             synchronized (this.imageDetections) {
@@ -407,12 +429,7 @@ public class MapillaryImageEntry
                 }
             }
             if (reload && this.equals(ImageViewerDialog.getCurrentImage())) {
-                // Clone this entry
-                final MapillaryImageEntry temporaryImageEntry = new MapillaryImageEntry(this);
-                GuiHelper.runInEDT(() -> {
-                    ImageViewerDialog.getInstance().displayImage(temporaryImageEntry);
-                    ImageViewerDialog.getInstance().displayImage(this);
-                });
+                this.updateImageEntry();
             }
         }
     }
@@ -423,5 +440,14 @@ public class MapillaryImageEntry
             return Projections.EQUIRECTANGULAR;
         }
         return IImageEntry.super.getProjectionType();
+    }
+
+    private void updateImageEntry() {
+        // Clone this entry. Needed to ensure that the image display refreshes.
+        final MapillaryImageEntry temporaryImageEntry = new MapillaryImageEntry(this);
+        GuiHelper.runInEDT(() -> {
+            ImageViewerDialog.getInstance().displayImage(temporaryImageEntry);
+            ImageViewerDialog.getInstance().displayImage(this);
+        });
     }
 }

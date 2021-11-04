@@ -1,22 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
-import org.openstreetmap.josm.data.osm.IPrimitive;
-import org.openstreetmap.josm.data.osm.IWay;
-import org.openstreetmap.josm.data.osm.OsmPrimitiveType;
-import org.openstreetmap.josm.data.vector.VectorNode;
-import org.openstreetmap.josm.data.vector.VectorWay;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
-import org.openstreetmap.josm.tools.Logging;
-
-import javax.json.JsonArray;
-import javax.json.JsonNumber;
-import javax.json.JsonObject;
-import javax.json.JsonString;
-import javax.json.JsonValue;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -24,6 +8,24 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
+
+import javax.json.JsonArray;
+import javax.json.JsonNumber;
+import javax.json.JsonObject;
+import javax.json.JsonString;
+import javax.json.JsonValue;
+
+import org.openstreetmap.josm.data.osm.IPrimitive;
+import org.openstreetmap.josm.data.osm.IWay;
+import org.openstreetmap.josm.data.osm.OsmPrimitiveType;
+import org.openstreetmap.josm.data.vector.VectorDataSet;
+import org.openstreetmap.josm.data.vector.VectorNode;
+import org.openstreetmap.josm.data.vector.VectorWay;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Decodes the JSON returned by {@link MapillaryURL.APIv4} into Java objects.
@@ -62,8 +64,11 @@ public final class JsonSequencesDecoder {
             .mapToLong(value -> value instanceof JsonString ? Long.parseLong(((JsonString) value).getString())
                 : ((JsonNumber) value).longValue())
             .distinct().toArray();
-        final long[] currentImageIds = MapillaryLayer.getInstance().getData().getNodes().stream()
-            .mapToLong(IPrimitive::getUniqueId).filter(i -> LongStream.of(imageIds).anyMatch(l -> i == l)).toArray();
+        final VectorDataSet data = MapillaryLayer.getInstance().getData();
+        final long[] currentImageIds = LongStream.of(imageIds)
+            .mapToObj(id -> data.getPrimitiveById(id, OsmPrimitiveType.NODE)).filter(Objects::nonNull)
+            .mapToLong(IPrimitive::getUniqueId).filter(i -> LongStream.of(imageIds).anyMatch(l -> i == l)).sorted()
+            .toArray();
         MapillaryDownloader.downloadImages(
             LongStream.of(imageIds).filter(id -> LongStream.of(currentImageIds).noneMatch(i -> i == id)).toArray());
         final List<VectorNode> nodes = LongStream.of(imageIds)

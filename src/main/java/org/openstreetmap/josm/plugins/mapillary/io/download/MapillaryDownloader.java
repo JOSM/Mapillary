@@ -78,7 +78,7 @@ public final class MapillaryDownloader {
         }
     }
 
-    private static Map<String, Collection<VectorNode>> realDownloadImages(final VectorDataSet dataSet,
+    private static synchronized Map<String, Collection<VectorNode>> realDownloadImages(final VectorDataSet dataSet,
         final long... images) {
         if (images.length == 0) {
             return Collections.emptyMap();
@@ -113,6 +113,7 @@ public final class MapillaryDownloader {
                         rMap.putAll(oMap);
                         return rMap;
                     })));
+        // new HashMap to avoid CME
         sequenceMap.forEach((sequenceKey, vectorNodes) -> {
             Set<VectorWay> ways = vectorNodes.stream().map(VectorNode::getReferrers).filter(VectorWay.class::isInstance)
                 .map(VectorWay.class::cast).collect(Collectors.toSet());

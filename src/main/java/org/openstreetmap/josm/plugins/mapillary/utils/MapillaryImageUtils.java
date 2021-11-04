@@ -1,11 +1,12 @@
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Locale;
@@ -18,10 +19,10 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.imageio.ImageIO;
 import javax.json.Json;
 import javax.json.JsonReader;
 
+import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IWay;
@@ -145,25 +146,22 @@ public final class MapillaryImageUtils {
      * @return The future with a potential image (image may be {@code null})
      */
     @Nonnull
-    public static Future<BufferedImage> getImage(@Nonnull INode image) {
+    public static Future<BufferedImageCacheEntry> getImage(@Nonnull INode image) {
         if (MapillaryImageUtils.IS_DOWNLOADABLE.test(image)) {
-            CompletableFuture<BufferedImage> completableFuture = new CompletableFuture<>();
+            CompletableFuture<BufferedImageCacheEntry> completableFuture = new CompletableFuture<>();
             CacheUtils.submit(image, (entry, attributes, result) -> {
-                try {
-                    BufferedImage realImage = ImageIO.read(new ByteArrayInputStream(entry.getContent()));
-                    completableFuture.complete(realImage);
-                } catch (IOException e) {
-                    // Remove the key from the metadata cache -- this way we can try again later if the image URL became
-                    // stale.
-                    Caches.META_DATA_CACHE.getICacheAccess().remove(
-                        MapillaryURL.APIv4.getImageInformation(new long[] { MapillaryImageUtils.getKey(image) }));
-                    Logging.error(e);
-                    completableFuture.complete(null);
+                if (entry instanceof BufferedImageCacheEntry) {
+                    // Using the BufferedImageCacheEntry may speed up processing, if the image is already loaded.
+                    completableFuture.complete((BufferedImageCacheEntry) entry);
+                } else {
+                    // Fall back. More expensive if the image has already been loaded twice.
+                    completableFuture.complete(new BufferedImageCacheEntry(entry.getContent()));
                 }
             });
             return completableFuture;
         } else if (image.hasKey(IMPORTED_KEY)) {
-            return MainApplication.worker.submit(() -> ImageIO.read(new File(image.get(IMPORTED_KEY))));
+            return MainApplication.worker
+                .submit(() -> new BufferedImageCacheEntry(Files.readAllBytes(Paths.get(image.get(IMPORTED_KEY)))));
         } else if (getKey(image) > 0) {
             downloadImageDetails(image);
             if (MapillaryImageUtils.IS_DOWNLOADABLE.test(image)) {
