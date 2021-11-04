@@ -201,10 +201,6 @@ public class MapillaryImageEntry
                 formatter.setTimeZone(TimeZone.getTimeZone(ZoneOffset.UTC));
                 title.append(formatter.format(Date.from(pictureTime)));
             }
-        } else if (this.image.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
-            INode mapillaryImportedImage = this.image;
-            title.append(MESSAGE_SEPARATOR).append(mapillaryImportedImage.get(MapillaryImageUtils.IMPORTED_KEY));
-            title.append(MESSAGE_SEPARATOR).append(MapillaryImageUtils.getDate(mapillaryImportedImage));
         }
         return title.toString();
     }

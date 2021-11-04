@@ -5,7 +5,6 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.stream.Collectors;
@@ -58,18 +57,6 @@ public class MapillaryExportDownloadThread implements Runnable, ICachedLoaderLis
     public void run() {
         if (MapillaryImageUtils.getKey(this.image) != 0) {
             CacheUtils.submit(this.image, this);
-        } else if (this.image.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
-            synchronized (MapillaryExportDownloadThread.class) {
-                try {
-                    this.queue.put(ImageIO.read(new FileInputStream(this.image.get(MapillaryImageUtils.IMPORTED_KEY))));
-                    this.queueImages.put(this.image);
-                } catch (InterruptedException e) {
-                    Logging.error(e);
-                    Thread.currentThread().interrupt();
-                } catch (IOException e) {
-                    Logging.error(e);
-                }
-            }
         } else {
             throw new UnsupportedOperationException(tr("We cannot export {0}",
                 image.getInterestingTags().entrySet().stream()

@@ -7,8 +7,6 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -28,7 +26,6 @@ import org.openstreetmap.josm.plugins.mapillary.io.export.MapillaryExportManager
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
-import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -96,16 +93,6 @@ public class MapillaryExportAction extends JosmAction {
                 export(images);
             } else if (this.dialog.group.isSelected(this.dialog.selected.getModel())) {
                 export(MapillaryLayer.getInstance().getData().getSelectedNodes());
-            }
-            // This option ignores the selected directory.
-        } else if (this.dialog.group.isSelected(this.dialog.rewrite.getModel())) {
-            ArrayList<INode> images = new ArrayList<>();
-            MapillaryLayer.getInstance().getData().getNodes().stream()
-                .filter(img -> img.hasKey(MapillaryImageUtils.IMPORTED_KEY)).forEach(images::add);
-            try {
-                MainApplication.worker.execute(new MapillaryExportManager<>(images));
-            } catch (IOException e1) {
-                Logging.error(e1);
             }
         }
         dlg.dispose();

@@ -119,15 +119,12 @@ public final class MapillaryFilterDialog extends ToggleDialog
         signChooserPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         signChooserPanel.add(signChooser);
 
-        final JCheckBox imported = new JCheckBox(tr("Imported images"));
-        imported.setSelected(true);
         downloaded.setSelected(true);
 
         final JPanel panel = new JPanel(new GridBagLayout());
         panel.add(new JLabel(tr("Picture Filters")), GBC.eol().anchor(GridBagConstraints.LINE_START));
         final JPanel imageLine = new JPanel();
         imageLine.add(downloaded, GBC.std().anchor(GridBagConstraints.LINE_START));
-        imageLine.add(imported, GBC.eol());
         panel.add(imageLine, GBC.eol().anchor(GridBagConstraints.LINE_START));
         this.addTimeFilters(panel);
         this.addUserGroupFilters(panel);
@@ -148,8 +145,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
         createLayout(panel, true, Arrays.asList(new SideButton(new UpdateAction()), new SideButton(new ResetAction())));
 
         // Add listeners for the shouldHidePredicate
-        imported.addItemListener(
-            l -> this.shouldHidePredicate.importedIsSelected = l.getStateChange() == ItemEvent.SELECTED);
         downloaded.addItemListener(
             l -> this.shouldHidePredicate.downloadedIsSelected = l.getStateChange() == ItemEvent.SELECTED);
         onlyPano.addItemListener(
@@ -158,7 +153,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
             l -> this.shouldHidePredicate.onlySignsIsSelected = l.getStateChange() == ItemEvent.SELECTED);
 
         // Add reset functions
-        this.resetObjects.addListener(() -> imported.setSelected(true));
         this.resetObjects.addListener(() -> downloaded.setSelected(true));
         this.resetObjects.addListener(() -> onlySigns.setEnabled(true));
         this.resetObjects.addListener(() -> onlySigns.setSelected(false));
@@ -170,7 +164,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
         // Set defaults for the shouldHidePredicate
         // This must be added last
         ResetListener setFields = () -> {
-            this.shouldHidePredicate.importedIsSelected = imported.isSelected();
             this.shouldHidePredicate.downloadedIsSelected = downloaded.isSelected();
             this.shouldHidePredicate.onlyPanoIsSelected = onlyPano.isSelected();
             this.shouldHidePredicate.onlySignsIsSelected = onlySigns.isSelected();
@@ -431,7 +424,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
         String time;
         Number dateRange;
         private boolean layerVisible;
-        boolean importedIsSelected;
         boolean downloadedIsSelected;
         boolean timeFilter;
         boolean onlySignsIsSelected;
@@ -466,7 +458,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
             }
             if ((this.timeFilter && checkValidTime(img)) || (this.endDateRefresh != null && checkEndDate(img))
                 || (this.startDateRefresh != null && checkStartDate(img))
-                || (!this.importedIsSelected && img.hasKey(MapillaryImageUtils.IMPORTED_KEY))
                 || (this.onlyPanoIsSelected && !MapillaryImageUtils.IS_PANORAMIC.test(img))
                 || (this.qualityScore != Float.MIN_VALUE && (MapillaryImageUtils.getQuality(img) < this.qualityScore
                     // The following line is to ensure that any images that *don't* have a quality score are shown when

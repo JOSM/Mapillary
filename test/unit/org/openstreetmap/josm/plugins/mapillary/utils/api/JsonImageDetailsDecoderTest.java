@@ -156,16 +156,6 @@ public class JsonImageDetailsDecoderTest {
         return image;
     }
 
-    public static VectorNode createImportedImage(String file, LatLon latLon, double cameraAngle, boolean pano) {
-        VectorNode image = new VectorNode("test");
-        image.put(MapillaryImageUtils.IMPORTED_KEY, file);
-        image.setCoor(latLon);
-        image.put(MapillaryImageUtils.ImageProperties.COMPASS_ANGLE.toString(), Double.toString(cameraAngle));
-        image.put(MapillaryImageUtils.ImageProperties.IS_PANO.toString(),
-            pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
-        return image;
-    }
-
     @Test
     void testInvalidImageInfos() {
         VectorDataMock data = new VectorDataMock();

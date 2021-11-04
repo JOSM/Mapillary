@@ -92,10 +92,10 @@ class MapillaryLayerTest {
     @Test
     void testSetVisible() {
         MapillaryLayer.getInstance().getData()
-            .addPrimitive(JsonImageDetailsDecoderTest.createImportedImage("", new LatLon(0.0, 0.0), 0.0, false));
+            .addPrimitive(JsonImageDetailsDecoderTest.createDownloadedImage(1, new LatLon(0.0, 0.0), 0.0, false));
         MapillaryLayer.getInstance().getData()
-            .addPrimitive(JsonImageDetailsDecoderTest.createImportedImage("", new LatLon(0.0, 0.0), 0.0, false));
-        VectorNode invisibleImage = JsonImageDetailsDecoderTest.createImportedImage("", new LatLon(0.0, 0.0), 0.0,
+            .addPrimitive(JsonImageDetailsDecoderTest.createDownloadedImage(2, new LatLon(0.0, 0.0), 0.0, false));
+        VectorNode invisibleImage = JsonImageDetailsDecoderTest.createDownloadedImage(3, new LatLon(0.0, 0.0), 0.0,
             false);
         invisibleImage.setVisible(false);
         MapillaryLayer.getInstance().getData().addPrimitive(invisibleImage);
@@ -103,8 +103,8 @@ class MapillaryLayerTest {
         MapillaryLayer.getInstance().setVisible(false);
         for (INode img : MapillaryLayer.getInstance().getData().getNodes()) {
             if (MapillaryImageUtils.isImage(img)) {
-                assertFalse(img.isVisible(), MessageFormat.format("Failed on image {0}/{1}",
-                    MapillaryImageUtils.getKey(img), MapillaryImageUtils.getFile(img)));
+                assertFalse(img.isVisible(),
+                    MessageFormat.format("Failed on image {0}", MapillaryImageUtils.getKey(img)));
             }
         }
 

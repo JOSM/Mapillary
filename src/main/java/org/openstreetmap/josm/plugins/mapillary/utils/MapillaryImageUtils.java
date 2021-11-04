@@ -1,12 +1,9 @@
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Locale;
@@ -26,7 +23,6 @@ import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IWay;
-import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
@@ -50,7 +46,6 @@ public final class MapillaryImageUtils {
 
     public static final Predicate<INode> IS_DOWNLOADABLE = node -> node != null
         && node.getKeys().keySet().stream().anyMatch(key -> BASE_IMAGE_KEY.matcher(key).matches());
-    public static final String IMPORTED_KEY = "import_file";
 
     /**
      * A pattern to look for strings that are only numbers -- mostly used during switchover from v3 to v4 API
@@ -129,17 +124,6 @@ public final class MapillaryImageUtils {
     }
 
     /**
-     * Get the file for the image
-     *
-     * @param img The image to get the file for
-     * @return The image file. May be {@code null}.
-     */
-    @Nullable
-    public static File getFile(@Nonnull INode img) {
-        return img.hasKey(IMPORTED_KEY) ? new File(img.get(IMPORTED_KEY)) : null;
-    }
-
-    /**
      * Get a future for an image
      *
      * @param image The node with image information
@@ -159,9 +143,6 @@ public final class MapillaryImageUtils {
                 }
             });
             return completableFuture;
-        } else if (image.hasKey(IMPORTED_KEY)) {
-            return MainApplication.worker
-                .submit(() -> new BufferedImageCacheEntry(Files.readAllBytes(Paths.get(image.get(IMPORTED_KEY)))));
         } else if (getKey(image) > 0) {
             downloadImageDetails(image);
             if (MapillaryImageUtils.IS_DOWNLOADABLE.test(image)) {
@@ -276,8 +257,7 @@ public final class MapillaryImageUtils {
      * @return {@code true} if the node is for an image
      */
     public static boolean isImage(@Nullable IPrimitive node) {
-        return node instanceof INode
-            && (node.hasKey(ImageProperties.ID.toString()) || node.hasKey(MapillaryImageUtils.IMPORTED_KEY));
+        return node instanceof INode && node.hasKey(ImageProperties.ID.toString());
     }
 
     /**

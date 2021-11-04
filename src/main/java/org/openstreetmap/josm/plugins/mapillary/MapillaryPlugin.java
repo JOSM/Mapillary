@@ -25,7 +25,6 @@ import org.openstreetmap.josm.plugins.mapillary.actions.MapObjectLayerAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapPointObjectLayerAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryExportAction;
-import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryZoomAction;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.DataMouseListener;
@@ -83,10 +82,6 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
         mapillaryDownloadAction.updateEnabledState();
         MainMenu.add(menu.imagerySubMenu, mapillaryDownloadAction, false);
         destroyables.add(mapillaryDownloadAction);
-
-        MapillaryImportAction mapillaryImportAction = new MapillaryImportAction();
-        MainMenu.add(menu.fileMenu, mapillaryImportAction, false, 14);
-        destroyables.add(mapillaryImportAction);
 
         MainMenu.add(menu.viewMenu, ZOOM_ACTION, false, 15);
         destroyables.add(ZOOM_ACTION);

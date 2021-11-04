@@ -18,12 +18,8 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.ImageWriteException;
-import org.apache.commons.imaging.Imaging;
-import org.apache.commons.imaging.common.ImageMetadata;
 import org.apache.commons.imaging.common.RationalNumber;
-import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
 import org.apache.commons.imaging.formats.jpeg.exif.ExifRewriter;
-import org.apache.commons.imaging.formats.tiff.TiffImageMetadata;
 import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.apache.commons.imaging.formats.tiff.write.TiffOutputDirectory;
@@ -81,15 +77,10 @@ public class MapillaryExportWriterThread extends Thread {
             try {
                 img = this.queue.take();
                 mimg = this.queueImages.take();
-                if (this.path == null && mimg.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
-                    String runPath = new File(mimg.get(MapillaryImageUtils.IMPORTED_KEY)).getPath();
-                    finalPath = runPath.substring(0, runPath.lastIndexOf('.'));
-                } else if (MapillaryImageUtils.getKey(mimg) != 0 && mimg.getUniqueId() > 0) {
+                if (MapillaryImageUtils.getKey(mimg) != 0 && mimg.getUniqueId() > 0) {
                     finalPath = Paths
                         .get(this.path, MapillaryImageUtils.getSequenceKey(mimg), Long.toString(mimg.getUniqueId()))
                         .toString();
-                } else if (mimg.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
-                    finalPath = Paths.get(this.path, mimg.get(MapillaryImageUtils.IMPORTED_KEY)).toString();
                 } else {
                     // Increases the progress bar.
                     this.monitor.worked(PleaseWaitProgressMonitor.PROGRESS_BAR_MAX / this.amount);
@@ -106,18 +97,6 @@ public class MapillaryExportWriterThread extends Thread {
                 TiffOutputSet outputSet = null;
                 TiffOutputDirectory exifDirectory;
                 TiffOutputDirectory gpsDirectory;
-                // If the image is imported, loads the rest of the EXIF data.
-                if (mimg.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
-                    final ImageMetadata metadata = Imaging
-                        .getMetadata(new File(mimg.get(MapillaryImageUtils.IMPORTED_KEY)));
-                    if (metadata instanceof JpegImageMetadata) {
-                        final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
-                        final TiffImageMetadata exif = jpegMetadata.getExif();
-                        if (null != exif) {
-                            outputSet = exif.getOutputSet();
-                        }
-                    }
-                }
                 if (null == outputSet) {
                     outputSet = new TiffOutputSet();
                 }
