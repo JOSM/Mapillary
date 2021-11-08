@@ -1,14 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonString;
-import javax.json.JsonStructure;
-import javax.json.JsonValue;
-import javax.swing.SwingUtilities;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -20,17 +12,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import java.util.stream.LongStream;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonString;
+import javax.json.JsonStructure;
+import javax.json.JsonValue;
 
 import org.apache.commons.imaging.common.RationalNumber;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
-import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
@@ -136,53 +131,6 @@ public final class MapillaryUtils {
     }
 
     /**
-     * Zooms to fit all the {@link INode} objects stored in the
-     * database.
-     */
-    public static void showAllPictures() {
-        showPictures(MapillaryLayer.getInstance().getData().getNodes().stream().filter(MapillaryImageUtils::isImage)
-            .collect(Collectors.toSet()), false);
-    }
-
-    /**
-     * Zooms to fit all the given {@link INode} objects.
-     *
-     * @param images The images you are zooming to.
-     * @param select Whether the added images must be selected or not.
-     */
-    public static void showPictures(final Set<INode> images, final boolean select) {
-        if (!SwingUtilities.isEventDispatchThread()) {
-            SwingUtilities.invokeLater(() -> showPictures(images, select));
-        } else {
-            Bounds zoomBounds;
-            if (images.isEmpty()) {
-                zoomBounds = new Bounds(new LatLon(0, 0));
-            } else {
-                zoomBounds = new Bounds(images.iterator().next().getCoor());
-                for (INode img : images) {
-                    if (img != null && img.getCoor() != null) {
-                        zoomBounds.extend(img.getCoor());
-                    }
-                }
-            }
-
-            // The zoom rectangle must have a minimum size.
-            double latExtent = Math.max(zoomBounds.getMaxLat() - zoomBounds.getMinLat(), MIN_ZOOM_SQUARE_SIDE);
-            double lonExtent = Math.max(zoomBounds.getMaxLon() - zoomBounds.getMinLon(), MIN_ZOOM_SQUARE_SIDE);
-            zoomBounds = new Bounds(zoomBounds.getCenter(), latExtent, lonExtent);
-
-            MainApplication.getMap().mapView.zoomTo(zoomBounds);
-            MapillaryLayer.getInstance().getData().clearSelection();
-            MapillaryLayer.getInstance().getData().clearSelection();
-            if (select) {
-                MapillaryLayer.getInstance().getData().setSelected(images);
-            }
-            MapillaryLayer.invalidateInstance();
-        }
-
-    }
-
-    /**
      * Updates the help text at the bottom of the window.
      */
     public static void updateHelpText() {
@@ -197,25 +145,6 @@ public final class MapillaryUtils {
             ret.append(I18n.tr("No images found"));
         }
         MainApplication.getMap().statusLine.setHelpText(ret.toString());
-    }
-
-    /**
-     * Check if the given ImageDetection is filtered out.
-     * This checks if smart edit is enabled, and if so, if any smart edit layers are available.
-     *
-     * @param detectionLayers The layers to check
-     * @param d The image detection to check
-     * @return {@code true} if the detection is filtered
-     */
-    public static boolean checkIfDetectionIsFiltered(final List<PointObjectLayer> detectionLayers,
-        final ImageDetection<?> d) {
-        if (Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get())
-            && !MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).isEmpty()) {
-            return MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).stream()
-                .map(PointObjectLayer::getData).flatMap(ds -> ds.getAllSelected().stream())
-                .map(MapillaryUtils::getDetections).flatMapToLong(LongStream::of).noneMatch(key -> d.getKey() == key);
-        }
-        return checkIfDetectionIsFilteredBasic(detectionLayers, d);
     }
 
     /**

@@ -23,6 +23,7 @@ import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IWay;
+import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
@@ -171,14 +172,15 @@ public class MapillarySequenceUtils {
         // There should be a method to get a sequence in v4
         IWay<?> sequence = SEQUENCE_CACHE.get(key);
         if (sequence == null) {
-            sequence = downloadSequence(key);
-            // Ensure that we don't cache a null sequence -- this will throw an InvalidArgumentException if the sequence
+            sequence = downloadSequence(key, MapillaryLayer.getInstance().getData());
+            // Ensure that we don't cache a null sequence -- this will throw an InvalidArgumentException if the
+            // sequence
             // is null which is why we cannot use {@link CacheAccess#get(Object, Supplier)}
             if (sequence != null) {
                 SEQUENCE_CACHE.put(key, sequence);
             }
         } else if (sequence.getKeys().isEmpty()) {
-            downloadSequence(key);
+            downloadSequence(key, MapillaryLayer.getInstance().getData());
         }
         return sequence;
     }
@@ -188,9 +190,10 @@ public class MapillarySequenceUtils {
      * Note: This is synchronized to avoid a CME (JOSM #20948).
      *
      * @param key The key to download
+     * @param vectorDataSet The dataset to add the way to and get nodes from
      * @return The downloaded sequence
      */
-    private static synchronized IWay<?> downloadSequence(final String key) {
+    private static synchronized IWay<?> downloadSequence(final String key, final VectorDataSet vectorDataSet) {
         final String sequenceUrl = MapillaryURL.APIv4.getImagesBySequences(key);
         final String data = Caches.META_DATA_CACHE.get(sequenceUrl, () -> {
             try {
@@ -210,8 +213,10 @@ public class MapillarySequenceUtils {
             Collection<VectorWay> seq = JsonDecoder.decodeData(json, JsonSequencesDecoder::decodeSequence);
             VectorWay sequence = seq.stream().findFirst().orElse(null);
             if (MapillaryLayer.hasInstance() && sequence != null) {
-                final VectorWay alreadyAdded = MapillaryLayer.getInstance().getData().searchWays(sequence.getBBox())
-                    .stream().filter(way -> getKey(way).equals(getKey(sequence))).findFirst().orElse(null);
+                final VectorWay alreadyAdded = VectorDataSetUtils
+                    .tryRead(vectorDataSet, () -> vectorDataSet.searchWays(sequence.getBBox()).stream()
+                        .filter(way -> getKey(way).equals(getKey(sequence))).findFirst().orElse(null))
+                    .orElse(null);
                 sequence.put(KEY, key);
                 if (alreadyAdded != null) {
                     alreadyAdded
@@ -219,22 +224,25 @@ public class MapillarySequenceUtils {
                     sequence.setNodes(Collections.emptyList());
                     alreadyAdded.setKeys(sequence.getKeys());
                 } else {
-                    MapillaryLayer.getInstance().getData().addPrimitive(sequence);
-                    if (sequence.getDataSet() != null) {
-                        sequence.getNodes().stream().filter(node -> node.getDataSet() == null)
-                            .forEach(node -> sequence.getDataSet().addPrimitive(node));
-                    }
+                    VectorDataSetUtils.tryWrite(vectorDataSet, () -> {
+                        vectorDataSet.addPrimitive(sequence);
+                        if (sequence.getDataSet() != null) {
+                            sequence.getNodes().stream().filter(node -> node.getDataSet() == null)
+                                .forEach(vectorDataSet::addPrimitive);
+                        }
+                    });
                 }
                 // Remove referrers to other sequences
                 final List<VectorWay> modifiedWays = new ArrayList<>();
                 sequence.getNodes().stream().filter(node -> node.getReferrers().size() > 1)
                     .forEach(node -> node.getReferrers().stream().filter(referrer -> !sequence.equals(referrer))
-                        .filter(VectorWay.class::isInstance).map(VectorWay.class::cast).forEach(way -> {
+                        .filter(VectorWay.class::isInstance).map(VectorWay.class::cast)
+                        .forEach(way -> VectorDataSetUtils.tryWrite(vectorDataSet, () -> {
                             List<VectorNode> nodes = new ArrayList<>(way.getNodes());
                             nodes.remove(node);
                             way.setNodes(nodes);
                             modifiedWays.add(way);
-                        }));
+                        })));
                 modifiedWays.stream().filter(way -> way.getNodesCount() == 0).forEach(way -> way.setDeleted(true));
             }
             return sequence;

@@ -26,6 +26,9 @@ import javax.json.JsonReader;
 import javax.json.JsonValue;
 import javax.swing.JOptionPane;
 
+import org.apache.commons.jcs3.access.CacheAccess;
+import org.apache.commons.jcs3.access.behavior.ICacheAccess;
+import org.apache.commons.jcs3.engine.behavior.IElementAttributes;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.gui.Notification;
@@ -34,10 +37,6 @@ import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
-
-import org.apache.commons.jcs3.access.CacheAccess;
-import org.apache.commons.jcs3.access.behavior.ICacheAccess;
-import org.apache.commons.jcs3.engine.behavior.IElementAttributes;
 
 public final class Caches {
     private static final String ERROR = "error";
@@ -192,23 +191,28 @@ public final class Caches {
             if (rateLimited) {
                 return null;
             }
-            final V returnObject;
+            // Avoid a synchronized block if possible, so if present, get and return.
+            final V returnObject = this.cacheAccess.get(url);
+            if (returnObject != null) {
+                return returnObject;
+            }
+            final V newReturnObject;
             synchronized (this) {
-                returnObject = this.cacheAccess.get(url) == null ? supplier.get() : this.cacheAccess.get(url);
-                if (returnObject != null && this.validators.stream().allMatch(p -> p.test(returnObject))) {
-                    this.cacheAccess.put(url, returnObject);
-                } else if (returnObject != null) {
-                    final String message = checkReturnObject(returnObject);
+                newReturnObject = this.cacheAccess.get(url) == null ? supplier.get() : this.cacheAccess.get(url);
+                if (newReturnObject != null && this.validators.stream().allMatch(p -> p.test(newReturnObject))) {
+                    this.cacheAccess.put(url, newReturnObject);
+                } else if (newReturnObject != null) {
+                    final String message = checkReturnObject(newReturnObject);
                     GuiHelper.runInEDT(() -> {
                         Notification notification = new Notification();
-                        notification.setContent(tr(message, returnObject));
+                        notification.setContent(tr(message, newReturnObject));
                         notification.setDuration(Notification.TIME_LONG);
                         notification.setIcon(JOptionPane.ERROR_MESSAGE);
                         notification.show();
                     });
                 }
             }
-            return returnObject;
+            return newReturnObject;
         }
 
         /**

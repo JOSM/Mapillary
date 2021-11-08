@@ -44,6 +44,7 @@ import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.preferences.AbstractProperty;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
+import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
 import org.openstreetmap.josm.gui.util.GuiHelper;
@@ -110,11 +111,15 @@ public class MapillaryImageEntry
     public MapillaryImageEntry(final INode image) {
         Objects.requireNonNull(image, "image cannot be null");
         this.image = image;
-        final IWay<?> sequence = MapillaryImageUtils.getSequence(this.image);
         // First get the specific information for this image. This does mean we rerequest the same information, but
         // it should be livable, since it will be more cache-friendly.
-        MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(this.image));
+        if (this.image instanceof VectorNode) {
+            MapillaryDownloader.downloadImages((VectorNode) this.image);
+        } else {
+            MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(this.image));
+        }
         // Then get the information for the rest of the sequence
+        final IWay<?> sequence = MapillaryImageUtils.getSequence(this.image);
         MainApplication.worker.execute(() -> Optional.ofNullable(sequence).map(IWay::getNodes)
             // Avoid CME by putting nodes in ArrayList
             .map(nodes -> new ArrayList<>(nodes).stream().mapToLong(MapillaryImageUtils::getKey).toArray())

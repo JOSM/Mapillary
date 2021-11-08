@@ -3,10 +3,6 @@ package org.openstreetmap.josm.plugins.mapillary;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
-import javax.swing.AbstractAction;
-import javax.swing.JPopupMenu;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -16,9 +12,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
+
+import javax.swing.AbstractAction;
+import javax.swing.JPopupMenu;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.OsmData;
@@ -35,6 +37,8 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.JosmRuntimeException;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Listen for Mapillary keys
@@ -122,19 +126,30 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            VectorDataSet data = MapillaryLayer.getInstance().getData();
-            Map<Long, VectorNode> map = data.getNodes().stream().filter(image -> MapillaryImageUtils.getKey(image) != 0)
-                .collect(Collectors.toMap(MapillaryImageUtils::getKey, i -> i));
-            long[] missingImages = Stream.of(this.imageKey.split(";", 0)).mapToLong(Long::parseLong)
-                .filter(i -> !map.containsKey(i)).toArray();
-            map.clear(); // deallocate map
-            if (missingImages.length != 0) {
-                MapillaryDownloader.downloadSequences(
-                    MapillaryDownloader.downloadImages(missingImages).keySet().toArray(new String[0]));
+            final VectorDataSet data = MapillaryLayer.getInstance().getData();
+            final Lock lock = data.getReadLock();
+            final Map<Long, VectorNode> newMap;
+            try {
+                lock.lockInterruptibly();
+                Map<Long, VectorNode> map = data.getNodes().stream()
+                    .filter(image -> MapillaryImageUtils.getKey(image) != 0)
+                    .collect(Collectors.toMap(MapillaryImageUtils::getKey, i -> i));
+                long[] missingImages = Stream.of(this.imageKey.split(";", 0)).mapToLong(Long::parseLong)
+                    .filter(i -> !map.containsKey(i)).toArray();
+                map.clear(); // deallocate map
+                if (missingImages.length != 0) {
+                    MapillaryDownloader.downloadSequences(
+                        MapillaryDownloader.downloadImages(missingImages).keySet().toArray(new String[0]));
+                }
+                newMap = data.getNodes().stream().filter(image -> MapillaryImageUtils.getKey(image) != 0)
+                    .collect(Collectors.toMap(MapillaryImageUtils::getKey, i -> i));
+            } catch (InterruptedException exception) {
+                Logging.error(exception);
+                Thread.currentThread().interrupt();
+                throw new JosmRuntimeException(exception);
+            } finally {
+                lock.unlock();
             }
-            Map<Long, VectorNode> newMap = data.getNodes().stream()
-                .filter(image -> MapillaryImageUtils.getKey(image) != 0)
-                .collect(Collectors.toMap(MapillaryImageUtils::getKey, i -> i));
             GuiHelper.runInEDT(
                 () -> MapillaryLayer.getInstance().getData().setSelected(Stream.of(this.imageKey.split(";", 0))
                     .mapToLong(Long::parseLong).mapToObj(newMap::get).collect(Collectors.toSet())));
@@ -154,15 +169,26 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            final VectorDataSet data = MapillaryLayer.getInstance().getData();
             final Collection<IPrimitive> detections = MainApplication.getLayerManager()
                 .getLayersOfType(PointObjectLayer.class).stream().map(PointObjectLayer::getData)
                 .flatMap(d -> d.allNonDeletedPrimitives().stream()).filter(p -> p.getId() != 0)
                 .filter(p -> LongStream.of(this.detection).anyMatch(d -> d == p.getId())).collect(Collectors.toSet());
             final long[] images = detections.stream()
                 .flatMapToLong(d -> LongStream.of(MapillaryMapFeatureUtils.getImageIds(d))).distinct().toArray();
-            final long[] missingImages = LongStream.of(images)
-                .filter(i -> data.getPrimitiveById(i, OsmPrimitiveType.NODE) == null).toArray();
+
+            final VectorDataSet data = MapillaryLayer.getInstance().getData();
+            final long[] missingImages;
+            final Lock lock = MapillaryLayer.getInstance().getData().getReadLock();
+            try {
+                lock.lockInterruptibly();
+                missingImages = LongStream.of(images)
+                    .filter(i -> data.getPrimitiveById(i, OsmPrimitiveType.NODE) == null).toArray();
+            } catch (InterruptedException exception) {
+                Thread.currentThread().interrupt();
+                throw new JosmRuntimeException(exception);
+            } finally {
+                lock.unlock();
+            }
             if (missingImages.length != 0) {
                 MapillaryDownloader.downloadSequences(
                     MapillaryDownloader.downloadImages(missingImages).keySet().toArray(new String[0]));

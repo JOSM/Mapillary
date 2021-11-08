@@ -38,6 +38,7 @@ import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.plugins.mapillary.utils.VectorDataSetUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoder;
@@ -78,7 +79,7 @@ public final class MapillaryDownloader {
         }
     }
 
-    private static synchronized Map<String, Collection<VectorNode>> realDownloadImages(final VectorDataSet dataSet,
+    private static Map<String, Collection<VectorNode>> realDownloadImages(final VectorDataSet dataSet,
         final long... images) {
         if (images.length == 0) {
             return Collections.emptyMap();
@@ -113,22 +114,29 @@ public final class MapillaryDownloader {
                         rMap.putAll(oMap);
                         return rMap;
                     })));
-        // new HashMap to avoid CME
         sequenceMap.forEach((sequenceKey, vectorNodes) -> {
             Set<VectorWay> ways = vectorNodes.stream().map(VectorNode::getReferrers).filter(VectorWay.class::isInstance)
                 .map(VectorWay.class::cast).collect(Collectors.toSet());
             if (ways.size() != 1) {
-                ways.forEach(way -> way.setDeleted(true));
-                ways.forEach(way -> way.setNodes(Collections.emptyList()));
                 ways.stream().filter(way -> way.getDataSet() != null)
-                    .forEach(way -> way.getDataSet().removePrimitive(way));
+                    .forEach(way -> VectorDataSetUtils.tryWrite(way.getDataSet(), () -> {
+                        if (way.getDataSet() != null) {
+                            way.getDataSet().removePrimitive(way);
+                        }
+                        way.setNodes(Collections.emptyList());
+                        way.setDeleted(true);
+                    }));
                 vectorNodes.stream().map(MapillaryImageUtils::getSequenceKey).distinct()
                     .map(MapillaryDownloader::downloadSequences).flatMap(Collection::stream).forEach(way -> {
                         // We need to clear the cached bbox
                         if (way.getDataSet() != null) {
-                            way.getDataSet().removePrimitive(way);
+                            VectorDataSetUtils.tryWrite(way.getDataSet(), () -> {
+                                if (way.getDataSet() != null) {
+                                    way.getDataSet().removePrimitive(way);
+                                }
+                            });
                         }
-                        dataSet.addPrimitive(way);
+                        VectorDataSetUtils.tryWrite(dataSet, () -> dataSet.addPrimitive(way));
                     });
             }
         });
@@ -185,8 +193,10 @@ public final class MapillaryDownloader {
             : new String[0];
         if (MapillaryLayer.hasInstance() && !force) {
             VectorDataSet data = MapillaryLayer.getInstance().getData();
-            Set<String> previousSequences = data.getWays().stream().map(MapillarySequenceUtils::getKey)
-                .collect(Collectors.toSet());
+            Set<String> previousSequences = VectorDataSetUtils
+                .tryRead(data,
+                    () -> data.getWays().stream().map(MapillarySequenceUtils::getKey).collect(Collectors.toSet()))
+                .orElseGet(Collections::emptySet);
             toGet = Stream.of(toGet).filter(seq -> !previousSequences.contains(seq)).toArray(String[]::new);
         }
         if (toGet.length > 0) {

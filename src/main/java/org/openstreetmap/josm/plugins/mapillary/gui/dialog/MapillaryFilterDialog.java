@@ -19,6 +19,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.locks.Lock;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -67,6 +68,7 @@ import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ListenerList;
+import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -386,8 +388,18 @@ public final class MapillaryFilterDialog extends ToggleDialog
      */
     public void updateFilteredImages() {
         if (MapillaryLayer.hasInstance()) {
-            MainApplication.worker.execute(
-                () -> this.updateFilteredImages(MapillaryLayer.getInstance().getData().getNodes().parallelStream()));
+            MainApplication.worker.execute(() -> {
+                final Lock readLock = MapillaryLayer.getInstance().getData().getReadLock();
+                try {
+                    readLock.lockInterruptibly();
+                    this.updateFilteredImages(MapillaryLayer.getInstance().getData().getNodes().parallelStream());
+                } catch (InterruptedException exception) {
+                    Logging.error(exception);
+                    Thread.currentThread().interrupt();
+                } finally {
+                    readLock.unlock();
+                }
+            });
         }
     }
 

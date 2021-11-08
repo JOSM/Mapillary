@@ -27,6 +27,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv4;
+import org.openstreetmap.josm.plugins.mapillary.utils.VectorDataSetUtils;
 import org.openstreetmap.josm.tools.Pair;
 import org.openstreetmap.josm.tools.Utils;
 
@@ -99,11 +100,12 @@ public final class JsonImageDetailsDecoder {
                 .getJsonArray("coordinates"));
             final BBox searchBBox = new BBox(coordinates);
             searchBBox.addLatLon(coordinates, 0.001);
-            VectorNode image = (VectorNode) data.getPrimitiveById(id, OsmPrimitiveType.NODE);
-            if (image == null) {
-                image = createNewImage(json, coordinates);
-                data.addPrimitive(image);
-            }
+            VectorNode image = VectorDataSetUtils.tryRead(data, () -> data.getPrimitiveById(id, OsmPrimitiveType.NODE))
+                .filter(VectorNode.class::isInstance).map(VectorNode.class::cast).orElseGet(() -> {
+                    final VectorNode tNode = createNewImage(json, coordinates);
+                    VectorDataSetUtils.tryWrite(data, () -> data.addPrimitive(tNode));
+                    return tNode;
+                });
 
             if (coordinates != null) {
                 image.setCoor(coordinates);

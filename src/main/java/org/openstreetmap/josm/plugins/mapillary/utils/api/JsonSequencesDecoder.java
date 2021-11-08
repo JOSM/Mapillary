@@ -25,6 +25,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.plugins.mapillary.utils.VectorDataSetUtils;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -65,15 +66,19 @@ public final class JsonSequencesDecoder {
                 : ((JsonNumber) value).longValue())
             .distinct().toArray();
         final VectorDataSet data = MapillaryLayer.getInstance().getData();
-        final long[] currentImageIds = LongStream.of(imageIds)
-            .mapToObj(id -> data.getPrimitiveById(id, OsmPrimitiveType.NODE)).filter(Objects::nonNull)
-            .mapToLong(IPrimitive::getUniqueId).filter(i -> LongStream.of(imageIds).anyMatch(l -> i == l)).sorted()
-            .toArray();
+        final long[] currentImageIds = VectorDataSetUtils
+            .tryRead(data,
+                () -> LongStream.of(imageIds).mapToObj(id -> data.getPrimitiveById(id, OsmPrimitiveType.NODE))
+                    .filter(Objects::nonNull).mapToLong(IPrimitive::getUniqueId)
+                    .filter(i -> LongStream.of(imageIds).anyMatch(l -> i == l)).sorted().toArray())
+            .orElseGet(() -> new long[0]);
         MapillaryDownloader.downloadImages(
             LongStream.of(imageIds).filter(id -> LongStream.of(currentImageIds).noneMatch(i -> i == id)).toArray());
-        final List<VectorNode> nodes = LongStream.of(imageIds)
-            .mapToObj(id -> MapillaryLayer.getInstance().getData().getPrimitiveById(id, OsmPrimitiveType.NODE))
-            .filter(VectorNode.class::isInstance).map(VectorNode.class::cast).collect(Collectors.toList());
+        final List<VectorNode> nodes = VectorDataSetUtils
+            .tryRead(data,
+                () -> LongStream.of(imageIds).mapToObj(id -> data.getPrimitiveById(id, OsmPrimitiveType.NODE))
+                    .filter(VectorNode.class::isInstance).map(VectorNode.class::cast).collect(Collectors.toList()))
+            .orElseGet(Collections::emptyList);
         if (nodes.isEmpty()) {
             Logging.error("Mapillary: The sequence does not have any nodes");
             return Collections.emptyList();
