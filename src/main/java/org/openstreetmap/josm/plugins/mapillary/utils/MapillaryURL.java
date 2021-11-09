@@ -27,6 +27,7 @@ import javax.json.JsonReader;
 
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.spi.preferences.Config;
+import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.ResourceProvider;
 import org.openstreetmap.josm.tools.Utils;
@@ -153,6 +154,9 @@ public final class MapillaryURL {
          */
         @Nonnull
         public static String getImageInformation(long[] images) {
+            if (LongStream.of(images).anyMatch(i -> i == 0)) {
+                throw new JosmRuntimeException("Mapillary shouldn't have in ids at 0");
+            }
             if (images.length > 1) {
                 Map<String, String> queryFields = new HashMap<>(2);
                 queryFields.put("fields",

@@ -101,8 +101,8 @@ public class VectorDataSetUtils {
         try {
             lock.writeLock().lockInterruptibly();
             runnable.run();
-        } catch (InterruptedException e) {
-            Logging.error(e);
+        } catch (InterruptedException exception) {
+            Logging.error(exception);
             Thread.currentThread().interrupt();
         } finally {
             if (lock.isWriteLockedByCurrentThread()) {

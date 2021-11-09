@@ -87,9 +87,12 @@ public final class JsonSequencesDecoder {
             .filter(VectorWay.class::isInstance).map(VectorWay.class::cast)
             .max(Comparator.comparingInt(IWay::getNodesCount)).orElseGet(() -> new VectorWay("mapillary-sequences"));
         synchronized (JsonSequencesDecoder.class) {
-            nodes.stream().map(VectorNode::getReferrers).flatMap(Collection::stream).filter(VectorWay.class::isInstance)
-                .map(VectorWay.class::cast).distinct().forEach(way -> way.setNodes(Collections.emptyList()));
-            sequence.setNodes(nodes);
+            VectorDataSetUtils.tryWrite(data, () -> {
+                nodes.stream().map(VectorNode::getReferrers).flatMap(Collection::stream)
+                    .filter(VectorWay.class::isInstance).map(VectorWay.class::cast).distinct()
+                    .forEach(way -> way.setNodes(Collections.emptyList()));
+                sequence.setNodes(nodes);
+            });
         }
         return Collections.singletonList(sequence);
     }

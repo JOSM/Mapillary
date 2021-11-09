@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Shape;
 import java.awt.geom.Path2D;
+import java.util.Objects;
 
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.osm.IPrimitive;
@@ -34,7 +35,7 @@ public final class MapViewGeometryUtil {
         final Path2D.Double path = new Path2D.Double();
         final boolean anyVisible = seq.getNodes().stream().filter(MapillaryImageUtils::isImage)
             .filter(node -> node.getReferrers().size() == 1).anyMatch(IPrimitive::isVisible);
-        seq.getNodes().stream().filter(
+        seq.getNodes().stream().filter(Objects::nonNull).filter(
             node -> node.isVisible() && MapillaryImageUtils.isImage(node) || anyVisible && seq.isFirstLastNode(node))
             .forEach(img -> {
                 Point p = nc.getPoint(img.getCoor());

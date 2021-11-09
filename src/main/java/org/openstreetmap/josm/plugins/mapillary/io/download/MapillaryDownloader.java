@@ -62,7 +62,18 @@ public final class MapillaryDownloader {
      * @return The downloaded images
      */
     public static Map<String, Collection<VectorNode>> downloadImages(long... images) {
-        return realDownloadImages(MapillaryLayer.getInstance().getData(), images);
+        return downloadImages(true, images);
+    }
+
+    /**
+     * Download a specific set of images
+     *
+     * @param updateSequences Update the sequences for the images as well
+     * @param images The images to download
+     * @return The downloaded images
+     */
+    public static Map<String, Collection<VectorNode>> downloadImages(final boolean updateSequences, long... images) {
+        return realDownloadImages(updateSequences, MapillaryLayer.getInstance().getData(), images);
     }
 
     /**
@@ -71,16 +82,26 @@ public final class MapillaryDownloader {
      * @param images The images to download and update
      */
     public static void downloadImages(final VectorNode... images) {
+        downloadImages(true, images);
+    }
+
+    /**
+     * Download a specific set of images
+     *
+     * @param updateSequences {@code true} to update sequences for the iamges as well
+     * @param images The images to download and update
+     */
+    public static void downloadImages(boolean updateSequences, final VectorNode... images) {
         final Map<VectorDataSet, List<VectorNode>> groups = Stream.of(images)
             .collect(Collectors.groupingBy(VectorNode::getDataSet));
         for (Map.Entry<VectorDataSet, List<VectorNode>> entry : groups.entrySet()) {
-            realDownloadImages(entry.getKey(),
-                entry.getValue().stream().mapToLong(MapillaryImageUtils::getKey).toArray());
+            realDownloadImages(updateSequences, entry.getKey(),
+                entry.getValue().stream().mapToLong(MapillaryImageUtils::getKey).filter(i -> i > 0).toArray());
         }
     }
 
-    private static Map<String, Collection<VectorNode>> realDownloadImages(final VectorDataSet dataSet,
-        final long... images) {
+    private static Map<String, Collection<VectorNode>> realDownloadImages(final boolean updateSequences,
+        final VectorDataSet dataSet, final long... images) {
         if (images.length == 0) {
             return Collections.emptyMap();
         }
@@ -117,11 +138,13 @@ public final class MapillaryDownloader {
         sequenceMap.forEach((sequenceKey, vectorNodes) -> {
             Set<VectorWay> ways = vectorNodes.stream().map(VectorNode::getReferrers).filter(VectorWay.class::isInstance)
                 .map(VectorWay.class::cast).collect(Collectors.toSet());
-            if (ways.size() != 1) {
+            if (ways.size() != 1 && updateSequences) {
                 ways.stream().filter(way -> way.getDataSet() != null)
                     .forEach(way -> VectorDataSetUtils.tryWrite(way.getDataSet(), () -> {
-                        if (way.getDataSet() != null) {
-                            way.getDataSet().removePrimitive(way);
+                        synchronized (way) {
+                            if (way.getDataSet() != null) {
+                                way.getDataSet().removePrimitive(way);
+                            }
                         }
                         way.setNodes(Collections.emptyList());
                         way.setDeleted(true);
@@ -131,8 +154,10 @@ public final class MapillaryDownloader {
                         // We need to clear the cached bbox
                         if (way.getDataSet() != null) {
                             VectorDataSetUtils.tryWrite(way.getDataSet(), () -> {
-                                if (way.getDataSet() != null) {
-                                    way.getDataSet().removePrimitive(way);
+                                synchronized (way) {
+                                    if (way.getDataSet() != null) {
+                                        way.getDataSet().removePrimitive(way);
+                                    }
                                 }
                             });
                         }

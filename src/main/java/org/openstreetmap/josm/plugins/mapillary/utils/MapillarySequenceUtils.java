@@ -65,8 +65,10 @@ public class MapillarySequenceUtils {
      */
     @Nullable
     public static INode getNextOrPrevious(@Nonnull INode node, @Nullable NextOrPrevious next) {
-        List<IWay<?>> connectedWays = node.getReferrers().stream().filter(IWay.class::isInstance)
-            .map(iway -> (IWay<?>) iway).distinct().collect(Collectors.toList());
+        List<? extends IWay<?>> connectedWays = VectorDataSetUtils
+            .tryRead(node.getDataSet(), () -> node.getReferrers().stream().filter(IWay.class::isInstance)
+                .map(iway -> (IWay<?>) iway).distinct().collect(Collectors.toList()))
+            .orElseGet(Collections::emptyList);
         if (connectedWays.isEmpty() || connectedWays.size() > 2) {
             return null;
         }
@@ -219,9 +221,11 @@ public class MapillarySequenceUtils {
                     .orElse(null);
                 sequence.put(KEY, key);
                 if (alreadyAdded != null) {
-                    alreadyAdded
-                        .setNodes(sequence.getNodes().stream().filter(Objects::nonNull).collect(Collectors.toList()));
-                    sequence.setNodes(Collections.emptyList());
+                    VectorDataSetUtils.tryWrite(vectorDataSet, () -> {
+                        alreadyAdded.setNodes(
+                            sequence.getNodes().stream().filter(Objects::nonNull).collect(Collectors.toList()));
+                        sequence.setNodes(Collections.emptyList());
+                    });
                     alreadyAdded.setKeys(sequence.getKeys());
                 } else {
                     VectorDataSetUtils.tryWrite(vectorDataSet, () -> {

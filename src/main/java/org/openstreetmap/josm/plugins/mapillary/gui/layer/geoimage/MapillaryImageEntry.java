@@ -61,6 +61,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.VectorDataSetUtils;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.date.DateUtils;
 
@@ -114,15 +115,17 @@ public class MapillaryImageEntry
         // First get the specific information for this image. This does mean we rerequest the same information, but
         // it should be livable, since it will be more cache-friendly.
         if (this.image instanceof VectorNode) {
-            MapillaryDownloader.downloadImages((VectorNode) this.image);
+            MapillaryDownloader.downloadImages(false, (VectorNode) this.image);
         } else {
-            MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(this.image));
+            MapillaryDownloader.downloadImages(false, MapillaryImageUtils.getKey(this.image));
         }
         // Then get the information for the rest of the sequence
         final IWay<?> sequence = MapillaryImageUtils.getSequence(this.image);
-        MainApplication.worker.execute(() -> Optional.ofNullable(sequence).map(IWay::getNodes)
+        // Avoid blocking the main worker
+        MapillaryUtils.getForkJoinPool().execute(() -> Optional.ofNullable(sequence).map(IWay::getNodes)
             // Avoid CME by putting nodes in ArrayList
-            .map(nodes -> new ArrayList<>(nodes).stream().mapToLong(MapillaryImageUtils::getKey).toArray())
+            .map(nodes -> new ArrayList<>(nodes).stream().mapToLong(MapillaryImageUtils::getKey).filter(i -> i > 0)
+                .toArray())
             .ifPresent(MapillaryDownloader::downloadImages));
         this.updateDetections(5_000);
     }
@@ -158,14 +161,18 @@ public class MapillaryImageEntry
 
     @Override
     public MapillaryImageEntry getFirstImage() {
-        return Optional.ofNullable(MapillaryImageUtils.getSequence(this.image)).map(IWay::firstNode)
-            .map(MapillaryImageEntry::getCachedEntry).orElse(null);
+        return VectorDataSetUtils
+            .tryRead(this.image.getDataSet(), () -> Optional.ofNullable(MapillaryImageUtils.getSequence(this.image))
+                .map(IWay::firstNode).map(MapillaryImageEntry::getCachedEntry).orElse(null))
+            .orElse(null);
     }
 
     @Override
     public MapillaryImageEntry getLastImage() {
-        return Optional.ofNullable(MapillaryImageUtils.getSequence(this.image)).map(IWay::lastNode)
-            .map(MapillaryImageEntry::getCachedEntry).orElse(null);
+        return VectorDataSetUtils
+            .tryRead(this.image.getDataSet(), () -> Optional.ofNullable(MapillaryImageUtils.getSequence(this.image))
+                .map(IWay::lastNode).map(MapillaryImageEntry::getCachedEntry).orElse(null))
+            .orElse(null);
     }
 
     @Override
