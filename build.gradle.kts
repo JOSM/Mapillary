@@ -12,7 +12,7 @@ import kotlin.reflect.full.starProjectedType
 
 plugins {
   id("application")
-  id("com.diffplug.spotless") version "5.17.1"
+  id("com.diffplug.spotless") version "6.0.0"
   id("com.github.ben-manes.versions") version "0.39.0"
   id("com.github.spotbugs") version "4.7.9"
   id("net.ltgt.errorprone") version "2.0.2"
@@ -57,7 +57,7 @@ java.targetCompatibility = JavaVersion.VERSION_1_8
 
 val versions = mapOf(
   "awaitility" to "4.1.1",
-  "errorprone" to "2.9.0",
+  "errorprone" to "2.10.0",
   "jdatepicker" to "1.3.4",
   "jmockit" to "1.49",
   "junit" to "5.8.1",
