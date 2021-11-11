@@ -155,7 +155,7 @@ public final class MapillaryDownloader {
                         if (way.getDataSet() != null) {
                             VectorDataSetUtils.tryWrite(way.getDataSet(), () -> {
                                 synchronized (way) {
-                                    if (way.getDataSet() != null) {
+                                    if (way.getDataSet() != null && way.getDataSet().containsWay(way)) {
                                         way.getDataSet().removePrimitive(way);
                                     }
                                 }
