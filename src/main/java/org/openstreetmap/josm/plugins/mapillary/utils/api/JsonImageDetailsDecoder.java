@@ -84,7 +84,7 @@ public final class JsonImageDetailsDecoder {
      * @return The MapillaryAbstractImage that was added/modified
      */
     @Nullable
-    private static synchronized Pair<String, VectorNode> decodeImageInfo(@Nullable final JsonObject json,
+    private static Pair<String, VectorNode> decodeImageInfo(@Nullable final JsonObject json,
         @Nullable final VectorDataSet data) {
         if (json != null && data != null) {
             final boolean useComputedData = Boolean.TRUE.equals(MapillaryProperties.USE_COMPUTED_LOCATIONS.get());
