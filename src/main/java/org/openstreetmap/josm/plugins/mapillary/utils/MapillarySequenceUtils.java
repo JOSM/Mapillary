@@ -101,9 +101,9 @@ public class MapillarySequenceUtils {
         if (connectedWays.size() == 1) {
             way = connectedWays.iterator().next();
         } else if (next == NextOrPrevious.NEXT) {
-            way = connectedWays.stream().filter(way2 -> way2.firstNode().equals(node)).findFirst().orElse(null);
+            way = connectedWays.stream().filter(way2 -> node.equals(way2.firstNode())).findFirst().orElse(null);
         } else if (next == NextOrPrevious.PREVIOUS) {
-            way = connectedWays.stream().filter(way2 -> way2.lastNode().equals(node)).findFirst().orElse(null);
+            way = connectedWays.stream().filter(way2 -> node.equals(way2.lastNode())).findFirst().orElse(null);
         } else {
             way = null;
         }
