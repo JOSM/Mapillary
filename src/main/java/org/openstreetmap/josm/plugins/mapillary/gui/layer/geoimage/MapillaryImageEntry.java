@@ -61,6 +61,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.OffsetUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.VectorDataSetUtils;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.date.DateUtils;
@@ -342,7 +343,7 @@ public class MapillaryImageEntry
     @Override
     @Nullable
     public ILatLon getPos() {
-        return this.image.getCoor();
+        return OffsetUtils.getOffsetLocation(this.image);
     }
 
     @Override

@@ -80,6 +80,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.OffsetUtils;
 import org.openstreetmap.josm.tools.ColorHelper;
 import org.openstreetmap.josm.tools.Geometry;
 import org.openstreetmap.josm.tools.I18n;
@@ -335,7 +336,7 @@ public final class MapillaryLayer extends MVTLayer
         if (images.size() < MapillaryProperties.MAXIMUM_DRAW_IMAGES.get()) {
             for (INode imageAbs : images) {
                 if (imageAbs.isVisible() && MapillaryImageUtils.isImage(imageAbs)) {
-                    drawImageMarker(g, imageAbs);
+                    drawImageMarker(g, imageAbs, false);
                 }
             }
         }
@@ -346,8 +347,9 @@ public final class MapillaryLayer extends MVTLayer
         // Paint selected images last. Not particularly worried about painting too much, since most people don't select
         // thousands of images.
         for (INode imageAbs : this.getData().getSelectedNodes()) {
-            if (imageAbs.isVisible() && mv != null && mv.contains(mv.getPoint(imageAbs.getCoor()))) {
-                drawImageMarker(g, imageAbs);
+            if (imageAbs.isVisible() && mv != null && (mv.contains(mv.getPoint(imageAbs))
+                || mv.contains(mv.getPoint(OffsetUtils.getOffsetLocation(imageAbs))))) {
+                drawImageMarker(g, imageAbs, true);
             }
         }
     }
@@ -394,8 +396,9 @@ public final class MapillaryLayer extends MVTLayer
      *
      * @param g the Graphics context
      * @param img the image to be drawn onto the Graphics context
+     * @param offset {@code true} if we may be painting the offset for an image
      */
-    private void drawImageMarker(final Graphics2D g, final INode img) {
+    private void drawImageMarker(final Graphics2D g, final INode img, final boolean offset) {
         if (img == null || img.getCoor() == null) {
             Logging.warn("An image is not painted, because it is null or has no LatLon!");
             return;
@@ -409,7 +412,13 @@ public final class MapillaryLayer extends MVTLayer
                 .trace("An image was not painted due to a high zoom level, and not being the selected image/sequence");
             return;
         }
-        final Point p = MainApplication.getMap().mapView.getPoint(img.getCoor());
+        final ILatLon drawnCoordinates;
+        if (offset) {
+            drawnCoordinates = OffsetUtils.getOffsetLocation(img);
+        } else {
+            drawnCoordinates = img;
+        }
+        final Point p = MainApplication.getMap().mapView.getPoint(drawnCoordinates);
         Composite composite = g.getComposite();
         if (MapillaryImageUtils.getSequenceKey(selectedImg) != null
             && !MapillaryImageUtils.getSequenceKey(selectedImg).equals(MapillaryImageUtils.getSequenceKey(img))) {
@@ -476,6 +485,20 @@ public final class MapillaryLayer extends MVTLayer
          * }
          */
         g.setComposite(composite);
+
+        // Draw a line to the original location
+        if (offset && (Double.compare(drawnCoordinates.lat(), img.lat()) != 0
+            || Double.compare(drawnCoordinates.lon(), img.lon()) != 0)) {
+            final Point originalPoint = MainApplication.getMap().mapView.getPoint(img);
+            g.setColor(MapillaryColorScheme.SEQ_IMPORTED_HIGHLIGHTED);
+            g.drawLine(p.x, p.y, originalPoint.x, originalPoint.y);
+            // Draw a small dot at original location to indicate original
+            final int radius = IMG_MARKER_RADIUS / 2;
+            g.setColor(MapillaryColorScheme.MAPILLARY_GREEN);
+            g.fillOval(originalPoint.x - radius, originalPoint.y - radius, 2 * radius, 2 * radius);
+            g.setColor(MapillaryColorScheme.SEQ_IMPORTED_HIGHLIGHTED);
+            g.fillOval(p.x - radius, p.y - radius, 2 * radius, 2 * radius);
+        }
     }
 
     /**

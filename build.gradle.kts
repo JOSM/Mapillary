@@ -62,7 +62,7 @@ val versions = mapOf(
   "jmockit" to "1.49",
   "junit" to "5.8.1",
   "pmd" to "6.20.0",
-  "spotbugs" to "4.4.2",
+  "spotbugs" to "4.5.0",
   "wiremock" to "2.27.2"
 )
 

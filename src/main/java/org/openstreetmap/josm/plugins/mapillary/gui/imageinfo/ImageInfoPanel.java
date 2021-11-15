@@ -27,6 +27,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
+import javax.swing.SpinnerNumberModel;
 
 import org.openstreetmap.josm.data.osm.DataSelectionListener;
 import org.openstreetmap.josm.data.osm.INode;
@@ -50,10 +51,12 @@ import org.openstreetmap.josm.plugins.mapillary.gui.ImageColorPicker;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.SelectableLabel;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.gui.widget.DisableShortcutsOnFocusGainedJSpinner;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.plugins.mapillary.utils.OffsetUtils;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
@@ -76,6 +79,7 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
     private final AddTagToPrimitiveAction addMapillaryTagAction;
     private final JTextPane seqKeyValue;
     private final MapillaryButton colorPickerButton;
+    private final SpinnerNumberModel offsetModel;
 
     private ValueChangeListener<Boolean> imageLinkChangeListener;
     private boolean destroyed;
@@ -134,6 +138,16 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
         imgButtons.add(colorPickerButton, GBC.eol());
         seqKeyValue = new SelectableLabel();
 
+        JPanel offsetPanel = new JPanel();
+        offsetModel = new SpinnerNumberModel(OffsetUtils.getOffset(null), -100, 100, 1);
+        offsetModel.addChangeListener(l -> {
+            OffsetUtils.setOffset(offsetModel.getNumber());
+            if (MapillaryLayer.hasInstance()) {
+                MapillaryLayer.getInstance().invalidate();
+            }
+        });
+        offsetPanel.add(new DisableShortcutsOnFocusGainedJSpinner(offsetModel));
+
         JPanel root = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(0, 5, 0, 5);
@@ -154,6 +168,8 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
         root.add(new JLabel(tr("Image key")), gbc);
         gbc.gridy++;
         root.add(new JLabel(tr("Sequence key")), gbc);
+        gbc.gridy++;
+        root.add(new JLabel(tr("Sequence offset")), gbc);
 
         // Right column
         gbc.weightx = 1;
@@ -171,6 +187,8 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
         root.add(imgKey, gbc);
         gbc.gridy++;
         root.add(seqKeyValue, gbc);
+        gbc.gridy++;
+        root.add(offsetPanel, gbc);
 
         createLayout(root, true, null);
         selectedImageChanged(null, null);
@@ -238,6 +256,7 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
                 ? MapillaryURL.MainWebsite.blurEditImage(newImageKey)
                 : MapillaryURL.MainWebsite.browseImage(newImageKey);
 
+            offsetModel.setValue(OffsetUtils.getOffset(newImage));
             imageLinkChangeListener = b -> imgLinkAction.setURL(newImageUrl);
             imageLinkChangeListener.valueChanged(null);
             MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.addListener(imageLinkChangeListener);
@@ -262,6 +281,7 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
                 MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.removeListener(imageLinkChangeListener);
                 imageLinkChangeListener = null;
             }
+            this.offsetModel.setValue(OffsetUtils.getOffset(null));
             imgLinkAction.setURL(null);
             copyImgUrlAction.setContents(null);
 
