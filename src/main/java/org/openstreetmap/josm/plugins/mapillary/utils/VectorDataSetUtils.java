@@ -129,7 +129,7 @@ public class VectorDataSetUtils {
                 ReflectionUtils.setObjectsAccessible(customDataStoreField);
                 final VectorDataStore customDataStore = (VectorDataStore) customDataStoreField.get(vectorDataSet);
                 tryWrite(vectorDataSet, () -> {
-                    if (customDataStore != null) {
+                    if (customDataStore != null && object.getDataSet() != null) {
                         try {
                             object.getDataSet().removePrimitive(object);
                         } catch (JosmRuntimeException josmRuntimeException) {
