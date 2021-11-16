@@ -129,8 +129,15 @@ public class VectorDataSetUtils {
                 ReflectionUtils.setObjectsAccessible(customDataStoreField);
                 final VectorDataStore customDataStore = (VectorDataStore) customDataStoreField.get(vectorDataSet);
                 tryWrite(vectorDataSet, () -> {
-                    if (customDataStore != null && customDataStore.getAllPrimitives().contains(object)) {
-                        object.getDataSet().removePrimitive(object);
+                    if (customDataStore != null) {
+                        try {
+                            object.getDataSet().removePrimitive(object);
+                        } catch (JosmRuntimeException josmRuntimeException) {
+                            if (!josmRuntimeException.getMessage().startsWith("failed to remove primitive: ")
+                                || Logging.isDebugEnabled()) {
+                                throw josmRuntimeException;
+                            }
+                        }
                     }
                 });
             } catch (ReflectiveOperationException reflectiveOperationException) {
