@@ -141,11 +141,7 @@ public final class MapillaryDownloader {
             if (ways.size() != 1 && updateSequences) {
                 ways.stream().filter(way -> way.getDataSet() != null)
                     .forEach(way -> VectorDataSetUtils.tryWrite(way.getDataSet(), () -> {
-                        synchronized (way) {
-                            if (way.getDataSet() != null) {
-                                way.getDataSet().removePrimitive(way);
-                            }
-                        }
+                        VectorDataSetUtils.removeObject(way);
                         way.setNodes(Collections.emptyList());
                         way.setDeleted(true);
                     }));
@@ -153,13 +149,7 @@ public final class MapillaryDownloader {
                     .map(MapillaryDownloader::downloadSequences).flatMap(Collection::stream).forEach(way -> {
                         // We need to clear the cached bbox
                         if (way.getDataSet() != null) {
-                            VectorDataSetUtils.tryWrite(way.getDataSet(), () -> {
-                                synchronized (way) {
-                                    if (way.getDataSet() != null && way.getDataSet().containsWay(way)) {
-                                        way.getDataSet().removePrimitive(way);
-                                    }
-                                }
-                            });
+                            VectorDataSetUtils.removeObject(way);
                         }
                         VectorDataSetUtils.tryWrite(dataSet, () -> dataSet.addPrimitive(way));
                     });

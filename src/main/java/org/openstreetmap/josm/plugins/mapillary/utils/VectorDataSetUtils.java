@@ -14,7 +14,11 @@ import javax.annotation.Nonnull;
 
 import org.openstreetmap.josm.data.osm.OsmData;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
+import org.openstreetmap.josm.data.vector.VectorDataStore;
+import org.openstreetmap.josm.data.vector.VectorPrimitive;
+import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.ReflectionUtils;
 
 /**
  * Helper utilities for {@link VectorDataSet}
@@ -107,6 +111,31 @@ public class VectorDataSetUtils {
         } finally {
             if (lock.isWriteLockedByCurrentThread()) {
                 lock.writeLock().unlock();
+            }
+        }
+    }
+
+    /**
+     * Remove a vector object safely
+     *
+     * @param object The object to remove
+     * @param <O> The type of object to remove
+     */
+    public static <O extends VectorPrimitive> void removeObject(final O object) {
+        if (object.getDataSet() != null) {
+            final VectorDataSet vectorDataSet = object.getDataSet();
+            try {
+                final Field customDataStoreField = VectorDataSet.class.getDeclaredField("customDataStore");
+                ReflectionUtils.setObjectsAccessible(customDataStoreField);
+                final VectorDataStore customDataStore = (VectorDataStore) customDataStoreField.get(vectorDataSet);
+                tryWrite(vectorDataSet, () -> {
+                    if (customDataStore != null && customDataStore.getAllPrimitives().contains(object)) {
+                        object.getDataSet().removePrimitive(object);
+                    }
+                });
+            } catch (ReflectiveOperationException reflectiveOperationException) {
+                Logging.error(reflectiveOperationException);
+                throw new JosmRuntimeException(reflectiveOperationException);
             }
         }
     }
