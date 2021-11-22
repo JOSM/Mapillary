@@ -303,7 +303,9 @@ public final class MapillaryLayer extends MVTLayer
             MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
 
         // Draw the blue and red line
-        final INode selectedImage = this.getData().getSelectedNodes().stream().findFirst().orElse(null);
+        final List<INode> selectedImages = this.getData().getSelectedNodes().stream().distinct()
+            .collect(Collectors.toList());
+        final INode selectedImage = selectedImages.stream().findFirst().orElse(null);
         synchronized (this) {
             for (int i = 0; i < this.nearestImages.size(); i++) {
                 if (i % 2 == 0) {
@@ -336,7 +338,7 @@ public final class MapillaryLayer extends MVTLayer
         if (images.size() < MapillaryProperties.MAXIMUM_DRAW_IMAGES.get()) {
             for (INode imageAbs : images) {
                 if (imageAbs.isVisible() && MapillaryImageUtils.isImage(imageAbs)) {
-                    drawImageMarker(g, imageAbs, false);
+                    drawImageMarker(selectedImages, g, imageAbs, false);
                 }
             }
         }
@@ -346,10 +348,10 @@ public final class MapillaryLayer extends MVTLayer
         }
         // Paint selected images last. Not particularly worried about painting too much, since most people don't select
         // thousands of images.
-        for (INode imageAbs : this.getData().getSelectedNodes()) {
+        for (INode imageAbs : selectedImages) {
             if (imageAbs.isVisible() && mv != null && (mv.contains(mv.getPoint(imageAbs))
                 || mv.contains(mv.getPoint(OffsetUtils.getOffsetLocation(imageAbs))))) {
-                drawImageMarker(g, imageAbs, true);
+                drawImageMarker(selectedImages, g, imageAbs, true);
             }
         }
     }
@@ -394,18 +396,20 @@ public final class MapillaryLayer extends MVTLayer
     /**
      * Draws an image marker onto the given Graphics context.
      *
+     * @param selectedNodes Currently selected nodes
      * @param g the Graphics context
      * @param img the image to be drawn onto the Graphics context
      * @param offset {@code true} if we may be painting the offset for an image
      */
-    private void drawImageMarker(final Graphics2D g, final INode img, final boolean offset) {
+    private void drawImageMarker(final List<INode> selectedNodes, final Graphics2D g, final INode img,
+        final boolean offset) {
         if (img == null || img.getCoor() == null) {
             Logging.warn("An image is not painted, because it is null or has no LatLon!");
             return;
         }
-        final INode selectedImg = this.getData().getSelectedNodes().stream().findFirst().orElse(null);
+        final INode selectedImg = selectedNodes.stream().findFirst().orElse(null);
         if (!IMAGE_CA_PAINT_RANGE.contains(MainApplication.getMap().mapView.getDist100Pixel())
-            && !img.equals(selectedImg) && !this.getData().getSelectedNodes().contains(img)
+            && !img.equals(selectedImg) && !selectedNodes.contains(img)
             && (selectedImg == null || (MapillaryImageUtils.getSequence(img) != null && !Objects
                 .equals(MapillaryImageUtils.getSequenceKey(img), MapillaryImageUtils.getSequenceKey(selectedImg))))) {
             Logging
@@ -427,7 +431,7 @@ public final class MapillaryLayer extends MVTLayer
         // Determine colors
         final Color directionC;
         final Image i;
-        if (selectedImg != null && this.getData().getSelectedNodes().contains(img)) {
+        if (selectedImg != null && selectedNodes.contains(img)) {
             i = SELECTED_IMAGE.getImage();
             directionC = MapillaryColorScheme.SEQ_HIGHLIGHTED_CA;
         } else if (MapillaryImageUtils.getSequenceKey(selectedImg) != null
@@ -472,7 +476,7 @@ public final class MapillaryLayer extends MVTLayer
 
         // Paint highlight for selected or highlighted images
         if (getData().getHighlighted().contains(img.getPrimitiveId())
-            || (selectedImg != null && this.getData().getSelectedNodes().contains(img))) {
+            || (selectedImg != null && selectedNodes.contains(img))) {
             g.setColor(Color.WHITE);
             g.setStroke(new BasicStroke(2));
             g.drawOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
