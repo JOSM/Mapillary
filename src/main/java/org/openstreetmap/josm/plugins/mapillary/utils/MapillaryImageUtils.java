@@ -137,9 +137,12 @@ public final class MapillaryImageUtils {
                 if (entry instanceof BufferedImageCacheEntry) {
                     // Using the BufferedImageCacheEntry may speed up processing, if the image is already loaded.
                     completableFuture.complete((BufferedImageCacheEntry) entry);
-                } else {
+                } else if (entry != null && entry.getContent() != null) {
                     // Fall back. More expensive if the image has already been loaded twice.
                     completableFuture.complete(new BufferedImageCacheEntry(entry.getContent()));
+                } else {
+                    completableFuture.completeExceptionally(
+                        new NullPointerException("MapillaryImageUtils#getImage did not have required information"));
                 }
             });
             return completableFuture;
