@@ -5,13 +5,13 @@
 #
 # Translators:
 # Gerasimos Maris, 2018
-# Simon Legner, 2021
+# Simon Legner, 2020
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.34-1-gb1a94dc\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.48-2-g48cffb9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-08 15:04+0000\n"
+"POT-Creation-Date: 2021-11-24 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Greek (https://www.transifex.com/josm/teams/2544/el/)\n"
 "MIME-Version: 1.0\n"
@@ -39,14 +39,8 @@ msgstr "Προσθήκη ετικέτας Mapillary"
 msgid "Add filter."
 msgstr "Προσθήκη φίλτρου."
 
-msgid "All images in a directory"
-msgstr "Όλες οι εικόνες σε έναν κατάλογο"
-
 msgid "Cancel"
 msgstr "Ακύρωση"
-
-msgid "Center view"
-msgstr "Κεντράρισμα επιπέδου"
 
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
@@ -63,9 +57,6 @@ msgstr "Καθαρισμός"
 msgid "Color"
 msgstr "Χρώμα"
 
-msgid "Continues with the paused walk."
-msgstr "Συνέχεια με το σταματημένο περίπατο."
-
 msgid "Copy key"
 msgstr "Αντιγραφή κλειδιού"
 
@@ -73,12 +64,6 @@ msgid "Could not import a geotagged image to the Mapillary layer!"
 msgstr ""
 "Δεν ήταν δυνατή η εισαγωγή μιας γεωαναφερμένης εικόνας στο επίπεδο του "
 "Mapillary!"
-
-msgid "Could not import the directory ''{0}''!"
-msgstr "Δεν ήταν δυνατή η εισαγωγή του καταλόγου ''{0}''!"
-
-msgid "Could not import the image ''{0}''!"
-msgstr "Δεν ήταν δυνατή η εισαγωγή της εικόνας ''{0}''!"
 
 msgid "Could not open the URL {0} in a browser"
 msgstr ""
@@ -172,12 +157,6 @@ msgstr "Λειτουργία φίλτρου"
 msgid "Follow selected image"
 msgstr "Ακολουθήστε την επιλεγμένη εικόνα"
 
-msgid "From existing image layer"
-msgstr "Από το υπάρχον επίπεδο εικόνας"
-
-msgid "From which source do you want to import images to the Mapillary layer?"
-msgstr "Από ποια πηγή θέλετε να εισαγάγετε εικόνες στο επίπεδο Mapillary;"
-
 msgid "Go forward"
 msgstr "Πηγαίντε μπροστά"
 
@@ -207,44 +186,14 @@ msgstr "Πληροφορία εικόνας"
 msgid "Image key"
 msgstr "Κουμπί εικόνας"
 
-msgid "Images from my file system"
-msgstr "Εικόνες από το σύστημα αρχείων μου"
-
 msgid "Import"
 msgstr "Εισαγωγή"
-
-msgid "Import exception"
-msgstr "Εξαίρεση εισαγωγής"
-
-msgid "Import local pictures"
-msgstr "Εισαγωγή τοπικών εικόνων"
-
-msgid "Import pictures"
-msgstr "Εισαγωγή εικόνων"
-
-msgid "Import pictures into Mapillary layer"
-msgstr "Εισαγωγή εικόνων στο επίπεδο Mapillary"
-
-msgid "Imported images"
-msgstr "Εισαγόμενες εικόνες"
 
 msgid "Intersection danger"
 msgstr "Κίνδυνος διασταύρωσης"
 
 msgid "Inverse filter"
 msgstr "Αντιστροφή φίλτρου"
-
-msgid "Jump to blue"
-msgstr "Μετάβαση στο μπλε"
-
-msgid "Jump to red"
-msgstr "Μετάβαση στο κόκκινο"
-
-msgid "Jumps to the picture at the other side of the blue line"
-msgstr "Μετάβαση στην εικόνα στην άλλη πλευρά της μπλε γραμμής"
-
-msgid "Jumps to the picture at the other side of the red line"
-msgstr "Μετάβαση στην εικόνα στην άλλη πλευρά της κόκκινης γραμμής"
 
 msgid "Layer"
 msgstr "Επίπεδο"
@@ -295,9 +244,6 @@ msgstr "Μετακίνηση φίλτρου πάνω."
 msgid "Multikey: {0}"
 msgstr "Πολλαπλό κλειδί: {0}"
 
-msgid "Next picture"
-msgstr "Επόμενη εικόνα"
-
 msgid "No entry"
 msgstr "Απαγορεύεται η είσοδος"
 
@@ -329,23 +275,8 @@ msgstr "Άνοιγμα διαλόγου φίλτρου Mapillary"
 msgid "Open Mapillary layer"
 msgstr "Άνοιγμα επιπέδου Mapillary"
 
-msgid "Open Mapillary window"
-msgstr "Άνοιγμα παραθύρου Mapillary"
-
-msgid "Pause"
-msgstr "Παύση"
-
 msgid "Pedestrian crossing"
 msgstr "Διάβαση πεζών"
-
-msgid "Play"
-msgstr "Παίξε"
-
-msgid "Press \"{0}\" to download images"
-msgstr "Πατήστε \"{0}\" για λήψη εικόνων"
-
-msgid "Previous picture"
-msgstr "Προηγούμενη εικόνα"
 
 msgctxt "filter"
 msgid "R"
@@ -357,20 +288,11 @@ msgstr "Μηδενισμός"
 msgid "Reverse"
 msgstr "Αντιστροφή"
 
-msgid "Rewrite imported images"
-msgstr "Ξαναγράψτε τις εισαγόμενες εικόνες"
-
 msgid "Roundabout"
 msgstr "Κυκλικός κόμβος"
 
 msgid "Select a directory"
 msgstr "Επιλέξτε έναν κατάλογο"
-
-msgid "Select directory to import images from"
-msgstr "Επιλέξτε κατάλογο για να εισάγετε εικόνες από"
-
-msgid "Select the images you want to import"
-msgstr "Επιλέξτε τις εικόνες που θέλετε να εισαγάγετε"
 
 msgid "Sequence key"
 msgstr "Κουμπί αλληλουχίας"
@@ -378,40 +300,15 @@ msgstr "Κουμπί αλληλουχίας"
 msgid "Show detections on top of image"
 msgstr "Εμφάνιση ανιχνεύσεων στην κορυφή της εικόνας"
 
-msgid "Show first Image"
-msgstr "Εμφάνιση πρώτης εικόνας"
-
-msgid "Show last Image"
-msgstr "Εμφάνιση τελευταίας εικόνας"
-
-msgid "Show next Image"
-msgstr "Εμφάνιση επόμενης εικόνας"
-
-msgid "Show previous Image"
-msgstr "Εμφάνιση προηγούμενης εικόνας"
-
-msgid "Shows the next picture in the sequence"
-msgstr "Εμφάνιση της επόμενης εικόνας στην σειρά"
-
-msgid "Shows the previous picture in the sequence"
-msgstr "Εμφάνιση της προηγούμενης εικόνας στην σειρά"
-
 msgid "Sort"
 msgstr "Ταξινόμηση"
 
 msgid "Speed limit"
 msgstr "Οριο ταχύτητας"
 
-msgctxt "as synonym to halt or stand still"
-msgid "Stop"
-msgstr "Stop"
-
 msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Stop"
-
-msgid "Supported image formats (JPG and PNG)"
-msgstr "Υποστηριζόμενες μορφές εικόνας (JPG και PNG)"
 
 msgid "Tag conflict"
 msgstr "Σύγκρουση ετικέτας"
@@ -419,9 +316,6 @@ msgstr "Σύγκρουση ετικέτας"
 msgctxt "filter"
 msgid "Text"
 msgstr "Κείμενο"
-
-msgid "There are currently no layers with geotagged images!"
-msgstr "Αυτήν τη στιγμή δεν υπάρχουν επίπεδα με γεωαναφερμένες εικόνες!"
 
 msgid "Toggle: {0}"
 msgstr "Εναλλαγή: {0}"
@@ -443,14 +337,6 @@ msgstr "Προβολή στο πρόγραμμα περιήγησης"
 
 msgid "Wait for full quality pictures"
 msgstr "Αναμονή για φωτογραφίες πλήρους ποιότητας"
-
-msgid "Walk mode"
-msgstr "Λειτουργία περπατήματος"
-
-msgid "Walk mode: Waiting for next image takes too long! Exiting walk mode…"
-msgstr ""
-"Λειτουργία περπατήματος: Η αναμονή για την επόμενη εικόνα διαρκεί πάρα πολύ!"
-" Έξοδος από την λειτουργία περπατήματος..."
 
 msgid "Which image layers do you want to import into the Mapillary layer?"
 msgstr "Ποια επίπεδα εικόνων θέλετε να εισαγάγετε στο επίπεδο Mapillary;"

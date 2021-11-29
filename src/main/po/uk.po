@@ -6,15 +6,15 @@
 # Translators:
 # fayçal fatihi, 2018
 # Ігор Варварчук, 2020
+# Simon Legner, 2020
 # Florian Schäfer, 2020
-# Simon Legner, 2021
 # Andrey Golovin, 2021
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.34-1-gb1a94dc\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.48-2-g48cffb9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-08 15:04+0000\n"
+"POT-Creation-Date: 2021-11-24 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Ukrainian (https://www.transifex.com/josm/teams/2544/uk/)\n"
 "MIME-Version: 1.0\n"
@@ -40,14 +40,8 @@ msgstr "Додати теґ Mapillary"
 msgid "Add filter."
 msgstr "Додати фільтр."
 
-msgid "All images in a directory"
-msgstr "Всі знімки у теці"
-
 msgid "Cancel"
 msgstr "Скасувати"
-
-msgid "Center view"
-msgstr "Центрувати вид"
 
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
@@ -64,9 +58,6 @@ msgstr "Очистити"
 msgid "Color"
 msgstr "Колір"
 
-msgid "Continues with the paused walk."
-msgstr "Продовжує програвання."
-
 msgid "Copied URL to clipboard …"
 msgstr "URL скопійовано до буфера обміну…"
 
@@ -81,12 +72,6 @@ msgstr "Копіювати ключ"
 
 msgid "Could not import a geotagged image to the Mapillary layer!"
 msgstr "Неможливо імпортувати геотеговані знімки до шару Mapillary’!"
-
-msgid "Could not import the directory ''{0}''!"
-msgstr "Неможливо імпортувати теку ''{0}''!"
-
-msgid "Could not import the image ''{0}''!"
-msgstr "Неможливо імпортувати знімок ''{0}''!"
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "Неможливо відкрити URL {0} в оглядачі"
@@ -197,12 +182,6 @@ msgstr "Перший помічений початок"
 msgid "Follow selected image"
 msgstr "Рухати мапу за поточним знімком"
 
-msgid "From existing image layer"
-msgstr "З поточного шару знімків"
-
-msgid "From which source do you want to import images to the Mapillary layer?"
-msgstr "Звідки ви бажаєте імпортувати знімки до шару Mapillary?"
-
 msgid "Give way"
 msgstr "Дати дорогу"
 
@@ -241,50 +220,14 @@ msgstr "Ключ знімка"
 msgid "Image: "
 msgstr "Знімок:"
 
-msgid "Images from my file system"
-msgstr "Знімки з моєї файлової системи"
-
 msgid "Import"
 msgstr "Імпортувати"
-
-msgid "Import exception"
-msgstr "Помилка імпорту"
-
-msgid "Import local pictures"
-msgstr "Імпортувати локальні знімки"
-
-msgid "Import pictures"
-msgstr "Імпортувати знімки"
-
-msgid "Import pictures into Mapillary layer"
-msgstr "Імпортувати знімки до шару Mapillary"
-
-msgid "Imported images"
-msgstr "Імпортовані знімки"
 
 msgid "Intersection danger"
 msgstr "Перехрещення з другорядною дорогою"
 
 msgid "Inverse filter"
 msgstr "Інвертувати фільтр"
-
-msgid "Jump to blue"
-msgstr "Блакитний"
-
-msgid "Jump to blue image"
-msgstr "Перейти до блакитного знімка"
-
-msgid "Jump to red"
-msgstr "Червоний"
-
-msgid "Jump to red image"
-msgstr "Перейти до червоного знімка"
-
-msgid "Jumps to the picture at the other side of the blue line"
-msgstr "Перейти до знімка на іншому боці блакитної лінії"
-
-msgid "Jumps to the picture at the other side of the red line"
-msgstr "Перейти до знімка на іншому боці червоної лінії"
 
 msgid "Last Seen End"
 msgstr "Останній помічений кінець"
@@ -338,20 +281,11 @@ msgstr "Шар Mapillary"
 msgid "Mapillary login"
 msgstr "Вхід в Mapillary"
 
-msgid "Mapillary main dialog"
-msgstr "Діалог Mapillary"
-
 msgid "Mapillary point features layer"
 msgstr "Точкові об’єкти Mapillary"
 
 msgid "Mapillary traffic signs layer"
 msgstr "Дорожні знаки Mapillary"
-
-msgid "Mapillary: toggle detections"
-msgstr "Mapillary: показ розпізнаного"
-
-msgid "Mapillary: toggle sign detections"
-msgstr "Mapillary: розпізнані знаки"
 
 msgid "Month"
 msgstr "Місяць"
@@ -367,9 +301,6 @@ msgstr "Перемістити фільтр вгору."
 
 msgid "Multikey: {0}"
 msgstr "Мультиключ: {0}"
-
-msgid "Next picture"
-msgstr "Вперед"
 
 msgid "No entry"
 msgstr "В’їзд заборонено"
@@ -404,9 +335,6 @@ msgstr "Відкрити діалог фільтра Mapillary"
 msgid "Open Mapillary layer"
 msgstr "Відкрити шар Mapillary"
 
-msgid "Open Mapillary window"
-msgstr "Відкрити вікно Mapillary"
-
 msgid "Org"
 msgstr "Орг"
 
@@ -416,23 +344,11 @@ msgstr "Організації"
 msgid "Panorama only"
 msgstr "Тільки панорами"
 
-msgid "Pause"
-msgstr "Пауза"
-
 msgid "Pedestrian crossing"
 msgstr "Пішохідний перехід"
 
-msgid "Play"
-msgstr "Пуск"
-
 msgid "Point Objects"
 msgstr "Точкові об’єкти"
-
-msgid "Press \"{0}\" to download images"
-msgstr "Натисніть \"{0}\" для завантаження знімків"
-
-msgid "Previous picture"
-msgstr "Назад"
 
 msgctxt "filter"
 msgid "R"
@@ -450,9 +366,6 @@ msgstr "У зворотному порядку"
 msgid "Reverse the filters order."
 msgstr "Змінює послідовність фільтрів."
 
-msgid "Rewrite imported images"
-msgstr "Перезаписати імпортовані знімки"
-
 msgid "Roundabout"
 msgstr "Круг"
 
@@ -465,14 +378,8 @@ msgstr "Виділити видиме"
 msgid "Select a directory"
 msgstr "Виберіть теку"
 
-msgid "Select directory to import images from"
-msgstr "Оберіть теку звідки імпортувати знімки"
-
 msgid "Select the Mapillary Image {0} on the {1} layer (downloads if needed)"
 msgstr "Виділити зображення Mapillary {0} в шарі {1} (завантажте за потреби)"
-
-msgid "Select the images you want to import"
-msgstr "Оберіть знімки для імпорту"
 
 msgid "Sequence key"
 msgstr "Ключ послідовності"
@@ -486,24 +393,6 @@ msgstr "Показати відповідне"
 msgid "Show detections on top of image"
 msgstr "Показувати виявлені на знімку об’єкти"
 
-msgid "Show first Image"
-msgstr "Показати перше зображення"
-
-msgid "Show last Image"
-msgstr "Показати останнє зображення"
-
-msgid "Show next Image"
-msgstr "Показати наступне зображення"
-
-msgid "Show previous Image"
-msgstr "Показати попереднє зображення"
-
-msgid "Shows the next picture in the sequence"
-msgstr "Показує наступний знімок послідовності"
-
-msgid "Shows the previous picture in the sequence"
-msgstr "Показує попередній знімок послідовності"
-
 msgid "Sort"
 msgstr "Впорядкувати"
 
@@ -516,16 +405,9 @@ msgstr "Обмеження швидкості"
 msgid "Start"
 msgstr "Початок"
 
-msgctxt "as synonym to halt or stand still"
-msgid "Stop"
-msgstr "Стоп"
-
 msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Стоп"
-
-msgid "Supported image formats (JPG and PNG)"
-msgstr "Підтримувані формати зображень (JPG та PNG)"
 
 msgid "Tag conflict"
 msgstr "Конфлікт теґів"
@@ -534,17 +416,8 @@ msgctxt "filter"
 msgid "Text"
 msgstr "Текст"
 
-msgid "There are currently no layers with geotagged images!"
-msgstr "Шар знімків з геопривʼязкою відсутній!"
-
 msgid "Today"
 msgstr "Сьогодні"
-
-msgid "Toggle detection outlines"
-msgstr "Показувати контури розпізнаного"
-
-msgid "Toggle sign detection outlines"
-msgstr "Показувати знайдені знаки"
 
 msgid "Toggle: {0}"
 msgstr "Включити/Виключити: {0}"
@@ -569,14 +442,6 @@ msgstr "Подивитись в оглядачі"
 
 msgid "Wait for full quality pictures"
 msgstr "Очікувати завантаження HD знімків"
-
-msgid "Walk mode"
-msgstr "Прогулянка"
-
-msgid "Walk mode: Waiting for next image takes too long! Exiting walk mode…"
-msgstr ""
-"Прогулянка: очікування наступного знімка затягнулося! Вихід із режиму "
-"програвання…"
 
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
@@ -611,12 +476,6 @@ msgstr "завантажує знімки вулиць (наразі підтр�
 
 msgid "image has no key"
 msgstr "знімок не має ключа"
-
-msgid "loading image"
-msgstr "завантаження знімка"
-
-msgid "no image selected"
-msgstr "виділіть знімок для перегляду"
 
 msgid "sequence has no key"
 msgstr "послідовність не має ключа"

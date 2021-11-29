@@ -6,14 +6,14 @@
 # Translators:
 # Hiroshi Miura, 2019
 # jun meguro, 2019
+# Simon Legner, 2020
 # Florian Schäfer, 2020
-# Simon Legner, 2021
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.34-1-gb1a94dc\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.48-2-g48cffb9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-08 15:04+0000\n"
+"POT-Creation-Date: 2021-11-24 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Japanese (https://www.transifex.com/josm/teams/2544/ja/)\n"
 "MIME-Version: 1.0\n"
@@ -39,14 +39,8 @@ msgstr "Mapillary タグを追加"
 msgid "Add filter."
 msgstr "フィルターを追加。"
 
-msgid "All images in a directory"
-msgstr "ディレクトリ中の全画像"
-
 msgid "Cancel"
 msgstr "キャンセル"
-
-msgid "Center view"
-msgstr "中央表示"
 
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
@@ -61,20 +55,11 @@ msgstr "クリア"
 msgid "Color"
 msgstr "色"
 
-msgid "Continues with the paused walk."
-msgstr "開始"
-
 msgid "Copy key"
 msgstr "キーをコピー"
 
 msgid "Could not import a geotagged image to the Mapillary layer!"
 msgstr "Mapillaryレイヤに、ジオタグされた画像のインポートができませんでした!"
-
-msgid "Could not import the directory ''{0}''!"
-msgstr "ディレクトリ \"{0}\"をインポートできませんでした!"
-
-msgid "Could not import the image ''{0}''!"
-msgstr "画像\"{0}\"をインポートできませんでした!"
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "URL {0} をブラウザで開けませんでした。"
@@ -162,12 +147,6 @@ msgstr "フィルターモード"
 msgid "Follow selected image"
 msgstr "選択した画像をフォロー"
 
-msgid "From existing image layer"
-msgstr "画像レイヤーから出る"
-
-msgid "From which source do you want to import images to the Mapillary layer?"
-msgstr "どの情報源からMapillaryレイヤへ画像をインポートしますか？"
-
 msgid "Give way"
 msgstr "徐行"
 
@@ -200,44 +179,14 @@ msgstr "画像情報"
 msgid "Image key"
 msgstr "画像キー"
 
-msgid "Images from my file system"
-msgstr "ファイルシステムからの画像"
-
 msgid "Import"
 msgstr "インポート"
-
-msgid "Import exception"
-msgstr "インポート例外発生"
-
-msgid "Import local pictures"
-msgstr "ローカルの写真をインポート"
-
-msgid "Import pictures"
-msgstr "写真をインポート"
-
-msgid "Import pictures into Mapillary layer"
-msgstr "写真をMapillaryレイヤにインポート"
-
-msgid "Imported images"
-msgstr "インポートした画像"
 
 msgid "Intersection danger"
 msgstr "危険交差点"
 
 msgid "Inverse filter"
 msgstr "反転フィルター"
-
-msgid "Jump to blue"
-msgstr "青へとぶ"
-
-msgid "Jump to red"
-msgstr "赤へとぶ"
-
-msgid "Jumps to the picture at the other side of the blue line"
-msgstr "青い線のむこう側の写真にジャンプします"
-
-msgid "Jumps to the picture at the other side of the red line"
-msgstr "赤い線のむこう側の写真にジャンプします"
 
 msgid "Layer"
 msgstr "レイヤー"
@@ -288,9 +237,6 @@ msgstr "フィルターを上に移動。"
 msgid "Multikey: {0}"
 msgstr "マルチキー: {0}"
 
-msgid "Next picture"
-msgstr "次の画像"
-
 msgid "No entry"
 msgstr "エントリー無し"
 
@@ -321,23 +267,8 @@ msgstr "Mapillaryフィルタダイアログを開く"
 msgid "Open Mapillary layer"
 msgstr "Mapillaryレイヤを開く"
 
-msgid "Open Mapillary window"
-msgstr "Mapillaryウインドウを開く"
-
-msgid "Pause"
-msgstr "一時停止"
-
 msgid "Pedestrian crossing"
 msgstr "横断歩道"
-
-msgid "Play"
-msgstr "再生"
-
-msgid "Press \"{0}\" to download images"
-msgstr "画像をダウンロードするには\"{0}\"を押下"
-
-msgid "Previous picture"
-msgstr "前の画像"
 
 msgctxt "filter"
 msgid "R"
@@ -349,20 +280,11 @@ msgstr "リセット"
 msgid "Reverse"
 msgstr "逆順"
 
-msgid "Rewrite imported images"
-msgstr "インポートした画像を再書き込み"
-
 msgid "Roundabout"
 msgstr "環状交差点"
 
 msgid "Select a directory"
 msgstr "ディレクトリを選択"
-
-msgid "Select directory to import images from"
-msgstr "画像をインポートするディレクトリを選択"
-
-msgid "Select the images you want to import"
-msgstr "インポートしたい画像を選択"
 
 msgid "Sequence key"
 msgstr "シーケンスキー"
@@ -370,40 +292,15 @@ msgstr "シーケンスキー"
 msgid "Show detections on top of image"
 msgstr "イメージ上に検出物を表示"
 
-msgid "Show first Image"
-msgstr "最初の画像を表示"
-
-msgid "Show last Image"
-msgstr "最後の画像を表示"
-
-msgid "Show next Image"
-msgstr "次の画像を表示"
-
-msgid "Show previous Image"
-msgstr "前の画像を表示"
-
-msgid "Shows the next picture in the sequence"
-msgstr "シーケンスの次の写真を表示"
-
-msgid "Shows the previous picture in the sequence"
-msgstr "シーケンスの前の写真を表示"
-
 msgid "Sort"
 msgstr "並べ替え"
 
 msgid "Speed limit"
 msgstr "最高速度"
 
-msgctxt "as synonym to halt or stand still"
-msgid "Stop"
-msgstr "停止"
-
 msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "停止"
-
-msgid "Supported image formats (JPG and PNG)"
-msgstr "サポートされる画像フォーマット(JPGとPNG)"
 
 msgid "Tag conflict"
 msgstr "タグの衝突"
@@ -411,9 +308,6 @@ msgstr "タグの衝突"
 msgctxt "filter"
 msgid "Text"
 msgstr "テキスト"
-
-msgid "There are currently no layers with geotagged images!"
-msgstr "ジオタグされた画像があるレイヤーは、現在ありません。"
 
 msgid "Toggle: {0}"
 msgstr "{0}の表示/非表示"
@@ -435,12 +329,6 @@ msgstr "ブラウザで表示"
 
 msgid "Wait for full quality pictures"
 msgstr "フル品質の写真を待つ"
-
-msgid "Walk mode"
-msgstr "自動再生モード"
-
-msgid "Walk mode: Waiting for next image takes too long! Exiting walk mode…"
-msgstr "自動再生モード： 次画像の表示に時間が掛りすぎます。自動再生モードの中止..."
 
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
@@ -467,9 +355,6 @@ msgstr "現在選択しているMapillary画像へズームします。"
 
 msgid "image has no key"
 msgstr "画像にはキーがない"
-
-msgid "no image selected"
-msgstr "画像が選択されていない"
 
 msgid "sequence has no key"
 msgstr "シーケンスにキーがない"

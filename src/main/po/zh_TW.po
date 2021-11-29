@@ -4,15 +4,15 @@
 # FIRST AUTHOR, YEAR.
 #
 # Translators:
+# Simon Legner, 2020
 # Florian Schäfer, 2020
 # Supaplex, 2021
-# Simon Legner, 2021
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.34-1-gb1a94dc\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.48-2-g48cffb9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-08 15:04+0000\n"
+"POT-Creation-Date: 2021-11-24 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Chinese (Taiwan) (https://www.transifex.com/josm/teams/2544/zh_TW/)\n"
 "MIME-Version: 1.0\n"
@@ -38,14 +38,8 @@ msgstr "新增 Mapillary 標籤"
 msgid "Add filter."
 msgstr "加入過濾條件。"
 
-msgid "All images in a directory"
-msgstr "所有圖片都在目錄裡"
-
 msgid "Cancel"
 msgstr "取消"
-
-msgid "Center view"
-msgstr "置中檢視"
 
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
@@ -62,9 +56,6 @@ msgstr "顏色"
 
 msgid "Color Picker"
 msgstr "顏色選取器"
-
-msgid "Continues with the paused walk."
-msgstr "繼續暫停的走動。"
 
 msgid "Copied URL to clipboard …"
 msgstr "複製網址到剪貼薄..."
@@ -86,12 +77,6 @@ msgstr "複製鍵值"
 
 msgid "Could not import a geotagged image to the Mapillary layer!"
 msgstr "無法匯入有地理標記圖片到 Mapillary 圖層！"
-
-msgid "Could not import the directory ''{0}''!"
-msgstr "無法匯入目錄 ''{0}''！"
-
-msgid "Could not import the image ''{0}''!"
-msgstr "無法匯入圖片 ''{0}''！"
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "無法用瀏覽器打開網址 {0}"
@@ -208,12 +193,6 @@ msgstr "第一個看來開始"
 msgid "Follow selected image"
 msgstr "跟隨選取圖片"
 
-msgid "From existing image layer"
-msgstr "跟隨既有圖片圖層"
-
-msgid "From which source do you want to import images to the Mapillary layer?"
-msgstr "你要從那個來源匯入圖片到 Mapillary 圖層？"
-
 msgid "Give way"
 msgstr "禮讓路口"
 
@@ -255,50 +234,14 @@ msgstr "圖片鍵值"
 msgid "Image: "
 msgstr "圖片："
 
-msgid "Images from my file system"
-msgstr "從我檔案系統的圖片"
-
 msgid "Import"
 msgstr "匯入"
-
-msgid "Import exception"
-msgstr "匯入排除"
-
-msgid "Import local pictures"
-msgstr "匯入本機圖片"
-
-msgid "Import pictures"
-msgstr "匯入圖片"
-
-msgid "Import pictures into Mapillary layer"
-msgstr "匯入圖片到 Mapillary 圖層"
-
-msgid "Imported images"
-msgstr "匯入的圖片"
 
 msgid "Intersection danger"
 msgstr "路口危險"
 
 msgid "Inverse filter"
 msgstr "反轉過濾條件"
-
-msgid "Jump to blue"
-msgstr "跳到藍色"
-
-msgid "Jump to blue image"
-msgstr "跳到藍色圖片"
-
-msgid "Jump to red"
-msgstr "跳到紅色"
-
-msgid "Jump to red image"
-msgstr "跳到紅色圖片"
-
-msgid "Jumps to the picture at the other side of the blue line"
-msgstr "跳到藍線另一邊的圖片"
-
-msgid "Jumps to the picture at the other side of the red line"
-msgstr "跳到紅線另一邊的圖片"
 
 msgid "Last Seen End"
 msgstr "最後看到結束"
@@ -349,23 +292,11 @@ msgstr "Mapillary圖層"
 msgid "Mapillary login"
 msgstr "Mapillary 登入"
 
-msgid "Mapillary main dialog"
-msgstr "Mapillary 主要對話框"
-
 msgid "Mapillary point features layer"
 msgstr "Mapillary 節點圖徵圖層"
 
 msgid "Mapillary traffic signs layer"
 msgstr "Mapillary 交通號誌圖層"
-
-msgid "Mapillary: Vote {0}"
-msgstr "Mapillary：投票 {0}"
-
-msgid "Mapillary: toggle detections"
-msgstr "Mapillary：啟動偵測"
-
-msgid "Mapillary: toggle sign detections"
-msgstr "Mapillary：啟動號誌側測"
 
 msgid "Month"
 msgstr "月"
@@ -381,9 +312,6 @@ msgstr "將過濾條件上移。"
 
 msgid "Multikey: {0}"
 msgstr "多重設定鍵：{0}"
-
-msgid "Next picture"
-msgstr "下一張圖片"
 
 msgid "No color selected"
 msgstr "沒有選取顏色"
@@ -427,9 +355,6 @@ msgstr "開啟 Mapillary 篩選器對話框"
 msgid "Open Mapillary layer"
 msgstr "開啟Mapillary圖層 "
 
-msgid "Open Mapillary window"
-msgstr "開啟 Mapillary 視窗"
-
 msgid "Org"
 msgstr "Org"
 
@@ -438,9 +363,6 @@ msgstr "組織"
 
 msgid "Panorama only"
 msgstr "只有全景圖"
-
-msgid "Pause"
-msgstr "暫停"
 
 msgid "Pedestrian crossing"
 msgstr "行人穿越"
@@ -451,17 +373,8 @@ msgstr "選擇顏色"
 msgid "Picture Filters"
 msgstr "圖片篩選器"
 
-msgid "Play"
-msgstr "播放"
-
 msgid "Point Objects"
 msgstr "點物件"
-
-msgid "Press \"{0}\" to download images"
-msgstr "按 \"{0}\" 下載影像"
-
-msgid "Previous picture"
-msgstr "上一張圖片"
 
 msgctxt "filter"
 msgid "R"
@@ -479,9 +392,6 @@ msgstr "反轉"
 msgid "Reverse the filters order."
 msgstr "反轉過濾器順序。"
 
-msgid "Rewrite imported images"
-msgstr "重新寫入匯入圖片"
-
 msgid "Roundabout"
 msgstr "圓環"
 
@@ -497,17 +407,11 @@ msgstr "選擇可視的"
 msgid "Select a directory"
 msgstr "選取目錄"
 
-msgid "Select directory to import images from"
-msgstr "選取要匯入圖片的選取目錄"
-
 msgid "Select the Mapillary Detection {0}"
 msgstr "選擇 Mapillary 偵測 {0}"
 
 msgid "Select the Mapillary Image {0} on the {1} layer (downloads if needed)"
 msgstr "選取 {1} 圖層的Mapillary 影像 {0} (需要時會下載)"
-
-msgid "Select the images you want to import"
-msgstr "選取你想要匯入的圖片"
 
 msgid "Select/Deselect all object detections on the current page"
 msgstr "選擇 / 取消選擇目前頁面所有的物件偵測"
@@ -524,18 +428,6 @@ msgstr "顯示相關的"
 msgid "Show detections on top of image"
 msgstr "在圖片上顯示方向"
 
-msgid "Show first Image"
-msgstr "顯示第一個影像"
-
-msgid "Show last Image"
-msgstr "顯示最後一個影像"
-
-msgid "Show next Image"
-msgstr "顯示下一張圖片"
-
-msgid "Show previous Image"
-msgstr "顯示前一張圖片"
-
 msgid "Show the next page of items"
 msgstr "顯示下一頁的物件"
 
@@ -544,12 +436,6 @@ msgstr "顯示上一頁的物件"
 
 msgid "Show this number of items on each page"
 msgstr "顯示每個頁面的物件的這號碼"
-
-msgid "Shows the next picture in the sequence"
-msgstr "從片段顯示下一張"
-
-msgid "Shows the previous picture in the sequence"
-msgstr "從片段顯示上一張圖片"
 
 msgid "Smart Edit Mode"
 msgstr "智慧編輯模式"
@@ -569,29 +455,16 @@ msgstr "速限"
 msgid "Start"
 msgstr "開始"
 
-msgctxt "as synonym to halt or stand still"
-msgid "Stop"
-msgstr "禁止通行"
-
 msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "禁止通行"
 
-msgid "Supported image formats (JPG and PNG)"
-msgstr "支援圖片格式 (JPG 和 PNG)"
-
 msgid "Tag conflict"
 msgstr "標籤衝突"
-
-msgid "Tell Mapillary that you {0} this detection"
-msgstr "告訴 Mapillary 你 {0} 已經側測到 "
 
 msgctxt "filter"
 msgid "Text"
 msgstr "文字"
-
-msgid "There are currently no layers with geotagged images!"
-msgstr "目前圖層中並無地理標記的圖片！"
 
 msgid ""
 "There is a newer version of JOSM and/or the Mapillary plugin. Please update."
@@ -599,12 +472,6 @@ msgstr "已經有新版本的 JOSM Mapillary 插件，請更新"
 
 msgid "Today"
 msgstr "今日"
-
-msgid "Toggle detection outlines"
-msgstr "啟動偵測外框"
-
-msgid "Toggle sign detection outlines"
-msgstr "啟動號誌偵測外框"
 
 msgid "Toggle: {0}"
 msgstr "切換：{0}"
@@ -627,17 +494,8 @@ msgstr "更新"
 msgid "View in browser"
 msgstr "在瀏覽器中觀看"
 
-msgid "Vote: {0}"
-msgstr "投票：{0}"
-
 msgid "Wait for full quality pictures"
 msgstr "等待全品質的圖片"
-
-msgid "Walk mode"
-msgstr "行走模式"
-
-msgid "Walk mode: Waiting for next image takes too long! Exiting walk mode…"
-msgstr "行走模式：等待下個影像太久了！離開行走模式..."
 
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
@@ -673,12 +531,6 @@ msgstr "隱藏"
 
 msgid "image has no key"
 msgstr "圖片沒有鍵"
-
-msgid "loading image"
-msgstr "讀取圖片"
-
-msgid "no image selected"
-msgstr "沒有選擇照片"
 
 msgid "sequence has no key"
 msgstr "片段沒有鍵"

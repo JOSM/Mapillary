@@ -8,9 +8,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.34-1-gb1a94dc\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.48-2-g48cffb9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-08 15:04+0000\n"
+"POT-Creation-Date: 2021-11-24 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Serbian (Latin) (https://www.transifex.com/josm/teams/2544/sr@latin/)\n"
 "MIME-Version: 1.0\n"
@@ -36,9 +36,6 @@ msgstr "Dodaj Mapillary atribut"
 msgid "Add filter."
 msgstr "Dodaj filter."
 
-msgid "All images in a directory"
-msgstr "Sve fotografije u direktorijumu"
-
 msgid "Cancel"
 msgstr "Otkaži"
 
@@ -59,9 +56,6 @@ msgstr "Boja"
 
 msgid "Color Picker"
 msgstr "Birač boje"
-
-msgid "Continues with the paused walk."
-msgstr "Nastavlja sa pauziranom šetnjom."
 
 msgid "Copied URL to clipboard …"
 msgstr "URL je kopiran u ostavu…"
@@ -84,12 +78,6 @@ msgstr "Kopiraj ključ"
 msgid "Could not import a geotagged image to the Mapillary layer!"
 msgstr ""
 "Nije moguće uvesti geo pozicioniranu fotografiju na Mapillary podlogu!"
-
-msgid "Could not import the directory ''{0}''!"
-msgstr "Nije moguće uvesti direktorijum ''{0}''!"
-
-msgid "Could not import the image ''{0}''!"
-msgstr "Nije moguće uvesti fotografiju ''{0}''!"
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "Nije moguće otvoriti URL adresu {0} u pregledaču"
@@ -213,12 +201,6 @@ msgstr "Prvi put viđeno - početak"
 msgid "Follow selected image"
 msgstr "Prati obeleženu fotografiju"
 
-msgid "From existing image layer"
-msgstr "Sa postojeće podloge fotografija"
-
-msgid "From which source do you want to import images to the Mapillary layer?"
-msgstr "Sa kog izvora želite da uvezete fotografije na Mapillary podlogu?"
-
 msgid "Give way"
 msgstr "Ukrštanje sa putem sa prvenstvom prolaza"
 
@@ -260,50 +242,14 @@ msgstr "Ključ fotografije"
 msgid "Image: "
 msgstr "Fotografija:"
 
-msgid "Images from my file system"
-msgstr "Fotografije sa mog sistema datoteka"
-
 msgid "Import"
 msgstr "Uvoz"
-
-msgid "Import exception"
-msgstr "Izuzeci iz uvoza"
-
-msgid "Import local pictures"
-msgstr "Uvoz lokalnih fotografija"
-
-msgid "Import pictures"
-msgstr "Uvoz fotografija"
-
-msgid "Import pictures into Mapillary layer"
-msgstr "Uvoz fotografija na Mapillary podlogu"
-
-msgid "Imported images"
-msgstr "Uvezene fotografije"
 
 msgid "Intersection danger"
 msgstr "Opasnost od ukrštanja puteva"
 
 msgid "Inverse filter"
 msgstr "Inverzni filter"
-
-msgid "Jump to blue"
-msgstr "Pređi na plavu"
-
-msgid "Jump to blue image"
-msgstr "Prelazak na plavu fotografiju"
-
-msgid "Jump to red"
-msgstr "Pređi na crvenu"
-
-msgid "Jump to red image"
-msgstr "Prelazak na crvenu fotografiju"
-
-msgid "Jumps to the picture at the other side of the blue line"
-msgstr "Prelazi na fotografije sa suprotne strane plave linije"
-
-msgid "Jumps to the picture at the other side of the red line"
-msgstr "Prelazi na fotografije sa suprotne strane crvene linije"
 
 msgid "Last Seen End"
 msgstr "Poslednji put viđeno - kraj"
@@ -354,23 +300,11 @@ msgstr "Mapillary podloga"
 msgid "Mapillary login"
 msgstr "Mapillary prijava"
 
-msgid "Mapillary main dialog"
-msgstr "Mapillary glavni prozor"
-
 msgid "Mapillary point features layer"
 msgstr "Mapillary podloga funkcija tačaka"
 
 msgid "Mapillary traffic signs layer"
 msgstr "Mapillary podloga saobraćajnih znakova"
-
-msgid "Mapillary: Vote {0}"
-msgstr "Mapillary: Glasanje {0}"
-
-msgid "Mapillary: toggle detections"
-msgstr "Mapillary: uključivanje prepoznavanja"
-
-msgid "Mapillary: toggle sign detections"
-msgstr "Mapillary: uključivanje prepoznatih znakova"
 
 msgid "Month"
 msgstr "mesec"
@@ -386,9 +320,6 @@ msgstr "Premesti filter nagore."
 
 msgid "Multikey: {0}"
 msgstr "Više ključeva: {0}"
-
-msgid "Next picture"
-msgstr "Sledeća fotografija"
 
 msgid "No color selected"
 msgstr "Nijedna boja nije izabrana"
@@ -433,9 +364,6 @@ msgstr "Otvori Mapillary prozor filtera"
 msgid "Open Mapillary layer"
 msgstr "Otvori Mapillary podlogu"
 
-msgid "Open Mapillary window"
-msgstr "Otvori Mapillary prozor"
-
 msgid "Org"
 msgstr "Org."
 
@@ -444,9 +372,6 @@ msgstr "Organizacije"
 
 msgid "Panorama only"
 msgstr "Samo panoramske foto."
-
-msgid "Pause"
-msgstr "Pauziraj"
 
 msgid "Pedestrian crossing"
 msgstr "Pešački prelaz"
@@ -457,17 +382,8 @@ msgstr "Izaberite boju"
 msgid "Picture Filters"
 msgstr "Filteri fotografija"
 
-msgid "Play"
-msgstr "Reprodukuj"
-
 msgid "Point Objects"
 msgstr "Tačke objekata"
-
-msgid "Press \"{0}\" to download images"
-msgstr "Pritisnite \"{0}\" kako biste preuzeli fotografije"
-
-msgid "Previous picture"
-msgstr "Prethodna fotografija"
 
 msgctxt "filter"
 msgid "R"
@@ -485,9 +401,6 @@ msgstr "Obrni"
 msgid "Reverse the filters order."
 msgstr "Obrnuti redosled filtera."
 
-msgid "Rewrite imported images"
-msgstr "Ponovo upiši uvezene fotografije"
-
 msgid "Roundabout"
 msgstr "Kružni tok"
 
@@ -503,9 +416,6 @@ msgstr "Obeležite vidljivo"
 msgid "Select a directory"
 msgstr "Obeležite direktorijum"
 
-msgid "Select directory to import images from"
-msgstr "Obeležite direktorijum kako biste iz njega uvezli fotografije"
-
 msgid "Select the Mapillary Detection {0}"
 msgstr "Obeležite Mapillary prepoznavanje {0}"
 
@@ -513,9 +423,6 @@ msgid "Select the Mapillary Image {0} on the {1} layer (downloads if needed)"
 msgstr ""
 "Obeležite Mapillary fotografiju {0} na {1} podlozi (preuzmite je ukoliko je "
 "potrebno)"
-
-msgid "Select the images you want to import"
-msgstr "Obeležite fotografije koje želite da uvezete"
 
 msgid "Select/Deselect all object detections on the current page"
 msgstr ""
@@ -542,12 +449,6 @@ msgstr "Prikaži prethodnu stranicu sa stavkama"
 msgid "Show this number of items on each page"
 msgstr "Prikaži broj stavki na svakoj stranici"
 
-msgid "Shows the next picture in the sequence"
-msgstr "Prikazuje sledeću fotografiju sekvenci"
-
-msgid "Shows the previous picture in the sequence"
-msgstr "Prikazuje prethodnu fotografiju u sekvenci"
-
 msgid "Smart Edit Mode"
 msgstr "Režim pametnog uređivanja"
 
@@ -566,29 +467,16 @@ msgstr "Ograničenja brzine"
 msgid "Start"
 msgstr "Početak"
 
-msgctxt "as synonym to halt or stand still"
-msgid "Stop"
-msgstr "Zaustavi"
-
 msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Znak stop"
 
-msgid "Supported image formats (JPG and PNG)"
-msgstr "Podržani formati fotografija (JPG i PNG)"
-
 msgid "Tag conflict"
 msgstr "Konflikt u atributima"
-
-msgid "Tell Mapillary that you {0} this detection"
-msgstr "Kažite Mapillary da ste {0} ovo prepoznavanje"
 
 msgctxt "filter"
 msgid "Text"
 msgstr "Tekst"
-
-msgid "There are currently no layers with geotagged images!"
-msgstr "Trenutno ne postoje podloge sa geo referenciranim fotografijama!"
 
 msgid ""
 "There is a newer version of JOSM and/or the Mapillary plugin. Please update."
@@ -597,12 +485,6 @@ msgstr ""
 
 msgid "Today"
 msgstr "danas"
-
-msgid "Toggle detection outlines"
-msgstr "Uključi prikaz prepoznatih objekata"
-
-msgid "Toggle sign detection outlines"
-msgstr "Uključi prikaz prepoznatih znakova"
 
 msgid "Toggle: {0}"
 msgstr "Uključivanje: {0}"
@@ -625,19 +507,8 @@ msgstr "Ažuriraj"
 msgid "View in browser"
 msgstr "Prikaži u pregledaču"
 
-msgid "Vote: {0}"
-msgstr "Glasanje: {0}"
-
 msgid "Wait for full quality pictures"
 msgstr "Sačekajte za pun kvalitet fotografija"
-
-msgid "Walk mode"
-msgstr "Režim šetanja"
-
-msgid "Walk mode: Waiting for next image takes too long! Exiting walk mode…"
-msgstr ""
-"Režim šetanja: Čekanje na sledeću fotografiju traje predugo! Izlazak iz "
-"režima šetanja…"
 
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
@@ -676,12 +547,6 @@ msgstr "sakriveno"
 
 msgid "image has no key"
 msgstr "fotografija nema ključ"
-
-msgid "loading image"
-msgstr "učitavanje fotografije"
-
-msgid "no image selected"
-msgstr "nije obeležena fotografija"
 
 msgid "sequence has no key"
 msgstr "sekvenca nema ključ"

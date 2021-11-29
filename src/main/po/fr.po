@@ -7,15 +7,15 @@
 # Julien Noblet, 2018
 # operon, 2018
 # Binnette, 2019
+# Simon Legner, 2020
 # Florian Schäfer, 2020
 # z a, 2021
-# Simon Legner, 2021
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.34-1-gb1a94dc\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.48-2-g48cffb9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-08 15:04+0000\n"
+"POT-Creation-Date: 2021-11-24 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: French (https://www.transifex.com/josm/teams/2544/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -43,14 +43,8 @@ msgstr "Ajouter un tag Mapillary"
 msgid "Add filter."
 msgstr "Ajouter un filtre"
 
-msgid "All images in a directory"
-msgstr "Toutes les images dans un répertoire"
-
 msgid "Cancel"
 msgstr "Annuler"
-
-msgid "Center view"
-msgstr "Centrer la vue"
 
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
@@ -69,9 +63,6 @@ msgstr "Couleur"
 
 msgid "Color Picker"
 msgstr "Sélectionneur de couleur"
-
-msgid "Continues with the paused walk."
-msgstr "Continue la marche arrêtée."
 
 msgid "Copied URL to clipboard …"
 msgstr "URL copiée dans le presse-papier..."
@@ -94,12 +85,6 @@ msgstr "Copier la clé"
 msgid "Could not import a geotagged image to the Mapillary layer!"
 msgstr ""
 "On ne peut pas importer une image géotagguée dans la couche Mapillary!"
-
-msgid "Could not import the directory ''{0}''!"
-msgstr "Impossible d importer le répertoire \"{0}\"!"
-
-msgid "Could not import the image ''{0}''!"
-msgstr "Impossible d’importer l’image ''{0}''!"
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "Impossible d ouvrir l URL {0} dans un navigateur"
@@ -217,14 +202,6 @@ msgstr "Mode filtre"
 msgid "Follow selected image"
 msgstr "Suivre l''image sélectionnée"
 
-msgid "From existing image layer"
-msgstr "À partir de couche d image existante"
-
-msgid "From which source do you want to import images to the Mapillary layer?"
-msgstr ""
-"De quelle source souhaitez-vous importer des images vers la couche "
-"Mapillary?"
-
 msgid "Give way"
 msgstr "Cédez-le-passage"
 
@@ -266,50 +243,14 @@ msgstr "Clé de l’image"
 msgid "Image: "
 msgstr "Image : "
 
-msgid "Images from my file system"
-msgstr "Images provenant de mon système de fichiers"
-
 msgid "Import"
 msgstr "Importer"
-
-msgid "Import exception"
-msgstr "Exception d import"
-
-msgid "Import local pictures"
-msgstr "Importer des photos locales"
-
-msgid "Import pictures"
-msgstr "Importer des photos"
-
-msgid "Import pictures into Mapillary layer"
-msgstr "Importer des photos dans un calque Mapillary"
-
-msgid "Imported images"
-msgstr "Images importées"
 
 msgid "Intersection danger"
 msgstr "Danger à l''intersection"
 
 msgid "Inverse filter"
 msgstr "Inverser le filtre"
-
-msgid "Jump to blue"
-msgstr "Aller en bleu"
-
-msgid "Jump to blue image"
-msgstr "Sauter à l'image bleue"
-
-msgid "Jump to red"
-msgstr "Aller en rouge"
-
-msgid "Jump to red image"
-msgstr "Sauter à l'image rouge"
-
-msgid "Jumps to the picture at the other side of the blue line"
-msgstr "Passer à l’image de l’autre côté de la ligne bleue"
-
-msgid "Jumps to the picture at the other side of the red line"
-msgstr "Passer à l’image de l’autre côté de la ligne rouge"
 
 msgid "Layer"
 msgstr "Calque"
@@ -354,12 +295,6 @@ msgstr "Calque Mapillary"
 msgid "Mapillary login"
 msgstr "Connexion à Mapillary"
 
-msgid "Mapillary main dialog"
-msgstr "Dialogue principal Mapillary"
-
-msgid "Mapillary: Vote {0}"
-msgstr "Mapillary : Vote {0}"
-
 msgid "Months"
 msgstr "Mois"
 
@@ -371,9 +306,6 @@ msgstr "Monter le filtre"
 
 msgid "Multikey: {0}"
 msgstr "Multiclé : {0}"
-
-msgid "Next picture"
-msgstr "Photo suivante"
 
 msgid "No entry"
 msgstr "Aucune entrée"
@@ -405,23 +337,8 @@ msgstr "Ouvrir le dialogue du filtre Mapillary"
 msgid "Open Mapillary layer"
 msgstr "Ouvrir la couche Mapillary"
 
-msgid "Open Mapillary window"
-msgstr "Ouvrir la fenêtre Mapillary"
-
-msgid "Pause"
-msgstr "Pause"
-
 msgid "Pedestrian crossing"
 msgstr "Passage piéton"
-
-msgid "Play"
-msgstr "Lecture"
-
-msgid "Press \"{0}\" to download images"
-msgstr "Appuyez sur \"{0}\" pour télécharger des images"
-
-msgid "Previous picture"
-msgstr "Photo précédente"
 
 msgctxt "filter"
 msgid "R"
@@ -433,20 +350,11 @@ msgstr "Rétablir"
 msgid "Reverse"
 msgstr "Inverser"
 
-msgid "Rewrite imported images"
-msgstr "Réécrire les images importées"
-
 msgid "Roundabout"
 msgstr "Giratoire"
 
 msgid "Select a directory"
 msgstr "Sélectionner un répertoire"
-
-msgid "Select directory to import images from"
-msgstr "Sélectionnez le répertoire pour importer des images de"
-
-msgid "Select the images you want to import"
-msgstr "Sélectionnez les images que vous souhaitez importer"
 
 msgid "Sequence key"
 msgstr "Clé de la séquence"
@@ -454,40 +362,15 @@ msgstr "Clé de la séquence"
 msgid "Show detections on top of image"
 msgstr "Montre les détections en haut de l image"
 
-msgid "Show first Image"
-msgstr "Afficher la première image"
-
-msgid "Show last Image"
-msgstr "Afficher la dernière image"
-
-msgid "Show next Image"
-msgstr "Afficher la prochaine image"
-
-msgid "Show previous Image"
-msgstr "Afficher l’image précédente"
-
-msgid "Shows the next picture in the sequence"
-msgstr "Voir la photo suivante"
-
-msgid "Shows the previous picture in the sequence"
-msgstr "Voir la photo précédente"
-
 msgid "Sort"
 msgstr "Trier"
 
 msgid "Speed limit"
 msgstr "Limite de vitesse"
 
-msgctxt "as synonym to halt or stand still"
-msgid "Stop"
-msgstr "Stop"
-
 msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Stop"
-
-msgid "Supported image formats (JPG and PNG)"
-msgstr "Formats d''image supportés (JPG et PNG)"
 
 msgid "Tag conflict"
 msgstr "Tag en conflit"
@@ -495,9 +378,6 @@ msgstr "Tag en conflit"
 msgctxt "filter"
 msgid "Text"
 msgstr "Texte"
-
-msgid "There are currently no layers with geotagged images!"
-msgstr "Il n''y a actuellement aucun calque avec des images géoréférencées!"
 
 msgid "Toggle: {0}"
 msgstr "Bascule : {0}"
@@ -519,9 +399,6 @@ msgstr "Voir dans le navigateur"
 
 msgid "Wait for full quality pictures"
 msgstr "Attendre les images en pleine résolution"
-
-msgid "Walk mode"
-msgstr "Mode piéton"
 
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
@@ -551,9 +428,6 @@ msgstr "Zoomer sur l’image Mapillary actuellement sélectionnée"
 
 msgid "image has no key"
 msgstr "L,’image n’a pas de clé"
-
-msgid "no image selected"
-msgstr "aucune image sélectionnée"
 
 msgid "sequence has no key"
 msgstr "La séquence n’a pas de clé"

@@ -6,15 +6,15 @@
 # Translators:
 # Right Path, 2018
 # Alicja Bartczak, 2020
+# Simon Legner, 2020
 # Florian Schäfer, 2020
 # Piotr Strębski, 2021
-# Simon Legner, 2021
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.34-1-gb1a94dc\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.48-2-g48cffb9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-08 15:04+0000\n"
+"POT-Creation-Date: 2021-11-24 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Polish (https://www.transifex.com/josm/teams/2544/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -41,14 +41,8 @@ msgstr "Dodaj znacznik Mapillary"
 msgid "Add filter."
 msgstr "Dodaje filtr."
 
-msgid "All images in a directory"
-msgstr "Wszystkie zdjęcia w katalogu"
-
 msgid "Cancel"
 msgstr "Anuluj"
-
-msgid "Center view"
-msgstr "Wyśrodkuj widok"
 
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
@@ -65,9 +59,6 @@ msgstr "Wyczyść"
 msgid "Color"
 msgstr "Kolor"
 
-msgid "Continues with the paused walk."
-msgstr "Kontynuuje przerwany spacer."
-
 msgid "Copy URL"
 msgstr "Kopiuj adres URL"
 
@@ -77,12 +68,6 @@ msgstr "Kopuj klucz"
 msgid "Could not import a geotagged image to the Mapillary layer!"
 msgstr ""
 "Nie można zaimportować zdjęc z zapisaną pozycją GPS do warstwy Mapillary."
-
-msgid "Could not import the directory ''{0}''!"
-msgstr "Nie można zaimportować katalogu ''{0}''!"
-
-msgid "Could not import the image ''{0}''!"
-msgstr "Nie można zaimportować zdjęcia ''{0}''!"
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "Nie można otworzyć adresu URL {0} w przeglądarce"
@@ -173,12 +158,6 @@ msgstr "Tryb filtru"
 msgid "Follow selected image"
 msgstr "Podążaj za wybranym zdjęciem"
 
-msgid "From existing image layer"
-msgstr "Z istniejącej warstwy zdjęć"
-
-msgid "From which source do you want to import images to the Mapillary layer?"
-msgstr "Z jakiego źródła chcesz zaimportować zdjęcia do warstwy Mapillary?"
-
 msgid "Give way"
 msgstr "Ustąp pierwszeństwa"
 
@@ -211,44 +190,14 @@ msgstr "Informacje o obrazie"
 msgid "Image key"
 msgstr "Klucz zdjęcia"
 
-msgid "Images from my file system"
-msgstr "Zdjęcia z mojego systemu plików"
-
 msgid "Import"
 msgstr "Import"
-
-msgid "Import exception"
-msgstr "Wyjątek importowania"
-
-msgid "Import local pictures"
-msgstr "Importuj lokalne zdjęcia"
-
-msgid "Import pictures"
-msgstr "Importuj zdjęcia"
-
-msgid "Import pictures into Mapillary layer"
-msgstr "Importuj zdjęcia na warstwę Mapillary"
-
-msgid "Imported images"
-msgstr "Zaimportowane obrazy"
 
 msgid "Intersection danger"
 msgstr "Niebezpieczne skrzyżowanie"
 
 msgid "Inverse filter"
 msgstr "Odwróć filtr"
-
-msgid "Jump to blue"
-msgstr "Skocz do niebieskiego"
-
-msgid "Jump to red"
-msgstr "Skocz do czerwonego"
-
-msgid "Jumps to the picture at the other side of the blue line"
-msgstr "Przeskakuje do zdjęcia po drugiej stronie niebieskiej linii"
-
-msgid "Jumps to the picture at the other side of the red line"
-msgstr "Przeskakuje do zdjęcia po drugiej stronie czerwonej linii"
 
 msgid "Layer"
 msgstr "Warstwa"
@@ -302,9 +251,6 @@ msgstr "Przesuwa filtr w górę."
 msgid "Multikey: {0}"
 msgstr "Multiklucz: {0}"
 
-msgid "Next picture"
-msgstr "Następne zdjęcie"
-
 msgid "No entry"
 msgstr "Zakaz wjazdu"
 
@@ -335,26 +281,11 @@ msgstr "Otwiera okno filtrów Mapillary"
 msgid "Open Mapillary layer"
 msgstr "Otwórz wartwę Mapillary"
 
-msgid "Open Mapillary window"
-msgstr "Otwiera okno Mapillary"
-
 msgid "Organizations"
 msgstr "Organizacje"
 
-msgid "Pause"
-msgstr "Zatrzymaj"
-
 msgid "Pedestrian crossing"
 msgstr "Przejście dla pieszych"
-
-msgid "Play"
-msgstr "Idź"
-
-msgid "Press \"{0}\" to download images"
-msgstr "Wciśnij \"{0}\" aby pobrać obrazy"
-
-msgid "Previous picture"
-msgstr "Poprzednie zdjęcie"
 
 msgctxt "filter"
 msgid "R"
@@ -366,44 +297,17 @@ msgstr "Przywróć domyślne"
 msgid "Reverse"
 msgstr "Odwróć"
 
-msgid "Rewrite imported images"
-msgstr "Przepisz zaimportowane obrazy"
-
 msgid "Roundabout"
 msgstr "Rondo"
 
 msgid "Select a directory"
 msgstr "Wybierz katalog"
 
-msgid "Select directory to import images from"
-msgstr "Wybierz katalog z którego zaimportować zdjęcia"
-
-msgid "Select the images you want to import"
-msgstr "Wybierz zdjęcia które chcesz zaimportować"
-
 msgid "Sequence key"
 msgstr "Klucz sekwencji"
 
 msgid "Show detections on top of image"
 msgstr "Pokaż wykrywanie na górze obrazu"
-
-msgid "Show first Image"
-msgstr "Wyświetl pierwszy obraz"
-
-msgid "Show last Image"
-msgstr "Wyświetl ostatni obraz"
-
-msgid "Show next Image"
-msgstr "Wyświetl następny obraz"
-
-msgid "Show previous Image"
-msgstr "Wyświetl poprzedni obraz"
-
-msgid "Shows the next picture in the sequence"
-msgstr "Pokazuje następne zdjęcie w sekwencji"
-
-msgid "Shows the previous picture in the sequence"
-msgstr "Pokazuje poprzednie zdjęcie w sekwencji"
 
 msgid "Sort"
 msgstr "Sortuj"
@@ -417,16 +321,9 @@ msgstr "Ograniczenie prędkości"
 msgid "Start"
 msgstr "Rozpocznij"
 
-msgctxt "as synonym to halt or stand still"
-msgid "Stop"
-msgstr "Znak stop"
-
 msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Znak stop"
-
-msgid "Supported image formats (JPG and PNG)"
-msgstr "Obsługiwane formaty obrazów (JPG i PNG)"
 
 msgid "Tag conflict"
 msgstr "Konflikt znaczników"
@@ -434,9 +331,6 @@ msgstr "Konflikt znaczników"
 msgctxt "filter"
 msgid "Text"
 msgstr "Tekst"
-
-msgid "There are currently no layers with geotagged images!"
-msgstr "Nie ma obecnie warstw ze zdjęciami z zapisaną pozycją GPS."
 
 msgid "Today"
 msgstr "Dzisiaj"
@@ -464,14 +358,6 @@ msgstr "Zobacz w przeglądarce"
 
 msgid "Wait for full quality pictures"
 msgstr "Czekaj na zdjęcia w pełnej rozdzielczości"
-
-msgid "Walk mode"
-msgstr "Tryb spaceru"
-
-msgid "Walk mode: Waiting for next image takes too long! Exiting walk mode…"
-msgstr ""
-"Tryb spaceru: Oczekiwanie na następny obraz zajmuje zbyt dużo czasu! Wyjście"
-" z trybu spaceru…"
 
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
@@ -503,12 +389,6 @@ msgstr "Powiększ do obecnie wybranego obrazu"
 
 msgid "image has no key"
 msgstr "obraz nie ma klucza"
-
-msgid "loading image"
-msgstr "wczytywanie zdjęcia"
-
-msgid "no image selected"
-msgstr "nie wybrano obrazu"
 
 msgid "sequence has no key"
 msgstr "sekwencja nie ma klucza"

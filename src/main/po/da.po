@@ -4,15 +4,15 @@
 # FIRST AUTHOR, YEAR.
 #
 # Translators:
+# Simon Legner, 2020
 # Florian Schäfer, 2020
 # Jurbo Lator, 2021
-# Simon Legner, 2021
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.34-1-gb1a94dc\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.48-2-g48cffb9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-08 15:04+0000\n"
+"POT-Creation-Date: 2021-11-24 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Danish (https://www.transifex.com/josm/teams/2544/da/)\n"
 "MIME-Version: 1.0\n"
@@ -39,14 +39,8 @@ msgstr "Tilføj Mapillary tag"
 msgid "Add filter."
 msgstr "Tilføj filter."
 
-msgid "All images in a directory"
-msgstr "Alle billeder i en mappe"
-
 msgid "Cancel"
 msgstr "Annuller"
-
-msgid "Center view"
-msgstr "Centrer synsfelt"
 
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
@@ -63,20 +57,11 @@ msgstr "Ryd"
 msgid "Color"
 msgstr "Farve"
 
-msgid "Continues with the paused walk."
-msgstr "Fortsætter med den gåtur der er på pause."
-
 msgid "Copy key"
 msgstr "Kopier nøgle"
 
 msgid "Could not import a geotagged image to the Mapillary layer!"
 msgstr "Kunne ikke importere et geotagget billede til Mapillary laget!"
-
-msgid "Could not import the directory ''{0}''!"
-msgstr "Kunne ikke importere mappen ''{0}''!"
-
-msgid "Could not import the image ''{0}''!"
-msgstr "Kunne ikke importere billedet ''{0}''!"
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "Kunne ikke åbne URL {0} i en browser"
@@ -163,12 +148,6 @@ msgstr "Filtertilstand"
 msgid "Follow selected image"
 msgstr "Følg valgt billede"
 
-msgid "From existing image layer"
-msgstr "Fra eksisterende billedlag"
-
-msgid "From which source do you want to import images to the Mapillary layer?"
-msgstr "Fra hvilken kilde vil du importere billeder til Mapillary laget?"
-
 msgid "Give way"
 msgstr "Ubetinget vigepligt"
 
@@ -201,44 +180,14 @@ msgstr "Billedinformation"
 msgid "Image key"
 msgstr "Billednøgle"
 
-msgid "Images from my file system"
-msgstr "Billeder fra mit filsystem"
-
 msgid "Import"
 msgstr "Importer"
-
-msgid "Import exception"
-msgstr "Import hændelse"
-
-msgid "Import local pictures"
-msgstr "Importer lokale billeder"
-
-msgid "Import pictures"
-msgstr "Importer billeder"
-
-msgid "Import pictures into Mapillary layer"
-msgstr "Importer billeder til Mapillary lag"
-
-msgid "Imported images"
-msgstr "Importerede billeder"
 
 msgid "Intersection danger"
 msgstr "Farligt vejkryds"
 
 msgid "Inverse filter"
 msgstr "Omvend filter"
-
-msgid "Jump to blue"
-msgstr "Hop til blå"
-
-msgid "Jump to red"
-msgstr "Hop til rød"
-
-msgid "Jumps to the picture at the other side of the blue line"
-msgstr "Hopper til billedet i den anden ende af den blå linje"
-
-msgid "Jumps to the picture at the other side of the red line"
-msgstr "Hopper til billedet i den anden ende af den røde linje"
 
 msgid "Layer"
 msgstr "Lag"
@@ -295,9 +244,6 @@ msgstr "Flyt filter op."
 msgid "Multikey: {0}"
 msgstr "Flertast: {0}"
 
-msgid "Next picture"
-msgstr "Næste billede"
-
 msgid "No entry"
 msgstr "Indkørsel forbudt"
 
@@ -328,23 +274,8 @@ msgstr "Åbn Mapillary dialog filter"
 msgid "Open Mapillary layer"
 msgstr "Åben Mapillary lag"
 
-msgid "Open Mapillary window"
-msgstr "Åbn Mapillary vindue"
-
-msgid "Pause"
-msgstr "Pause"
-
 msgid "Pedestrian crossing"
 msgstr "Fodgængerfelt"
-
-msgid "Play"
-msgstr "Afspil"
-
-msgid "Press \"{0}\" to download images"
-msgstr "Tryk \"{0}\" for at downloade billeder"
-
-msgid "Previous picture"
-msgstr "Forrige billede"
 
 msgctxt "filter"
 msgid "R"
@@ -356,20 +287,11 @@ msgstr "Nulstil"
 msgid "Reverse"
 msgstr "Vend"
 
-msgid "Rewrite imported images"
-msgstr "Genskriv importerede billeder"
-
 msgid "Roundabout"
 msgstr "Rundkørsel"
 
 msgid "Select a directory"
 msgstr "Vælg en mappe"
-
-msgid "Select directory to import images from"
-msgstr "Vælg mappe til at importere billeder fra"
-
-msgid "Select the images you want to import"
-msgstr "Vælg de billeder du vil importere"
 
 msgid "Sequence key"
 msgstr "Sekvensnøgle"
@@ -377,40 +299,15 @@ msgstr "Sekvensnøgle"
 msgid "Show detections on top of image"
 msgstr "Vis detekteringer oven på billedet"
 
-msgid "Show first Image"
-msgstr "Vis første billede"
-
-msgid "Show last Image"
-msgstr "Vis sidste billede"
-
-msgid "Show next Image"
-msgstr "Vis næste billede"
-
-msgid "Show previous Image"
-msgstr "Vis foregående billede"
-
-msgid "Shows the next picture in the sequence"
-msgstr "Viser det næste billede i sekvensen"
-
-msgid "Shows the previous picture in the sequence"
-msgstr "Viser det forrige billede i sekvensen"
-
 msgid "Sort"
 msgstr "Sorter"
 
 msgid "Speed limit"
 msgstr "Hastighedsbegrænsning"
 
-msgctxt "as synonym to halt or stand still"
-msgid "Stop"
-msgstr "Stop"
-
 msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Stop"
-
-msgid "Supported image formats (JPG and PNG)"
-msgstr "Understøttede billedformater (JPG og PNG)"
 
 msgid "Tag conflict"
 msgstr "Tag konflikt"
@@ -418,9 +315,6 @@ msgstr "Tag konflikt"
 msgctxt "filter"
 msgid "Text"
 msgstr "Tekst"
-
-msgid "There are currently no layers with geotagged images!"
-msgstr "Der er i øjeblikket ingen lag med geotagged billeder!"
 
 msgid "Toggle: {0}"
 msgstr "Slå til/fra: {0}"
@@ -442,9 +336,6 @@ msgstr "Vis i browser"
 
 msgid "Wait for full quality pictures"
 msgstr "Vent på fuld kvalitets billeder"
-
-msgid "Walk mode"
-msgstr "Gå tilstand"
 
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"

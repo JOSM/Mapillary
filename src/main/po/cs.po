@@ -4,14 +4,14 @@
 # FIRST AUTHOR, YEAR.
 #
 # Translators:
+# Simon Legner, 2020
 # Florian Schäfer, 2020
-# Simon Legner, 2021
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.34-1-gb1a94dc\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.48-2-g48cffb9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-08 15:04+0000\n"
+"POT-Creation-Date: 2021-11-24 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Czech (https://www.transifex.com/josm/teams/2544/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -37,14 +37,8 @@ msgstr "Přidat značku Mapillary"
 msgid "Add filter."
 msgstr "Přidat filtr."
 
-msgid "All images in a directory"
-msgstr "Všechny obrázky v adresáři"
-
 msgid "Cancel"
 msgstr "Zrušit"
-
-msgid "Center view"
-msgstr "Centrovat pohled"
 
 msgid "Choose signs"
 msgstr "Zvolit značky"
@@ -55,21 +49,12 @@ msgstr "Vymazat"
 msgid "Color"
 msgstr "Barva"
 
-msgid "Continues with the paused walk."
-msgstr "Pokračuje v pozastaveném průchodu."
-
 msgid "Copy key"
 msgstr "Kopírovat klíč"
 
 msgid "Could not import a geotagged image to the Mapillary layer!"
 msgstr ""
 "Nepodařilo se importovat obrázek se zem. souřadnicemi do vrstvy Mapillary!"
-
-msgid "Could not import the directory ''{0}''!"
-msgstr "Nepodařilo se importovat adresář ''{0}''!"
-
-msgid "Could not import the image ''{0}''!"
-msgstr "Nepodařilo se importovat obrázek ''{0}''!"
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "Nemohu otevřít URL {0} v prohlížeči"
@@ -153,12 +138,6 @@ msgstr "Způsob filtrování"
 msgid "Follow selected image"
 msgstr "Následovat vybraný obrázek"
 
-msgid "From existing image layer"
-msgstr "Z existující vrstvy obrázků"
-
-msgid "From which source do you want to import images to the Mapillary layer?"
-msgstr "Z jakého zdroje chcete importovat obrázky do vrstvy Mapillary?"
-
 msgid "Give way"
 msgstr "Dej přednost"
 
@@ -191,44 +170,14 @@ msgstr "Informace o obrázku"
 msgid "Image key"
 msgstr "Klíč obrázku"
 
-msgid "Images from my file system"
-msgstr "Obrázky z mého souborového systému"
-
 msgid "Import"
 msgstr "Import"
-
-msgid "Import exception"
-msgstr "Výjimka z importu"
-
-msgid "Import local pictures"
-msgstr "Import lokálních obrázků"
-
-msgid "Import pictures"
-msgstr "Importovat obrázky"
-
-msgid "Import pictures into Mapillary layer"
-msgstr "Importovat obrázky do vrstvy Mapillary"
-
-msgid "Imported images"
-msgstr "Importované obrázky"
 
 msgid "Intersection danger"
 msgstr "Upozornění na křižovatku"
 
 msgid "Inverse filter"
 msgstr "Obrácený filtr"
-
-msgid "Jump to blue"
-msgstr "Skočit na modrou"
-
-msgid "Jump to red"
-msgstr "Skočit na červenou"
-
-msgid "Jumps to the picture at the other side of the blue line"
-msgstr "Skočí na obrázek na druhé straně modré čáry"
-
-msgid "Jumps to the picture at the other side of the red line"
-msgstr "Skočí na obrázek na druhé straně červené čáry"
 
 msgid "Layer"
 msgstr "Vrstva"
@@ -279,9 +228,6 @@ msgstr "Přesunout filtr nahoru."
 msgid "Multikey: {0}"
 msgstr "Kombinace kláves: {0}"
 
-msgid "Next picture"
-msgstr "Další obrázek"
-
 msgid "No entry"
 msgstr "Zákaz vjezdu"
 
@@ -312,23 +258,8 @@ msgstr "Otevřít okno filtru Mapillary"
 msgid "Open Mapillary layer"
 msgstr "Otevřená vrstva Mapillary"
 
-msgid "Open Mapillary window"
-msgstr "Otevřít okno Mapillary"
-
-msgid "Pause"
-msgstr "Pozastavit"
-
 msgid "Pedestrian crossing"
 msgstr "Přechod pro chodce"
-
-msgid "Play"
-msgstr "Přehrát"
-
-msgid "Press \"{0}\" to download images"
-msgstr "Stiskněte \"{0}\" pro stažení obrázků"
-
-msgid "Previous picture"
-msgstr "Předchozí obrázek"
 
 msgctxt "filter"
 msgid "R"
@@ -340,20 +271,11 @@ msgstr "Reset"
 msgid "Reverse"
 msgstr "Obrátit"
 
-msgid "Rewrite imported images"
-msgstr "Přepsat importované obrázky"
-
 msgid "Roundabout"
 msgstr "Kruhový objezd"
 
 msgid "Select a directory"
 msgstr "Zvolte adresář"
-
-msgid "Select directory to import images from"
-msgstr "Zvolte adresář, ze kterého chcete importovat obrázky"
-
-msgid "Select the images you want to import"
-msgstr "Zvolte obrázky, které chcete importovat"
 
 msgid "Sequence key"
 msgstr "Klíč sekvence"
@@ -361,40 +283,15 @@ msgstr "Klíč sekvence"
 msgid "Show detections on top of image"
 msgstr "Zobrazit detekce na vrcholu snímku"
 
-msgid "Show first Image"
-msgstr "Ukázat první obrázek"
-
-msgid "Show last Image"
-msgstr "Ukázat poslední obrázek"
-
-msgid "Show next Image"
-msgstr "Zobrazit další obrázek"
-
-msgid "Show previous Image"
-msgstr "Zobrazit předchozí obrázek"
-
-msgid "Shows the next picture in the sequence"
-msgstr "Ukáže další obrázek v sekvenci"
-
-msgid "Shows the previous picture in the sequence"
-msgstr "Ukáže předchozí obrázek v sekvenci"
-
 msgid "Sort"
 msgstr "Seřadit"
 
 msgid "Speed limit"
 msgstr "Omezení rychlosti"
 
-msgctxt "as synonym to halt or stand still"
-msgid "Stop"
-msgstr "Stop"
-
 msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Stop"
-
-msgid "Supported image formats (JPG and PNG)"
-msgstr "Podporované formáty obrázků (JPG a PNG)"
 
 msgid "Tag conflict"
 msgstr "Konflikt značek"
@@ -402,10 +299,6 @@ msgstr "Konflikt značek"
 msgctxt "filter"
 msgid "Text"
 msgstr "Text"
-
-msgid "There are currently no layers with geotagged images!"
-msgstr ""
-"Momentálně nemáme žádné vrstvy s obrázky se zeměpisnými sourřadnicemi!"
 
 msgid "Toggle: {0}"
 msgstr "Přepnout: {0}"
@@ -427,9 +320,6 @@ msgstr "Zobrazit v prohlížeči"
 
 msgid "Wait for full quality pictures"
 msgstr "Počkat na obrázek v maximální kvalitě"
-
-msgid "Walk mode"
-msgstr "Režim chůze"
 
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"

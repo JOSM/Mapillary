@@ -6,15 +6,16 @@
 # Translators:
 # Florian Schäfer, 2018
 # Herman Lee, 2020
+# Simon Legner, 2020
 # y941, 2021
 # JOJOforshaun, 2021
-# Simon Legner, 2021
+# anodern, 2021
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.34-1-gb1a94dc\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.48-2-g48cffb9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-08 15:04+0000\n"
+"POT-Creation-Date: 2021-11-24 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/josm/teams/2544/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -34,20 +35,20 @@ msgstr "包含键 <i>{0}</i> 的标签已在所选OSM对象上出现。"
 msgid "Add"
 msgstr "添加"
 
+msgid "Add Map Feature to OSM"
+msgstr "添加地图要素到OSM"
+
 msgid "Add Mapillary tag"
 msgstr "添加 Mapillary 标签"
 
 msgid "Add filter."
 msgstr "添加过滤器。"
 
-msgid "All images in a directory"
-msgstr "在某一目录下的所有图像"
+msgid "At least one of the optional arguments must be used ({0})"
+msgstr "必须至少使用一个可选参数 ({0})"
 
 msgid "Cancel"
 msgstr "取消"
-
-msgid "Center view"
-msgstr "置中查看"
 
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
@@ -64,9 +65,6 @@ msgstr "颜色"
 
 msgid "Color Picker"
 msgstr "拾色器"
-
-msgid "Continues with the paused walk."
-msgstr "继续已暂停的步行"
 
 msgid "Copied URL to clipboard …"
 msgstr "查看已复制的 URL ..."
@@ -88,12 +86,6 @@ msgstr "复制键值"
 
 msgid "Could not import a geotagged image to the Mapillary layer!"
 msgstr "无法将地理标签图像导入Mapillary层！"
-
-msgid "Could not import the directory ''{0}''!"
-msgstr "无法导入目录''{0}''！"
-
-msgid "Could not import the image ''{0}''!"
-msgstr "无法导入图像''{0}''！"
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "无法在浏览器中打开 URL {0}"
@@ -204,12 +196,6 @@ msgstr "过滤器模式"
 msgid "Follow selected image"
 msgstr "跟随所选图像"
 
-msgid "From existing image layer"
-msgstr "从现有的图层中"
-
-msgid "From which source do you want to import images to the Mapillary layer?"
-msgstr "您想从何来源导入图像至Mapillary层？"
-
 msgid "Give way"
 msgstr "让道"
 
@@ -248,38 +234,14 @@ msgstr "图像信息对话框"
 msgid "Image: "
 msgstr "图像："
 
-msgid "Images from my file system"
-msgstr "我文件系统中的图像"
-
 msgid "Import"
 msgstr "输入"
-
-msgid "Import exception"
-msgstr "导入发生意外"
-
-msgid "Import local pictures"
-msgstr "导入本地图片"
-
-msgid "Import pictures"
-msgstr "导入图片"
-
-msgid "Import pictures into Mapillary layer"
-msgstr "将图像导入Mapillary层"
-
-msgid "Imported images"
-msgstr "已导入图像"
 
 msgid "Intersection danger"
 msgstr "危险交叉"
 
 msgid "Inverse filter"
 msgstr "逆转过滤器"
-
-msgid "Jumps to the picture at the other side of the blue line"
-msgstr "跳转到蓝线另一侧的图片"
-
-msgid "Jumps to the picture at the other side of the red line"
-msgstr "跳转到红线另一侧的图片。"
 
 msgid "Layer"
 msgstr "层"
@@ -309,6 +271,12 @@ msgstr "Mapillary专家过滤器"
 msgid "Mapillary Images"
 msgstr "Mapillary Images"
 
+msgid "Mapillary Smart Edit: Add objects"
+msgstr "Mapillary 智能编辑：添加物体"
+
+msgid "Mapillary Traffic Signs"
+msgstr "Mapillary 交通标志"
+
 msgid "Mapillary filter"
 msgstr "Mapillary过滤器"
 
@@ -324,23 +292,11 @@ msgstr "Mapillary图层"
 msgid "Mapillary login"
 msgstr "登录Mapillary"
 
-msgid "Mapillary main dialog"
-msgstr "Mapillary主对话框"
-
 msgid "Mapillary point features layer"
 msgstr "Mapillary点要素图层"
 
 msgid "Mapillary traffic signs layer"
 msgstr "Mapillary交通标志图层"
-
-msgid "Mapillary: Vote {0}"
-msgstr "Mapillary: Vote {0}"
-
-msgid "Mapillary: toggle detections"
-msgstr "Mapillary：切换检测"
-
-msgid "Mapillary: toggle sign detections"
-msgstr "Mapillary：切换标志检测"
 
 msgid "Month"
 msgstr "月"
@@ -356,9 +312,6 @@ msgstr "上移过滤器。"
 
 msgid "Multikey: {0}"
 msgstr "多重设定键：{0}"
-
-msgid "Next picture"
-msgstr "前一图片"
 
 msgid "No color selected"
 msgstr "未选择图像"
@@ -387,8 +340,21 @@ msgstr "不大于 "
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "要预取的图像数（向前和向后）"
 
+msgid "Number of images to draw in the map view (affects performance)"
+msgstr "地图中绘制的图像数量（影响性能）"
+
 msgid "Object Detection Filters"
 msgstr "目标检测过滤器"
+
+msgid ""
+"Only Mapillary images are supported at this time, use "
+"photo=Mapillary/<image_id>"
+msgstr "目前仅支持 Mapillary 图像，请使用 photo=Mapillary/<image_id>"
+
+msgid ""
+"Only Mapillary sequences are supported at this time, use "
+"sequence=Mapillary/<sequence_id>"
+msgstr "目前仅支持 Mapillary 序列，请使用 sequence=Mapillary/<sequence_id>"
 
 msgid "Only images with signs"
 msgstr "只有有标志的图像"
@@ -402,10 +368,10 @@ msgstr "打开Mapillary过滤器对话框"
 msgid "Open Mapillary layer"
 msgstr "打开Mapillary图层"
 
-msgid "Open Mapillary window"
-msgstr "打开Mapillary窗口"
-
 msgid "Org"
+msgstr "组织"
+
+msgid "Organization"
 msgstr "组织"
 
 msgid "Organizations"
@@ -413,9 +379,6 @@ msgstr "组织"
 
 msgid "Panorama only"
 msgstr "仅全景"
-
-msgid "Pause"
-msgstr "暂停"
 
 msgid "Pedestrian crossing"
 msgstr "人行道十字路口"
@@ -426,17 +389,8 @@ msgstr "选择颜色"
 msgid "Picture Filters"
 msgstr "图片过滤器"
 
-msgid "Play"
-msgstr "播放"
-
 msgid "Point Objects"
 msgstr "点对象"
-
-msgid "Press \"{0}\" to download images"
-msgstr "按\"{0}\"来下载图像"
-
-msgid "Previous picture"
-msgstr "后一图片"
 
 msgctxt "filter"
 msgid "R"
@@ -444,6 +398,9 @@ msgstr "替换"
 
 msgid "Remote Control has been asked to load:"
 msgstr "已要求远程控制加载："
+
+msgid "Requires JOSM restart"
+msgstr "需要重新启动JOSM"
 
 msgid "Reset"
 msgstr "重新设定"
@@ -453,9 +410,6 @@ msgstr "反转"
 
 msgid "Reverse the filters order."
 msgstr "反转过滤器顺序。"
-
-msgid "Rewrite imported images"
-msgstr "重写已导入图像"
 
 msgid "Roundabout"
 msgstr "环岛"
@@ -472,39 +426,35 @@ msgstr "选择可见"
 msgid "Select a directory"
 msgstr "选择文件夹"
 
-msgid "Select directory to import images from"
-msgstr "选择导入图像来源目录"
+msgid "Select the Mapillary Detection {0}"
+msgstr "选择 Mapillary 检测 {0}"
 
-msgid "Select the images you want to import"
-msgstr "选择您想要导入的图像"
+msgid "Select the Mapillary Image {0} on the {1} layer (downloads if needed)"
+msgstr "选择 {1} 图层的 Mapillary 图像 {0} (需要时会下载)"
 
-msgid "Show first Image"
-msgstr "显示第一张图片"
+msgid "Show Relevant"
+msgstr "显示相关的"
 
-msgid "Show last Image"
-msgstr "显示末一张图片"
+msgid "Show the previous page of items"
+msgstr "显示上一页的项目"
 
-msgid "Show next Image"
-msgstr "显示下一张图片"
+msgid "Smart Edit Mode"
+msgstr "智能编辑模式"
 
-msgid "Show previous Image"
-msgstr "显示前一张图片"
-
-msgid "Shows the next picture in the sequence"
-msgstr "按序显示下一个图像"
-
-msgid "Shows the previous picture in the sequence"
-msgstr "按序显示上一个图像"
+msgid "Snap to highway"
+msgstr "贴上道路"
 
 msgid "Sort"
 msgstr "排序"
 
+msgid "Sort filters."
+msgstr "排序过滤器"
+
 msgid "Speed limit"
 msgstr "限速"
 
-msgctxt "as synonym to halt or stand still"
-msgid "Stop"
-msgstr "停车让行"
+msgid "Start"
+msgstr "开始"
 
 msgctxt "name of the traffic sign"
 msgid "Stop"
@@ -517,11 +467,18 @@ msgctxt "filter"
 msgid "Text"
 msgstr "文字"
 
-msgid "There are currently no layers with geotagged images!"
-msgstr "当前没有图层含有地理标签图像"
+msgid ""
+"There is a newer version of JOSM and/or the Mapillary plugin. Please update."
+msgstr "有较新版本的 JOSM Mapillary 插件，请更新。"
+
+msgid "Today"
+msgstr "今天"
 
 msgid "Toggle: {0}"
 msgstr "切换：{0}"
+
+msgid "Total Mapillary images: {0}"
+msgstr "所有 Mapillary 图像：{0}"
 
 msgid "Traffic Signs"
 msgstr "交通标志"
@@ -535,14 +492,24 @@ msgstr "上"
 msgid "Update"
 msgstr "更新"
 
+msgctxt "Checkbox label in JOSM settings"
+msgid "Use computed location information"
+msgstr "使用计算出的位置信息"
+
+msgid "View in browser"
+msgstr "在浏览器中查看"
+
 msgid "Wait for full quality pictures"
 msgstr "等待完整品质图像"
 
-msgid "Walk mode"
-msgstr "步行模式"
+msgid "We cannot export {0}"
+msgstr "无法导出 {0}"
 
 msgid "Which image layers do you want to import into the Mapillary layer?"
 msgstr "您想将哪个图层导入Mapillary层？"
+
+msgid "Year"
+msgstr "年"
 
 msgid "Years"
 msgstr "年"
@@ -553,17 +520,46 @@ msgstr "您尚未登录。"
 msgid "You are logged in as ''{0}''."
 msgstr "您已登录为“{0}”。"
 
+msgid "You are logged in."
+msgstr "您已登录。"
+
 msgid "Zoom to selected image"
 msgstr "缩放至选定图片"
 
 msgid "Zoom to the currently selected Mapillary image"
 msgstr "缩放至所选Mapillary图像"
 
+msgid "hidden"
+msgstr "隐藏"
+
+msgid "{0} ({1} image)"
+msgid_plural "{0} ({1} images)"
+msgstr[0] "{0} ({1} 图像)"
+
 msgid "{0} consists of:"
 msgstr "{0} 组成："
 
+msgid "{0} image in total"
+msgid_plural "{0} images in total"
+msgstr[0] "总共 {0} 份图像"
+
 msgid "{0} images in {1} sequences"
 msgstr "{0}图像在{1}序列中"
+
+msgid "{0} node"
+msgid_plural "{0} nodes"
+msgstr[0] "{0} 节点"
+
+msgid "{0} relation"
+msgid_plural "{0} relations"
+msgstr[0] "{0} 关系"
+
+msgid "{0} way"
+msgid_plural "{0} ways"
+msgstr[0] "{0} 路径"
+
+msgid "{0}: {1}"
+msgstr "{0}: {1}"
 
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr "可使用户用 mapillary.com 上的图片工作"

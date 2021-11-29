@@ -8,15 +8,15 @@
 # Balázs Meskó, 2018
 # misibacsi, 2019
 # Buggi, 2020
+# Simon Legner, 2020
 # Florian Schäfer, 2020
 # Gábor Babos, 2021
-# Simon Legner, 2021
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.34-1-gb1a94dc\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.48-2-g48cffb9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-08 15:04+0000\n"
+"POT-Creation-Date: 2021-11-24 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Hungarian (https://www.transifex.com/josm/teams/2544/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -43,14 +43,8 @@ msgstr "Mapillary címke hozzáadása"
 msgid "Add filter."
 msgstr "Új szűrő készítése"
 
-msgid "All images in a directory"
-msgstr "Egy könyvtár összes képe"
-
 msgid "Cancel"
 msgstr "Mégse"
-
-msgid "Center view"
-msgstr "Képhez ugrás (nézet közepére)"
 
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
@@ -67,9 +61,6 @@ msgstr "Szín"
 
 msgid "Color Picker"
 msgstr "Színválasztó"
-
-msgid "Continues with the paused walk."
-msgstr "Folytatja a szüneteltetett sétát."
 
 msgid "Copied URL to clipboard …"
 msgstr "URL a vágólapra másolva ..."
@@ -91,12 +82,6 @@ msgstr "Kulcs másolása"
 
 msgid "Could not import a geotagged image to the Mapillary layer!"
 msgstr "Nem sikerült a geokódolt kép importlása a Mapillary rétegre!"
-
-msgid "Could not import the directory ''{0}''!"
-msgstr "A(z) „{0}” könyvtár nem importálható."
-
-msgid "Could not import the image ''{0}''!"
-msgstr "A(z) „{0}” kép nem importálható."
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "A(z) {0} URL nem nyitható meg böngészőben"
@@ -211,12 +196,6 @@ msgstr "Szűrő mód"
 msgid "Follow selected image"
 msgstr "Kijelölt kép követése"
 
-msgid "From existing image layer"
-msgstr "Létező képrétegről"
-
-msgid "From which source do you want to import images to the Mapillary layer?"
-msgstr "Melyik forrásból akarsz képeket importálni a Mapillary rétegre?"
-
 msgid "Give way"
 msgstr "Elsőbbségadás kötelező"
 
@@ -249,50 +228,14 @@ msgstr "Képinformációk"
 msgid "Image key"
 msgstr "Képkulcs"
 
-msgid "Images from my file system"
-msgstr "Képek a fájlrendszerről"
-
 msgid "Import"
 msgstr "Importálás"
-
-msgid "Import exception"
-msgstr "Importálási kivétel"
-
-msgid "Import local pictures"
-msgstr "Helyi képek importálása"
-
-msgid "Import pictures"
-msgstr "Képek importálása"
-
-msgid "Import pictures into Mapillary layer"
-msgstr "Képek importálása a Mapillary rétegre"
-
-msgid "Imported images"
-msgstr "Importált képek"
 
 msgid "Intersection danger"
 msgstr "Veszélyes útkereszteződés"
 
 msgid "Inverse filter"
 msgstr "Inverz szűrő"
-
-msgid "Jump to blue"
-msgstr "Kékhez ugrás"
-
-msgid "Jump to blue image"
-msgstr "Ugrás a kék képhez"
-
-msgid "Jump to red"
-msgstr "Piroshoz ugrás"
-
-msgid "Jump to red image"
-msgstr "Ugrás a piros képhez"
-
-msgid "Jumps to the picture at the other side of the blue line"
-msgstr "A kék vonal végén lévő képhez ugrik"
-
-msgid "Jumps to the picture at the other side of the red line"
-msgstr "A piros vonal végén lévő képhez ugrik"
 
 msgid "Layer"
 msgstr "Réteg"
@@ -343,9 +286,6 @@ msgstr "Szűrő mozgatása feljebb"
 msgid "Multikey: {0}"
 msgstr "Multikulcs: {0}"
 
-msgid "Next picture"
-msgstr "Következő kép"
-
 msgid "No entry"
 msgstr "Behajtani tilos"
 
@@ -376,23 +316,8 @@ msgstr "Mapillary szűrő párbeszédablak megnyitása"
 msgid "Open Mapillary layer"
 msgstr "Mapillary réteg megnyitása"
 
-msgid "Open Mapillary window"
-msgstr "Mapillary-ablak megnyitása"
-
-msgid "Pause"
-msgstr "Szünet"
-
 msgid "Pedestrian crossing"
 msgstr "Gyalogosátkelő"
-
-msgid "Play"
-msgstr "Lejátszás"
-
-msgid "Press \"{0}\" to download images"
-msgstr "Képek letöltéséhez nyomd meg a következőt: ''{0}''"
-
-msgid "Previous picture"
-msgstr "Előző kép"
 
 msgctxt "filter"
 msgid "R"
@@ -404,9 +329,6 @@ msgstr "Alaphelyzet"
 msgid "Reverse"
 msgstr "Fordított"
 
-msgid "Rewrite imported images"
-msgstr "Importált képek átírása"
-
 msgid "Roundabout"
 msgstr "Körforgalom"
 
@@ -416,35 +338,11 @@ msgstr "Láthatók kiválasztása"
 msgid "Select a directory"
 msgstr "Könyvtár kijelölése"
 
-msgid "Select directory to import images from"
-msgstr "Az importálandó képeket tartalmazó könyvtár kijelölése"
-
-msgid "Select the images you want to import"
-msgstr "Importálandó képek kijelölése"
-
 msgid "Sequence key"
 msgstr "Sorozat kulcs"
 
 msgid "Show detections on top of image"
 msgstr "Észlelések megjelenítése a kép tetején"
-
-msgid "Show first Image"
-msgstr "Első kép megjelenítése"
-
-msgid "Show last Image"
-msgstr "Utolsó kép megjelenítése"
-
-msgid "Show next Image"
-msgstr "Mutasd a következő képet"
-
-msgid "Show previous Image"
-msgstr "Előző kép megjelenítése"
-
-msgid "Shows the next picture in the sequence"
-msgstr "Megmutatja a sorozat következő képét"
-
-msgid "Shows the previous picture in the sequence"
-msgstr "Megmutatja a sorozat előző képét"
 
 msgid "Sort"
 msgstr "Rendezés"
@@ -452,16 +350,9 @@ msgstr "Rendezés"
 msgid "Speed limit"
 msgstr "Sebességkorlátozás"
 
-msgctxt "as synonym to halt or stand still"
-msgid "Stop"
-msgstr "Stoptábla"
-
 msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Stoptábla"
-
-msgid "Supported image formats (JPG and PNG)"
-msgstr "Támogatott képformátumok (JPG és PNG)"
 
 msgid "Tag conflict"
 msgstr "Címkeütközés"
@@ -469,9 +360,6 @@ msgstr "Címkeütközés"
 msgctxt "filter"
 msgid "Text"
 msgstr "Szöveg"
-
-msgid "There are currently no layers with geotagged images!"
-msgstr "Jelenleg nincsenek geocímkézett képrétegek."
 
 msgid "Toggle: {0}"
 msgstr "Átkapcsol: {0}"
@@ -496,14 +384,6 @@ msgstr "Megtekintés böngészőben"
 
 msgid "Wait for full quality pictures"
 msgstr "Várj a teljes minőségű képekre"
-
-msgid "Walk mode"
-msgstr "Séta mód"
-
-msgid "Walk mode: Waiting for next image takes too long! Exiting walk mode…"
-msgstr ""
-"Séta mód: A következő képre várakozás túl sokáig tart! Kilépés a séta "
-"módból…"
 
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
@@ -532,12 +412,6 @@ msgstr "Nagyítás a jelenleg kijelölt Mapillary képre"
 
 msgid "image has no key"
 msgstr "a képnek nincs kulcsa"
-
-msgid "loading image"
-msgstr "kép betöltése"
-
-msgid "no image selected"
-msgstr "nincs kijelölt kép"
 
 msgid "sequence has no key"
 msgstr "a sorozatnak nincs kulcsa"

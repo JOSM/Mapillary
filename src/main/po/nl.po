@@ -4,15 +4,15 @@
 # FIRST AUTHOR, YEAR.
 #
 # Translators:
+# DiGro, 2018
+# Simon Legner, 2020
 # Florian Schäfer, 2020
-# Simon Legner, 2021
-# DiGro, 2021
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.34-1-gb1a94dc\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.48-2-g48cffb9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-08 15:04+0000\n"
+"POT-Creation-Date: 2021-11-24 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Dutch (https://www.transifex.com/josm/teams/2544/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -40,14 +40,8 @@ msgstr "Tag voor Mapillary toevoegen"
 msgid "Add filter."
 msgstr "Voeg filter toe."
 
-msgid "All images in a directory"
-msgstr "Alle afbeeldingen in een map"
-
 msgid "Cancel"
 msgstr "Annuleren"
-
-msgid "Center view"
-msgstr "Beeld centreren"
 
 msgid "Choose signs"
 msgstr "Tekens kiezen"
@@ -58,21 +52,12 @@ msgstr "Leegmaken"
 msgid "Color"
 msgstr "Kleur"
 
-msgid "Continues with the paused walk."
-msgstr "Doorgaan met onderbroken wandeling"
-
 msgid "Copy key"
 msgstr "Sleutel kopiëren"
 
 msgid "Could not import a geotagged image to the Mapillary layer!"
 msgstr ""
 "Kon geen afbeelding met geoverwijzingen importeren in de laag van Mapillary!"
-
-msgid "Could not import the directory ''{0}''!"
-msgstr "Kon de map ''{0}'' niet importeren!"
-
-msgid "Could not import the image ''{0}''!"
-msgstr "Kon de afbeelding ''{0}'' niet importeren!"
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "Kon de URL {0} niet openen in een browser"
@@ -155,13 +140,6 @@ msgstr "modus Filteren"
 msgid "Follow selected image"
 msgstr "Geselecteerde afbeelding volgen"
 
-msgid "From existing image layer"
-msgstr "Uit bestaande afbeeldingslaag"
-
-msgid "From which source do you want to import images to the Mapillary layer?"
-msgstr ""
-"Vanuit welke bron wilt u afbeeldingen importeren naar de laag van Mapillary?"
-
 msgid "Give way"
 msgstr "Voorrang verlenen"
 
@@ -194,44 +172,14 @@ msgstr "Informatie over afbeelding"
 msgid "Image key"
 msgstr "Sleutel voor afbeelding"
 
-msgid "Images from my file system"
-msgstr "Afbeeldingen vanaf mijn bestandssysteem"
-
 msgid "Import"
 msgstr "Importeren"
-
-msgid "Import exception"
-msgstr "Uitzondering bij importeren"
-
-msgid "Import local pictures"
-msgstr "Lokale afbeeldingen importeren"
-
-msgid "Import pictures"
-msgstr "Afbeeldingen importeren"
-
-msgid "Import pictures into Mapillary layer"
-msgstr "Afbeeldingen naar laag van Mapillary importeren"
-
-msgid "Imported images"
-msgstr "Geïmporteerde afbeeldingen"
 
 msgid "Intersection danger"
 msgstr "Gevaar: kruising"
 
 msgid "Inverse filter"
 msgstr "Filter omdraaien"
-
-msgid "Jump to blue"
-msgstr "Spring naar blauw"
-
-msgid "Jump to red"
-msgstr "Spring naar rood"
-
-msgid "Jumps to the picture at the other side of the blue line"
-msgstr "Springt naar de afbeelding aan de andere zijde van de blauwe lijn"
-
-msgid "Jumps to the picture at the other side of the red line"
-msgstr "Springt naar de afbeelding aan de andere zijde van de rode lijn"
 
 msgid "Layer"
 msgstr "Laag"
@@ -279,9 +227,6 @@ msgstr "Zet filter hoger"
 msgid "Multikey: {0}"
 msgstr "Meervoudige sleutel: {0}"
 
-msgid "Next picture"
-msgstr "Volgende afbeelding"
-
 msgid "No entry"
 msgstr "Niet inrijden"
 
@@ -310,23 +255,8 @@ msgstr "Alleen afbeeldingen met tekens"
 msgid "Open Mapillary filter dialog"
 msgstr "Dialoogvenster voor filter van Mapillary openen"
 
-msgid "Open Mapillary window"
-msgstr "Venster van Mapillary openen"
-
-msgid "Pause"
-msgstr "Pauze"
-
 msgid "Pedestrian crossing"
 msgstr "Voetgangersoversteekplaats"
-
-msgid "Play"
-msgstr "Afspelen"
-
-msgid "Press \"{0}\" to download images"
-msgstr "Druk op \"{0}\" om afbeeldingen te downloaden"
-
-msgid "Previous picture"
-msgstr "Vorige afbeelding"
 
 msgctxt "filter"
 msgid "R"
@@ -338,20 +268,11 @@ msgstr "Herstellen"
 msgid "Reverse"
 msgstr "Omkeren"
 
-msgid "Rewrite imported images"
-msgstr "Geïmporteerde afbeeldingen opnieuw schrijven"
-
 msgid "Roundabout"
 msgstr "Rotonde"
 
 msgid "Select a directory"
 msgstr "Selecteer een map"
-
-msgid "Select directory to import images from"
-msgstr "Selecteer de map van waaruit u de afbeeldingen wilt importeren"
-
-msgid "Select the images you want to import"
-msgstr "Selecteer de afbeeldingen die u wilt importeren"
 
 msgid "Sequence key"
 msgstr "Sleutel voor reeks"
@@ -359,40 +280,15 @@ msgstr "Sleutel voor reeks"
 msgid "Show detections on top of image"
 msgstr "Detecties bovenop afbeelding weergeven"
 
-msgid "Show first Image"
-msgstr "Geef eerste afbeelding weer"
-
-msgid "Show last Image"
-msgstr "Geef laatste afbeelding weer"
-
-msgid "Show next Image"
-msgstr "Toon volgende afbeelding"
-
-msgid "Show previous Image"
-msgstr "Toon vorige afbeelding"
-
-msgid "Shows the next picture in the sequence"
-msgstr "Geeft de volgende afbeelding in de reeks weer"
-
-msgid "Shows the previous picture in the sequence"
-msgstr "Geeft de vorige afbeelding in de reeks weer"
-
 msgid "Sort"
 msgstr "Sorteren"
 
 msgid "Speed limit"
 msgstr "Maximum snelheid"
 
-msgctxt "as synonym to halt or stand still"
-msgid "Stop"
-msgstr "Stop"
-
 msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Stop"
-
-msgid "Supported image formats (JPG and PNG)"
-msgstr "Ondersteunde indelingen voor afbeeldingen (JPG en PNG)"
 
 msgid "Tag conflict"
 msgstr "Tagconflict"
@@ -400,9 +296,6 @@ msgstr "Tagconflict"
 msgctxt "filter"
 msgid "Text"
 msgstr "tekst"
-
-msgid "There are currently no layers with geotagged images!"
-msgstr "Er zijn momenteel geen lagen met afbeeldingen met geoverwijzingen!"
 
 msgid "Toggle: {0}"
 msgstr "Omschakelen: {0}"
@@ -424,9 +317,6 @@ msgstr "Weergeven in browser"
 
 msgid "Wait for full quality pictures"
 msgstr "Wachten op afbeeldingen met goede kwaliteit"
-
-msgid "Walk mode"
-msgstr "Modus Wandeling"
 
 msgid "Which image layers do you want to import into the Mapillary layer?"
 msgstr "Welke afbeeldingslagen wilt u importeren in de laag van Mapillary?"
