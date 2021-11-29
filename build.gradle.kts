@@ -14,7 +14,7 @@ plugins {
   id("application")
   id("com.diffplug.spotless") version "6.0.0"
   id("com.github.ben-manes.versions") version "0.39.0"
-  id("com.github.spotbugs") version "4.7.9"
+  id("com.github.spotbugs") version "4.8.0"
   id("net.ltgt.errorprone") version "2.0.2"
   id("org.openstreetmap.josm") version "0.7.1"
   id("org.sonarqube") version "3.3"
@@ -60,10 +60,10 @@ val versions = mapOf(
   "errorprone" to "2.10.0",
   "jdatepicker" to "1.3.4",
   "jmockit" to "1.49",
-  "junit" to "5.8.1",
+  "junit" to "5.8.2",
   "pmd" to "6.20.0",
   "spotbugs" to "4.5.0",
-  "wiremock" to "2.27.2"
+  "wiremock" to "2.31.0"
 )
 
 dependencies {
@@ -72,7 +72,7 @@ dependencies {
   }
   errorprone("com.google.errorprone:error_prone_core:${versions["errorprone"]}")
   testImplementation ("org.openstreetmap.josm:josm-unittest:SNAPSHOT"){ isChanging = true }
-  testImplementation("com.github.tomakehurst:wiremock:${versions["wiremock"]}")
+  testImplementation("com.github.tomakehurst:wiremock-jre8:${versions["wiremock"]}")
 
   testImplementation("org.junit.jupiter:junit-jupiter-api:${versions["junit"]}")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${versions["junit"]}")
