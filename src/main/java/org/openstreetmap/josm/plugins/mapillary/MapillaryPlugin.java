@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JMenu;
@@ -17,6 +18,8 @@ import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.dialogs.properties.PropertiesDialog;
 import org.openstreetmap.josm.gui.layer.Layer;
+import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
+import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
 import org.openstreetmap.josm.gui.preferences.PreferenceSetting;
 import org.openstreetmap.josm.io.remotecontrol.RequestProcessor;
 import org.openstreetmap.josm.plugins.Plugin;
@@ -141,6 +144,7 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
 
             this.dataMouseListener = new DataMouseListener();
             this.destroyables.add(this.dataMouseListener);
+            ensureImageViewerDialogEnabled(newFrame);
         } else if (oldFrame != null && newFrame == null) { // map frame removed
             if (this.dataMouseListener != null) {
                 this.destroyables.remove(this.dataMouseListener);
@@ -154,6 +158,20 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
             }
             toggleDialog.forEach(ToggleDialog::destroy);
             toggleDialog.clear();
+        }
+    }
+
+    /**
+     * Ensure that the image viewer dialog is created
+     *
+     * @param map The mapframe that should have the ImageViewerDialog
+     */
+    private static void ensureImageViewerDialogEnabled(MapFrame map) {
+        if (map != null && map.getToggleDialog(ImageViewerDialog.class) == null) {
+            // GeoImageLayer should do all the setup when hookUpMapView is called.
+            final GeoImageLayer geoImageLayer = new GeoImageLayer(Collections.emptyList(), null);
+            geoImageLayer.hookUpMapView();
+            geoImageLayer.destroy();
         }
     }
 

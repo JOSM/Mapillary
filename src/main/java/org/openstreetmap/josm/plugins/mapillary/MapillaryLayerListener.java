@@ -1,6 +1,5 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
-import java.util.Collections;
 import java.util.stream.Stream;
 
 import org.openstreetmap.josm.data.osm.INode;
@@ -9,10 +8,7 @@ import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorPrimitive;
 import org.openstreetmap.josm.data.vector.VectorRelation;
 import org.openstreetmap.josm.data.vector.VectorWay;
-import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.gui.MapFrame;
 import org.openstreetmap.josm.gui.layer.LayerManager;
-import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
 import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
@@ -73,23 +69,9 @@ public class MapillaryLayerListener implements Destroyable, LayerManager.LayerCh
         @Override
         public void selectionChanged(
             SelectionChangeEvent<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> event) {
-            ensureImageViewerDialogEnabled();
             event.getAdded().stream().filter(MapillaryImageUtils::isImage).filter(INode.class::isInstance)
                 .map(INode.class::cast).findFirst().map(MapillaryImageEntry::getCachedEntry)
                 .ifPresent(ImageViewerDialog.getInstance()::displayImage);
-        }
-
-        /**
-         * Ensure that the image viewer dialog is created
-         */
-        private static void ensureImageViewerDialogEnabled() {
-            MapFrame map = MainApplication.getMap();
-            if (map != null && map.getToggleDialog(ImageViewerDialog.class) == null) {
-                // GeoImageLayer should do all the setup when hookUpMapView is called.
-                final GeoImageLayer geoImageLayer = new GeoImageLayer(Collections.emptyList(), null);
-                geoImageLayer.hookUpMapView();
-                geoImageLayer.destroy();
-            }
         }
     }
 }
