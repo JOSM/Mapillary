@@ -317,7 +317,7 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
          * @return The detections
          */
         private static List<ImageDetection<?>> getDetections(long key) {
-            if (key < 0) {
+            if (key <= 0) {
                 return Collections.emptyList();
             }
             final String urlString = MapillaryURL.APIv4.getDetectionInformation(key);

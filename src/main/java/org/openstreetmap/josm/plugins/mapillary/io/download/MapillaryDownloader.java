@@ -88,7 +88,7 @@ public final class MapillaryDownloader {
     /**
      * Download a specific set of images
      *
-     * @param updateSequences {@code true} to update sequences for the iamges as well
+     * @param updateSequences {@code true} to update sequences for the images as well
      * @param images The images to download and update
      */
     public static void downloadImages(boolean updateSequences, final VectorNode... images) {

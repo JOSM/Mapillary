@@ -33,6 +33,7 @@ import java.util.function.BiConsumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.jcs3.access.CacheAccess;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
@@ -44,7 +45,6 @@ import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.preferences.AbstractProperty;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
-import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
 import org.openstreetmap.josm.gui.util.GuiHelper;
@@ -63,6 +63,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.OffsetUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.VectorDataSetUtils;
+import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.date.DateUtils;
 
@@ -113,13 +114,6 @@ public class MapillaryImageEntry
     public MapillaryImageEntry(final INode image) {
         Objects.requireNonNull(image, "image cannot be null");
         this.image = image;
-        // First get the specific information for this image. This does mean we rerequest the same information, but
-        // it should be livable, since it will be more cache-friendly.
-        if (this.image instanceof VectorNode) {
-            MapillaryDownloader.downloadImages(false, (VectorNode) this.image);
-        } else {
-            MapillaryDownloader.downloadImages(false, MapillaryImageUtils.getKey(this.image));
-        }
         // Then get the information for the rest of the sequence
         final IWay<?> sequence = MapillaryImageUtils.getSequence(this.image);
         // Avoid blocking the main worker
@@ -128,7 +122,6 @@ public class MapillaryImageEntry
             .map(nodes -> new ArrayList<>(nodes).stream().mapToLong(MapillaryImageUtils::getKey).filter(i -> i > 0)
                 .toArray())
             .ifPresent(MapillaryDownloader::downloadImages));
-        this.updateDetections(5_000);
     }
 
     /**
@@ -220,13 +213,17 @@ public class MapillaryImageEntry
 
     @Override
     public BufferedImage read(Dimension target) throws IOException {
+        if (SwingUtilities.isEventDispatchThread()) {
+            throw new JosmRuntimeException(tr("Mapillary image read should never occur on UI thread"));
+        }
         if (this.originalImage == null) {
             Future<BufferedImageCacheEntry> future = this.futureImage != null ? this.futureImage
                 : MapillaryImageUtils.getImage(this.image);
             this.futureImage = future;
             try {
                 MapillaryUtils.getForkJoinPool().execute(() -> preCacheImages(this));
-                this.originalImage = future.get(5, TimeUnit.SECONDS);
+                // This should only every be called on a non-UI thread.
+                this.originalImage = future.get(1, TimeUnit.MINUTES);
                 if (this.originalImage == null) {
                     throw new IOException(new NullPointerException("Returned image should not be null"));
                 }

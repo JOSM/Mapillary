@@ -9,7 +9,10 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -18,6 +21,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.json.Json;
 import javax.json.JsonReader;
+import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.osm.INode;
@@ -147,9 +151,17 @@ public final class MapillaryImageUtils {
             });
             return completableFuture;
         } else if (getKey(image) > 0) {
-            downloadImageDetails(image);
-            if (MapillaryImageUtils.IS_DOWNLOADABLE.test(image)) {
-                return getImage(image);
+            try {
+                downloadImageDetails(image).get(10,
+                    SwingUtilities.isEventDispatchThread() ? TimeUnit.SECONDS : TimeUnit.MINUTES);
+                if (MapillaryImageUtils.IS_DOWNLOADABLE.test(image)) {
+                    return getImage(image);
+                }
+            } catch (ExecutionException | TimeoutException e) {
+                Logging.error(e);
+            } catch (InterruptedException e) {
+                Logging.error(e);
+                Thread.currentThread().interrupt();
             }
         }
         return CompletableFuture.completedFuture(null);
@@ -235,22 +247,24 @@ public final class MapillaryImageUtils {
      * Download image details
      *
      * @param images The image details to download
+     * @return A future which finishes when the image details finish downloading
      */
-    public static void downloadImageDetails(@Nonnull Collection<INode> images) {
-        downloadImageDetails(images.toArray(new INode[0]));
+    public static Future<Void> downloadImageDetails(@Nonnull Collection<INode> images) {
+        return downloadImageDetails(images.toArray(new INode[0]));
     }
 
     /**
      * Download additional image details
      *
      * @param images The image(s) to get additional details for
+     * @return A future which finishes when the image details finish downloading
      */
-    public static void downloadImageDetails(@Nonnull INode... images) {
-        MapillaryUtils.getForkJoinPool().execute(() -> {
+    public static Future<Void> downloadImageDetails(@Nonnull INode... images) {
+        return CompletableFuture.runAsync(() -> {
             final long[] keys = Stream.of(images).filter(Objects::nonNull).mapToLong(IPrimitive::getId)
                 .filter(key -> key != 0).toArray();
             downloadImageDetails(keys);
-        });
+        }, MapillaryUtils.getForkJoinPool());
     }
 
     /**
