@@ -13,6 +13,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.SoftReference;
 import java.text.DateFormat;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -76,9 +77,9 @@ public class MapillaryImageEntry
     private final INode image;
     private final List<ImageDetection<?>> imageDetections = new ArrayList<>();
     /** This exists to avoid getting the same image twice */
-    private volatile Future<BufferedImageCacheEntry> futureImage;
-    private BufferedImageCacheEntry originalImage;
-    private BufferedImage layeredImage;
+    private Future<BufferedImageCacheEntry> futureImage;
+    private SoftReference<BufferedImageCacheEntry> originalImage;
+    private SoftReference<BufferedImage> layeredImage;
 
     private static class MapillaryValueChangeListener implements AbstractProperty.ValueChangeListener<Boolean> {
         static final MapillaryValueChangeListener instance = new MapillaryValueChangeListener();
@@ -216,17 +217,18 @@ public class MapillaryImageEntry
         if (SwingUtilities.isEventDispatchThread()) {
             throw new JosmRuntimeException(tr("Mapillary image read should never occur on UI thread"));
         }
-        if (this.originalImage == null) {
+        BufferedImageCacheEntry bufferedImageCacheEntry = (this.originalImage == null
+            || this.originalImage.get() == null) ? null : this.originalImage.get();
+        if (bufferedImageCacheEntry == null) {
             Future<BufferedImageCacheEntry> future = this.futureImage != null ? this.futureImage
                 : MapillaryImageUtils.getImage(this.image);
             this.futureImage = future;
             try {
                 MapillaryUtils.getForkJoinPool().execute(() -> preCacheImages(this));
                 // This should only every be called on a non-UI thread.
-                this.originalImage = future.get(1, TimeUnit.MINUTES);
-                if (this.originalImage == null) {
-                    throw new IOException(new NullPointerException("Returned image should not be null"));
-                }
+                bufferedImageCacheEntry = Optional.ofNullable(future.get(1, TimeUnit.MINUTES))
+                    .orElseThrow(() -> new IOException(new NullPointerException("Returned image should not be null")));
+                this.originalImage = new SoftReference<>(bufferedImageCacheEntry);
             } catch (ExecutionException | TimeoutException exception) {
                 throw new IOException(exception);
             } catch (InterruptedException exception) {
@@ -240,14 +242,17 @@ public class MapillaryImageEntry
         }
         if (this.imageDetections.isEmpty()) {
             this.updateDetections(5_000);
-            return this.originalImage.getImage();
+            return bufferedImageCacheEntry.getImage();
         }
-        if (this.layeredImage == null) {
-            this.layeredImage = new BufferedImage(this.originalImage.getImage().getWidth(),
-                this.originalImage.getImage().getHeight(), this.originalImage.getImage().getType());
+        BufferedImage bufferedLayeredImage = Optional.ofNullable(this.layeredImage).map(SoftReference::get)
+            .orElse(null);
+        if (bufferedLayeredImage == null) {
+            bufferedLayeredImage = new BufferedImage(bufferedImageCacheEntry.getImage().getWidth(),
+                bufferedImageCacheEntry.getImage().getHeight(), bufferedImageCacheEntry.getImage().getType());
+            this.layeredImage = new SoftReference<>(bufferedLayeredImage);
         }
         this.drawDetections();
-        return this.layeredImage;
+        return bufferedLayeredImage;
     }
 
     private static void preCacheImages(final MapillaryImageEntry entry) {
@@ -269,7 +274,7 @@ public class MapillaryImageEntry
                 final Future<BufferedImageCacheEntry> future = MapillaryImageUtils.getImage(imageEntry.image);
                 imageEntry.futureImage = future;
                 try {
-                    imageEntry.originalImage = future.get();
+                    imageEntry.originalImage = new SoftReference<>(future.get());
                 } catch (InterruptedException e) {
                     Logging.error(e);
                     Thread.currentThread().interrupt();
@@ -285,18 +290,23 @@ public class MapillaryImageEntry
     }
 
     private void drawDetections() throws IOException {
-        if (this.originalImage == null || this.layeredImage == null) {
+        final BufferedImage bufferedLayeredImage = Optional.ofNullable(this.layeredImage).map(SoftReference::get)
+            .orElse(null);
+        final BufferedImageCacheEntry originalCacheEntry = Optional.ofNullable(this.originalImage)
+            .map(SoftReference::get).orElse(null);
+        if (originalCacheEntry == null || bufferedLayeredImage == null) {
             this.read(null);
+            return;
         }
-        final int width = this.layeredImage.getWidth();
-        final int height = this.layeredImage.getHeight();
+        final int width = bufferedLayeredImage.getWidth();
+        final int height = bufferedLayeredImage.getHeight();
         List<PointObjectLayer> detectionLayers = MainApplication.getLayerManager()
             .getLayersOfType(PointObjectLayer.class);
         final AffineTransform unit2CompTransform = AffineTransform.getTranslateInstance(0, 0);
         unit2CompTransform.concatenate(AffineTransform.getScaleInstance(width, height));
 
-        final Graphics2D graphics = this.layeredImage.createGraphics();
-        graphics.drawImage(this.originalImage.getImage(), 0, 0, null);
+        final Graphics2D graphics = bufferedLayeredImage.createGraphics();
+        graphics.drawImage(originalCacheEntry.getImage(), 0, 0, null);
         graphics.setStroke(new BasicStroke(2));
         for (ImageDetection<?> imageDetection : this.imageDetections) {
             if (MapillaryUtils.checkIfDetectionIsFilteredBasic(detectionLayers, imageDetection)
