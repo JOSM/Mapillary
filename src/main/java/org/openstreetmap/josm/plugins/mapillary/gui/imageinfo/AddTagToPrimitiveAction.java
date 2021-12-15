@@ -12,6 +12,8 @@ import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.Tag;
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.geoimage.MapillaryImageEntry;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
@@ -53,7 +55,7 @@ public class AddTagToPrimitiveAction extends AbstractAction {
     }
 
     private void updateEnabled() {
-        setEnabled(tag != null && target != null);
+        setEnabled(tag != null && target != null && ImageViewerDialog.getCurrentImage() instanceof MapillaryImageEntry);
     }
 
     @Override

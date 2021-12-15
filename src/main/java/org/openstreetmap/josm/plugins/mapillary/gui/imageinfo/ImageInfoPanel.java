@@ -9,10 +9,7 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.Collection;
@@ -21,7 +18,6 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
-import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -40,14 +36,11 @@ import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorPrimitive;
 import org.openstreetmap.josm.data.vector.VectorRelation;
 import org.openstreetmap.josm.data.vector.VectorWay;
-import org.openstreetmap.josm.gui.ExtendedDialog;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
-import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
-import org.openstreetmap.josm.plugins.mapillary.gui.ImageColorPicker;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.SelectableLabel;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
@@ -58,7 +51,6 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.OffsetUtils;
 import org.openstreetmap.josm.tools.GBC;
-import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
 import org.openstreetmap.josm.tools.Utils;
@@ -78,7 +70,6 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
     private final ClipboardAction copyImgKeyAction;
     private final AddTagToPrimitiveAction addMapillaryTagAction;
     private final JTextPane seqKeyValue;
-    private final MapillaryButton colorPickerButton;
     private final SpinnerNumberModel offsetModel;
 
     private ValueChangeListener<Boolean> imageLinkChangeListener;
@@ -126,8 +117,6 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
 
         addMapillaryTagAction = new AddTagToPrimitiveAction(tr("Add Mapillary tag"));
 
-        colorPickerButton = new MapillaryButton(new ColorChooserAction(), true);
-
         JPanel imgKey = new JPanel();
         imgKey.add(imgKeyValue);
         imgKey.add(copyKeyButton);
@@ -135,7 +124,6 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
         imgButtons.add(new MapillaryButton(imgLinkAction, true), GBC.eol());
         imgButtons.add(copyUrlButton, GBC.eol());
         imgButtons.add(new MapillaryButton(addMapillaryTagAction, true), GBC.eol());
-        imgButtons.add(colorPickerButton, GBC.eol());
         seqKeyValue = new SelectableLabel();
 
         JPanel offsetPanel = new JPanel();
@@ -308,7 +296,6 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
         } else {
             seqKeyValue.setText('‹' + tr("sequence has no key") + '›');
         }
-        colorPickerButton.setEnabled(newImage != null);
     }
 
     /*
@@ -331,33 +318,5 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
             destroyed = true;
         }
         destroyInstance();
-    }
-
-    private static class ColorChooserAction extends AbstractAction {
-
-        private static final long serialVersionUID = 8706299665735930148L;
-
-        ColorChooserAction() {
-            super(tr("Pick Color"), ImageProvider.get("mapillary-eyedropper", ImageProvider.ImageSizes.SMALLICON));
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent arg0) {
-            ExtendedDialog abc = new ExtendedDialog(MainApplication.getMainFrame(), tr("Color Picker"));
-            abc.setContent(new ImageColorPicker());
-            abc.showDialog();
-            abc.addWindowFocusListener(new WindowAdapter() {
-                @Override
-                public void windowLostFocus(WindowEvent e) {
-                    // Force a refresh -- the code here originally reused the same graphics display as the image viewer,
-                    // and it needed (still needs?) to be refreshed
-                    if (MapillaryLayer.hasInstance()) {
-                        ImageViewerDialog.getInstance().displayImage(ImageViewerDialog.getCurrentImage());
-                    } else {
-                        ImageViewerDialog.getInstance().displayImage(null);
-                    }
-                }
-            });
-        }
     }
 }

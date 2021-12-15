@@ -7,14 +7,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.swing.JOptionPane;
 
+import mockit.Mock;
+import mockit.MockUp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openstreetmap.josm.TestUtils;
 import org.openstreetmap.josm.data.UndoRedoHandler;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.imagery.street_level.IImageEntry;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.Tag;
 import org.openstreetmap.josm.data.vector.VectorNode;
+import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.geoimage.MapillaryImageEntry;
 import org.openstreetmap.josm.testutils.annotations.FullPreferences;
 import org.openstreetmap.josm.testutils.mockers.JOptionPaneSimpleMocker;
 import org.openstreetmap.josm.tools.I18n;
@@ -22,6 +27,13 @@ import org.openstreetmap.josm.tools.I18n;
 @FullPreferences
 class AddTagToPrimitiveActionTest {
     private AddTagToPrimitiveAction addTagToPrimitiveAction;
+
+    static class ImageViewerDialogMock extends MockUp<ImageViewerDialog> {
+        @Mock
+        public static IImageEntry<?> getCurrentImage() {
+            return new MapillaryImageEntry(TestUtils.addFakeDataSet(new Node(LatLon.ZERO)));
+        }
+    }
 
     @BeforeEach
     void beforeEach() {
@@ -33,6 +45,8 @@ class AddTagToPrimitiveActionTest {
      */
     @Test
     void setTag() {
+        TestUtils.assumeWorkingJMockit();
+        new ImageViewerDialogMock();
         assertFalse(this.addTagToPrimitiveAction.isEnabled());
 
         this.addTagToPrimitiveAction.setTag(new Tag("mapillary", "tag"));
@@ -68,6 +82,8 @@ class AddTagToPrimitiveActionTest {
 
     @Test
     void setTarget() {
+        TestUtils.assumeWorkingJMockit();
+        new ImageViewerDialogMock();
         final Node one = new Node(LatLon.ZERO);
         TestUtils.addFakeDataSet(one);
         final VectorNode two = new VectorNode("setTarget");
@@ -105,6 +121,7 @@ class AddTagToPrimitiveActionTest {
     @Test
     void testConfirmDialog() {
         TestUtils.assumeWorkingJMockit();
+        new ImageViewerDialogMock();
         JOptionPaneSimpleMocker jOptionPaneSimpleMocker = new JOptionPaneSimpleMocker();
         final Tag tag = new Tag("highway", "residential");
         final Tag original_tag = new Tag("highway", "motorway");
