@@ -19,19 +19,13 @@ import javax.json.Json;
 import javax.json.JsonReader;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
-
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.JsonUtil;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
-import org.openstreetmap.josm.testutils.JOSMTestRules;
+import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 
+@BasicPreferences
 class JsonUserProfileDecoderTest {
-
-    @RegisterExtension
-    static JOSMTestRules rules = new MapillaryTestRules().preferences();
-
     private static Object getFakeAvatar() {
         return TestUtil.getPrivateFieldValue(JsonUserProfileDecoder.class, null, "FAKE_AVATAR");
     }

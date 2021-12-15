@@ -42,8 +42,7 @@ public class MapillaryDownloadAction extends JosmAction {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        if (!MapillaryLayer.hasInstance()
-            || !MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {
+        if (!MapillaryLayer.hasInstance()) {
             addLayer();
             return;
         }
@@ -51,9 +50,10 @@ public class MapillaryDownloadAction extends JosmAction {
         try {
             // Successive calls to this action toggle the active layer between the OSM data layer and the mapillary
             // layer
-            OsmDataLayer editLayer = MainApplication.getLayerManager().getEditLayer();
-            if (MainApplication.getLayerManager().getActiveLayer() != MapillaryLayer.getInstance()) {
-                MainApplication.getLayerManager().setActiveLayer(MapillaryLayer.getInstance());
+            final OsmDataLayer editLayer = MainApplication.getLayerManager().getEditLayer();
+            final Layer mapillaryLayer = MapillaryLayer.getInstance();
+            if (MainApplication.getLayerManager().getActiveLayer() != mapillaryLayer) {
+                MainApplication.getLayerManager().setActiveLayer(mapillaryLayer);
             } else if (editLayer != null) {
                 MainApplication.getLayerManager().setActiveLayer(editLayer);
             }
@@ -73,11 +73,14 @@ public class MapillaryDownloadAction extends JosmAction {
      */
     public static void addLayer() {
         LayerListModel model = LayerListDialog.getInstance().getModel();
-        model.getLayerManager().addLayer(MapillaryLayer.getInstance());
+        final Layer mapillaryLayer = MapillaryLayer.getInstance();
+        if (!model.getLayerManager().containsLayer(mapillaryLayer)) {
+            model.getLayerManager().addLayer(mapillaryLayer);
+        }
         List<Layer> selected = model.getSelectedLayers();
         int index = model.getLayers().indexOf(model.getLayerManager().getActiveDataLayer());
-        model.setSelectedLayer(MapillaryLayer.getInstance());
-        int mapillaryLayerIndex = model.getLayers().indexOf(MapillaryLayer.getInstance());
+        model.setSelectedLayer(mapillaryLayer);
+        int mapillaryLayerIndex = model.getLayers().indexOf(mapillaryLayer);
         while (mapillaryLayerIndex < index && mapillaryLayerIndex < model.getLayers().size()) {
             model.moveDown(mapillaryLayerIndex);
             mapillaryLayerIndex++;

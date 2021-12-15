@@ -21,10 +21,12 @@ import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -130,8 +132,6 @@ public final class MapillaryLayer extends MVTLayer
     /** The milliseconds in a year (approx) */
     private static final long YEAR_MILLIS = 31_557_600_000L;
 
-    /** Unique instance of the class. */
-    private static MapillaryLayer instance;
     /** The nearest images to the selected image from different sequences sorted by distance from selection. */
     // Use ArrayList instead of an array, since there will not be thousands of instances, and allows for better
     // synchronization
@@ -173,40 +173,44 @@ public final class MapillaryLayer extends MVTLayer
         }
     }
 
-    private static synchronized void clearInstance() {
-        instance = null;
-    }
-
     /**
      * Returns the unique instance of this class.
      *
      * @return The unique instance of this class.
      */
     public static MapillaryLayer getInstance() {
+        final Optional<MapillaryLayer> layerOptional = MainApplication.getLayerManager()
+            .getLayersOfType(MapillaryLayer.class).stream().findFirst();
+        if (layerOptional.isPresent()) {
+            return layerOptional.get();
+        }
         synchronized (MapillaryLayer.class) {
-            if (instance != null) {
-                return instance;
+            AtomicReference<MapillaryLayer> instance = new AtomicReference<>(MainApplication.getLayerManager()
+                .getLayersOfType(MapillaryLayer.class).stream().findFirst().orElse(null));
+            if (instance.get() != null) {
+                return instance.get();
             }
             // Running in the EDT can help avoid deadlocks due to synchronization in LayerManager
             GuiHelper.runInEDT(() -> {
                 final MapillaryLayer layer = new MapillaryLayer();
                 layer.init();
                 synchronized (MapillaryLayer.class) {
+                    instance.set(layer);
                     // Only set instance field after initialization is complete
-                    instance = layer;
+                    MainApplication.getLayerManager().addLayer(layer);
                     // Finally, wake up threads.
                     MapillaryLayer.class.notifyAll();
                 }
             });
-            while (instance == null) {
+            while (instance.get() == null) {
                 try {
-                    MapillaryLayer.class.wait(50);
+                    MapillaryLayer.class.wait(500);
                 } catch (InterruptedException e) {
                     Logging.error(e);
                     Thread.currentThread().interrupt();
                 }
             }
-            return instance;
+            return instance.get();
         }
     }
 
@@ -216,7 +220,7 @@ public final class MapillaryLayer extends MVTLayer
      * @return if the unique instance of this layer is currently instantiated
      */
     public static boolean hasInstance() {
-        return instance != null;
+        return !MainApplication.getLayerManager().getLayersOfType(MapillaryLayer.class).isEmpty();
     }
 
     /**
@@ -252,11 +256,7 @@ public final class MapillaryLayer extends MVTLayer
     @Override
     public synchronized void destroy() {
         if (!destroyed) {
-            synchronized (MapillaryLayer.class) {
-                instance = null;
-            }
             this.getData().clearSelection();
-            clearInstance();
             if (MainApplication.getMap() != null
                 && MainApplication.getMap().getToggleDialog(ImageViewerDialog.class) != null
                 && ImageViewerDialog.getCurrentImage() instanceof MapillaryImageEntry) {

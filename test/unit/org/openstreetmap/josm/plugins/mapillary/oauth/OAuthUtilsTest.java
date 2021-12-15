@@ -50,6 +50,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 import org.openstreetmap.josm.testutils.annotations.BasicWiremock;
+import org.openstreetmap.josm.testutils.annotations.HTTP;
 import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
 
@@ -60,6 +61,7 @@ import org.openstreetmap.josm.tools.JosmRuntimeException;
  */
 @BasicPreferences
 @BasicWiremock
+@HTTP
 @MapillaryURLWireMock
 class OAuthUtilsTest {
     /**

@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -24,7 +25,6 @@ import org.awaitility.Awaitility;
 import org.awaitility.Durations;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -38,18 +38,14 @@ import org.openstreetmap.josm.plugins.mapillary.utils.JsonUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
-import org.openstreetmap.josm.testutils.JOSMTestRules;
+import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 import org.openstreetmap.josm.tools.Logging;
 
+@BasicPreferences
 @MapillaryURLWireMock
 public class JsonImageDetailsDecoderTest {
-
-    @RegisterExtension
-    static JOSMTestRules rules = new MapillaryTestRules().preferences();
-
     @Test
     void testUtilityClass() {
         TestUtil.testUtilityClass(JsonImageDetailsDecoder.class);
@@ -75,6 +71,7 @@ public class JsonImageDetailsDecoderTest {
 
         final VectorNode i_135511895288847 = data.getNodes().stream().filter(image -> 135511895288847L == image.getId())
             .findFirst().orElse(null);
+        assertNotNull(i_135511895288847);
         // JOSM currently (2021-06-09) only stores timestamps to the second level, not millisecond level
         assertEquals(Instant.ofEpochMilli(1_563_721_072_184L).getEpochSecond(),
             MapillaryImageUtils.getDate(i_135511895288847).getEpochSecond());

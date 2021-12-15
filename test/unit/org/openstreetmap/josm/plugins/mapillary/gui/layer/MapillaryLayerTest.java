@@ -35,18 +35,21 @@ import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.gui.layer.imagery.MVTLayer;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryLayerAnnotation;
+import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
+import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMockErrors;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoderTest;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 
 @BasicPreferences
 @MapillaryLayerAnnotation
+@MapillaryURLWireMock
+@MapillaryURLWireMockErrors
 class MapillaryLayerTest {
 
     @RegisterExtension
-    static JOSMTestRules rules = new MapillaryTestRules().main().projection();
+    static JOSMTestRules rules = new JOSMTestRules().main().projection();
 
     private static Layer getDummyLayer() {
         return ImageryLayer.create(new ImageryInfo("dummy", "https://example.org"));
@@ -166,7 +169,7 @@ class MapillaryLayerTest {
     void testClearInstance() {
         MapillaryLayer.getInstance();
         assertTrue(MapillaryLayer.hasInstance());
-        MapillaryLayer.getInstance().destroy();
+        MainApplication.getLayerManager().removeLayer(MapillaryLayer.getInstance());
         assertFalse(MapillaryLayer.hasInstance());
         MapillaryLayer.getInstance();
         assertTrue(MapillaryLayer.hasInstance());

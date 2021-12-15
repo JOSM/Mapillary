@@ -21,6 +21,7 @@ import org.openstreetmap.josm.tools.Logging;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @ExtendWith(MapillaryLayerAnnotation.MapillaryLayerExtension.class)
+@MapillaryURLWireMock
 public @interface MapillaryLayerAnnotation {
     class MapillaryLayerExtension implements AfterEachCallback, BeforeEachCallback {
 

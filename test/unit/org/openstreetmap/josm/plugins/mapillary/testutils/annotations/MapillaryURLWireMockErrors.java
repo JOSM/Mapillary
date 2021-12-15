@@ -7,6 +7,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Optional;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -14,13 +15,14 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.testutils.annotations.AnnotationUtils;
 
 /**
  * This class is specifically for testing errors with the API.
  */
 @Documented
 @ExtendWith(MapillaryURLWireMockErrors.WireMockExtension.class)
-@Target(ElementType.METHOD)
+@Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MapillaryURLWireMockErrors {
     enum Type {
@@ -54,10 +56,10 @@ public @interface MapillaryURLWireMockErrors {
             final ExtensionContext.Namespace namespace = ExtensionContext.Namespace.create(MapillaryURLWireMock.class);
             final WireMockServer server = context.getStore(namespace).get(WireMockServer.class, WireMockServer.class);
             final Type type;
-            if (context.getElement().isPresent()) {
-                final MapillaryURLWireMockErrors annotation = context.getElement().get()
-                    .getAnnotation(MapillaryURLWireMockErrors.class);
-                type = annotation.value();
+            final Optional<MapillaryURLWireMockErrors> annotation = AnnotationUtils.findFirstParentAnnotation(context,
+                MapillaryURLWireMockErrors.class);
+            if (annotation.isPresent()) {
+                type = annotation.get().value();
             } else {
                 type = Type.APPLICATION_REQUEST_LIMIT_REACHED;
             }
@@ -68,7 +70,11 @@ public @interface MapillaryURLWireMockErrors {
                         .withBodyFile("api/v4/responses/graph/application_request_limit_reached.json")
                         .withHeader("Content-Type", "application/json")));
             } else if (type == Type.BAD_REQUEST) {
-                server.stubFor(WireMock.any(WireMock.anyUrl()).willReturn(WireMock.badRequest()));
+                server.stubFor(WireMock.any(WireMock.anyUrl()).willReturn(WireMock.badRequest()
+                    .withBody("{\"error\":{\"message\":\"Unsupported get request. Object with ID 'xxx' does not exist,"
+                        + " cannot be loaded due to missing permissions, or does not support this operation\""
+                        + ",\"type\":\"MLYApiException\",\"code\":100,\"error_subcode\":33,"
+                        + "\"fbtrace_id\":\"AO8imEutcszk9R0a4coUx1A\"}}")));
             } else if (type == Type.FORBIDDEN) {
                 server.stubFor(WireMock.any(WireMock.anyUrl()).willReturn(WireMock.forbidden()));
             } else if (type == Type.NOT_FOUND) {

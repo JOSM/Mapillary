@@ -1,27 +1,28 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.remotecontrol;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.openstreetmap.josm.actions.AutoScaleAction;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.vector.VectorNode;
-import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.io.remotecontrol.PermissionPrefWithDefault;
 import org.openstreetmap.josm.io.remotecontrol.handler.RequestHandler;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.openstreetmap.josm.tools.I18n.tr;
 
 /**
  * Remote Control handler for Mapillary
@@ -106,19 +107,17 @@ public class MapillaryRemoteControl extends RequestHandler.RawURLParseRequestHan
         }
         mapillarySequences.removeIf(string -> string.trim().isEmpty());
         if (!mapillarySequences.isEmpty()) {
-            List<INode> tNodes = GuiHelper.runInEDTAndWaitAndReturn(
-                () -> MapillaryDownloader.downloadSequences(mapillarySequences.toArray(new String[0])).stream()
-                    .flatMap(seq -> seq.getNodes().stream()).collect(Collectors.toList()));
+            List<VectorNode> tNodes = Optional
+                .ofNullable(GuiHelper.runInEDTAndWaitAndReturn(
+                    () -> MapillaryDownloader.downloadSequences(mapillarySequences.toArray(new String[0])).stream()
+                        .flatMap(seq -> seq.getNodes().stream()).collect(Collectors.toList())))
+                .orElseGet(Collections::emptyList);
             if (nodes.isEmpty()) {
                 nodes.addAll(tNodes);
             }
         }
         nodes.removeIf(Objects::isNull);
         if (!nodes.isEmpty()) {
-            if (MainApplication.getLayerManager().getLayersOfType(MapillaryLayer.class).isEmpty()) {
-                GuiHelper
-                    .runInEDTAndWait(() -> MainApplication.getLayerManager().addLayer(MapillaryLayer.getInstance()));
-            }
             GuiHelper.runInEDT(() -> AutoScaleAction.zoomTo(nodes));
         }
     }

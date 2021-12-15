@@ -53,9 +53,9 @@ import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.platform.commons.support.AnnotationSupport;
-import org.openstreetmap.josm.TestUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
-import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.IMapillaryUrls;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryUrls;
 import org.openstreetmap.josm.tools.Utils;
 
 /**
@@ -68,7 +68,7 @@ import org.openstreetmap.josm.tools.Utils;
 @Target(ElementType.TYPE)
 @ExtendWith(MapillaryURLWireMock.MapillaryURLMockExtension.class)
 public @interface MapillaryURLWireMock {
-    /** Use to indicate wether or not the API calls should be mocked */
+    /** Use to indicate whether or not the API calls should be mocked */
     enum Type {
         /** Mock the API calls */
         STANDARD,
@@ -82,31 +82,12 @@ public @interface MapillaryURLWireMock {
      * Do the test setup and teardowns
      */
     class MapillaryURLMockExtension implements AfterAllCallback, AfterEachCallback, BeforeAllCallback {
-        private static final String defaultBaseMetaDataUrl;
-        private static final String defaultBaseTileUrl;
-        static {
-            String baseMetaDataUrl;
-            String baseTileUrl;
-            try {
-                baseMetaDataUrl = (String) TestUtils.getPrivateStaticField(MapillaryURL.APIv4.class, "baseMetaDataUrl");
-                baseTileUrl = (String) TestUtils.getPrivateStaticField(MapillaryURL.APIv4.class, "baseTileUrl");
-            } catch (ReflectiveOperationException e) {
-                Logging.error(e);
-                baseMetaDataUrl = null;
-                baseTileUrl = null;
-            }
-            defaultBaseTileUrl = baseTileUrl;
-            defaultBaseMetaDataUrl = baseMetaDataUrl;
-        }
-
         @Override
-        public void afterAll(final ExtensionContext context) throws Exception {
+        public void afterAll(final ExtensionContext context) {
             final ExtensionContext.Namespace namespace = ExtensionContext.Namespace.create(MapillaryURLWireMock.class);
             final WireMockServer server = context.getStore(namespace).get(WireMockServer.class, WireMockServer.class);
+            MapillaryConfig.setUrlsProvider(null);
             server.stop();
-            // Ensure things throw if this isn't called
-            TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseMetaDataUrl", null);
-            TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseTileUrl", null);
         }
 
         @Override
@@ -204,13 +185,19 @@ public @interface MapillaryURLWireMock {
                 && AnnotationSupport.findAnnotation(context.getElement().get(), MapillaryURLWireMock.class)
                     .map(MapillaryURLWireMock::value).orElse(Type.STANDARD) == Type.INTEGRATION
                 && context.getTags().contains(IntegrationTest.TAG)) {
-                TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseMetaDataUrl", defaultBaseMetaDataUrl);
-                TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseTileUrl", defaultBaseTileUrl);
+                MapillaryConfig.setUrlsProvider(new MapillaryUrls());
             } else {
-                TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseMetaDataUrl",
-                    server.baseUrl() + "/api/v4/graph/");
-                TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseTileUrl",
-                    server.baseUrl() + "/api/v4/coverageTiles/");
+                MapillaryConfig.setUrlsProvider(new IMapillaryUrls() {
+                    @Override
+                    public String getBaseMetaDataUrl() {
+                        return server.baseUrl() + "/api/v4/graph/";
+                    }
+
+                    @Override
+                    public String getBaseTileUrl() {
+                        return server.baseUrl() + "/api/v4/coverageTiles/";
+                    }
+                });
             }
         }
 

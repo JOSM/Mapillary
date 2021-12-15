@@ -25,7 +25,7 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
-import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
@@ -33,6 +33,8 @@ import org.openstreetmap.josm.tools.ResourceProvider;
 import org.openstreetmap.josm.tools.Utils;
 
 public final class MapillaryURL {
+    private static final String FIELDS = "fields";
+
     private static final class ApiKeyReader {
         private static final String API_KEY_FILE = "mapillary_api_keys.json";
 
@@ -100,18 +102,14 @@ public final class MapillaryURL {
             // Hide constructor
         }
 
-        /** The base URL to get metadata */
-        private static String baseMetaDataUrl = "https://graph.mapillary.com/";
-        /** The base URL for tiles */
-        private static String baseTileUrl = "https://tiles.mapillary.com/maps/vtp/";
-
         /**
          * Get the Traffic Sign Tile URL
          *
          * @return A URL (String)
          */
         public static String getTrafficSigns() {
-            return baseTileUrl + "mly_map_feature_traffic_sign/2/{z}/{x}/{y}?access_token=" + ACCESS_ID;
+            return MapillaryConfig.getUrls().getBaseTileUrl()
+                + "mly_map_feature_traffic_sign/2/{z}/{x}/{y}?access_token=" + ACCESS_ID;
         }
 
         /**
@@ -120,7 +118,8 @@ public final class MapillaryURL {
          * @return A URL (String)
          */
         public static String getObjectDetections() {
-            return baseTileUrl + "mly_map_feature_point/2/{z}/{x}/{y}?access_token=" + ACCESS_ID;
+            return MapillaryConfig.getUrls().getBaseTileUrl() + "mly_map_feature_point/2/{z}/{x}/{y}?access_token="
+                + ACCESS_ID;
         }
 
         /**
@@ -130,8 +129,8 @@ public final class MapillaryURL {
          * @return The URL to get detections
          */
         public static String getDetectionInformation(long image) {
-            return baseMetaDataUrl + image + "/detections"
-                + queryString(Collections.singletonMap("fields", "value,created_at,image,geometry"));
+            return MapillaryConfig.getUrls().getBaseMetaDataUrl() + image + "/detections"
+                + queryString(Collections.singletonMap(FIELDS, "value,created_at,image,geometry"));
         }
 
         /**
@@ -141,9 +140,10 @@ public final class MapillaryURL {
          */
         public static String getImages() {
             if (Boolean.TRUE.equals(MapillaryProperties.USE_COMPUTED_LOCATIONS.get())) {
-                return baseTileUrl + "mly1_computed_public/2/{z}/{x}/{y}?access_token=" + ACCESS_ID;
+                return MapillaryConfig.getUrls().getBaseTileUrl() + "mly1_computed_public/2/{z}/{x}/{y}?access_token="
+                    + ACCESS_ID;
             }
-            return baseTileUrl + "mly1_public/2/{z}/{x}/{y}?access_token=" + ACCESS_ID;
+            return MapillaryConfig.getUrls().getBaseTileUrl() + "mly1_public/2/{z}/{x}/{y}?access_token=" + ACCESS_ID;
         }
 
         /**
@@ -159,12 +159,12 @@ public final class MapillaryURL {
             }
             if (images.length > 1) {
                 Map<String, String> queryFields = new HashMap<>(2);
-                queryFields.put("fields",
+                queryFields.put(FIELDS,
                     Stream.of(getDefaultImageInformation()).map(MapillaryImageUtils.ImageProperties::name)
                         .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(",")));
                 queryFields.put("image_ids",
                     LongStream.of(images).mapToObj(Long::toString).collect(Collectors.joining(",")));
-                return baseMetaDataUrl + "images" + queryString(queryFields);
+                return MapillaryConfig.getUrls().getBaseMetaDataUrl() + "images" + queryString(queryFields);
             }
             return getImageInformation(images[0]);
         }
@@ -188,8 +188,9 @@ public final class MapillaryURL {
             } else {
                 imageProperties = properties;
             }
-            return baseMetaDataUrl + image + queryString(Collections.singletonMap("fields", Stream.of(imageProperties)
-                .map(MapillaryImageUtils.ImageProperties::toString).collect(Collectors.joining(","))));
+            return MapillaryConfig.getUrls().getBaseMetaDataUrl() + image
+                + queryString(Collections.singletonMap(FIELDS, Stream.of(imageProperties)
+                    .map(MapillaryImageUtils.ImageProperties::toString).collect(Collectors.joining(","))));
         }
 
         /**
@@ -217,7 +218,8 @@ public final class MapillaryURL {
          * @return The URL to get image identifiers with
          */
         public static String getImagesBySequences(String key) {
-            return baseMetaDataUrl + "image_ids" + queryString(Collections.singletonMap("sequence_id", key));
+            return MapillaryConfig.getUrls().getBaseMetaDataUrl() + "image_ids"
+                + queryString(Collections.singletonMap("sequence_id", key));
         }
 
         /**
@@ -229,7 +231,7 @@ public final class MapillaryURL {
          */
         public static String getMapFeatureInformation(final long id,
             @Nonnull final MapillaryMapFeatureUtils.MapFeatureProperties... properties) {
-            return baseMetaDataUrl + id + queryString(Collections.singletonMap("fields",
+            return MapillaryConfig.getUrls().getBaseMetaDataUrl() + id + queryString(Collections.singletonMap(FIELDS,
                 Stream.of(properties).map(Object::toString).collect(Collectors.joining(","))));
         }
 
@@ -240,7 +242,8 @@ public final class MapillaryURL {
          */
         public static String getOrganizationInformation(long id) {
             // profile_photo_url for profile photos, possibly (currently not public -- errors out) TODO
-            return baseMetaDataUrl + id + queryString(Collections.singletonMap("fields", "slug,name,description"));
+            return MapillaryConfig.getUrls().getBaseMetaDataUrl() + id
+                + queryString(Collections.singletonMap(FIELDS, "slug,name,description"));
         }
 
         /**
@@ -249,7 +252,7 @@ public final class MapillaryURL {
          * @return The URL to get user information (logged in user only)
          */
         public static URL getUserInformation() {
-            return string2URL(baseMetaDataUrl, "me", queryString(null));
+            return string2URL(MapillaryConfig.getUrls().getBaseMetaDataUrl(), "me", queryString(null));
         }
 
         /**
@@ -258,7 +261,7 @@ public final class MapillaryURL {
          * @return The token url
          */
         public static String getTokenUrl() {
-            return baseMetaDataUrl + "token";
+            return MapillaryConfig.getUrls().getBaseMetaDataUrl() + "token";
         }
     }
 
@@ -298,15 +301,6 @@ public final class MapillaryURL {
          */
         public static URL uploadSecretsURL() {
             return string2URL(baseUrl, "me/uploads", queryString(null));
-        }
-
-        static String queryString(final Bounds bounds) {
-            if (bounds != null) {
-                final Map<String, String> parts = new HashMap<>();
-                parts.put("bbox", bounds.toBBox().toStringCSV(","));
-                return MapillaryURL.queryString(parts);
-            }
-            return MapillaryURL.queryString(null);
         }
 
         /**

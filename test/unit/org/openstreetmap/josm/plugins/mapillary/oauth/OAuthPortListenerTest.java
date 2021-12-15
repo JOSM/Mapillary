@@ -11,6 +11,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Test;
+import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
+import org.openstreetmap.josm.testutils.annotations.HTTP;
 
 /**
  * Tests the {@link OAuthPortListener} class.
@@ -18,6 +20,8 @@ import org.junit.jupiter.api.Test;
  * @author nokutu
  * @see OAuthPortListener
  */
+@BasicPreferences
+@HTTP
 class OAuthPortListenerTest {
 
     /**
@@ -34,6 +38,8 @@ class OAuthPortListenerTest {
             new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
             in.readLine();
             assertEquals(OAuthPortListener.RESPONSE, in.readLine());
+        } finally {
+            t.join();
         }
     }
 }

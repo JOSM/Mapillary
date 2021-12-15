@@ -23,7 +23,6 @@ import javax.json.JsonReader;
 import javax.json.JsonValue;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -34,18 +33,20 @@ import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorPrimitive;
 import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
+import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryLayerAnnotation;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
+import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMockErrors;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
-import org.openstreetmap.josm.testutils.JOSMTestRules;
+import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
+import org.openstreetmap.josm.testutils.annotations.HTTP;
 
+@BasicPreferences
+@HTTP
+@MapillaryLayerAnnotation
 @MapillaryURLWireMock
 class JsonMapObjectDecoderTest {
-
-    @RegisterExtension
-    static JOSMTestRules rules = new MapillaryTestRules().preferences();
 
     @Test
     void testDecodeMapObject() throws IOException {
@@ -186,6 +187,7 @@ class JsonMapObjectDecoderTest {
     @ParameterizedTest
     @ValueSource(strings = { "{\"images\":{}}", "{\"images\":[{\"id\":\"8\"}]}", "{\"images\":{\"data\":[]}}",
         "{\"images\":{\"data\":[{\"tid\":\"8\"}]}}", "{\"images\":{\"data\":[8]}}", })
+    @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.NOT_FOUND)
     void testBadImages(final String jsonString) {
         final VectorNode testNode = new VectorNode("test");
         try (JsonReader reader = Json

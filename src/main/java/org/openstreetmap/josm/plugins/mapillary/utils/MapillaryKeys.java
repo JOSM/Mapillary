@@ -2,7 +2,11 @@ package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
+import java.util.function.Supplier;
+
 import org.openstreetmap.josm.data.imagery.ImageryInfo;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.IMapillaryUrls;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 
 /**
  * This class holds common keys for Mapillary objects
@@ -30,7 +34,24 @@ public final class MapillaryKeys {
     public static final ImageryInfo MAPILLARY_POINT_OBJECTS = new ImageryInfo(tr("Mapillary Point Objects"),
         MapillaryURL.APIv4.getObjectDetections());
 
+    private static void updateExtendedUrl(final IMapillaryUrls urlProvider, final ImageryInfo info,
+        final Supplier<String> supplier) {
+        if (urlProvider == null) {
+            info.setExtendedUrl("");
+        } else {
+            info.setExtendedUrl(supplier.get());
+        }
+    }
+
     static {
+        // Add URL change listeners
+        MapillaryConfig.addUrlChangeListener(
+            (oldUrls, newUrls) -> updateExtendedUrl(newUrls, MAPILLARY_IMAGES, MapillaryURL.APIv4::getImages));
+        MapillaryConfig.addUrlChangeListener((oldUrls, newUrls) -> updateExtendedUrl(newUrls, MAPILLARY_TRAFFIC_SIGNS,
+            MapillaryURL.APIv4::getTrafficSigns));
+        MapillaryConfig.addUrlChangeListener((oldUrls, newUrls) -> updateExtendedUrl(newUrls, MAPILLARY_POINT_OBJECTS,
+            MapillaryURL.APIv4::getObjectDetections));
+
         // Set types to MVT
         MAPILLARY_IMAGES.setSourceType(ImageryInfo.ImageryType.MVT);
         MAPILLARY_TRAFFIC_SIGNS.setSourceType(ImageryInfo.ImageryType.MVT);

@@ -104,12 +104,13 @@ class MapillaryRemoteControlTest {
     void testHandleRequest(final String request, final boolean createLayerFirst) throws UnknownHostException,
         RequestHandler.RequestHandlerBadRequestException, RequestHandler.RequestHandlerErrorException {
         if (createLayerFirst) {
-            MainApplication.getLayerManager().addLayer(MapillaryLayer.getInstance());
+            assertTrue(MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance()),
+                "getInstance should add the layer");
             assertEquals(1, MainApplication.getLayerManager().getLayersOfType(MapillaryLayer.class).size());
+            assertTrue(MapillaryLayer.getInstance().getData().allPrimitives().isEmpty());
         } else {
             assertTrue(MainApplication.getLayerManager().getLayersOfType(MapillaryLayer.class).isEmpty());
         }
-        assertTrue(MapillaryLayer.getInstance().getData().allPrimitives().isEmpty());
 
         final MapillaryRemoteControl mapillaryRemoteControl = new MapillaryRemoteControl();
         mapillaryRemoteControl.setUrl(RemoteControl.getInet4Address() + "/photo?" + request);

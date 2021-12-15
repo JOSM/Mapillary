@@ -16,7 +16,6 @@ import org.awaitility.Awaitility;
 import org.awaitility.Durations;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-
 import org.openstreetmap.josm.TestUtils;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -30,18 +29,19 @@ import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryU
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMockErrors;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoderTest;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
+import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 import org.openstreetmap.josm.tools.Logging;
 
 @AwaitThreadFinish
-@MapillaryURLWireMock
+@BasicPreferences
 @MapillaryCaches
+@MapillaryURLWireMock
 class MapillaryCacheTest {
 
     @RegisterExtension
-    static JOSMTestRules rules = new MapillaryTestRules().main();
+    static JOSMTestRules rules = new JOSMTestRules().main().projection();
 
     @Test
     void test() {

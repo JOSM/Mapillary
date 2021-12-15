@@ -29,7 +29,6 @@ import javax.swing.event.ListSelectionListener;
 
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorWay;
-import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
@@ -117,12 +116,7 @@ public class ChooseGeoImageLayersDialog extends JDialog {
                     // order by capturedAt timestamp (ascending)
                     .sorted(Comparator.comparing(MapillaryImageUtils::getDate)).collect(Collectors.toList()));
                 return seq;
-            }).forEach(seq -> {
-                seq.getNodes().forEach(img -> MapillaryLayer.getInstance().getData().addPrimitive(img));
-                if (!MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {
-                    MainApplication.getLayerManager().addLayer(MapillaryLayer.getInstance());
-                }
-            });
+            }).forEach(seq -> seq.getNodes().forEach(img -> MapillaryLayer.getInstance().getData().addPrimitive(img)));
             MapillaryLayer.invalidateInstance();
             dispose();
         });
