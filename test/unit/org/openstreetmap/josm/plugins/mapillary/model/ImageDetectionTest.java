@@ -16,6 +16,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
+import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.AwaitThreadFinish;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryCaches;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
@@ -60,8 +61,9 @@ class ImageDetectionTest {
         assertEquals(expectedDetections, detections.size());
     }
 
-    @ParameterizedTest
+    @AwaitThreadFinish
     @MethodSource("getDetectionsArguments")
+    @ParameterizedTest
     void testGetDetectionsNoWait(long id) {
         List<ImageDetection<?>> detections = ImageDetection.getDetections(id, ImageDetection.Options.FETCH);
         assertTrue(detections.isEmpty());
