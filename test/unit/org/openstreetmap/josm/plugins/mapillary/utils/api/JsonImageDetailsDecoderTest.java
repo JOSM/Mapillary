@@ -23,6 +23,7 @@ import javax.json.JsonReader;
 
 import org.awaitility.Awaitility;
 import org.awaitility.Durations;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -55,6 +56,7 @@ public class JsonImageDetailsDecoderTest {
 
     @ParameterizedTest(name = "{index}: using computed locations: {0}")
     @ValueSource(booleans = { true, false })
+    @Disabled("JOSM Jenkins server throws IOException (#21121)")
     void testDecodeImageInfos(boolean computedLocations) throws IOException {
         MapillaryProperties.USE_COMPUTED_LOCATIONS.put(computedLocations);
         final long[] images = new long[] { 135511895288847L };
@@ -124,6 +126,7 @@ public class JsonImageDetailsDecoderTest {
 
     @Test
     @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.APPLICATION_REQUEST_LIMIT_REACHED)
+    @Disabled("JOSM Jenkins server throws IOException (#21121)")
     void testDecodeImageInfosWithFetchErrorsApplicationRequestLimitReached() throws IOException {
         final long[] images = new long[] { 148137757289079L, 311799370533334L, 4235112816526838L, 464249047982277L,
             308609047601518L, 135511895288847L, 311681117131457L, };
