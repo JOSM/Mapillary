@@ -12,7 +12,7 @@ import kotlin.reflect.full.starProjectedType
 
 plugins {
   id("application")
-  id("com.diffplug.spotless") version "6.0.0"
+  id("com.diffplug.spotless") version "6.0.5"
   id("com.github.ben-manes.versions") version "0.39.0"
   id("com.github.spotbugs") version "4.8.0"
   id("net.ltgt.errorprone") version "2.0.2"
@@ -62,8 +62,8 @@ val versions = mapOf(
   "jmockit" to "1.49",
   "junit" to "5.8.2",
   "pmd" to "6.20.0",
-  "spotbugs" to "4.5.0",
-  "wiremock" to "2.31.0"
+  "spotbugs" to "4.5.2",
+  "wiremock" to "2.32.0"
 )
 
 dependencies {
