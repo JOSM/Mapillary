@@ -22,6 +22,7 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -49,6 +50,7 @@ import org.openstreetmap.josm.testutils.annotations.HTTP;
 class JsonMapObjectDecoderTest {
 
     @Test
+    @Disabled("JOSM Jenkins server throws IOException (#21121)")
     void testDecodeMapObject() throws IOException {
         final JsonObject jsonObject = OAuthUtils.getWithHeader(new URL(MapillaryURL.APIv4
             .getMapFeatureInformation(496980935069177L, MapillaryMapFeatureUtils.MapFeatureProperties.values())));
@@ -76,6 +78,7 @@ class JsonMapObjectDecoderTest {
     }
 
     @Test
+    @Disabled("JOSM Jenkins server throws IOException (#21121)")
     void testNoOverwriteFromInitialVector() throws IOException {
         final JsonObject jsonObject = OAuthUtils.getWithHeader(new URL(MapillaryURL.APIv4
             .getMapFeatureInformation(496980935069177L, MapillaryMapFeatureUtils.MapFeatureProperties.values())));

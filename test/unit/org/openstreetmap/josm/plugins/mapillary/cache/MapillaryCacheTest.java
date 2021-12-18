@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import junit.framework.AssertionFailedError;
 import org.awaitility.Awaitility;
 import org.awaitility.Durations;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openstreetmap.josm.TestUtils;
@@ -44,6 +45,7 @@ class MapillaryCacheTest {
     static JOSMTestRules rules = new JOSMTestRules().main().projection();
 
     @Test
+    @Disabled("JOSM Jenkins server throws IOException (#21121)")
     void test() {
         // Use 135511895288847 since that is an image we have real information for
         VectorNode image = JsonImageDetailsDecoderTest.createDownloadedImage(135511895288847L,
