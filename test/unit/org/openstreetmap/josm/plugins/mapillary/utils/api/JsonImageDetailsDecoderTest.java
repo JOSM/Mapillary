@@ -41,9 +41,11 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
+import org.openstreetmap.josm.testutils.annotations.HTTP;
 import org.openstreetmap.josm.tools.Logging;
 
 @BasicPreferences
+@HTTP
 @MapillaryURLWireMock
 public class JsonImageDetailsDecoderTest {
     @Test
