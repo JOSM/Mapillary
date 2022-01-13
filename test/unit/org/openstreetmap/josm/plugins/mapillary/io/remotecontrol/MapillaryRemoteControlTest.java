@@ -12,7 +12,6 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.net.UnknownHostException;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -102,7 +101,6 @@ class MapillaryRemoteControlTest {
     @MapillaryCaches
     @ParameterizedTest
     @MethodSource
-    @Disabled("JOSM Jenkins server throws IOException (#21121)")
     void testHandleRequest(final String request, final boolean createLayerFirst) throws UnknownHostException,
         RequestHandler.RequestHandlerBadRequestException, RequestHandler.RequestHandlerErrorException {
         if (createLayerFirst) {

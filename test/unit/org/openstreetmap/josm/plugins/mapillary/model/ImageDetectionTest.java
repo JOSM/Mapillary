@@ -9,7 +9,6 @@ import java.awt.geom.Path2D;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -54,7 +53,6 @@ class ImageDetectionTest {
 
     @ParameterizedTest
     @MethodSource("getDetectionsArguments")
-    @Disabled("JOSM Jenkins server throws IOException (#21121)")
     void testGetDetectionsWait(long id, int expectedDetections) {
         List<ImageDetection<?>> detections = ImageDetection.getDetections(id, ImageDetection.Options.WAIT);
         assertEquals(expectedDetections, detections.size());

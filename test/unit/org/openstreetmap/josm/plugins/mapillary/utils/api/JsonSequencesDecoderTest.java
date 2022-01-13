@@ -21,7 +21,6 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -78,7 +77,6 @@ class JsonSequencesDecoderTest {
     }
 
     @Test
-    @Disabled("JOSM Jenkins server throws IOException (#21121)")
     void testDecodeSequence() throws IOException {
         final JsonObject json = OAuthUtils
             .getWithHeader(new URL(MapillaryURL.APIv4.getImagesBySequences("7nfcwfvjdtphz7yj6zat6a")));
