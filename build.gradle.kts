@@ -27,7 +27,6 @@ plugins {
 }
 
 repositories {
-  jcenter()
   mavenCentral()
 }
 
@@ -273,8 +272,8 @@ jacoco {
 
 tasks.jacocoTestReport {
   reports {
-    xml.isEnabled = true
-    html.destination = file("$buildDir/reports/jacoco")
+    xml.required.set(true)
+    html.outputLocation.set(file("$buildDir/reports/jacoco"))
   }
 }
 
