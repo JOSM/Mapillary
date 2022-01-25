@@ -1,4 +1,8 @@
 ## What's Changed
+### [v2.0.0-beta.1](https://github.com/JOSM/Mapillary/compare/v2.0.0-alpha.50...v2.0.0-beta.1)
+* JOSM [#21791](https://josm.openstreetmap.de/ticket/21791): IOOBE in OffsetUtils#getOffsetLocation
+* JOSM [#21530](https://josm.openstreetmap.de/ticket/21530): Disable Mapillary tag insert when no Mapillary image selected.
+
 ### [v2.0.0-alpha.50](https://github.com/JOSM/Mapillary/compare/v2.0.0-alpha.49...v2.0.0-alpha.50)
 UI and OOM improvements
 * MapillaryImageEntry: Use SoftReferences to avoid OOM
