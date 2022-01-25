@@ -1,5 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -61,16 +63,17 @@ public final class OffsetUtils {
     public static ILatLon getOffsetLocation(final INode node) {
         final int offset = getOffset(node);
         final IWay<?> sequence = MapillaryImageUtils.getSequence(node);
-        if (sequence == null) {
+        if (sequence == null || offset == 0) {
             return node;
         }
-        final int index = sequence.getNodes().indexOf(node);
-        if (index + offset > sequence.getNodesCount() - 1) {
-            return sequence.lastNode();
+        List<? extends INode> nodes = new ArrayList<>(sequence.getNodes());
+        final int index = nodes.indexOf(node);
+        if (index + offset > nodes.size() - 1) {
+            return nodes.get(nodes.size() - 1);
         } else if (index + offset < 0) {
-            return sequence.firstNode();
+            return nodes.get(0);
         } else {
-            return sequence.getNode(index + offset);
+            return nodes.get(index + offset);
         }
     }
 }
