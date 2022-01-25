@@ -147,6 +147,7 @@ tasks.register("generateApiKeyFile") {
 }
 if (getProperty("MAPILLARY_CLIENT_TOKEN") != null) {
     tasks["processResources"].dependsOn("generateApiKeyFile")
+    tasks["assemble"].dependsOn("generateApiKeyFile")
 } else {
     logger.warn("MAPILLARY_CLIENT_TOKEN not set in the environment. Build only usable for tests.")
 }
