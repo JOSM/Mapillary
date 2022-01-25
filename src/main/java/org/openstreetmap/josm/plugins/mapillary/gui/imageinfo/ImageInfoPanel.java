@@ -198,16 +198,19 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
         instance = null;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.openstreetmap.josm.gui.dialogs.ToggleDialog#stateChanged()
-     */
     @Override
     protected void stateChanged() {
         super.stateChanged();
         if (isDialogShowing()) { // If the user opens the dialog once, no longer show the help message
             MapillaryProperties.IMAGEINFO_HELP_COUNTDOWN.put(0);
         }
+    }
+
+    @Override
+    public synchronized void selectionChanged(final DataSelectionListener.SelectionChangeEvent event) {
+        final Collection<OsmPrimitive> sel = event.getSelection();
+        Logging.debug(String.format("Selection changed. %d primitives are selected.", sel == null ? 0 : sel.size()));
+        addMapillaryTagAction.setTarget(sel != null && sel.size() == 1 ? sel.iterator().next() : null);
     }
 
     @Override
@@ -296,17 +299,6 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
         } else {
             seqKeyValue.setText('‹' + tr("sequence has no key") + '›');
         }
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.openstreetmap.josm.data.SelectionChangedListener#selectionChanged(java.util.Collection)
-     */
-    @Override
-    public synchronized void selectionChanged(final DataSelectionListener.SelectionChangeEvent event) {
-        final Collection<OsmPrimitive> sel = event.getSelection();
-        Logging.debug(String.format("Selection changed. %d primitives are selected.", sel == null ? 0 : sel.size()));
-        addMapillaryTagAction.setTarget(sel != null && sel.size() == 1 ? sel.iterator().next() : null);
     }
 
     @Override

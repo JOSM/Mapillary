@@ -24,6 +24,7 @@ import javax.json.JsonReader;
 import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
+import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IWay;
@@ -53,10 +54,7 @@ public final class MapillaryImageUtils {
 
     /**
      * A pattern to look for strings that are only numbers -- mostly used during switchover from v3 to v4 API
-     *
-     * @deprecated Figure out if this needs to be kept
      */
-    @Deprecated
     private static final Pattern NUMBERS = Pattern.compile("\\d+");
 
     /**
@@ -137,18 +135,7 @@ public final class MapillaryImageUtils {
     public static Future<BufferedImageCacheEntry> getImage(@Nonnull INode image) {
         if (MapillaryImageUtils.IS_DOWNLOADABLE.test(image)) {
             CompletableFuture<BufferedImageCacheEntry> completableFuture = new CompletableFuture<>();
-            CacheUtils.submit(image, (entry, attributes, result) -> {
-                if (entry instanceof BufferedImageCacheEntry) {
-                    // Using the BufferedImageCacheEntry may speed up processing, if the image is already loaded.
-                    completableFuture.complete((BufferedImageCacheEntry) entry);
-                } else if (entry != null && entry.getContent() != null) {
-                    // Fall back. More expensive if the image has already been loaded twice.
-                    completableFuture.complete(new BufferedImageCacheEntry(entry.getContent()));
-                } else {
-                    completableFuture.completeExceptionally(
-                        new NullPointerException("MapillaryImageUtils#getImage did not have required information"));
-                }
-            });
+            CacheUtils.submit(image, (entry, attributes, result) -> cacheImageFuture(completableFuture, entry));
             return completableFuture;
         } else if (getKey(image) > 0) {
             try {
@@ -165,6 +152,26 @@ public final class MapillaryImageUtils {
             }
         }
         return CompletableFuture.completedFuture(null);
+    }
+
+    /**
+     * Complete a future with an entry. This should be called on a separate thread when the entry is ready.
+     *
+     * @param completableFuture The future to complete when the data is downloaded
+     * @param entry The entry to put in the future
+     */
+    private static void cacheImageFuture(CompletableFuture<BufferedImageCacheEntry> completableFuture,
+        CacheEntry entry) {
+        if (entry instanceof BufferedImageCacheEntry) {
+            // Using the BufferedImageCacheEntry may speed up processing, if the image is already loaded.
+            completableFuture.complete((BufferedImageCacheEntry) entry);
+        } else if (entry != null && entry.getContent() != null) {
+            // Fall back. More expensive if the image has already been loaded twice.
+            completableFuture.complete(new BufferedImageCacheEntry(entry.getContent()));
+        } else {
+            completableFuture.completeExceptionally(
+                new NullPointerException("MapillaryImageUtils#getImage did not have required information"));
+        }
     }
 
     /**
@@ -268,16 +275,6 @@ public final class MapillaryImageUtils {
     }
 
     /**
-     * Check if the node has one of the Mapillary keys
-     *
-     * @param node The node to check
-     * @return {@code true} if the node is for an image
-     */
-    public static boolean isImage(@Nullable IPrimitive node) {
-        return node instanceof INode && node.hasKey(ImageProperties.ID.toString());
-    }
-
-    /**
      * Get image details for some specific keys
      *
      * @param keys the keys to get details for
@@ -295,11 +292,24 @@ public final class MapillaryImageUtils {
                     return null;
                 }
             });
+            if (cacheData == null) {
+                return;
+            }
             try (JsonReader reader = Json
                 .createReader(new ByteArrayInputStream(cacheData.getBytes(StandardCharsets.UTF_8)))) {
                 JsonDecoder.decodeData(reader.readObject(), JsonImageDetailsDecoder::decodeImageInfos);
             }
         }
+    }
+
+    /**
+     * Check if the node has one of the Mapillary keys
+     *
+     * @param node The node to check
+     * @return {@code true} if the node is for an image
+     */
+    public static boolean isImage(@Nullable IPrimitive node) {
+        return node instanceof INode && node.hasKey(ImageProperties.ID.toString());
     }
 
     /**

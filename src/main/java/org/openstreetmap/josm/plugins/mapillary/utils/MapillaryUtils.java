@@ -42,7 +42,6 @@ import org.openstreetmap.josm.tools.Utils;
  */
 public final class MapillaryUtils {
 
-    private static final double MIN_ZOOM_SQUARE_SIDE = 0.002;
     private static final Map<String, ForkJoinPool> forkJoinPool = new HashMap<>();
     private static final long[] EMPTY_LONG = new long[0];
 

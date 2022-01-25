@@ -216,6 +216,21 @@ public final class Caches {
         }
 
         /**
+         * Given a URL, get and cache the response if not already present in a non-blocking manner
+         *
+         * @param url The url to get
+         * @param pool The ForkJoinPool to use
+         * @param supplier The supplier to get the object with
+         * @return A future with the object, when it completes.
+         */
+        public Future<V> get(@Nonnull String url, @Nonnull ForkJoinPool pool, @Nonnull Supplier<V> supplier) {
+            if (this.cacheAccess.get(url) != null) {
+                return CompletableFuture.completedFuture(this.cacheAccess.get(url));
+            }
+            return pool.submit(() -> get(url, supplier));
+        }
+
+        /**
          * Check an object for issues
          *
          * @param returnObject The object to check
@@ -240,21 +255,6 @@ public final class Caches {
                 }
             }
             return UNKNOWN_MAPILLARY_EXCEPTION;
-        }
-
-        /**
-         * Given a URL, get and cache the response if not already present in a non-blocking manner
-         *
-         * @param url The url to get
-         * @param pool The ForkJoinPool to use
-         * @param supplier The supplier to get the object with
-         * @return A future with the object, when it completes.
-         */
-        public Future<V> get(@Nonnull String url, @Nonnull ForkJoinPool pool, @Nonnull Supplier<V> supplier) {
-            if (this.cacheAccess.get(url) != null) {
-                return CompletableFuture.completedFuture(this.cacheAccess.get(url));
-            }
-            return pool.submit(() -> get(url, supplier));
         }
 
         /**

@@ -80,19 +80,6 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
     private DetectionVerification.TYPE approvalType;
 
     /**
-     * Get the detections for an image key
-     *
-     * @param key The image key
-     * @param listener The consumer to notify when the detections are downloaded
-     * @return A ForkJoinTask (just in case it needs to be cancelled)
-     */
-    public static ImageDetectionForkJoinTask getDetections(long key,
-        BiConsumer<Long, List<ImageDetection<?>>> listener) {
-        return (ImageDetectionForkJoinTask) MapillaryUtils.getForkJoinPool()
-            .submit(new ImageDetectionForkJoinTask(key, listener));
-    }
-
-    /**
      * Get detections at some later time
      *
      * @param key The key to use
@@ -118,6 +105,19 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
             }
 
         }
+    }
+
+    /**
+     * Get the detections for an image key
+     *
+     * @param key The image key
+     * @param listener The consumer to notify when the detections are downloaded
+     * @return A ForkJoinTask (just in case it needs to be cancelled)
+     */
+    public static ImageDetectionForkJoinTask getDetections(long key,
+        BiConsumer<Long, List<ImageDetection<?>>> listener) {
+        return (ImageDetectionForkJoinTask) MapillaryUtils.getForkJoinPool()
+            .submit(new ImageDetectionForkJoinTask(key, listener));
     }
 
     /**

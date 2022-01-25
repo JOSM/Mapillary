@@ -58,7 +58,7 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
      * @param layer The layer we found
      * @param searchBBox The bbox to search
      */
-    private void mouseClickedInner(final MouseEvent e, final MVTLayer layer, final BBox searchBBox) {
+    private static void mouseClickedInner(final MouseEvent e, final MVTLayer layer, final BBox searchBBox) {
         Collection<VectorNode> nodes = layer.getData().searchNodes(searchBBox).stream().distinct()
             .filter(AbstractPrimitive::isVisible).collect(Collectors.toList());
         if (!nodes.isEmpty()) {
