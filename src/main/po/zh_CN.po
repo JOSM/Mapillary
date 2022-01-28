@@ -1,5 +1,5 @@
 # Translations for the JOSM plugin 'Mapillary' (zh_CN)
-# Copyright (C) 2021
+# Copyright (C) 2022
 # This file is distributed under the same license as the josm-plugin_Mapillary package.
 # FIRST AUTHOR, YEAR.
 #
@@ -7,15 +7,16 @@
 # Florian Schäfer, 2018
 # Herman Lee, 2020
 # Simon Legner, 2020
-# y941, 2021
+# y941s, 2021
 # JOJOforshaun, 2021
 # anodern, 2021
+# 储油站, 2021
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.48-2-g48cffb9\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.1-2-g20963ab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-24 15:04+0000\n"
+"POT-Creation-Date: 2022-01-26 15:07+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/josm/teams/2544/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -24,6 +25,7 @@ msgstr ""
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+#. filter mode: add
 msgctxt "filter"
 msgid "A"
 msgstr "添加"
@@ -50,6 +52,7 @@ msgstr "必须至少使用一个可选参数 ({0})"
 msgid "Cancel"
 msgstr "取消"
 
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr "跳转至新图像时使图像居中"
@@ -63,8 +66,9 @@ msgstr "清除"
 msgid "Color"
 msgstr "颜色"
 
-msgid "Color Picker"
-msgstr "拾色器"
+msgctxt "Checkbox label in JOSM settings"
+msgid "Color images by capture date"
+msgstr "按拍摄日期对图像染色"
 
 msgid "Copied URL to clipboard …"
 msgstr "查看已复制的 URL ..."
@@ -90,6 +94,10 @@ msgstr "无法将地理标签图像导入Mapillary层！"
 msgid "Could not open the URL {0} in a browser"
 msgstr "无法在浏览器中打开 URL {0}"
 
+msgid "Could not refresh Mapillary token. HTTP Status Code {0}."
+msgstr "无法刷新Mapillary令牌。HTTP状态代码  {0} 。 "
+
+#. filter mode: remove
 msgctxt "filter"
 msgid "D"
 msgstr "删除"
@@ -106,6 +114,7 @@ msgstr "删除 Mapillary 对象"
 msgid "Delete filter."
 msgstr "删除过滤器。"
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "显示图片拍摄时间"
 
@@ -134,16 +143,19 @@ msgstr "已下载图像"
 msgid "Downloading…"
 msgstr "下载中……"
 
+#. translators notes must be in front
+#. column header: enable filter
 msgctxt "filter"
 msgid "E"
 msgstr "东"
 
 msgid "Edit"
-msgstr "编辑(E)"
+msgstr "编辑 (E)  "
 
 msgid "Edit filter."
 msgstr "编辑过滤器"
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "启用实验性功能（可能不稳定）"
 
@@ -174,6 +186,7 @@ msgstr "导出所选序列"
 msgid "Exporting Mapillary Images…"
 msgstr "导出Mapillary图像中……"
 
+#. filter mode: in selection
 msgctxt "filter"
 msgid "F"
 msgstr "过滤"
@@ -202,6 +215,7 @@ msgstr "让道"
 msgid "Go forward"
 msgstr "向前"
 
+#. column header: hide filter
 msgctxt "filter"
 msgid "H"
 msgstr "隐藏"
@@ -212,6 +226,7 @@ msgstr "隐藏过滤器"
 msgid "Hiding filter"
 msgstr "隐藏过滤器"
 
+#. column header: inverted filter
 msgctxt "filter"
 msgid "I"
 msgstr "逆转"
@@ -255,6 +270,7 @@ msgstr "登录成功，返回 JOSM。"
 msgid "Logout"
 msgstr "注销"
 
+#. column header: filter mode
 msgctxt "filter"
 msgid "M"
 msgstr "模式"
@@ -268,8 +284,12 @@ msgstr "Mapillary"
 msgid "Mapillary Expert Filter"
 msgstr "Mapillary专家过滤器"
 
+#. ImageInfos
 msgid "Mapillary Images"
 msgstr "Mapillary Images"
+
+msgid "Mapillary Point Objects"
+msgstr "Mapillary 点状对象"
 
 msgid "Mapillary Smart Edit: Add objects"
 msgstr "Mapillary 智能编辑：添加物体"
@@ -297,6 +317,12 @@ msgstr "Mapillary点要素图层"
 
 msgid "Mapillary traffic signs layer"
 msgstr "Mapillary交通标志图层"
+
+msgid "Mapillary: Could not refresh login, logging out"
+msgstr "Mapillary: 无法刷新登录，正在注销"
+
+msgid "Maximum distance to consider for changeset source calculations"
+msgstr "计算变化源时要考虑的最大距离"
 
 msgid "Month"
 msgstr "月"
@@ -337,6 +363,7 @@ msgstr "禁止掉头"
 msgid "Not older than: "
 msgstr "不大于 "
 
+#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "要预取的图像数（向前和向后）"
 
@@ -383,15 +410,14 @@ msgstr "仅全景"
 msgid "Pedestrian crossing"
 msgstr "人行道十字路口"
 
-msgid "Pick Color"
-msgstr "选择颜色"
-
 msgid "Picture Filters"
 msgstr "图片过滤器"
 
 msgid "Point Objects"
 msgstr "点对象"
 
+#. translators notes must be in front
+#. filter mode: replace
 msgctxt "filter"
 msgid "R"
 msgstr "替换"
@@ -432,11 +458,26 @@ msgstr "选择 Mapillary 检测 {0}"
 msgid "Select the Mapillary Image {0} on the {1} layer (downloads if needed)"
 msgstr "选择 {1} 图层的 Mapillary 图像 {0} (需要时会下载)"
 
+msgid "Select/Deselect all object detections on the current page"
+msgstr "选择 / 取消选择当前页面上的所有物体检测"
+
+msgid "Sequence: "
+msgstr "序列："
+
 msgid "Show Relevant"
 msgstr "显示相关的"
 
+msgid "Show detections on top of image"
+msgstr "在图像顶部显示检测信息"
+
+msgid "Show the next page of items"
+msgstr "显示下一页的内容"
+
 msgid "Show the previous page of items"
 msgstr "显示上一页的项目"
+
+msgid "Show this number of items on each page"
+msgstr "在每一页上显示这个数量的项目"
 
 msgid "Smart Edit Mode"
 msgstr "智能编辑模式"
@@ -463,6 +504,7 @@ msgstr "停车让行"
 msgid "Tag conflict"
 msgstr "标签冲突"
 
+#. column header: filter text
 msgctxt "filter"
 msgid "Text"
 msgstr "文字"
@@ -486,6 +528,13 @@ msgstr "交通标志"
 msgid "Uneven road"
 msgstr "不平整的路"
 
+msgid ""
+"Unknown Mapillary exception.\n"
+"{0}"
+msgstr ""
+"未知的Mapillary异常。\n"
+"{0} "
+
 msgid "Up"
 msgstr "上"
 
@@ -504,6 +553,21 @@ msgstr "等待完整品质图像"
 
 msgid "We cannot export {0}"
 msgstr "无法导出 {0}"
+
+msgid ""
+"We have reached the Mapillary API limit. Disabling Mapillary networking until JOSM restart. Sorry.\n"
+"Logging in after the rate limit subsides may help prevent this in the future.\n"
+"{0}"
+msgstr ""
+"我们已经达到了Mapillary API的限制。将禁止Mapillary的联网，直到JOSM重新启动。对不起。\n"
+" 在速度限制消除后登录可能有助于在未来防止这种情况。\n"
+" {0} "
+
+#. i18n: Checkbox label in JOSM settings
+msgid ""
+"When opening Mapillary image in web browser, show the blur editor instead of"
+" the image viewer"
+msgstr "在网页浏览器中打开Mapillary图片时，显示模糊编辑器而不是图片浏览器"
 
 msgid "Which image layers do you want to import into the Mapillary layer?"
 msgstr "您想将哪个图层导入Mapillary层？"
@@ -529,9 +593,13 @@ msgstr "缩放至选定图片"
 msgid "Zoom to the currently selected Mapillary image"
 msgstr "缩放至所选Mapillary图像"
 
+msgid "downloads street level images (currently supports {0})"
+msgstr "下载街景图像（目前支持 {0}）"
+
 msgid "hidden"
 msgstr "隐藏"
 
+#. i18n: {0} is the layer name, {1} the number of images in it
 msgid "{0} ({1} image)"
 msgid_plural "{0} ({1} images)"
 msgstr[0] "{0} ({1} 图像)"
@@ -561,5 +629,6 @@ msgstr[0] "{0} 路径"
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
+#. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr "可使用户用 mapillary.com 上的图片工作"

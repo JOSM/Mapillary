@@ -1,5 +1,5 @@
 # Translations for the JOSM plugin 'Mapillary' (pl)
-# Copyright (C) 2021
+# Copyright (C) 2022
 # This file is distributed under the same license as the josm-plugin_Mapillary package.
 # FIRST AUTHOR, YEAR.
 #
@@ -12,9 +12,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.48-2-g48cffb9\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.1-2-g20963ab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-24 15:04+0000\n"
+"POT-Creation-Date: 2022-01-26 15:07+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Polish (https://www.transifex.com/josm/teams/2544/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -23,6 +23,7 @@ msgstr ""
 "Language: pl\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
+#. filter mode: add
 msgctxt "filter"
 msgid "A"
 msgstr "D"
@@ -44,6 +45,7 @@ msgstr "Dodaje filtr."
 msgid "Cancel"
 msgstr "Anuluj"
 
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr ""
@@ -72,6 +74,7 @@ msgstr ""
 msgid "Could not open the URL {0} in a browser"
 msgstr "Nie można otworzyć adresu URL {0} w przeglądarce"
 
+#. filter mode: remove
 msgctxt "filter"
 msgid "D"
 msgstr "U"
@@ -85,6 +88,7 @@ msgstr "Usuń"
 msgid "Delete filter."
 msgstr "Usuwa filtr."
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Wyświetlaj godzinę wykonania zdjęcia."
 
@@ -105,6 +109,8 @@ msgstr "Pobrane obrazy:"
 msgid "Downloading…"
 msgstr "Pobieranie..."
 
+#. translators notes must be in front
+#. column header: enable filter
 msgctxt "filter"
 msgid "E"
 msgstr "E"
@@ -115,6 +121,7 @@ msgstr "Edycja"
 msgid "Edit filter."
 msgstr "Edytuje filtr."
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "Włącz tryb eksperymentalny (może być niestabilny)"
 
@@ -142,6 +149,7 @@ msgstr "Eksportuj wybraną sekwencję"
 msgid "Exporting Mapillary Images…"
 msgstr "Eksportowanie obrazów Mapillary..."
 
+#. filter mode: in selection
 msgctxt "filter"
 msgid "F"
 msgstr "Z"
@@ -164,6 +172,7 @@ msgstr "Ustąp pierwszeństwa"
 msgid "Go forward"
 msgstr "Idź do przodu"
 
+#. column header: hide filter
 msgctxt "filter"
 msgid "H"
 msgstr "U"
@@ -174,6 +183,7 @@ msgstr "Ukryj filtr"
 msgid "Hiding filter"
 msgstr "Ukrywanie filtru"
 
+#. column header: inverted filter
 msgctxt "filter"
 msgid "I"
 msgstr "O"
@@ -211,6 +221,7 @@ msgstr "Zalogowano pomyślnie, powrót do JOSM."
 msgid "Logout"
 msgstr "Wyloguj"
 
+#. column header: filter mode
 msgctxt "filter"
 msgid "M"
 msgstr "T"
@@ -221,6 +232,7 @@ msgstr "Obowiązkowy kierunek (dowolny)"
 msgid "Mapillary"
 msgstr "Mapillary"
 
+#. ImageInfos
 msgid "Mapillary Images"
 msgstr "Obrazy Mapillary"
 
@@ -269,6 +281,7 @@ msgstr "Zakaz zawracania"
 msgid "Not older than: "
 msgstr "Nie starsze niż: "
 
+#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "Ilość obrazów które mają być wstępnie pobrane (do przodu i tyłu)"
 
@@ -287,6 +300,8 @@ msgstr "Organizacje"
 msgid "Pedestrian crossing"
 msgstr "Przejście dla pieszych"
 
+#. translators notes must be in front
+#. filter mode: replace
 msgctxt "filter"
 msgid "R"
 msgstr "Z"
@@ -328,6 +343,7 @@ msgstr "Znak stop"
 msgid "Tag conflict"
 msgstr "Konflikt znaczników"
 
+#. column header: filter text
 msgctxt "filter"
 msgid "Text"
 msgstr "Tekst"
@@ -359,6 +375,7 @@ msgstr "Zobacz w przeglądarce"
 msgid "Wait for full quality pictures"
 msgstr "Czekaj na zdjęcia w pełnej rozdzielczości"
 
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
@@ -393,6 +410,7 @@ msgstr "obraz nie ma klucza"
 msgid "sequence has no key"
 msgstr "sekwencja nie ma klucza"
 
+#. i18n: {0} is the layer name, {1} the number of images in it
 msgid "{0} ({1} image)"
 msgid_plural "{0} ({1} images)"
 msgstr[0] "{0} ({1} obraz)"
@@ -430,5 +448,6 @@ msgstr[3] ""
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
+#. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr "Pozwala użytkownikom używać obrazów przechowywanych na mapillary.com."

@@ -1,5 +1,5 @@
 # Translations for the JOSM plugin 'Mapillary' (it)
-# Copyright (C) 2021
+# Copyright (C) 2022
 # This file is distributed under the same license as the josm-plugin_Mapillary package.
 # FIRST AUTHOR, YEAR.
 #
@@ -11,9 +11,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.48-2-g48cffb9\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.1-2-g20963ab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-24 15:04+0000\n"
+"POT-Creation-Date: 2022-01-26 15:07+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Italian (https://www.transifex.com/josm/teams/2544/it/)\n"
 "MIME-Version: 1.0\n"
@@ -22,6 +22,7 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#. filter mode: add
 msgctxt "filter"
 msgid "A"
 msgstr "A"
@@ -44,6 +45,7 @@ msgstr "Aggiungi filtro."
 msgid "Cancel"
 msgstr "Annulla"
 
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr ""
@@ -58,9 +60,6 @@ msgstr "Cancella"
 
 msgid "Color"
 msgstr "Colore"
-
-msgid "Color Picker"
-msgstr "Selezionatore del colore"
 
 msgid "Copied URL to clipboard …"
 msgstr "Copiato URL negli appunti…"
@@ -87,6 +86,7 @@ msgstr ""
 msgid "Could not open the URL {0} in a browser"
 msgstr "Impossibile aprire l’indirizzo {0} in un browser"
 
+#. filter mode: remove
 msgctxt "filter"
 msgid "D"
 msgstr "D"
@@ -103,6 +103,7 @@ msgstr "Cancella oggetto Mapillary"
 msgid "Delete filter."
 msgstr "Elimina filtro."
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Mostra l''ora in cui è stata scattata la foto"
 
@@ -138,6 +139,8 @@ msgstr "Immagini scaricate"
 msgid "Downloading…"
 msgstr "Download in corso…"
 
+#. translators notes must be in front
+#. column header: enable filter
 msgctxt "filter"
 msgid "E"
 msgstr "E"
@@ -148,6 +151,7 @@ msgstr "Modifica"
 msgid "Edit filter."
 msgstr "Modifica filtro."
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "Abilita funzioni beta sperimentali (potrebbe essere instabile)"
 
@@ -178,6 +182,7 @@ msgstr "Esporta la sequenza selezionata"
 msgid "Exporting Mapillary Images…"
 msgstr "Esportazione delle immagini Mapillary in corso…"
 
+#. filter mode: in selection
 msgctxt "filter"
 msgid "F"
 msgstr "F"
@@ -212,6 +217,7 @@ msgstr "Dare la precedenza"
 msgid "Go forward"
 msgstr "Procedi"
 
+#. column header: hide filter
 msgctxt "filter"
 msgid "H"
 msgstr "H"
@@ -222,6 +228,7 @@ msgstr "Nascondi filtro"
 msgid "Hiding filter"
 msgstr "Nascondi filtro"
 
+#. column header: inverted filter
 msgctxt "filter"
 msgid "I"
 msgstr "I"
@@ -274,6 +281,7 @@ msgstr "Autenticazione riuscita, ritorno a JOSM."
 msgid "Logout"
 msgstr "Esci"
 
+#. column header: filter mode
 msgctxt "filter"
 msgid "M"
 msgstr "M"
@@ -287,6 +295,7 @@ msgstr "Mapillary"
 msgid "Mapillary Expert Filter"
 msgstr "Filtro per esperti di Mapillary"
 
+#. ImageInfos
 msgid "Mapillary Images"
 msgstr "Immagini Mapillary"
 
@@ -353,6 +362,7 @@ msgstr "Divieto di svolta"
 msgid "Not older than: "
 msgstr "Non più vecchio di: "
 
+#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "Numero di immagini da pre-caricare (in avanti e indietro)"
 
@@ -388,15 +398,14 @@ msgstr "Solo panoramiche"
 msgid "Pedestrian crossing"
 msgstr "Strisce pedonali"
 
-msgid "Pick Color"
-msgstr "Scegli colore"
-
 msgid "Picture Filters"
 msgstr "Filtri immagini"
 
 msgid "Point Objects"
 msgstr "Oggetti nodo"
 
+#. translators notes must be in front
+#. filter mode: replace
 msgctxt "filter"
 msgid "R"
 msgstr "R"
@@ -490,6 +499,7 @@ msgstr "Stop"
 msgid "Tag conflict"
 msgstr "Conflitto nelle etichette"
 
+#. column header: filter text
 msgctxt "filter"
 msgid "Text"
 msgstr "Testo"
@@ -540,6 +550,7 @@ msgstr "Aspetta per ottenere immagini di alta qualità"
 msgid "We cannot export {0}"
 msgstr "Impossibile esportare {0}"
 
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
@@ -589,6 +600,7 @@ msgstr "mostrato"
 msgid "unknown organization"
 msgstr "organizzazione sconosciuta"
 
+#. i18n: {0} is the layer name, {1} the number of images in it
 msgid "{0} ({1} image)"
 msgid_plural "{0} ({1} images)"
 msgstr[0] "{0} ({1} immagine)"
@@ -634,6 +646,7 @@ msgstr[1] "{0} percorsi"
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
+#. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr ""
 "Permette all’utente di lavorare con immagini ospitate su mapillary.com"

@@ -1,5 +1,5 @@
 # Translations for the JOSM plugin 'Mapillary' (da)
-# Copyright (C) 2021
+# Copyright (C) 2022
 # This file is distributed under the same license as the josm-plugin_Mapillary package.
 # FIRST AUTHOR, YEAR.
 #
@@ -10,9 +10,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.48-2-g48cffb9\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.1-2-g20963ab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-24 15:04+0000\n"
+"POT-Creation-Date: 2022-01-26 15:07+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Danish (https://www.transifex.com/josm/teams/2544/da/)\n"
 "MIME-Version: 1.0\n"
@@ -21,6 +21,7 @@ msgstr ""
 "Language: da\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#. filter mode: add
 msgctxt "filter"
 msgid "A"
 msgstr "A"
@@ -42,6 +43,7 @@ msgstr "Tilføj filter."
 msgid "Cancel"
 msgstr "Annuller"
 
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr ""
@@ -66,6 +68,7 @@ msgstr "Kunne ikke importere et geotagget billede til Mapillary laget!"
 msgid "Could not open the URL {0} in a browser"
 msgstr "Kunne ikke åbne URL {0} i en browser"
 
+#. filter mode: remove
 msgctxt "filter"
 msgid "D"
 msgstr "D"
@@ -79,6 +82,7 @@ msgstr "Slet"
 msgid "Delete filter."
 msgstr "Slet filter."
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Vis hvornår billedet blev taget"
 
@@ -98,6 +102,8 @@ msgstr "Ned"
 msgid "Downloaded images"
 msgstr "Downloadede billeder"
 
+#. translators notes must be in front
+#. column header: enable filter
 msgctxt "filter"
 msgid "E"
 msgstr "Ø"
@@ -108,6 +114,7 @@ msgstr "Rediger"
 msgid "Edit filter."
 msgstr "Rediger filter."
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "Aktiver eksperimentelle beta-funktioner (muligvis ustabil)"
 
@@ -132,6 +139,7 @@ msgstr "Eksporter valgte rækkefølge"
 msgid "Exporting Mapillary Images…"
 msgstr "Eksporter Mapillary billeder..."
 
+#. filter mode: in selection
 msgctxt "filter"
 msgid "F"
 msgstr "F"
@@ -154,6 +162,7 @@ msgstr "Ubetinget vigepligt"
 msgid "Go forward"
 msgstr "Gå frem"
 
+#. column header: hide filter
 msgctxt "filter"
 msgid "H"
 msgstr "H"
@@ -164,6 +173,7 @@ msgstr "Skjul filter"
 msgid "Hiding filter"
 msgstr "Skjuler filter"
 
+#. column header: inverted filter
 msgctxt "filter"
 msgid "I"
 msgstr "I"
@@ -201,6 +211,7 @@ msgstr "Login lykkes, vend tilbage til JOSM."
 msgid "Logout"
 msgstr "Log ud"
 
+#. column header: filter mode
 msgctxt "filter"
 msgid "M"
 msgstr "M"
@@ -211,6 +222,7 @@ msgstr "Påbudt kørselsretning (enhver)"
 msgid "Mapillary"
 msgstr "Mapillary"
 
+#. ImageInfos
 msgid "Mapillary Images"
 msgstr "Mapillary billeder"
 
@@ -262,6 +274,7 @@ msgstr "Sving forbudt"
 msgid "Not older than: "
 msgstr "Ikke ældre end: "
 
+#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "Antal billeder der skal hentes (frem og tilbage)"
 
@@ -277,6 +290,8 @@ msgstr "Åben Mapillary lag"
 msgid "Pedestrian crossing"
 msgstr "Fodgængerfelt"
 
+#. translators notes must be in front
+#. filter mode: replace
 msgctxt "filter"
 msgid "R"
 msgstr "R"
@@ -312,6 +327,7 @@ msgstr "Stop"
 msgid "Tag conflict"
 msgstr "Tag konflikt"
 
+#. column header: filter text
 msgctxt "filter"
 msgid "Text"
 msgstr "Tekst"
@@ -337,6 +353,7 @@ msgstr "Vis i browser"
 msgid "Wait for full quality pictures"
 msgstr "Vent på fuld kvalitets billeder"
 
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
@@ -380,5 +397,6 @@ msgstr "{0} billeder i {1} sekvenser"
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
+#. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr "Tillader brugeren at arbejde med billeder gemt på mapillary.com"

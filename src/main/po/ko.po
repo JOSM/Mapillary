@@ -1,18 +1,11 @@
-# Translations for the JOSM plugin 'Mapillary' (de)
+# Translations for the JOSM plugin 'Mapillary' (ko)
 # Copyright (C) 2022
 # This file is distributed under the same license as the josm-plugin_Mapillary package.
 # FIRST AUTHOR, YEAR.
 #
 # Translators:
-# malenki, 2018
-# Markus Maurer, 2020
-# Martin Rey, 2020
-# Julian Schwarz, 2020
 # Simon Legner, 2020
-# Claudius Henrichs, 2020
-# Florian Schäfer, 2020
-# H b, 2021
-# Andre Thum, 2021
+# 이동표, 2021
 #
 msgid ""
 msgstr ""
@@ -20,186 +13,173 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-01-26 15:07+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
-"Language-Team: German (https://www.transifex.com/josm/teams/2544/de/)\n"
+"Language-Team: Korean (https://www.transifex.com/josm/teams/2544/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: de\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: ko\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #. filter mode: add
 msgctxt "filter"
 msgid "A"
-msgstr "H"
+msgstr "A"
 
 msgid ""
 "A tag with key <i>{0}</i> is already present on the selected OSM object."
-msgstr ""
-"Ein Merkmal mit dem Schlüssel <i>{0}</i> ist bereits bei dem ausgewählten "
-"OSM-Objekt vorhanden."
+msgstr "<i>{0}</i> 태그 키는 이미 OSM 에 선택되어있습니다."
 
 msgid "Add"
-msgstr "Hinzufügen"
+msgstr "추가"
 
 msgid "Add Map Feature to OSM"
-msgstr "Kartenmerkmal zu OSM hinzufügen"
+msgstr "OSM에 지도 특징을 추가합니다."
 
 msgid "Add Mapillary tag"
-msgstr "Mapillary-Tag hinzufügen"
+msgstr "맵필러리 태그 추가합니다."
 
 msgid "Add filter."
-msgstr "Filter hinzufügen."
+msgstr "필터를 추가합니다."
 
 msgid "At least one of the optional arguments must be used ({0})"
-msgstr "Mindestens eines der optionalen Argumente muss verwendet werden ({0})"
+msgstr "최소한 ({0}) 을 옵션으로 사용해야합니다."
 
 msgid "Cancel"
-msgstr "Abbrechen"
+msgstr "취소"
 
 #. i18n: Checkbox label in JOSM settings
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
-msgstr ""
-"Zentriere Ansicht auf neuem Bild, wenn man per Knopfdruck zu einem anderen "
-"Bild wechselt"
+msgstr "다른 이미지로 넘어가는 버튼을 사용 할 때 새로운 이미지로 센터로 보여줍니다."
 
 msgid "Choose signs"
-msgstr "Verkehrszeichen auswählen"
+msgstr "표지판을 선택합니다"
 
 msgid "Clear"
-msgstr "Löschen"
+msgstr "지우기"
 
 msgid "Color"
-msgstr "Farbe"
+msgstr "색상"
 
 msgctxt "Checkbox label in JOSM settings"
 msgid "Color images by capture date"
-msgstr "Markiere Bilder nach Aufnahmedatum"
+msgstr "캡쳐 날짜별로 이미지 색상 지정"
 
 msgid "Copied URL to clipboard …"
-msgstr "URL in die Zwischenablage kopiert…"
+msgstr "URL을 클립보드에 복사"
 
 msgid "Copied color to clipboard"
-msgstr "Farbe in Zwischenablage kopiert"
+msgstr "색상을 클립보드에 복사"
 
 msgid "Copied key to clipboard …"
-msgstr "Schlüssel in Zwischenablage kopiert…"
+msgstr "키를 클립보드에 복사"
 
 msgid "Copy URL"
-msgstr "URL kopieren"
+msgstr "URL 복사"
 
 msgid "Copy color"
-msgstr "Farbe kopieren"
+msgstr "색상 복사"
 
 msgid "Copy key"
-msgstr "Schlüssel kopieren"
+msgstr "키 복사"
 
 msgid "Could not import a geotagged image to the Mapillary layer!"
-msgstr ""
-"Konnte ein georeferenziertes Bild nicht in die Mapillary-Ebene importieren!"
+msgstr "위치 정보 태그가 지정된 이미지를 Mapillary 레이어로 가져 올 수 없습니다."
 
 msgid "Could not open the URL {0} in a browser"
-msgstr "Konnte die URL {0} nicht in einem Browser öffnen"
+msgstr "URL {0} 을 브라우저에 열수 없습니다."
 
 msgid "Could not refresh Mapillary token. HTTP Status Code {0}."
-msgstr ""
-"Mapillary-Token konnte nicht aktualisiert werden. HTTP Status Code {0}."
+msgstr "Mapillary 토큰을 새로 고침 할 수 없습니다. HTTP 상태 코드 {0}"
 
 #. filter mode: remove
 msgctxt "filter"
 msgid "D"
-msgstr "L"
+msgstr "D"
 
 msgid "Days"
-msgstr "Tage"
+msgstr "날"
 
 msgid "Delete"
-msgstr "Entfernen"
+msgstr "삭제"
 
 msgid "Delete Mapillary object"
-msgstr "Mapillary-Objekt löschen"
+msgstr "Mapillary 개체 삭제"
 
 msgid "Delete filter."
-msgstr "Filter löschen."
+msgstr "필터를 삭제합니다."
 
 #. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
-msgstr "Stunde, in der das Bild gemacht wurde, anzeigen"
+msgstr "사진을 찍은 시간 표시 합니다."
 
 msgid "Displays detail information on the currently selected Mapillary image"
-msgstr ""
-"Anzeige von detaillierten Informationen über das momentan ausgewählte "
-"Mapillary-Bild"
+msgstr "현재 선택된 Mapillary 이미지에 대한 상세 정보를 표시합니다."
 
 msgid ""
 "Displays the layer displaying the map point objects detected by Mapillary"
-msgstr ""
-"Zeigt die Ebene mit den Kartenpunktobjekten an, die von Mapillary erkannt "
-"wurden"
+msgstr "Mapillary에서 감지한 맵 포인트를 레이어에 표시합니다."
 
 msgid ""
 "Displays the layer displaying the traffic sign objects detected by Mapillary"
-msgstr ""
-"Zeigt die Ebene mit den Verkehrszeichen an, die von Mapillary erkannt wurden"
+msgstr "Mapillary에서 감지한 교통 표지판을 레이어에 표시합니다."
 
 msgid ""
 "Do you really want to replace the current value <i>{0}</i> with the new "
 "value <i>{1}</i>?"
-msgstr ""
-"Möchten Sie wirklich den jetzigen Wert <i>{0}</i> mit dem neuen Wert "
-"<i>{1}</i> ersetzen?"
+msgstr "현재 <i>{0}</i> 를 <i>{1}</i> 로 대체를 원하십니까?"
 
 msgid "Down"
-msgstr "Runter"
+msgstr "아래"
 
 msgid "Downloaded images"
-msgstr "Heruntergeladene Bilder"
+msgstr "다운로드한 이미지들"
 
 msgid "Downloading…"
-msgstr "Wird heruntergeladen …"
+msgstr "다운로딩 중"
 
 #. translators notes must be in front
 #. column header: enable filter
 msgctxt "filter"
 msgid "E"
-msgstr "O"
+msgstr "동"
 
 msgid "Edit"
-msgstr "Bearbeiten"
+msgstr "편집"
 
 msgid "Edit filter."
-msgstr "Filter bearbeiten."
+msgstr "필터를 편집합니다."
 
 #. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
-msgstr "Experimentelle Beta-Funktionalität aktivieren (kann instabil sein)"
+msgstr "실험용 베타 기능 사용(안정적이지 않은)"
 
 msgid "Enable filter"
-msgstr "Filter aktivieren"
+msgstr "필터 사용"
 
 msgid "Enable/disable developer mode"
-msgstr "Entwicklermodus an-/ausschalten"
+msgstr "개발자 모드 켜기/끄기"
 
 msgid "End"
-msgstr "Ende"
+msgstr "끝"
 
 msgid "Explore"
-msgstr "Erkunden"
+msgstr "탐험"
 
 msgid "Export Mapillary images"
-msgstr "Mapillary-Bilder exportieren"
+msgstr "Mapillary 이미지를 내보냅니다."
 
 msgid "Export all images"
-msgstr "Alle Bilder exportieren"
+msgstr "모든 이미지들을 내보냅니다."
 
 msgid "Export selected images"
-msgstr "Ausgewählte Bilder exportieren"
+msgstr "선택 된 이미지를 내보냅니다."
 
 msgid "Export selected sequence"
-msgstr "Ausgewählte Sequenz exportieren"
+msgstr "선택된 순서를 내보냅니다."
 
 msgid "Exporting Mapillary Images…"
-msgstr "Exportiere Mapillary-Bilder …"
+msgstr "Mapillary 이미지 추출 하는 중입니다."
 
 #. filter mode: in selection
 msgctxt "filter"
@@ -207,45 +187,45 @@ msgid "F"
 msgstr "F"
 
 msgid "Filter"
-msgstr "Filter"
+msgstr "필터"
 
 msgid "Filter Hidden:{0} Disabled:{1}"
-msgstr "Filter: Ausgeblendet:{0} Deaktiviert:{1}"
+msgstr "필터 {0}개 숨겨짐; {1}개 비활성화"
 
 msgid "Filter Mapillary Detections"
-msgstr "Filter Mapillary-Erkennungen"
+msgstr "Mapillary 탐지 필터"
 
 msgid "Filter mapillary objects and hide/disable them."
-msgstr "Filtere Mapillary-Objekte zum Ausblenden/Deaktivieren."
+msgstr "개체 숨기기/비활성화 한 Mapillary 필터"
 
 msgid "Filter mode"
-msgstr "Filtermodus"
+msgstr "필터 모드"
 
 msgid "First Seen End"
-msgstr "Zuerst gesehenes Ende"
+msgstr "처음 에서 끝"
 
 msgid "First Seen Start"
-msgstr "Zuerst gesehener Anfang"
+msgstr "처음 본 시작"
 
 msgid "Follow selected image"
-msgstr "Ausgewähltem Bild folgen"
+msgstr "선택 된 이미지 따라가기"
 
 msgid "Give way"
-msgstr "Vorfahrt gewähren"
+msgstr "방법을 제공"
 
 msgid "Go forward"
-msgstr "Vorwärts gehen"
+msgstr "앞으로 전진"
 
 #. column header: hide filter
 msgctxt "filter"
 msgid "H"
-msgstr "S"
+msgstr "H"
 
 msgid "Hide filter"
-msgstr "Filter ausblenden"
+msgstr "숨긴 필터"
 
 msgid "Hiding filter"
-msgstr "Filter wird ausgeblendet"
+msgstr "숨겨져 있는 필터"
 
 #. column header: inverted filter
 msgctxt "filter"
@@ -253,52 +233,52 @@ msgid "I"
 msgstr "I"
 
 msgid "Image Quality"
-msgstr "Bildqualität"
+msgstr "이미지 품질"
 
 msgid "Image actions"
-msgstr "Bildaktionen"
+msgstr "이미지 작업"
 
 msgid "Image detections"
-msgstr "Bilderkennungen"
+msgstr "이미지 탐지"
 
 msgid "Image info"
-msgstr "Bildinformationen"
+msgstr "이미지 정보"
 
 msgid "Image info dialog"
-msgstr "Bildinformationendialog"
+msgstr "이미지 정보 설명창"
 
 msgid "Image key"
-msgstr "Bildschlüssel"
+msgstr "이미지 키"
 
 msgid "Image: "
-msgstr "Bild: "
+msgstr "이미지:"
 
 msgid "Import"
-msgstr "Importieren"
+msgstr "가져오기"
 
 msgid "Intersection danger"
-msgstr "Gefährliche Kreuzung"
+msgstr "교차로 위험"
 
 msgid "Inverse filter"
-msgstr "Filter invertieren"
+msgstr "역 필터"
 
 msgid "Last Seen End"
-msgstr "Zuletzt gesehenes Ende"
+msgstr "마지막으로 본 끝"
 
 msgid "Last Seen Start"
-msgstr "Zuletzt gesehener Anfang"
+msgstr "마지막으로 본 시작"
 
 msgid "Layer"
-msgstr "Ebene"
+msgstr "레이어"
 
 msgid "Login"
-msgstr "Anmelden"
+msgstr "로그인"
 
 msgid "Login successful, return to JOSM."
-msgstr "Anmeldung erfolgreich, zurück zu JOSM."
+msgstr "로그인 성공적입니다, JOSM으로 돌아갑니다."
 
 msgid "Logout"
-msgstr "Abmelden"
+msgstr "로그아웃"
 
 #. column header: filter mode
 msgctxt "filter"
@@ -306,404 +286,388 @@ msgid "M"
 msgstr "M"
 
 msgid "Mandatory direction (any)"
-msgstr "Vorgeschriebene Richtung (beliebig)"
+msgstr "필수 방향(어떤 쪽이든)"
 
 msgid "Mapillary"
 msgstr "Mapillary"
 
 msgid "Mapillary Expert Filter"
-msgstr "Mapillary-Expert-Filter"
+msgstr "Mapillary 전문 필터"
 
 #. ImageInfos
 msgid "Mapillary Images"
-msgstr "Mapillary-Bilder"
+msgstr "Mapillary 이미지들"
 
 msgid "Mapillary Point Objects"
-msgstr "Mapillary Punkt-Objekte"
+msgstr "Mapillary 중요 개체들"
 
 msgid "Mapillary Smart Edit: Add objects"
-msgstr "Mapillary Smart Edit: Objekte hinzufügen"
+msgstr "Mapillary 스마트 편집: 객체를 추가합니다."
 
 msgid "Mapillary Traffic Signs"
-msgstr "Mapillary-Verkehrsschilder"
+msgstr "Mapillary 교통 표지판"
 
 msgid "Mapillary filter"
-msgstr "Mapillary-Filter"
+msgstr "Mapillary 필터"
 
 msgid "Mapillary image"
-msgstr "Mapillary-Bild"
+msgstr "Mapillary 이미지"
+
+msgid "Mapillary image read should never occur on UI thread"
+msgstr "Mapillary 이미지 읽기는 절대로 UI 스레드에 발생하면 안됩니다."
 
 msgid "Mapillary images Filter"
-msgstr "Mapillary Bilderfilter"
+msgstr "Mapillary 이미지 필터"
 
 msgid "Mapillary layer"
-msgstr "Mapillary-Ebene"
+msgstr "Mapillary 레이어"
 
 msgid "Mapillary login"
-msgstr "Mapillary-Anmeldung"
+msgstr "Mapillary 로그인"
 
 msgid "Mapillary point features layer"
-msgstr "Mapillary-Punkt-Eigenschaftenebene"
+msgstr "Mapillary 특정 중요 레이어"
 
 msgid "Mapillary traffic signs layer"
-msgstr "Mapillary-Verkehrsschilder-Ebene"
+msgstr "Mapillary 교통 표지판 레이어"
 
 msgid "Mapillary: Could not refresh login, logging out"
-msgstr ""
-"Mapillary: Anmeldung konnte nicht aktualisiert werden, Abmeldung erfolgt"
+msgstr "Mapillary: 새로고침으로 로그인 할수 없습니다./ 로그 아웃합니다."
 
 msgid "Maximum distance to consider for changeset source calculations"
-msgstr ""
-"Maximale Entfernung, die bei der Berechnung der Änderungsquelle zu "
-"berücksichtigen ist"
+msgstr "변경점이 계산된 소스를 고려하는 최대 거리"
 
 msgid "Month"
-msgstr "Monat"
+msgstr "달"
 
 msgid "Months"
-msgstr "Monate"
+msgstr "개월"
 
 msgid "Move filter down."
-msgstr "Filter nach unten verschieben"
+msgstr "필터를 아래로 이동합니다."
 
 msgid "Move filter up."
-msgstr "Filter nach oben verschieben"
+msgstr "필터를 위로 이동합니다."
 
 msgid "Multikey: {0}"
-msgstr "Mehrfachtaste: {0}"
+msgstr "다중 키: {0}"
 
 msgid "No color selected"
-msgstr "Keine Farbe ausgewählt"
+msgstr "색상이 선택되지 않았습니다."
 
 msgid "No entry"
-msgstr "Einfahrt verboten"
+msgstr "입력된 값이 없습니다."
 
 msgid "No images found"
-msgstr "Keine Bilder gefunden"
+msgstr "이미지 찾기 어렵습니다."
 
 msgid "No known image provider used"
-msgstr "Kein bekannter Bildanbieter genutzt"
+msgstr "공급자가 사용한 이미지 알려지지 않았습니다."
 
 msgid "No overtaking"
-msgstr "Überholverbot"
+msgstr "추월 금지"
 
 msgid "No parking"
-msgstr "Parkverbot"
+msgstr "주차금지"
 
 msgid "No turn"
-msgstr "Abbiegen verboten"
+msgstr "턴 금지"
 
 msgid "Not older than: "
-msgstr "Nicht älter als: "
+msgstr "오래되지 않은:"
 
 #. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
-msgstr "Anzahl der vorab abzurufenden Bilder (vorwärts und rückwärts)"
+msgstr "미리 가져올 이미지 수(앞과 뒤로)"
 
 msgid "Number of images to draw in the map view (affects performance)"
-msgstr ""
-"Anzahl der zu zeichnenden Bilder in der Kartenansicht (beeinflusst die "
-"Leistung)"
+msgstr "지도 보기에 그릴 이미지 수(성능에 영향을 미치는)"
 
 msgid "Object Detection Filters"
-msgstr "Objektlöschfilter"
+msgstr "객체 탐지 필터"
 
 msgid ""
 "Only Mapillary images are supported at this time, use "
 "photo=Mapillary/<image_id>"
-msgstr ""
-"Nur Mapillary-Bilder werden derzeit unterstützt, verwende "
-"photo=Mapillary/<image_id>"
+msgstr "Mapillary 에서만 지원되는 것입니다. 사진 사용 = Mapillary/<image_id>"
 
 msgid ""
 "Only Mapillary sequences are supported at this time, use "
 "sequence=Mapillary/<sequence_id>"
-msgstr ""
-"Nur Mapillary-Sequenzen werden derzeit unterstützt, verwende "
-"sequence=Mapillary/<sequence_id>"
+msgstr "Mapillary 에서만 지원되는 순서입니다. 순서 사용=Mapillary/<sequence_id>"
 
 msgid "Only images with signs"
-msgstr "Nur Bilder mit Verkehrszeichen"
+msgstr "표지판만 있는 이미지들"
 
 msgid "Only show objects on detection layers (\"Relevant objects\")"
-msgstr "Nur Objekte auf Erkennungsebenen (\"Relevante Objekte\") anzeigen"
+msgstr "감지된 레이어 객체들만 보여줍니다.(\"관련 개체\")"
 
 msgid "Open Mapillary filter dialog"
-msgstr "Mapillary-Filterdialog öffnen"
+msgstr "Mapillary 필터 설명창 열기"
 
 msgid "Open Mapillary layer"
-msgstr "Mapillary-Ebene öffnen"
+msgstr "Mapillary 레이어 열기"
 
 msgid "Org"
-msgstr "Org"
+msgstr "단체"
 
 msgid "Organization"
-msgstr "Organisation"
+msgstr "단체"
 
 msgid "Organizations"
-msgstr "Organisationen"
+msgstr "단체들"
 
 msgid "Panorama only"
-msgstr "Nur Panorama"
+msgstr "파노라마 전용"
 
 msgid "Pedestrian crossing"
-msgstr "Fußgängerübergang"
+msgstr "횡단 보도"
 
 msgid "Picture Filters"
-msgstr "Bildfilter"
+msgstr "그림 필터들"
 
 msgid "Point Objects"
-msgstr "Punktobjekte"
+msgstr "주요 객체들"
 
 #. translators notes must be in front
 #. filter mode: replace
 msgctxt "filter"
 msgid "R"
-msgstr "E"
+msgstr "R"
 
 msgid "Remote Control has been asked to load:"
-msgstr "Die Fernbedienung ist aufgefordert zu laden:"
+msgstr "원격제어에 로드를 요청했습니다:"
 
 msgid "Requires JOSM restart"
-msgstr "Erfordert JOSM Neustart"
+msgstr "JOSM 다시 시작을 요구합니다."
 
 msgid "Reset"
-msgstr "Zurücksetzen"
+msgstr "리셋"
 
 msgid "Reverse"
-msgstr "Umkehren"
+msgstr "뒤집기"
 
 msgid "Reverse the filters order."
-msgstr "Kehre die Reihenfolge der Filter um."
+msgstr "필터 순서를 반대로 합니다."
 
 msgid "Roundabout"
-msgstr "Kreisverkehr"
+msgstr "원형 교차로"
 
 msgid "Select Mapillary Detection ({0})"
-msgstr "Wähle Mapillary-Erkennung ({0})"
+msgstr "Mapillary 탐지 선택  ({0})"
 
 msgid "Select Mapillary Image ({0})"
-msgstr "Wähle Mapillary-Bild ({0})"
+msgstr "Mapillary 이미지 선택 ({0})"
 
 msgid "Select Visible"
-msgstr "Wähle Sichtbar"
+msgstr "표시 선택"
 
 msgid "Select a directory"
-msgstr "Wählen Sie ein Verzeichnis aus"
+msgstr "디렉토리 선택"
 
 msgid "Select the Mapillary Detection {0}"
-msgstr "Wähle die Mapillary-Erkennung {0}"
+msgstr "Mapillary 탐지 선택  {0}"
 
 msgid "Select the Mapillary Image {0} on the {1} layer (downloads if needed)"
-msgstr ""
-"Wähle das Mapillary-Bild {0} auf der {1} Ebene (wird ggf. heruntergeladen)"
+msgstr "{1} 레이어에서 Mapillary 이미지 {0} 을 선택 합니다. ( 만약 필요하다면 다운로드 해야합니다)"
 
 msgid "Select/Deselect all object detections on the current page"
-msgstr "Wähle alle Objekterkennungen auf der aktuellen Seite aus/ab"
+msgstr "현재 페이지에서 객체 감지 선택/ 해제"
 
 msgid "Sequence key"
-msgstr "Sequenzschlüssel"
+msgstr "순서 키"
+
+msgid "Sequence offset"
+msgstr "순서 상쇄합니다."
 
 msgid "Sequence: "
-msgstr "Sequenz: "
+msgstr "순서:"
 
 msgid "Show Relevant"
-msgstr "Relevante anzeigen"
+msgstr "관련성 표시"
 
 msgid "Show detections on top of image"
-msgstr "Zeige Erkennungen über dem Bild"
+msgstr "가장 위 이미지에 탐지를 표시합니다."
 
 msgid "Show the next page of items"
-msgstr "Zeige die nächste Seite mit Elementen"
+msgstr "다음 페이지의 아이템들을 보여줍니다."
 
 msgid "Show the previous page of items"
-msgstr "Zeige die vorherige Seite mit Elementen"
+msgstr "이전페이지의 아이템들을 보여줍니다."
 
 msgid "Show this number of items on each page"
-msgstr "Zeige diese Anzahl von Elementen auf jeder Seite an"
+msgstr "각각의 페이지에 아이템 수를 보여줍니다."
 
 msgid "Smart Edit Mode"
-msgstr "Smarter Bearbeitungsmodus"
+msgstr "스마트 편집 모드"
 
 msgid "Snap to highway"
-msgstr "Einrasten auf Straßenführung"
+msgstr "고속도로에서 찰칵"
 
 msgid "Sort"
-msgstr "Sortieren"
+msgstr "정렬"
 
 msgid "Sort filters."
-msgstr "Filter sortieren"
+msgstr "정렬 필터"
 
 msgid "Speed limit"
-msgstr "Geschwindigkeitsbegrenzung"
+msgstr "속도 제한"
 
 msgid "Start"
-msgstr "Starten"
+msgstr "시작"
 
 msgctxt "name of the traffic sign"
 msgid "Stop"
-msgstr "Stoppschild"
+msgstr "멈춤"
 
 msgid "Tag conflict"
-msgstr "Tag-Konflikt"
+msgstr "태그 충돌"
 
 #. column header: filter text
 msgctxt "filter"
 msgid "Text"
-msgstr "Text"
+msgstr "텍스트"
 
 msgid ""
 "There is a newer version of JOSM and/or the Mapillary plugin. Please update."
-msgstr ""
-"Es gibt eine neuere Version von JOSM und/oder dem Mapillary-Plugin. Bitte "
-"aktualisieren Sie."
+msgstr "새로운 JOSM/ Mapillary 플러그인 버전 입니다.  새로 업데이트 해주세요."
 
 msgid "Today"
-msgstr "Heute"
+msgstr "오늘"
 
 msgid "Toggle: {0}"
-msgstr "Umschalten: {0}"
+msgstr "토글: {0}"
 
 msgid "Total Mapillary images: {0}"
-msgstr "Mapillary-Bilder insgesamt: {0}"
+msgstr "전체 Mapillary 이미지: {0}"
 
 msgid "Traffic Signs"
-msgstr "Verkehrsschilder"
+msgstr "교통 표지판"
 
 msgid "Uneven road"
-msgstr "Unebene Fahrbahn"
+msgstr "고르지 못한 길"
 
 msgid ""
 "Unknown Mapillary exception.\n"
 "{0}"
 msgstr ""
-"Unbekannter Mapillary Fehler.\n"
+"알수 없는 Mapillary 예외.\n"
 "{0}"
 
 msgid "Up"
-msgstr "Hoch"
+msgstr "위"
 
 msgid "Update"
-msgstr "Aktualisieren"
+msgstr "업데이트"
 
 msgctxt "Checkbox label in JOSM settings"
 msgid "Use computed location information"
-msgstr "Benutze berechnete Standortinformationen"
+msgstr "계산된 위치 정보를 사용하기"
 
 msgid "View in browser"
-msgstr "Im Webbrowser ansehen"
+msgstr "브라우저에 보여주기"
 
 msgid "Wait for full quality pictures"
-msgstr "Warten Sie für Bilder in voller Qualität"
+msgstr "전체 보기 고품질 사진 기다리기"
 
 msgid "We cannot export {0}"
-msgstr "Wir können {0} nicht exportieren"
+msgstr "{0} 을 내보내지 못합니다."
 
 msgid ""
 "We have reached the Mapillary API limit. Disabling Mapillary networking until JOSM restart. Sorry.\n"
 "Logging in after the rate limit subsides may help prevent this in the future.\n"
 "{0}"
 msgstr ""
-"Wir haben das Limit der Mapillary API erreicht. Deaktivierung des Mapillary-Netzwerks bis zum Neustart von JOSM.\n"
-"Wenn Sie sich nach dem Abklingen des Ratenlimits anmelden, kann dies in Zukunft vermieden werden.\n"
+"Mapillary API 제한에 도달하였습니다. JOSM 이 다시 시작 될 때까지 Mapillary 네트워크 비활성합니다. 죄송합니다.\n"
+"제한이 완화 된 후 로그인 하는 것이 미래에 발생하는 것을 막아줄 것입니다.\n"
 "{0}"
 
 #. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
-msgstr ""
-"Beim Öffnen eines Mapillary Bildes im Webbrowser den Unschärfe-Editor "
-"anstelle des Bildbetrachters anzeigen"
+msgstr "Mapillary 이미지 를 웹브라우저에 열 때,  이미지 뷰어 대신 블러 편집기를 보여줍니다."
 
 msgid "Which image layers do you want to import into the Mapillary layer?"
-msgstr "Welche Bildebenen möchten Sie in die Mapillary-Ebene importieren?"
+msgstr "무슨 이미지를 Mapillary 레이어에서 가져오는것을 원하십니까?"
 
 msgid "Year"
-msgstr "Jahr"
+msgstr "년도"
 
 msgid "Years"
-msgstr "Jahre"
+msgstr "연령"
 
 msgid "You are currently not logged in."
-msgstr "Sie sind momentan nicht angemeldet."
+msgstr "현재 로그인 되어있지 않습니다."
 
 msgid "You are logged in as ''{0}''."
-msgstr "Sie sind als ''{0}'' angemeldet."
+msgstr "\"{0}\" 으로 로그인 되어 있습니다."
 
 msgid "You are logged in."
-msgstr "Sie sind angemeldet."
+msgstr "로그인 되어있습니다."
 
 msgid "Zoom to selected image"
-msgstr "Auf ausgewähltes Bild zoomen"
+msgstr "선택한 이미지로 확대 합니다."
 
 msgid "Zoom to the currently selected Mapillary image"
-msgstr "Auf das aktuell ausgewählte Mapillary-Bild zoomen"
+msgstr "현재 선택된 Mapillary 이미지 를 확대합니다."
 
 msgid "downloads street level images (currently supports {0})"
-msgstr "lädt Straßenebene-Bilder herunter (derzeit unterstützt {0})"
+msgstr "지상층 이미지를 다운로드합니다. (현재 {0} 지원하고있습니다.)"
 
 msgid "hidden"
-msgstr "verborgen"
+msgstr "숨겨져 있는"
 
 msgid "image has no key"
-msgstr "Bild hat keinen Schlüssel"
+msgstr "이미지에 핵심이 없습니다."
 
 msgid "sequence has no key"
-msgstr "Sequenz hat keinen Schlüssel"
+msgstr "순서에 핵심이 없습니다."
 
 msgid "shown"
-msgstr "Gezeigt"
+msgstr "표시"
 
 msgid "unknown organization"
-msgstr "Unbekannte Organisation"
+msgstr "안알려진 조직"
 
 #. i18n: {0} is the layer name, {1} the number of images in it
 msgid "{0} ({1} image)"
 msgid_plural "{0} ({1} images)"
-msgstr[0] "{0} ({1} Bild)"
-msgstr[1] "{0} ({1} Bilder)"
+msgstr[0] "{0} ({1} 이미지)"
 
 msgid "{0} consists of:"
-msgstr "{0} besteht aus:"
+msgstr "{0}의 구성 요소:"
 
 msgid "{0} detections"
-msgstr "{0} Erkennungen"
+msgstr "{0} 탐지"
 
 msgid "{0} image in total"
 msgid_plural "{0} images in total"
-msgstr[0] "{0} Bild insgesamt"
-msgstr[1] "{0} Bilder insgesamt"
+msgstr[0] "{0} 총 이미지"
 
 msgid "{0} images in {1} sequences"
-msgstr "{0} Bilder in {1} Sequenzen"
+msgstr "{1} 순서 안에 있는 {0} 이미지"
 
 msgid "{0} node"
 msgid_plural "{0} nodes"
-msgstr[0] "{0} Punkt "
-msgstr[1] "{0} Punkte"
+msgstr[0] "{0} 노드들"
 
 msgid "{0} relation"
 msgid_plural "{0} relations"
-msgstr[0] "{0} Relation"
-msgstr[1] "{0} Relationen"
+msgstr[0] "{0} 관계"
 
 msgid "{0} sequence, containing between {1} and {2} images (ø {3})"
 msgid_plural ""
 "{0} sequences, each containing between {1} and {2} images (ø {3})"
-msgstr[0] "{0} Sequenz, sie beinhaltet zwischen {1} und {2} Bilder (ø {3})"
-msgstr[1] "{0} Sequenzen, jede beinhaltet zwischen {1} und {2} Bilder (ø {3})"
+msgstr[0] "{0} 순서, 각각의 포함된 {1} 하고 {2}  (ø {3})  "
 
 msgid "{0} way"
 msgid_plural "{0} ways"
-msgstr[0] "{0} Linie"
-msgstr[1] "{0} Linien"
+msgstr[0] "{0} 방법들"
 
 msgid "{0}: {1}"
-msgstr "{0}: {1}"
+msgstr "{0} : {1}"
 
 #. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
-msgstr ""
-"Ermöglicht dem Benutzer das Arbeiten mit von mapillary.com bereitgestellten "
-"Bildern"
+msgstr "mapillary.com 에서 작업이 된 이미지들을 사용자들이 사용하는것을 허락합니다."

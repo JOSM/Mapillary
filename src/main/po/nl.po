@@ -1,5 +1,5 @@
 # Translations for the JOSM plugin 'Mapillary' (nl)
-# Copyright (C) 2021
+# Copyright (C) 2022
 # This file is distributed under the same license as the josm-plugin_Mapillary package.
 # FIRST AUTHOR, YEAR.
 #
@@ -10,9 +10,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.48-2-g48cffb9\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.1-2-g20963ab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-24 15:04+0000\n"
+"POT-Creation-Date: 2022-01-26 15:07+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Dutch (https://www.transifex.com/josm/teams/2544/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -21,6 +21,7 @@ msgstr ""
 "Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#. filter mode: add
 msgctxt "filter"
 msgid "A"
 msgstr "T"
@@ -62,6 +63,7 @@ msgstr ""
 msgid "Could not open the URL {0} in a browser"
 msgstr "Kon de URL {0} niet openen in een browser"
 
+#. filter mode: remove
 msgctxt "filter"
 msgid "D"
 msgstr "W"
@@ -75,6 +77,7 @@ msgstr "Verwijderen"
 msgid "Delete filter."
 msgstr "Verwijder filter."
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Uur weergeven van wanneer de afbeelding werd gemaakt"
 
@@ -96,6 +99,8 @@ msgstr "Omlaag"
 msgid "Downloaded images"
 msgstr "Gedownloade afbeeldingen"
 
+#. translators notes must be in front
+#. column header: enable filter
 msgctxt "filter"
 msgid "E"
 msgstr "O"
@@ -106,6 +111,7 @@ msgstr "Bewerken"
 msgid "Edit filter."
 msgstr "Pas filter aan."
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "Experimentele bèta-mogelijkheden inschakelen (kunnen onstabiel zijn)"
 
@@ -124,6 +130,7 @@ msgstr "Geselecteerde afbeeldingen exporteren"
 msgid "Export selected sequence"
 msgstr "Geselecteerde reeks exporteren"
 
+#. filter mode: in selection
 msgctxt "filter"
 msgid "F"
 msgstr "F"
@@ -146,6 +153,7 @@ msgstr "Voorrang verlenen"
 msgid "Go forward"
 msgstr "Naar voren gaan"
 
+#. column header: hide filter
 msgctxt "filter"
 msgid "H"
 msgstr "V"
@@ -156,6 +164,7 @@ msgstr "Filter verbergen"
 msgid "Hiding filter"
 msgstr "Filter verborgen"
 
+#. column header: inverted filter
 msgctxt "filter"
 msgid "I"
 msgstr "I"
@@ -193,6 +202,7 @@ msgstr "Log-in succesvol, terug naar JOSM."
 msgid "Logout"
 msgstr "Uitloggen"
 
+#. column header: filter mode
 msgctxt "filter"
 msgid "M"
 msgstr "M"
@@ -203,6 +213,7 @@ msgstr "Verplichte rijrivchting (altijd)"
 msgid "Mapillary"
 msgstr "Mapillary"
 
+#. ImageInfos
 msgid "Mapillary Images"
 msgstr "Afbeeldingen van Mapillary"
 
@@ -245,6 +256,7 @@ msgstr "Niet keren"
 msgid "Not older than: "
 msgstr "Niet ouder dan: "
 
+#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr ""
 "Aantal afbeeldingen om vooraf op te halen (voorwaarts en achterwaarts)"
@@ -258,6 +270,8 @@ msgstr "Dialoogvenster voor filter van Mapillary openen"
 msgid "Pedestrian crossing"
 msgstr "Voetgangersoversteekplaats"
 
+#. translators notes must be in front
+#. filter mode: replace
 msgctxt "filter"
 msgid "R"
 msgstr "V"
@@ -293,6 +307,7 @@ msgstr "Stop"
 msgid "Tag conflict"
 msgstr "Tagconflict"
 
+#. column header: filter text
 msgctxt "filter"
 msgid "Text"
 msgstr "tekst"
@@ -354,6 +369,7 @@ msgstr "{0} afbeeldingen in {1} reeksen"
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
+#. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr ""
 "Stelt de gebruiker in staat om te werken met afbeeldingen die worden gehost "

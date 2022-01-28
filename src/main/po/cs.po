@@ -1,5 +1,5 @@
 # Translations for the JOSM plugin 'Mapillary' (cs)
-# Copyright (C) 2021
+# Copyright (C) 2022
 # This file is distributed under the same license as the josm-plugin_Mapillary package.
 # FIRST AUTHOR, YEAR.
 #
@@ -9,9 +9,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.48-2-g48cffb9\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.1-2-g20963ab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-24 15:04+0000\n"
+"POT-Creation-Date: 2022-01-26 15:07+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Czech (https://www.transifex.com/josm/teams/2544/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -20,6 +20,7 @@ msgstr ""
 "Language: cs\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
+#. filter mode: add
 msgctxt "filter"
 msgid "A"
 msgstr "A"
@@ -59,6 +60,7 @@ msgstr ""
 msgid "Could not open the URL {0} in a browser"
 msgstr "Nemohu otevřít URL {0} v prohlížeči"
 
+#. filter mode: remove
 msgctxt "filter"
 msgid "D"
 msgstr "D"
@@ -72,6 +74,7 @@ msgstr "Smazat"
 msgid "Delete filter."
 msgstr "Smazat filtr."
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Zobrazit hodinu, kdy byl obrázek pořízen"
 
@@ -91,6 +94,8 @@ msgstr "Dolů"
 msgid "Downloaded images"
 msgstr "Stažené obrázky"
 
+#. translators notes must be in front
+#. column header: enable filter
 msgctxt "filter"
 msgid "E"
 msgstr "V"
@@ -101,6 +106,7 @@ msgstr "Upravit"
 msgid "Edit filter."
 msgstr "Upravit filtr."
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "Povolit experimentální beta-funkce (může být nestabilní)"
 
@@ -122,6 +128,7 @@ msgstr "Exportovat zvolené obrázky"
 msgid "Export selected sequence"
 msgstr "Exportovat vybranou sekvenci"
 
+#. filter mode: in selection
 msgctxt "filter"
 msgid "F"
 msgstr "F"
@@ -144,6 +151,7 @@ msgstr "Dej přednost"
 msgid "Go forward"
 msgstr "Vpřed"
 
+#. column header: hide filter
 msgctxt "filter"
 msgid "H"
 msgstr "H"
@@ -154,6 +162,7 @@ msgstr "Skrýt objekty"
 msgid "Hiding filter"
 msgstr "Skrýt objekty"
 
+#. column header: inverted filter
 msgctxt "filter"
 msgid "I"
 msgstr "I"
@@ -191,6 +200,7 @@ msgstr "Přihlášení úspěšné, návrat do JOSM."
 msgid "Logout"
 msgstr "Odhlásit se"
 
+#. column header: filter mode
 msgctxt "filter"
 msgid "M"
 msgstr "M"
@@ -201,6 +211,7 @@ msgstr "Přikázaný směr jízdy (jakýkoliv)"
 msgid "Mapillary"
 msgstr "Mapillary"
 
+#. ImageInfos
 msgid "Mapillary Images"
 msgstr "Obrázky Mapillary"
 
@@ -246,6 +257,7 @@ msgstr "Zákaz odbočení"
 msgid "Not older than: "
 msgstr "Ne starší než: "
 
+#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "Počet snímků, která se mají načíst dopředu (vpřed a vzad)"
 
@@ -261,6 +273,8 @@ msgstr "Otevřená vrstva Mapillary"
 msgid "Pedestrian crossing"
 msgstr "Přechod pro chodce"
 
+#. translators notes must be in front
+#. filter mode: replace
 msgctxt "filter"
 msgid "R"
 msgstr "R"
@@ -296,6 +310,7 @@ msgstr "Stop"
 msgid "Tag conflict"
 msgstr "Konflikt značek"
 
+#. column header: filter text
 msgctxt "filter"
 msgid "Text"
 msgstr "Text"
@@ -321,6 +336,7 @@ msgstr "Zobrazit v prohlížeči"
 msgid "Wait for full quality pictures"
 msgstr "Počkat na obrázek v maximální kvalitě"
 
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
@@ -364,5 +380,6 @@ msgstr "{0} obrázků ve {1} sekvencích"
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
+#. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr "Dovoluje uživateli pracovat s obrázky uloženými na mapillary.com"

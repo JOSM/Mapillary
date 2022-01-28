@@ -1,5 +1,5 @@
 # Translations for the JOSM plugin 'Mapillary' (el)
-# Copyright (C) 2021
+# Copyright (C) 2022
 # This file is distributed under the same license as the josm-plugin_Mapillary package.
 # FIRST AUTHOR, YEAR.
 #
@@ -9,9 +9,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-alpha.48-2-g48cffb9\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.1-2-g20963ab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-24 15:04+0000\n"
+"POT-Creation-Date: 2022-01-26 15:07+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Greek (https://www.transifex.com/josm/teams/2544/el/)\n"
 "MIME-Version: 1.0\n"
@@ -20,6 +20,7 @@ msgstr ""
 "Language: el\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#. filter mode: add
 msgctxt "filter"
 msgid "A"
 msgstr "Α"
@@ -42,6 +43,7 @@ msgstr "Προσθήκη φίλτρου."
 msgid "Cancel"
 msgstr "Ακύρωση"
 
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr ""
@@ -69,6 +71,7 @@ msgid "Could not open the URL {0} in a browser"
 msgstr ""
 "Δεν είναι δυνατό να ανοίξει η διεύθυνση {0} σε ένα πρόγραμμα περιήγησης"
 
+#. filter mode: remove
 msgctxt "filter"
 msgid "D"
 msgstr "Δ"
@@ -82,6 +85,7 @@ msgstr "Διαγραφή"
 msgid "Delete filter."
 msgstr "Διαγραφή φίλτρου."
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Εμφάνιση ώρας κατά την λήψη της φωτογραφίας"
 
@@ -106,6 +110,8 @@ msgstr "Λήψη εικόνων"
 msgid "Downloading…"
 msgstr "Λήψη..."
 
+#. translators notes must be in front
+#. column header: enable filter
 msgctxt "filter"
 msgid "E"
 msgstr "Α"
@@ -116,6 +122,7 @@ msgstr "Επεξεργασία"
 msgid "Edit filter."
 msgstr "Επεξεργασία φίλτρου."
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr ""
 "Ενεργοποίηση πειραματικών χαρακτηριστικών beta (μπορεί να είναι ασταθής)"
@@ -141,6 +148,7 @@ msgstr "Εξαγωγή της επιλεγμένης ακολουθίας"
 msgid "Exporting Mapillary Images…"
 msgstr "Εξαγωγή εικόνων Mapillary"
 
+#. filter mode: in selection
 msgctxt "filter"
 msgid "F"
 msgstr "F"
@@ -160,6 +168,7 @@ msgstr "Ακολουθήστε την επιλεγμένη εικόνα"
 msgid "Go forward"
 msgstr "Πηγαίντε μπροστά"
 
+#. column header: hide filter
 msgctxt "filter"
 msgid "H"
 msgstr "Α"
@@ -170,6 +179,7 @@ msgstr "Απόκρυψη φίλτρου"
 msgid "Hiding filter"
 msgstr "Απόκρυψη φίλτρου"
 
+#. column header: inverted filter
 msgctxt "filter"
 msgid "I"
 msgstr "I"
@@ -207,6 +217,7 @@ msgstr "Επιτυχής σύνδεση, επιστρέψτε στο JOSM."
 msgid "Logout"
 msgstr "Αποσύνδεση"
 
+#. column header: filter mode
 msgctxt "filter"
 msgid "M"
 msgstr "M"
@@ -217,6 +228,7 @@ msgstr "Υποχρεωτική κατεύθυνση (οποιαδήποτε)"
 msgid "Mapillary"
 msgstr "Mapillary"
 
+#. ImageInfos
 msgid "Mapillary Images"
 msgstr "Εικόνες Mapillary"
 
@@ -262,6 +274,7 @@ msgstr "Απαγορεύεται η στροφή"
 msgid "Not older than: "
 msgstr "Δεν είναι παλαιότερο από:"
 
+#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr ""
 "Αριθμός εικόνων που πρέπει να προωθηθούν (προς τα εμπρός και προς τα πίσω)"
@@ -278,6 +291,8 @@ msgstr "Άνοιγμα επιπέδου Mapillary"
 msgid "Pedestrian crossing"
 msgstr "Διάβαση πεζών"
 
+#. translators notes must be in front
+#. filter mode: replace
 msgctxt "filter"
 msgid "R"
 msgstr "R"
@@ -313,6 +328,7 @@ msgstr "Stop"
 msgid "Tag conflict"
 msgstr "Σύγκρουση ετικέτας"
 
+#. column header: filter text
 msgctxt "filter"
 msgid "Text"
 msgstr "Κείμενο"
@@ -371,6 +387,7 @@ msgstr "{0} ανακαλύψεις"
 msgid "{0} images in {1} sequences"
 msgstr "{0} εικόνες σε {1} ακολουθίες"
 
+#. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr ""
 "Επιτρέπεται στον χρήστη να δουλεύει με εικόνες που φιλοξενούνται στο "
