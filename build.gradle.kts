@@ -16,7 +16,7 @@ plugins {
   id("com.github.ben-manes.versions") version "0.41.0"
   id("com.github.spotbugs") version "5.0.5"
   id("net.ltgt.errorprone") version "2.0.2"
-  id("org.openstreetmap.josm") version "0.7.1"
+  id("org.openstreetmap.josm") version "0.8.0"
   id("org.sonarqube") version "3.3"
 
   eclipse
@@ -61,7 +61,7 @@ val versions = mapOf(
   "jdatepicker" to "1.3.4",
   "jmockit" to "1.49",
   "junit" to "5.8.2",
-  "pmd" to "6.20.0",
+  "pmd" to "6.41.0",
   "spotbugs" to "4.5.3",
   "wiremock" to "2.32.0"
 )
@@ -98,7 +98,7 @@ sourceSets {
   }
 }
 
-val md2html by tasks.creating(MarkdownToHtml::class) {
+val md2html by tasks.registering(MarkdownToHtml::class) {
   destDir = File(buildDir, "md2html")
   source(projectDir)
   include("README.md", "LICENSE.md")
@@ -227,7 +227,7 @@ tasks.withType(Test::class).getByName("test") {
 project.afterEvaluate {
   publishing.publications.getByName("josmPlugin", MavenPublication::class) {
     pom {
-      name.set("JOSM-${base.archivesBaseName}")
+      name.set("JOSM-${josm.pluginName}")
       description.set("The Mapillary plugin for JOSM")
       url.set("https://gitlab.com/JOSM/plugin/Mapillary")
       licenses {
@@ -286,7 +286,7 @@ tasks.test {
 
 // PMD config
 pmd {
-  toolVersion = versions["pmd"]
+  toolVersion = versions.getValue("pmd")
   isIgnoreFailures = true
   ruleSetConfig = resources.text.fromFile("$projectDir/config/pmd/ruleset.xml")
   ruleSets = listOf()
