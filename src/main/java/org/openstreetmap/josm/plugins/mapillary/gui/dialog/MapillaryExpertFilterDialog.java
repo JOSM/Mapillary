@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.dialog;
 
+import static org.openstreetmap.josm.tools.I18n.marktr;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.Component;
@@ -60,6 +61,18 @@ import org.openstreetmap.josm.tools.Shortcut;
  */
 public class MapillaryExpertFilterDialog extends ToggleDialog implements DataSetListener, MapModeChangeListener {
     private static final long serialVersionUID = -3067786777238478114L;
+    private static final String ENABLE_FILTER_STRING = marktr("Enable filter");
+    private static final Shortcut ENABLE_FILTER_SHORTCUT = Shortcut.registerShortcut("mapillary_multikey:enableFilter",
+        tr("Multikey: {0}", tr(ENABLE_FILTER_STRING)), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE);
+
+    private static final Shortcut HIDING_FILTER_SHORTCUT = Shortcut.registerShortcut("mapillary_multikey:hidingFilter",
+        tr("Multikey: {0}", tr("Hide filter")), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE);
+
+    private static final String[] COLUMN_TOOLTIPS = {
+        Shortcut.makeTooltip(tr(ENABLE_FILTER_STRING), ENABLE_FILTER_SHORTCUT.getKeyStroke()),
+        Shortcut.makeTooltip(tr("Hiding filter"), HIDING_FILTER_SHORTCUT.getKeyStroke()), null, tr("Inverse filter"),
+        tr("Filter mode") };
+
     private JTable userTable;
     private final MapillaryFilterTableModel filterModel = new MapillaryFilterTableModel(
         new DefaultListSelectionModel());
@@ -96,22 +109,16 @@ public class MapillaryExpertFilterDialog extends ToggleDialog implements DataSet
      * @return The instance for the toggle dialog
      */
     public static MapillaryExpertFilterDialog getInstance() {
-        if (instance == null) {
-            instance = new MapillaryExpertFilterDialog();
+        if (instance != null) {
+            return instance;
+        }
+        synchronized (MapillaryExpertFilterDialog.class) {
+            if (instance == null) {
+                instance = new MapillaryExpertFilterDialog();
+            }
         }
         return instance;
     }
-
-    private static final Shortcut ENABLE_FILTER_SHORTCUT = Shortcut.registerShortcut("mapillary_multikey:enableFilter",
-        tr("Multikey: {0}", tr("Enable filter")), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE);
-
-    private static final Shortcut HIDING_FILTER_SHORTCUT = Shortcut.registerShortcut("mapillary_multikey:hidingFilter",
-        tr("Multikey: {0}", tr("Hide filter")), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE);
-
-    private static final String[] COLUMN_TOOLTIPS = {
-        Shortcut.makeTooltip(tr("Enable filter"), ENABLE_FILTER_SHORTCUT.getKeyStroke()),
-        Shortcut.makeTooltip(tr("Hiding filter"), HIDING_FILTER_SHORTCUT.getKeyStroke()), null, tr("Inverse filter"),
-        tr("Filter mode") };
 
     private abstract class FilterAction extends AbstractAction implements IEnabledStateUpdating {
 
@@ -253,7 +260,7 @@ public class MapillaryExpertFilterDialog extends ToggleDialog implements DataSet
     /**
      * Builds the GUI.
      */
-    protected void build() {
+    private void build() {
         userTable = new UserTable(filterModel);
 
         userTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
@@ -306,11 +313,11 @@ public class MapillaryExpertFilterDialog extends ToggleDialog implements DataSet
     @Override
     public void destroy() {
         if (!destroyed) {
+            destroyed = true;
             MultikeyActionsHandler.getInstance().removeAction(enableFilterAction);
             MultikeyActionsHandler.getInstance().removeAction(hidingFilterAction);
             instance = null;
             super.destroy();
-            destroyed = true;
         }
     }
 
@@ -464,7 +471,7 @@ public class MapillaryExpertFilterDialog extends ToggleDialog implements DataSet
     private class EnableFilterAction extends AbstractFilterAction {
 
         EnableFilterAction() {
-            putValue(SHORT_DESCRIPTION, tr("Enable filter"));
+            putValue(SHORT_DESCRIPTION, tr(ENABLE_FILTER_STRING));
             ENABLE_FILTER_SHORTCUT.setAccelerator(this);
         }
 

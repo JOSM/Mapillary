@@ -519,7 +519,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
         /**
          * Update the layer visibility
          */
-        void updateLayerVisible() {
+        final void updateLayerVisible() {
             this.layerVisible = MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().isVisible();
         }
 
@@ -687,7 +687,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
         }
         for (Component comp : Arrays.asList(organizationLabel, organizations)) {
             GuiHelper.runInEDT(() -> comp
-                .setEnabled(organizations.getItemCount() > 1 || organization != OrganizationRecord.NULL_RECORD));
+                .setEnabled(organizations.getItemCount() > 1 || !OrganizationRecord.NULL_RECORD.equals(organization)));
         }
     }
 

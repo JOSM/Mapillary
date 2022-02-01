@@ -6,6 +6,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
+import java.util.Objects;
 
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.MainApplication;
@@ -52,7 +53,7 @@ public class MapillaryDownloadAction extends JosmAction {
             // layer
             final OsmDataLayer editLayer = MainApplication.getLayerManager().getEditLayer();
             final Layer mapillaryLayer = MapillaryLayer.getInstance();
-            if (MainApplication.getLayerManager().getActiveLayer() != mapillaryLayer) {
+            if (Objects.equals(MainApplication.getLayerManager().getActiveLayer(), mapillaryLayer)) {
                 MainApplication.getLayerManager().setActiveLayer(mapillaryLayer);
             } else if (editLayer != null) {
                 MainApplication.getLayerManager().setActiveLayer(editLayer);

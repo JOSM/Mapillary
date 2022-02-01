@@ -1,4 +1,7 @@
 ## What's Changed
+### [Unreleased](https://github.com/JOSM/Mapillary/compare/v2.0.0-beta.2...master)
+* Lint fixes (PMD)
+
 ### [v2.0.0-beta.2](https://github.com/JOSM/Mapillary/compare/v2.0.0-beta.1...v2.0.0-beta.2)
 * JOSM [#20274](https://josm.openstreetmap.de/ticket/20274): Cannot zoom in to detail.
   * Mapillary has added an API field for thumb_original_url, which has the original (processed) image.

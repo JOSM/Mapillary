@@ -62,7 +62,7 @@ public class SmartEditAddAction extends JosmAction {
     }
 
     @Override
-    public void updateEnabledState() {
+    public final void updateEnabledState() {
         this.setEnabled(!this.detection.getTaggingPresets().isEmpty());
     }
 
@@ -77,11 +77,11 @@ public class SmartEditAddAction extends JosmAction {
         final Collection<TaggingPreset> presets = detection.getTaggingPresets();
         final DataSet dataSet = MainApplication.getLayerManager().getActiveDataSet();
         if (dataSet != null && !dataSet.isLocked() && presets.size() == 1) {
-            final TaggingPreset preset = presets.iterator().next();
             final List<OsmPrimitive> toAdd = generateToAdd();
             if (toAdd.isEmpty()) {
                 return;
             }
+            final TaggingPreset preset = presets.iterator().next();
             final OsmPrimitive basePrimitive = toAdd.get(0);
             basePrimitive.removeAll();
             detection.getOsmKeys().forEach(basePrimitive::put);
@@ -98,7 +98,6 @@ public class SmartEditAddAction extends JosmAction {
                     preset.getChangedTags());
             });
             final int userSelection = tSelection[0];
-            final Command updateTagsCommand = tCommand[0];
             // Closing the window returns 0. Not in the TaggingPreset public answers at this time.
             if ((userSelection == 0 || userSelection == TaggingPreset.DIALOG_ANSWER_CANCEL)
                 && UndoRedoHandler.getInstance().hasUndoCommands()) {
@@ -113,7 +112,7 @@ public class SmartEditAddAction extends JosmAction {
             }
             addMapillaryTags(addedPrimitive);
 
-            generateCommands(addedPrimitive, updateTagsCommand);
+            generateCommands(addedPrimitive, tCommand[0]);
             this.pointObjectLayer.getData().setSelected(this.pointObjectLayer.getData().getSelected().stream()
                 .filter(n -> !n.equals(this.mapillaryObject)).collect(Collectors.toList()));
         }

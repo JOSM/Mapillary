@@ -35,8 +35,9 @@ public final class MapViewGeometryUtil {
         final Path2D.Double path = new Path2D.Double();
         final boolean anyVisible = seq.getNodes().stream().filter(MapillaryImageUtils::isImage)
             .filter(node -> node.getReferrers().size() == 1).anyMatch(IPrimitive::isVisible);
-        seq.getNodes().stream().filter(Objects::nonNull).filter(
-            node -> node.isVisible() && MapillaryImageUtils.isImage(node) || anyVisible && seq.isFirstLastNode(node))
+        seq.getNodes().stream().filter(Objects::nonNull)
+            .filter(node -> (node.isVisible() && MapillaryImageUtils.isImage(node))
+                || (anyVisible && seq.isFirstLastNode(node)))
             .forEach(img -> {
                 Point p = nc.getPoint(img.getCoor());
                 if (path.getCurrentPoint() == null) {

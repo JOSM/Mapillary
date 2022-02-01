@@ -35,7 +35,7 @@ public class MapillaryLayerListener implements Destroyable, LayerManager.LayerCh
         if (e.getAddedLayer() instanceof MapillaryLayer) {
             VectorDataSet dataSet = ((MapillaryLayer) e.getAddedLayer()).getData();
             dataSet.addSelectionListener((VectorDataSelectionListener) ImageInfoPanel.getInstance());
-            dataSet.addSelectionListener(ImageDialogListener.instance);
+            dataSet.addSelectionListener(ImageDialogListener.INSTANCE);
             Stream.of(MapillaryPlugin.getMapillaryDataListeners()).forEach(dataSet::addSelectionListener);
         }
     }
@@ -45,7 +45,7 @@ public class MapillaryLayerListener implements Destroyable, LayerManager.LayerCh
         if (e.getRemovedLayer() instanceof MapillaryLayer) {
             VectorDataSet dataSet = ((MapillaryLayer) e.getRemovedLayer()).getData();
             dataSet.removeSelectionListener((VectorDataSelectionListener) ImageInfoPanel.getInstance());
-            dataSet.removeSelectionListener(ImageDialogListener.instance);
+            dataSet.removeSelectionListener(ImageDialogListener.INSTANCE);
             Stream.of(MapillaryPlugin.getMapillaryDataListeners()).forEach(dataSet::removeSelectionListener);
         }
     }
@@ -64,7 +64,7 @@ public class MapillaryLayerListener implements Destroyable, LayerManager.LayerCh
      * A class that listens for dataset updates and updates the image viewer
      */
     private static class ImageDialogListener implements VectorDataSelectionListener {
-        private static final ImageDialogListener instance = new ImageDialogListener();
+        private static final ImageDialogListener INSTANCE = new ImageDialogListener();
 
         @Override
         public void selectionChanged(

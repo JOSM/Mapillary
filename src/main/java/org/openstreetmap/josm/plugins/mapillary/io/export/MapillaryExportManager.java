@@ -56,21 +56,6 @@ public class MapillaryExportManager<T extends INode> extends PleaseWaitRunnable 
         this.amount = this.images.size();
     }
 
-    /**
-     * Constructor used to rewrite imported images.
-     *
-     * @param images
-     *        The set of {@link INode} object that is going to
-     *        be rewritten. (see {@link MapillaryImageUtils#IMPORTED_KEY}
-     * @throws IOException
-     *         If the file of one of the {@link INode} objects
-     *         doesn't contain a picture.
-     */
-    public MapillaryExportManager(Collection<T> images) throws IOException {
-        this(new HashSet<>(images), null);
-        this.amount = images.size();
-    }
-
     @Override
     protected void cancel() {
         this.writer.interrupt();

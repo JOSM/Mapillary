@@ -44,7 +44,7 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
     public ImageCheckBoxButton(ImageIcon icon, String detection, ObjectDetections... detections) {
         super(new GridBagLayout());
         this.detection = detection;
-        this.detections = detections;
+        this.detections = detections.clone();
         MapillaryExpertFilterDialog.getInstance().getFilterModel().addTableModelListener(this);
         splitName = detection.split("--", -1);
         image = new JButton();

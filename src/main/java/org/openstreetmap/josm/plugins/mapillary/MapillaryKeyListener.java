@@ -39,6 +39,7 @@ import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.Utils;
 
 /**
  * Listen for Mapillary keys
@@ -80,7 +81,7 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
     }
 
     private void addAction(JPopupMenu popup, String key, String value) {
-        if (value == null || value.trim().isEmpty() || !MapillaryLayer.hasInstance()) {
+        if (Utils.isBlank(value) || !MapillaryLayer.hasInstance()) {
             return;
         }
         String lowerKey = key.toLowerCase(Locale.ENGLISH);

@@ -61,7 +61,7 @@ val versions = mapOf(
   "jdatepicker" to "1.3.4",
   "jmockit" to "1.49",
   "junit" to "5.8.2",
-  "pmd" to "6.41.0",
+  "pmd" to "6.42.0",
   "spotbugs" to "4.5.3",
   "wiremock" to "2.32.0"
 )

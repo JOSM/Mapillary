@@ -82,7 +82,7 @@ public class MapillaryImageEntry
     private SoftReference<BufferedImage> layeredImage;
 
     private static class MapillaryValueChangeListener implements AbstractProperty.ValueChangeListener<Boolean> {
-        static final MapillaryValueChangeListener instance = new MapillaryValueChangeListener();
+        static final MapillaryValueChangeListener INSTANCE = new MapillaryValueChangeListener();
 
         @Override
         public void valueChanged(AbstractProperty.ValueChangeEvent<? extends Boolean> e) {
@@ -95,8 +95,8 @@ public class MapillaryImageEntry
     }
 
     static {
-        MapillaryProperties.SHOW_DETECTED_SIGNS.addListener(MapillaryValueChangeListener.instance);
-        MapillaryProperties.SHOW_DETECTION_OUTLINES.addListener(MapillaryValueChangeListener.instance);
+        MapillaryProperties.SHOW_DETECTED_SIGNS.addListener(MapillaryValueChangeListener.INSTANCE);
+        MapillaryProperties.SHOW_DETECTION_OUTLINES.addListener(MapillaryValueChangeListener.INSTANCE);
     }
 
     public static MapillaryImageEntry getCachedEntry(final INode image) {
@@ -191,7 +191,7 @@ public class MapillaryImageEntry
         if (MapillaryImageUtils.getKey(this.image) != 0) {
             INode mapillaryImage = this.image;
             OrganizationRecord organizationRecord = MapillaryImageUtils.getOrganization(mapillaryImage);
-            if (organizationRecord != OrganizationRecord.NULL_RECORD) {
+            if (!OrganizationRecord.NULL_RECORD.equals(organizationRecord)) {
                 title.append(MESSAGE_SEPARATOR).append(organizationRecord.getNiceName());
             }
             if (!Instant.EPOCH.equals(MapillaryImageUtils.getDate(mapillaryImage))) {

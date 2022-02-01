@@ -1,13 +1,14 @@
 package org.openstreetmap.josm.plugins.mapillary.gui.layer;
 
+import java.awt.Color;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
-import java.awt.Color;
 
 class AdditionalActionPanel extends JPanel {
-    private boolean hasContent;
+    private boolean hasEnabledActions;
 
     /**
      * Create an additional action panel
@@ -21,7 +22,7 @@ class AdditionalActionPanel extends JPanel {
         this.setBorder(BorderFactory.createLineBorder(Color.black));
         for (JButton button : actionButtons) {
             this.add(button);
-            this.hasContent = this.hasContent || button.getAction().isEnabled();
+            this.hasEnabledActions = this.hasEnabledActions || button.getAction().isEnabled();
         }
     }
 
@@ -31,6 +32,6 @@ class AdditionalActionPanel extends JPanel {
      * @return {@code true} if there is content to show
      */
     public boolean hasContent() {
-        return this.hasContent;
+        return this.hasEnabledActions;
     }
 }

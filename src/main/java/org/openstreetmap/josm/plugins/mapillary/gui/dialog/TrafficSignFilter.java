@@ -64,19 +64,21 @@ import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Pair;
+import org.openstreetmap.josm.tools.Utils;
 
 /**
  * This filters traffic signs
  *
  * @author Taylor Smock
  */
-public class TrafficSignFilter extends JPanel implements Destroyable, LayerChangeListener, TileAddListener<MVTTile> {
+public final class TrafficSignFilter extends JPanel
+    implements Destroyable, LayerChangeListener, TileAddListener<MVTTile> {
     private static final long serialVersionUID = 1177890183422385423L;
     private boolean destroyed;
     private final List<ImageCheckBoxButton> buttons;
     private boolean showRelevant;
-    private boolean smartEditMode = Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get());
-    private final Boolean[] show = new Boolean[] { showRelevant, smartEditMode };
+    private boolean smartEditModeEnabled = Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get());
+    private final Boolean[] show = new Boolean[] { showRelevant, smartEditModeEnabled };
     private final FilterField filterField;
     private final SpinnerNumberModel showMaxNumberModel;
     private int detectionPage;
@@ -171,12 +173,12 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
     }
 
     private void updateSmartEdit(ValueChangeEvent<? extends Boolean> l, JCheckBox smartEditMode) {
-        this.smartEditMode = Boolean.TRUE.equals(l.getProperty().get());
-        smartEditMode.setSelected(this.smartEditMode);
+        this.smartEditModeEnabled = Boolean.TRUE.equals(l.getProperty().get());
+        smartEditMode.setSelected(this.smartEditModeEnabled);
         if (MapillaryFilterDialog.getInstance() != null) {
             MapillaryFilterDialog.getInstance().refresh();
         }
-        if (this.smartEditMode) {
+        if (this.smartEditModeEnabled) {
             ImageMode.setMode(ImageMode.SMART_EDIT);
         } else {
             ImageMode.setMode(ImageMode.NORMAL);
@@ -327,7 +329,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
 
     private static void hideNearbyAddableObjs(boolean hideObjects) {
         Filter filter = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().parallelStream()
-            .filter(f -> f.text.equals(NEARBY_KEY)).findAny().orElseGet(() -> {
+            .filter(f -> NEARBY_KEY.equals(f.text)).findAny().orElseGet(() -> {
                 Filter nfilter = new Filter();
                 nfilter.hiding = true;
                 nfilter.text = NEARBY_KEY;
@@ -356,7 +358,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
                                 .flatMap(d -> d.searchPrimitives(searchBBox).stream()).filter(pr -> !pr.isDeleted())
                                 .filter(pr -> tagMapIsSubset(pr.getKeys(), tags))
                                 .map(o -> o.getOsmPrimitiveId().toString()).collect(Collectors.joining(";"));
-                            if (!nearby.trim().isEmpty()) {
+                            if (!Utils.isBlank(nearby)) {
                                 p.put(NEARBY_KEY, nearby);
                             }
                         });
@@ -400,12 +402,12 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
      */
     private void smartEditMode(boolean smartEditMode) {
         SwingUtilities.invokeLater(() -> MapillaryProperties.SMART_EDIT.put(smartEditMode));
-        this.smartEditMode = smartEditMode;
+        this.smartEditModeEnabled = smartEditMode;
         MapillaryFilterTableModel filterModel = MapillaryExpertFilterDialog.getInstance().getFilterModel();
         synchronized (filterModel) {
             try {
                 filterModel.pauseUpdates();
-                hideNearbyAddableObjs(this.smartEditMode);
+                hideNearbyAddableObjs(this.smartEditModeEnabled);
             } finally {
                 filterModel.resumeUpdates();
             }
@@ -419,7 +421,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
         }
         this.updateShownButtons();
         filterModel.pauseUpdates();
-        List<Future<?>> futures = nonAddable.stream().map(b -> b.setSelected(this.smartEditMode))
+        List<Future<?>> futures = nonAddable.stream().map(b -> b.setSelected(this.smartEditModeEnabled))
             .filter(Objects::nonNull).collect(Collectors.toList());
         MapillaryUtils.getForkJoinPool().execute(() -> {
             for (Future<?> future : futures) {

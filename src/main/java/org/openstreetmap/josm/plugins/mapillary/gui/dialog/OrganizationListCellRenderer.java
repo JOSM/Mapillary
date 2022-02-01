@@ -19,7 +19,7 @@ import org.openstreetmap.josm.tools.ImageProvider;
 public class OrganizationListCellRenderer extends DefaultListCellRenderer {
     private static final long serialVersionUID = -1650696801628131389L;
     /** Scaled organization icons -- cached for performance */
-    private static final Map<OrganizationRecord, ImageIcon> organizationScaledIcons = new ConcurrentHashMap<>(0);
+    private static final Map<OrganizationRecord, ImageIcon> ORGANIZATION_SCALED_ICONS = new ConcurrentHashMap<>(0);
 
     @Override
     public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
@@ -28,13 +28,13 @@ public class OrganizationListCellRenderer extends DefaultListCellRenderer {
         if (value instanceof OrganizationRecord) {
             OrganizationRecord organization = (OrganizationRecord) value;
             if ((organization.getNiceName() != null && !organization.getNiceName().isEmpty())
-                || organization == OrganizationRecord.NULL_RECORD) {
+                || OrganizationRecord.NULL_RECORD.equals(organization)) {
                 comp.setText(organization.getNiceName());
             } else {
                 comp.setText(Long.toString(organization.getId()));
             }
             if (organization.getAvatar() != null) {
-                comp.setIcon(organizationScaledIcons.computeIfAbsent(organization,
+                comp.setIcon(ORGANIZATION_SCALED_ICONS.computeIfAbsent(organization,
                     OrganizationListCellRenderer::scaleOrganizationIcon));
             }
         }

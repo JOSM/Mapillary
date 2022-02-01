@@ -85,6 +85,7 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
                 Optional.ofNullable(event.getPreviousDataSet()).ifPresent(it -> it.removeSelectionListener(this));
             } catch (IllegalArgumentException e) {
                 // The selection listener was not registered
+                Logging.trace(e);
             }
             Optional.ofNullable(MainApplication.getLayerManager().getActiveDataSet())
                 .ifPresent(it -> it.addSelectionListener(this));

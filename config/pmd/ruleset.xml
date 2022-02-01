@@ -60,7 +60,8 @@
   <rule ref="category/java/codestyle.xml/UnnecessaryLocalBeforeReturn" />
   <rule ref="category/java/codestyle.xml/UnnecessaryModifier" />
   <rule ref="category/java/codestyle.xml/UnnecessaryReturn" />
-  <rule ref="category/java/codestyle.xml/UselessParentheses" />
+  <!-- As of PMD 6.41.0, UselessParentheses conflicts with ErrorProne 2.11.0 OperatorPrecedence. -->
+  <!--<rule ref="category/java/codestyle.xml/UselessParentheses" />-->
   <rule ref="category/java/codestyle.xml/UselessQualifiedThis" />
 
   <rule ref="category/java/design.xml/AbstractClassWithoutAnyMethod" />

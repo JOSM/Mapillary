@@ -485,8 +485,9 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
         int ways = counter.ways;
         int relations = counter.relations;
 
-        StringBuilder tooltip = new StringBuilder("<html>").append(trn("{0} node", "{0} nodes", nodes, nodes))
-            .append("<br>").append(trn("{0} way", "{0} ways", ways, ways)).append("<br>")
+        StringBuilder tooltip = new StringBuilder(48).append("<html>")
+            .append(trn("{0} node", "{0} nodes", nodes, nodes)).append("<br>")
+            .append(trn("{0} way", "{0} ways", ways, ways)).append("<br>")
             .append(trn("{0} relation", "{0} relations", relations, relations));
 
         File f = getAssociatedFile();

@@ -613,7 +613,7 @@ public final class MapillaryLayer extends MVTLayer
 
     @Override
     public void activeOrEditLayerChanged(ActiveLayerChangeEvent e) {
-        if (MainApplication.getLayerManager().getActiveLayer() == this) {
+        if (this.equals(MainApplication.getLayerManager().getActiveLayer())) {
             MapillaryUtils.updateHelpText();
         }
     }
@@ -673,7 +673,6 @@ public final class MapillaryLayer extends MVTLayer
                 this.getZoomLevel());
             first = true;
         }
-        TileJob job = this.tileLoader.createTileLoaderJob(tile);
         CompletableFuture<Tile> futureTile = new CompletableFuture<>();
         tile.addTileLoaderFinisher(t -> {
             if (first) {
@@ -688,6 +687,7 @@ public final class MapillaryLayer extends MVTLayer
             return CompletableFuture.completedFuture(tile);
         }
         if (first) {
+            TileJob job = this.tileLoader.createTileLoaderJob(tile);
             job.submit();
         }
         return futureTile;

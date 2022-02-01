@@ -25,7 +25,7 @@ import org.openstreetmap.josm.plugins.PluginInformation;
 import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.Logging;
 
-public class OldVersionDialog {
+public final class OldVersionDialog {
     private static final IntegerProperty SHOWN_OLD = new IntegerProperty("mapillary.shown_old", 0);
     private static final StringProperty NEW_VERSION = new StringProperty("mapillary.new_version", null);
 
@@ -70,7 +70,7 @@ public class OldVersionDialog {
     @Nullable
     static String latestMapillaryVersion() {
         try (CachedFile latestMapillary = new CachedFile("https://api.github.com/repos/JOSM/Mapillary/releases/latest");
-            final JsonReader reader = Json.createReader(latestMapillary.getContentReader())) {
+            JsonReader reader = Json.createReader(latestMapillary.getContentReader())) {
             latestMapillary.setMaxAge(60L * 15); // 15 minutes
             final JsonValue value = reader.read();
             final JsonObject object = value.asJsonObject();

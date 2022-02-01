@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -16,7 +17,6 @@ import javax.json.JsonReader;
 import javax.json.JsonValue;
 
 import org.junit.jupiter.api.Test;
-
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 
 class JsonDecoderTest {
@@ -28,7 +28,7 @@ class JsonDecoderTest {
 
     @Test
     void testDecodeDoublePair() {
-        assertNull(JsonDecoder.decodeDoublePair(null));
+        assertArrayEquals(new double[0], JsonDecoder.decodeDoublePair(null));
     }
 
     /**
