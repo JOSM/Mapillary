@@ -42,8 +42,8 @@ import org.openstreetmap.josm.tools.date.DateUtils;
  * Keys and utility methods for Mapillary Images
  */
 public final class MapillaryImageUtils {
-    /** The base image url key pattern (v4 sizes are 256, 1024, 2048) */
-    public static final Pattern BASE_IMAGE_KEY = Pattern.compile("^thumb_([0-9]+)_url$");
+    /** The base image url key pattern (v4 sizes are 256, 1024, 2048, and original) */
+    public static final Pattern BASE_IMAGE_KEY = Pattern.compile("^thumb_([0-9]+|original)_url$");
     // Image specific
     /** Check if the node is for a panoramic image */
     public static final Predicate<INode> IS_PANORAMIC = node -> node != null
@@ -364,7 +364,19 @@ public final class MapillaryImageUtils {
          *
          * @see #COMPUTED_ALTITUDE
          */
-        ALTITUDE, ATOMIC_SCALE, CAMERA_PARAMETERS, CAMERA_TYPE,
+        ALTITUDE,
+        /** The scale of the SfM reconstruction around the image */
+        ATOMIC_SCALE,
+        /**
+         * Focal length, k1, k2
+         *
+         * @see <a href="https://readthedocs.org/projects/opensfm/downloads/pdf/latest/">OpenSfM for details</a>
+         */
+        CAMERA_PARAMETERS,
+        /**
+         * Technically an enum of "perspective", "fisheye", "equirectangular" (or "spherical").
+         */
+        CAMERA_TYPE,
         /** Timestamp, original capture time */
         CAPTURED_AT,
         /**
@@ -420,7 +432,13 @@ public final class MapillaryImageUtils {
         /** A 1024px image (max width) */
         THUMB_1024_URL,
         /** A 2048px image (max width). You should prefer {@link #BEST_IMAGE}. */
-        THUMB_2048_URL, MERGE_CC, MESH,
+        THUMB_2048_URL,
+        /** URL to the original wide thumbnail. You should prefer {@link #BEST_IMAGE} */
+        THUMB_ORIGINAL_URL,
+        /** Connected component of images aligned together */
+        MERGE_CC,
+        /** The 3d mesh url */
+        MESH,
         /**
          * The quality score of the image (float)
          */
@@ -436,12 +454,16 @@ public final class MapillaryImageUtils {
          *
          * @see #SEQUENCE
          */
-        SEQUENCE_ID, SFM_CLUSTER,
+        SEQUENCE_ID,
+        /** URL to the point cloud in ply format */
+        SFM_CLUSTER,
         /** The original width of the image */
-        WIDTH;
+        WIDTH,
+        /** Detections from the image */
+        DETECTIONS;
 
         /** This is the highest quality image known to us at this time. Prefer this to {@link #THUMB_2048_URL}. */
-        public static final ImageProperties BEST_IMAGE = THUMB_2048_URL;
+        public static final ImageProperties BEST_IMAGE = THUMB_ORIGINAL_URL;
         /** This is the lowest quality image known to us at this time. Prefer this to {@link #THUMB_256_URL}. */
         public static final ImageProperties WORST_IMAGE = THUMB_256_URL;
 

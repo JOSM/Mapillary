@@ -10,8 +10,9 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
+
+import javax.annotation.Nullable;
 
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCachedTileLoaderJob;
@@ -56,9 +57,10 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
 
         Type(final MapillaryImageUtils.ImageProperties properties) {
             this.imageUrl = properties.name().toLowerCase(Locale.ROOT);
-            final Pattern pattern = MapillaryImageUtils.BASE_IMAGE_KEY;
-            final Matcher matcher = pattern.matcher(this.imageUrl);
-            if (matcher.matches()) {
+            final Matcher matcher = MapillaryImageUtils.BASE_IMAGE_KEY.matcher(this.imageUrl);
+            if (matcher.matches() && "original".equals(matcher.group(1))) {
+                this.width = Integer.MIN_VALUE;
+            } else if (matcher.matches()) {
                 this.width = Integer.parseInt(matcher.group(1));
             } else {
                 throw new IllegalArgumentException("Mapillary: " + this.imageUrl + " is not a valid image type");
@@ -68,18 +70,29 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
         /**
          * Get the anticipated width for the image
          *
-         * @return The width of the image (pixels)
+         * @param image The image to use for the "original" width
+         * @return The width of the image (pixels).
          */
-        public int getWidth() {
-            return width;
+        public int getWidth(@Nullable final INode image) {
+            if (this.width == Integer.MIN_VALUE && image != null
+                && image.get(MapillaryImageUtils.ImageProperties.WIDTH.toString()) != null) {
+                return Integer.parseInt(image.get(MapillaryImageUtils.ImageProperties.WIDTH.toString()));
+            }
+            return this.width;
         }
 
         /**
          * Get the anticipated height for the image
          *
-         * @return The height of the image (pixels)
+         * @param image The image to use for the "original" height
+         * @return The height of the image (pixels). If {@link Integer#MIN_VALUE},
+         *         the original height of the image should be used.
          */
-        public int getHeight() {
+        public int getHeight(@Nullable final INode image) {
+            if (this.width == Integer.MIN_VALUE && image != null
+                && image.get(MapillaryImageUtils.ImageProperties.HEIGHT.toString()) != null) {
+                return Integer.parseInt(image.get(MapillaryImageUtils.ImageProperties.HEIGHT.toString()));
+            }
             return width;
         }
 
@@ -109,7 +122,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
         final long freeMemory = Runtime.getRuntime().freeMemory();
         // 3 bytes for RGB (jpg doesn't support the Alpha channel). I'm using 4 bytes instead of 3 for a buffer.
         long estimatedImageSize = Stream.of(MapillaryCache.Type.values())
-            .mapToLong(v -> (long) v.getHeight() * v.getWidth() * 4).sum();
+            .mapToLong(v -> (long) v.getHeight(currentImage) * v.getWidth(currentImage) * 4).sum();
 
         INode nextImage = MapillarySequenceUtils.getNextOrPrevious(currentImage,
             MapillarySequenceUtils.NextOrPrevious.NEXT);

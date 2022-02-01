@@ -48,5 +48,9 @@
   },
   "width": 4160,
   "id": "338231874314914",
+  "thumb_original_url": "thumb_original_filler_url",
+  "detections": {
+    "data": []
+  },
   "comment": "This file is pretty much hand written -- the image appears to be borked on Mapillary's end (as of August 17, 2021)"
 }

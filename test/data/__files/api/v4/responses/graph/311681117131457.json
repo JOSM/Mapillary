@@ -43,5 +43,13 @@
     "url": "sfm_cluster_filler_url"
   },
   "width": 4160,
-  "id": "311681117131457"
+  "id": "311681117131457",
+  "thumb_original_url": "thumb_original_filler_url",
+  "detections": {
+    "data": [
+      {
+        "id": "313159516983617"
+      }
+    ]
+  }
 }
