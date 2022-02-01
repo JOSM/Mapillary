@@ -20,6 +20,7 @@ import java.util.TimerTask;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 import javax.json.Json;
@@ -104,6 +105,33 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
                 DETECTION_TIMER.schedule(currentTask, timeout);
             }
 
+        }
+    }
+
+    /**
+     * Add detections from another source. For example, if someone requests detections with the image.
+     * Processing occurs in a separate thread.
+     *
+     * @param id The id of the image
+     * @param supplier The supplier for the detections
+     */
+    public static void addDetections(long id, Supplier<Collection<ImageDetection<?>>> supplier) {
+        MapillaryUtils.getForkJoinPool().execute(() -> realAddDetections(id, supplier));
+    }
+
+    /**
+     * Add detections from another source. For example, if someone requests detections with the image.
+     *
+     * @param id The id of the image
+     * @param supplier The supplier for the detections
+     */
+    private static void realAddDetections(long id, Supplier<Collection<ImageDetection<?>>> supplier) {
+        final Collection<ImageDetection<?>> detections = supplier.get();
+        if (detections != null && !detections.isEmpty()) {
+            final List<ImageDetection<?>> detectionList = detections instanceof List
+                ? (List<ImageDetection<?>>) detections
+                : new ArrayList<>(detections);
+            DETECTION_CACHE.put(id, detectionList);
         }
     }
 
@@ -334,7 +362,7 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
                 try (JsonReader reader = Json
                     .createReader(new ByteArrayInputStream(jsonString.getBytes(StandardCharsets.UTF_8)))) {
                     final Collection<ImageDetection<?>> detections = JsonDecoder.decodeData(reader.readObject(),
-                        JsonImageDetectionDecoder::decodeImageDetection);
+                        j -> JsonImageDetectionDecoder.decodeImageDetection(j, key));
                     if (detections instanceof List) {
                         return Collections.unmodifiableList((List<ImageDetection<?>>) detections);
                     }

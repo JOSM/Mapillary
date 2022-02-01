@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+
 import javax.json.Json;
 import javax.json.JsonReader;
 
@@ -26,7 +27,7 @@ class JsonImageDetectionDecoderTest {
             + geometry + "\",\"image\":{\"id\":\"1\"}}";
         try (JsonReader jsonReader = Json
             .createReader(new ByteArrayInputStream(jsonString.getBytes(StandardCharsets.UTF_8)))) {
-            assertDoesNotThrow(() -> JsonImageDetectionDecoder.decodeImageDetection(jsonReader.read()));
+            assertDoesNotThrow(() -> JsonImageDetectionDecoder.decodeImageDetection(jsonReader.read(), null));
         }
     }
 }

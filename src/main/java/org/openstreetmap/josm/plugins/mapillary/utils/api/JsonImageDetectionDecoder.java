@@ -31,7 +31,7 @@ import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Decodes the JSON returned by {@link APIv4} into Java objects.
- * Takes a {@link JsonValue} and {@link #decodeImageDetection(JsonValue)} tries to convert it to a
+ * Takes a {@link JsonValue} and {@link #decodeImageDetection(JsonValue, Long)} tries to convert it to a
  * {@link ImageDetection}.
  */
 public final class JsonImageDetectionDecoder {
@@ -43,16 +43,18 @@ public final class JsonImageDetectionDecoder {
      * Convert a json value into a collection of image detections
      *
      * @param json The json to convert
+     * @param defaultImageKey A default image key, if known (i.e., the detection is coming from an image request)
      * @return A collection of image detections
      */
     @Nonnull
-    public static Collection<ImageDetection<?>> decodeImageDetection(@Nullable final JsonValue json) {
+    public static Collection<ImageDetection<?>> decodeImageDetection(@Nullable final JsonValue json,
+        @Nullable final Long defaultImageKey) {
         if (json == null) {
             return Collections.emptyList();
         } else if (json.getValueType() == JsonValue.ValueType.ARRAY) {
             final List<ImageDetection<?>> returnList = new ArrayList<>(json.asJsonArray().size());
             for (JsonValue value : json.asJsonArray()) {
-                returnList.addAll(decodeImageDetection(value));
+                returnList.addAll(decodeImageDetection(value, defaultImageKey));
             }
             returnList.removeIf(Objects::isNull);
             return Collections.unmodifiableList(returnList);
@@ -62,7 +64,7 @@ public final class JsonImageDetectionDecoder {
         final JsonObject jsonObject = json.asJsonObject();
 
         final long key = Long.parseLong(jsonObject.getString("id", "0"));
-        final Long imageKey = decodeImageIds(jsonObject.get("image"));
+        final Long imageKey = decodeImageIds(jsonObject.get("image"), defaultImageKey);
         final String value = jsonObject.getString("value", null);
         final Shape shape = decodeShape(jsonObject.get("geometry"));
         if (shape != null && imageKey != null && key != 0 && value != null) {
@@ -83,10 +85,11 @@ public final class JsonImageDetectionDecoder {
      * Decode image ids (mostly so we can select the appropriate image)
      *
      * @param jsonValue The value to decode
+     * @param defaultImageId The default image id. May be {@code null}.
      * @return The image id
      */
     @Nullable
-    private static Long decodeImageIds(@Nullable JsonValue jsonValue) {
+    private static Long decodeImageIds(@Nullable JsonValue jsonValue, @Nullable Long defaultImageId) {
         if (jsonValue != null && jsonValue.getValueType() == JsonValue.ValueType.OBJECT) {
             final JsonObject jsonObject = jsonValue.asJsonObject();
             if (jsonObject.containsKey("id")) {
@@ -96,7 +99,7 @@ public final class JsonImageDetectionDecoder {
                 }
             }
         }
-        return null;
+        return defaultImageId;
     }
 
     /**

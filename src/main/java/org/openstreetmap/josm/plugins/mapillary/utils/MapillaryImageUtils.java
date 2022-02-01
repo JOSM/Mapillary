@@ -459,7 +459,7 @@ public final class MapillaryImageUtils {
         SFM_CLUSTER,
         /** The original width of the image */
         WIDTH,
-        /** Detections from the image */
+        /** Detections from the image (at this time, ids only, docs indicate it is the full detection object) */
         DETECTIONS;
 
         /** This is the highest quality image known to us at this time. Prefer this to {@link #THUMB_2048_URL}. */
@@ -467,9 +467,16 @@ public final class MapillaryImageUtils {
         /** This is the lowest quality image known to us at this time. Prefer this to {@link #THUMB_256_URL}. */
         public static final ImageProperties WORST_IMAGE = THUMB_256_URL;
 
+        /** The field value that the Mapillary server expects */
+        private final String fieldValue;
+
+        ImageProperties() {
+            this.fieldValue = super.toString().toLowerCase(Locale.ROOT);
+        }
+
         @Override
         public String toString() {
-            return super.toString().toLowerCase(Locale.ROOT);
+            return this.fieldValue;
         }
     }
 }

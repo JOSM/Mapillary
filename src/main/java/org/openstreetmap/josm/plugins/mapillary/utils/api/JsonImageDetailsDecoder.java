@@ -23,6 +23,7 @@ import org.openstreetmap.josm.data.osm.TagMap;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
@@ -127,6 +128,12 @@ public final class JsonImageDetailsDecoder {
             image.setInstant(Instant.EPOCH);
             // Re-cache the instant
             MapillaryImageUtils.getDate(image);
+            if (json.containsKey(MapillaryImageUtils.ImageProperties.DETECTIONS.toString())) {
+                ImageDetection.addDetections(id,
+                    () -> JsonDecoder.decodeData(
+                        json.getJsonObject(MapillaryImageUtils.ImageProperties.DETECTIONS.toString()),
+                        j -> JsonImageDetectionDecoder.decodeImageDetection(j, id)));
+            }
             return Pair.create(sequence, image);
         }
         return null;

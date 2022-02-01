@@ -208,7 +208,8 @@ public final class MapillaryURL {
                 MapillaryImageUtils.ImageProperties.COMPUTED_ROTATION,
                 MapillaryImageUtils.ImageProperties.EXIF_ORIENTATION, MapillaryImageUtils.ImageProperties.GEOMETRY,
                 MapillaryImageUtils.ImageProperties.ID, MapillaryImageUtils.ImageProperties.QUALITY_SCORE,
-                MapillaryImageUtils.ImageProperties.SEQUENCE, MapillaryImageUtils.ImageProperties.WORST_IMAGE };
+                MapillaryImageUtils.ImageProperties.SEQUENCE, MapillaryImageUtils.ImageProperties.WORST_IMAGE,
+                MapillaryImageUtils.ImageProperties.DETECTIONS };
         }
 
         /**
