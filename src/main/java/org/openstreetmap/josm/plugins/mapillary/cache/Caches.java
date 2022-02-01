@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -72,8 +73,11 @@ public final class Caches {
             getCacheDirectory().getPath()));
     static {
         final IElementAttributes userProfileCacheAttributes = USER_PROFILE_CACHE.getDefaultElementAttributes();
-        userProfileCacheAttributes.setMaxLife(604_800_000);
+        userProfileCacheAttributes.setMaxLife(TimeUnit.DAYS.toSeconds(365));
         USER_PROFILE_CACHE.setDefaultElementAttributes(userProfileCacheAttributes);
+        final IElementAttributes metaDataCacheAttributes = META_DATA_CACHE.getDefaultElementAttributes();
+        /* Reuse mirror.maxtime configuration */
+        metaDataCacheAttributes.setMaxLife(Config.getPref().getLong("mirror.maxtime", TimeUnit.DAYS.toSeconds(7)));
         META_DATA_CACHE.setDefaultElementAttributes(userProfileCacheAttributes);
     }
 
