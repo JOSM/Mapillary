@@ -1,4 +1,13 @@
 ## What's Changed
+### [v2.0.0-beta.2](https://github.com/JOSM/Mapillary/compare/v2.0.0-beta.1...v2.0.0-beta.2)
+* JOSM [#20274](https://josm.openstreetmap.de/ticket/20274): Cannot zoom in to detail.
+  * Mapillary has added an API field for thumb_original_url, which has the original (processed) image.
+  * Breaking change: getWidth/getHeight from MapillaryCache now require a parameter (can be null).
+* JOSM [#21717](https://josm.openstreetmap.de/ticket/21717): add filter to display only images that are not panoramas
+  * The filter allows users to see all images, panoramic images, or non-panoramic images, depending upon their choice.
+* JOSM [#21817](https://josm.openstreetmap.de/ticket/21817): NPE in MapillaryImageEntry#read
+  * This is caused by old image urls. We've reset the maximum age for the image metadata to be cached to be the same as `mirror.maxtime` (advanced preferences). This defaults to 7 days (down from 700 days).
+
 ### [v2.0.0-beta.1](https://github.com/JOSM/Mapillary/compare/v2.0.0-alpha.50...v2.0.0-beta.1)
 * JOSM [#21791](https://josm.openstreetmap.de/ticket/21791): IOOBE in OffsetUtils#getOffsetLocation
 * JOSM [#21530](https://josm.openstreetmap.de/ticket/21530): Disable Mapillary tag insert when no Mapillary image selected.
