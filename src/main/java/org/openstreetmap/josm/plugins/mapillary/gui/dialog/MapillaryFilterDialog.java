@@ -113,9 +113,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
             200, false, MapillaryPreferenceSetting.class);
 
         final JButton signChooser = new JButton(new SignChooserAction());
-        final JCheckBox downloaded = new JCheckBox(tr("Downloaded images"));
         final JCheckBox onlySigns = new JCheckBox(tr("Only images with signs"));
-        downloaded.addItemListener(l -> onlySigns.setEnabled(l.getStateChange() == ItemEvent.SELECTED));
         onlySigns.addItemListener(l -> signChooser.setEnabled(l.getStateChange() == ItemEvent.SELECTED));
 
         signChooser.setEnabled(false);
@@ -123,12 +121,9 @@ public final class MapillaryFilterDialog extends ToggleDialog
         signChooserPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         signChooserPanel.add(signChooser);
 
-        downloaded.setSelected(true);
-
         final JPanel panel = new JPanel(new GridBagLayout());
         panel.add(new JLabel(tr("Picture Filters")), GBC.eol().anchor(GridBagConstraints.LINE_START));
         final JPanel imageLine = new JPanel();
-        imageLine.add(downloaded, GBC.std().anchor(GridBagConstraints.LINE_START));
         panel.add(imageLine, GBC.eol().anchor(GridBagConstraints.LINE_START));
         this.addTimeFilters(panel);
         this.addUserGroupFilters(panel);
@@ -151,15 +146,12 @@ public final class MapillaryFilterDialog extends ToggleDialog
         createLayout(panel, true, Arrays.asList(new SideButton(new UpdateAction()), new SideButton(new ResetAction())));
 
         // Add listeners for the shouldHidePredicate
-        downloaded.addItemListener(
-            l -> this.shouldHidePredicate.downloadedIsSelected = l.getStateChange() == ItemEvent.SELECTED);
         imageTypes
             .addItemListener(l -> this.shouldHidePredicate.imageTypes = (ImageTypes) imageTypes.getSelectedItem());
         onlySigns.addItemListener(
             l -> this.shouldHidePredicate.onlySignsIsSelected = l.getStateChange() == ItemEvent.SELECTED);
 
         // Add reset functions
-        this.resetObjects.addListener(() -> downloaded.setSelected(true));
         this.resetObjects.addListener(() -> onlySigns.setEnabled(true));
         this.resetObjects.addListener(() -> onlySigns.setSelected(false));
         this.resetObjects.addListener(() -> imageTypes.setSelectedItem(ImageTypes.ALL));
@@ -170,7 +162,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
         // Set defaults for the shouldHidePredicate
         // This must be added last
         ResetListener setFields = () -> {
-            this.shouldHidePredicate.downloadedIsSelected = downloaded.isSelected();
             this.shouldHidePredicate.imageTypes = (ImageTypes) imageTypes.getSelectedItem();
             this.shouldHidePredicate.onlySignsIsSelected = onlySigns.isSelected();
         };
@@ -461,7 +452,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
         String time;
         Number dateRange;
         private boolean layerVisible;
-        boolean downloadedIsSelected;
         boolean timeFilter;
         boolean onlySignsIsSelected;
         Instant endDateRefresh;
@@ -502,9 +492,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
                 return true;
             }
             if (MapillaryImageUtils.getKey(img) > 0) {
-                if (!this.downloadedIsSelected) {
-                    return true;
-                }
                 if (this.onlySignsIsSelected && (ImageDetection.getDetections(MapillaryImageUtils.getKey(img)).isEmpty()
                     || !checkSigns(ImageDetection.getDetections(MapillaryImageUtils.getKey(img))))) {
                     return true;
