@@ -8,11 +8,12 @@ import java.util.Calendar;
 import java.util.Properties;
 import java.util.function.Consumer;
 
+import javax.annotation.Nonnull;
+
 import org.jdatepicker.impl.DateComponentFormatter;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilCalendarModel;
-
 import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
 
 /**
@@ -42,23 +43,26 @@ public class DatePickerJDatePicker implements IDatePicker<JDatePickerImpl> {
     }
 
     @Override
-    public void setInstant(Instant date) {
-        if (date != null) {
+    public void setInstant(@Nonnull Instant date) {
+        if (Instant.MIN.isBefore(date)) {
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(date.toEpochMilli());
             model.setValue(cal);
-        } else
+        } else {
             reset();
+        }
     }
 
+    @Nonnull
     @Override
     public Instant getInstant() {
         Calendar value = model.getValue();
         if (value == null)
-            return null;
+            return Instant.MIN;
         return value.toInstant();
     }
 
+    @Nonnull
     @Override
     public JDatePickerImpl getComponent() {
         return this.datePicker;
@@ -71,7 +75,7 @@ public class DatePickerJDatePicker implements IDatePicker<JDatePickerImpl> {
     }
 
     @Override
-    public void addEventHandler(Consumer<IDatePicker<?>> function) {
+    public void addEventHandler(@Nonnull Consumer<IDatePicker<?>> function) {
         this.datePicker.addActionListener(action -> function.accept(this));
     }
 

@@ -34,6 +34,7 @@ import org.openstreetmap.josm.gui.layer.ImageryLayer;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.gui.layer.imagery.MVTLayer;
+import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryLayerAnnotation;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMockErrors;
@@ -60,6 +61,9 @@ class MapillaryLayerTest {
         if (MapillaryLayer.hasInstance()) {
             try {
                 MapillaryLayer.getInstance().destroy();
+                if (MapillaryFilterDialog.hasInstance()) {
+                    MapillaryFilterDialog.getInstance().reset();
+                }
             } catch (IllegalArgumentException illegalArgumentException) {
                 // Some other test pollutes MapillaryLayer.getInstance, and LayerChangeAdaptor is cleaned up.
                 // This causes destroy() to fail on the first test.

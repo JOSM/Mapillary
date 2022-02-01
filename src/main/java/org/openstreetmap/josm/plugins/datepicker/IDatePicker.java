@@ -75,7 +75,6 @@ public interface IDatePicker<T extends JComponent> {
             Logging.error(e);
         }
         // Fall back to basic text entry
-        IDatePicker<?> rDatePicker = new DatePickerSwing();
-        return (IDatePicker<JComponent>) rDatePicker;
+        return (IDatePicker<JComponent>) ((IDatePicker<?>) new DatePickerSwing());
     }
 }

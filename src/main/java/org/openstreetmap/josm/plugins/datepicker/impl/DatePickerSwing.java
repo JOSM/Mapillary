@@ -9,6 +9,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Consumer;
 
+import javax.annotation.Nonnull;
+
 import org.openstreetmap.josm.gui.widgets.DisableShortcutsOnFocusGainedTextField;
 import org.openstreetmap.josm.gui.widgets.JosmTextField;
 import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
@@ -29,9 +31,9 @@ public class DatePickerSwing implements IDatePicker<JosmTextField> {
     }
 
     @Override
-    public void setInstant(Instant date) {
+    public void setInstant(@Nonnull Instant date) {
         this.date = date;
-        if (date != null) {
+        if (Instant.MIN.isBefore(date)) {
             this.component
                 .setText(DateTimeFormatter.ISO_DATE.format(ZonedDateTime.ofInstant(this.date, ZoneOffset.UTC)));
         } else {
@@ -39,11 +41,13 @@ public class DatePickerSwing implements IDatePicker<JosmTextField> {
         }
     }
 
+    @Nonnull
     @Override
     public Instant getInstant() {
         return this.date;
     }
 
+    @Nonnull
     @Override
     public JosmTextField getComponent() {
         return component;
@@ -55,7 +59,7 @@ public class DatePickerSwing implements IDatePicker<JosmTextField> {
     }
 
     @Override
-    public void addEventHandler(Consumer<IDatePicker<?>> function) {
+    public void addEventHandler(@Nonnull Consumer<IDatePicker<?>> function) {
         component.addFocusListener(new FocusListener() {
 
             @Override
@@ -65,7 +69,7 @@ public class DatePickerSwing implements IDatePicker<JosmTextField> {
 
             @Override
             public void focusLost(FocusEvent e) {
-                setInstant(null);
+                setInstant(Instant.MIN);
                 function.accept(DatePickerSwing.this);
             }
         });

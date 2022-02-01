@@ -104,16 +104,15 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
             lbox.putClientProperty("layer", layer[0]);
             // TODO remove when it listens to layers.
             // Maybe get rid of Traffic SIgn/Point object layer filters (no longer needed due to separate layers) OR
-            // clicking
-            // on them adds the appropriate layer. Affect hide/show action of layers instead of adding filters?
+            // clicking on them adds the appropriate layer. Affect hide/show action of layers instead of adding filters?
             DeveloperToggleAction.addVisibilitySwitcher(lbox);
         }
 
-        JCheckBox smartEditMode = new JCheckBox(I18n.tr("Smart Edit Mode"));
-        smartEditMode.setSelected(Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()));
-        MapillaryProperties.SMART_EDIT.addListener(l -> updateSmartEdit(l, smartEditMode));
-        smartEditMode.addItemListener(l -> smartEditMode(l.getStateChange() == ItemEvent.SELECTED));
-        add(smartEditMode, GBC.eol().anchor(GridBagConstraints.WEST));
+        JCheckBox smartEditModeBox = new JCheckBox(I18n.tr("Smart Edit Mode"));
+        smartEditModeBox.setSelected(Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()));
+        MapillaryProperties.SMART_EDIT.addListener(l -> updateSmartEdit(l, smartEditModeBox));
+        smartEditModeBox.addItemListener(l -> smartEditMode(l.getStateChange() == ItemEvent.SELECTED));
+        add(smartEditModeBox, GBC.eol().anchor(GridBagConstraints.WEST));
 
         add(layers, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
 
@@ -152,7 +151,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
 
         add(pagination, GBC.eol().anchor(GridBagConstraints.WEST).fill(GridBagConstraints.HORIZONTAL));
 
-        this.resetObjects.add(() -> smartEditMode.setSelected(false));
+        this.resetObjects.add(() -> smartEditModeBox.setSelected(false));
         this.resetObjects.add(() -> showRelevantObjs.setSelected(true));
         this.resetObjects.add(() -> filterField.setText(""));
         this.resetObjects.add(() -> showMaxNumberModel.setValue(100));
@@ -282,7 +281,8 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
         IDatePicker<?> lastSeen) {
         Instant start = firstSeen.getInstant();
         Instant end = lastSeen.getInstant();
-        if (start != null && end != null) {
+        final boolean knownStartEnd = !Instant.MIN.equals(start) && !Instant.MIN.equals(end);
+        if (knownStartEnd) {
             if (firstSeen.equals(modified) && start.compareTo(end) > 0) {
                 lastSeen.setInstant(start);
             } else if (lastSeen.equals(modified) && start.compareTo(end) > 0) {
@@ -292,13 +292,13 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
         Filter dateFilter = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().parallelStream()
             .filter(p -> p.text.contains(position + "_seen_at")).findFirst().orElseGet(Filter::new);
         StringBuilder filterText = new StringBuilder();
-        if (start != null) {
+        if (!Instant.MIN.equals(start)) {
             filterText.append(position).append("_seen_at > ").append(DateTimeFormatter.ISO_LOCAL_DATE.format(start));
         }
-        if (start != null && end != null) {
+        if (knownStartEnd) {
             filterText.append(" && ");
         }
-        if (end != null) {
+        if (!Instant.MIN.equals(end)) {
             filterText.append(position).append("_seen_at < ").append(DateTimeFormatter.ISO_LOCAL_DATE.format(end));
         }
         dateFilter.text = filterText.toString();

@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
+import javax.annotation.Nonnull;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -308,8 +309,10 @@ public final class MapillaryFilterDialog extends ToggleDialog
         this.resetObjects.addListener(() -> spinnerModel.setValue(1));
 
         this.resetObjects.addListener(() -> {
-            if (endDate != null && startDate != null) {
+            if (!endDate.getInstant().equals(Instant.MIN)) {
                 endDate.reset();
+            }
+            if (!startDate.getInstant().equals(Instant.MIN)) {
                 startDate.reset();
             }
         });
@@ -325,7 +328,9 @@ public final class MapillaryFilterDialog extends ToggleDialog
         setFields.reset();
     }
 
-    private static Instant convertDateRangeBox(SpinnerNumberModel spinner, JComboBox<String> timeStep) {
+    @Nonnull
+    private static Instant convertDateRangeBox(@Nonnull SpinnerNumberModel spinner,
+        @Nonnull JComboBox<String> timeStep) {
         if (timeStep.isEnabled()) {
             ZonedDateTime current = LocalDate.now(ZoneOffset.UTC).atStartOfDay(ZoneOffset.UTC);
             String type = (String) timeStep.getSelectedItem();
@@ -338,20 +343,21 @@ public final class MapillaryFilterDialog extends ToggleDialog
             } else if (TIME_LIST[1].equals(type)) {
                 difference[1] = start.intValue();
                 difference[2] = (int) ((start.floatValue() - difference[1]) * 30);
-            } else if (TIME_LIST[2].contentEquals(type)) {
+            } else if (TIME_LIST[2].equals(type)) {
                 difference[2] = start.intValue();
             }
             return current.minus(difference[0], ChronoUnit.YEARS).minus(difference[1], ChronoUnit.MONTHS)
                 .minus(difference[2], ChronoUnit.DAYS).toInstant();
         }
-        return null;
+        return Instant.MIN;
     }
 
     private static void updateDates(IDatePicker<?> startDate, IDatePicker<?> endDate, IDatePicker<?> modified) {
         Instant start = startDate.getInstant();
         Instant end = endDate.getInstant();
-        if (start == null || end == null)
+        if (Instant.MIN.equals(start) || Instant.MIN.equals(end)) {
             return;
+        }
         if (startDate.equals(modified) && start.compareTo(end) > 0) {
             endDate.setInstant(start);
         } else if (endDate.equals(modified) && start.compareTo(end) > 0) {
@@ -365,9 +371,24 @@ public final class MapillaryFilterDialog extends ToggleDialog
      * @return the unique instance of the class.
      */
     public static synchronized MapillaryFilterDialog getInstance() {
-        if (instance == null)
-            instance = new MapillaryFilterDialog();
+        if (instance != null) {
+            return instance;
+        }
+        synchronized (MapillaryFilterDialog.class) {
+            if (instance == null) {
+                instance = new MapillaryFilterDialog();
+            }
+        }
         return instance;
+    }
+
+    /**
+     * Check if the filter dialog has been created
+     *
+     * @return {@code true} if there is an already created instance
+     */
+    public static boolean hasInstance() {
+        return instance != null;
     }
 
     /**
@@ -471,8 +492,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
                     return true;
                 }
             }
-            if ((this.timeFilter && checkValidTime(img)) || (this.endDateRefresh != null && checkEndDate(img))
-                || (this.startDateRefresh != null && checkStartDate(img))
+            if ((this.timeFilter && checkValidTime(img)) || checkEndDate(img) || checkStartDate(img)
                 || (this.imageTypes == ImageTypes.PANORAMIC && !MapillaryImageUtils.IS_PANORAMIC.test(img))
                 || (this.imageTypes == ImageTypes.NON_PANORAMIC && MapillaryImageUtils.IS_PANORAMIC.test(img))
                 || (this.qualityScore != Float.MIN_VALUE && (MapillaryImageUtils.getQuality(img) < this.qualityScore
@@ -519,6 +539,9 @@ public final class MapillaryFilterDialog extends ToggleDialog
          * @return {@code true} if the start date is after the image date
          */
         private boolean checkStartDate(INode img) {
+            if (Instant.MIN.equals(startDateRefresh)) {
+                return false;
+            }
             final Instant start = LocalDateTime.ofInstant(startDateRefresh, ZoneOffset.UTC).toLocalDate()
                 .atStartOfDay(ZoneOffset.UTC).toInstant();
             final Instant imgDate = MapillaryImageUtils.getDate(img);
@@ -530,6 +553,9 @@ public final class MapillaryFilterDialog extends ToggleDialog
          * @return {@code true} if the end date is before the image date
          */
         private boolean checkEndDate(INode img) {
+            if (Instant.MIN.equals(endDateRefresh)) {
+                return false;
+            }
             final ZonedDateTime nextDate = LocalDateTime.ofInstant(endDateRefresh, ZoneOffset.UTC).toLocalDate()
                 .atStartOfDay(ZoneOffset.UTC).plus(1, ChronoUnit.DAYS);
             final Instant end = nextDate.toInstant();
