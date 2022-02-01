@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.dialog;
 
+import static org.openstreetmap.josm.tools.I18n.marktr;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.Component;
@@ -135,8 +136,10 @@ public final class MapillaryFilterDialog extends ToggleDialog
         signs.add(onlySigns, GBC.std().anchor(GridBagConstraints.LINE_START));
         signs.add(signChooserPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
         panel.add(signs, GBC.eol().anchor(GridBagConstraints.LINE_START));
-        final JCheckBox onlyPano = new JCheckBox(tr("Panorama only"));
-        panel.add(onlyPano, GBC.eol().anchor(GridBagConstraints.LINE_START));
+        final JComboBox<ImageTypes> imageTypes = new JComboBox<>();
+        Stream.of(ImageTypes.values()).forEach(imageTypes::addItem);
+        panel.add(new JLabel(tr("Show Image types: ")));
+        panel.add(imageTypes, GBC.eol().anchor(GridBagConstraints.LINE_START));
 
         panel.add(new JSeparator(), GBC.eol().fill(GridBagConstraints.HORIZONTAL));
         final TrafficSignFilter objectFilter = new TrafficSignFilter();
@@ -149,8 +152,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
         // Add listeners for the shouldHidePredicate
         downloaded.addItemListener(
             l -> this.shouldHidePredicate.downloadedIsSelected = l.getStateChange() == ItemEvent.SELECTED);
-        onlyPano.addItemListener(
-            l -> this.shouldHidePredicate.onlyPanoIsSelected = l.getStateChange() == ItemEvent.SELECTED);
+        imageTypes
+            .addItemListener(l -> this.shouldHidePredicate.imageTypes = (ImageTypes) imageTypes.getSelectedItem());
         onlySigns.addItemListener(
             l -> this.shouldHidePredicate.onlySignsIsSelected = l.getStateChange() == ItemEvent.SELECTED);
 
@@ -158,7 +161,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
         this.resetObjects.addListener(() -> downloaded.setSelected(true));
         this.resetObjects.addListener(() -> onlySigns.setEnabled(true));
         this.resetObjects.addListener(() -> onlySigns.setSelected(false));
-        this.resetObjects.addListener(() -> onlyPano.setSelected(false));
+        this.resetObjects.addListener(() -> imageTypes.setSelectedItem(ImageTypes.ALL));
         this.resetObjects.addListener(() -> signChooser.setEnabled(false));
         this.resetObjects.addListener(objectFilter::reset);
         this.resetObjects.addListener(MapillaryFilterChooseSigns::reset);
@@ -167,7 +170,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
         // This must be added last
         ResetListener setFields = () -> {
             this.shouldHidePredicate.downloadedIsSelected = downloaded.isSelected();
-            this.shouldHidePredicate.onlyPanoIsSelected = onlyPano.isSelected();
+            this.shouldHidePredicate.imageTypes = (ImageTypes) imageTypes.getSelectedItem();
             this.shouldHidePredicate.onlySignsIsSelected = onlySigns.isSelected();
         };
         this.resetObjects.addListener(setFields);
@@ -433,13 +436,13 @@ public final class MapillaryFilterDialog extends ToggleDialog
     }
 
     private static class ImageFilterPredicate implements Predicate<INode> {
+        ImageTypes imageTypes;
         String time;
         Number dateRange;
         private boolean layerVisible;
         boolean downloadedIsSelected;
         boolean timeFilter;
         boolean onlySignsIsSelected;
-        boolean onlyPanoIsSelected;
         Instant endDateRefresh;
         Instant startDateRefresh;
         OrganizationRecord organization;
@@ -470,11 +473,11 @@ public final class MapillaryFilterDialog extends ToggleDialog
             }
             if ((this.timeFilter && checkValidTime(img)) || (this.endDateRefresh != null && checkEndDate(img))
                 || (this.startDateRefresh != null && checkStartDate(img))
-                || (this.onlyPanoIsSelected && !MapillaryImageUtils.IS_PANORAMIC.test(img))
+                || (this.imageTypes == ImageTypes.PANORAMIC && !MapillaryImageUtils.IS_PANORAMIC.test(img))
+                || (this.imageTypes == ImageTypes.NON_PANORAMIC && MapillaryImageUtils.IS_PANORAMIC.test(img))
                 || (this.qualityScore != Float.MIN_VALUE && (MapillaryImageUtils.getQuality(img) < this.qualityScore
                     // The following line is to ensure that any images that *don't* have a quality score are shown when
-                    // low
-                    // quality is OK.
+                    // low quality is OK.
                     || (this.qualityScore < 0.6f && MapillaryImageUtils.getQuality(img) == Float.MIN_VALUE)))) {
                 return true;
             }
@@ -659,6 +662,24 @@ public final class MapillaryFilterDialog extends ToggleDialog
         for (Component comp : Arrays.asList(organizationLabel, organizations)) {
             GuiHelper.runInEDT(() -> comp
                 .setEnabled(organizations.getItemCount() > 1 || organization != OrganizationRecord.NULL_RECORD));
+        }
+    }
+
+    /**
+     * Image types (pano, non-pano, and all)
+     */
+    private enum ImageTypes {
+        ALL(marktr("All")), NON_PANORAMIC(marktr("Non-panoramic")), PANORAMIC(marktr("Panoramic"));
+
+        private final String originalName;
+
+        ImageTypes(String originalName) {
+            this.originalName = originalName;
+        }
+
+        @Override
+        public String toString() {
+            return tr(this.originalName);
         }
     }
 }
