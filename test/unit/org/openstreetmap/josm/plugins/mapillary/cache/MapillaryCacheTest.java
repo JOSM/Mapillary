@@ -3,7 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.cache;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -50,20 +50,18 @@ class MapillaryCacheTest {
             new LatLon(39.068354972222, -108.57081597222), 0, false);
         VectorDataSet vectorDataSet = new VectorDataSet();
         vectorDataSet.addPrimitive(image);
-        MapillaryCache cache = new MapillaryCache(image);
+        MapillaryCache cache = new MapillaryCache(image, MapillaryCache.Type.ORIGINAL);
         assertNotNull(cache.getUrl());
         assertNotNull(cache.getCacheKey());
 
         assertFalse(cache.isObjectLoadable());
 
-        cache = new MapillaryCache(null);
-        assertNull(cache.getCacheKey());
-        assertNull(cache.getUrl());
+        assertThrows(IllegalArgumentException.class, () -> new MapillaryCache(null, MapillaryCache.Type.ORIGINAL));
     }
 
     /**
      * Non-regression test for JOSM #21035: IAE due to API request limit reached
-     * IAE: No url returned at {@link CacheUtils#submit(INode, ICachedLoaderListener)}
+     * IAE: No url returned at {@link CacheUtils#submit(INode, MapillaryCache.Type, ICachedLoaderListener)}
      */
     @Test
     @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.APPLICATION_REQUEST_LIMIT_REACHED)
@@ -90,7 +88,7 @@ class MapillaryCacheTest {
         final VectorNode image2 = vectorDataSet.getNodes().stream().filter(node -> 311799370533334L == node.getId())
             .findFirst().orElseThrow(() -> new AssertionFailedError("Image 311799370533334 not found"));
         Logging.clearLastErrorAndWarnings();
-        CacheUtils.submit(image2, null);
+        CacheUtils.submit(image2, MapillaryCache.Type.ORIGINAL, null);
         Awaitility.await().pollDelay(Durations.ONE_HUNDRED_MILLISECONDS).catchUncaughtExceptions().ignoreNoExceptions()
             .until(() -> true);
         final List<String> errors = new ArrayList<>(Logging.getLastErrorAndWarnings());

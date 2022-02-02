@@ -16,6 +16,7 @@ import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
+import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -56,7 +57,7 @@ public class MapillaryExportDownloadThread implements Runnable, ICachedLoaderLis
     @Override
     public void run() {
         if (MapillaryImageUtils.getKey(this.image) != 0) {
-            CacheUtils.submit(this.image, this);
+            CacheUtils.submit(this.image, MapillaryCache.Type.ORIGINAL, this);
         } else {
             throw new UnsupportedOperationException(tr("We cannot export {0}",
                 image.getInterestingTags().entrySet().stream()

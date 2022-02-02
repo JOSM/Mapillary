@@ -31,7 +31,9 @@ class AddTagToPrimitiveActionTest {
     static class ImageViewerDialogMock extends MockUp<ImageViewerDialog> {
         @Mock
         public static IImageEntry<?> getCurrentImage() {
-            return new MapillaryImageEntry(TestUtils.addFakeDataSet(new Node(LatLon.ZERO)));
+            Node node = new Node(LatLon.ZERO);
+            node.setOsmId(135511895288847L, 1);
+            return new MapillaryImageEntry(TestUtils.addFakeDataSet(node));
         }
     }
 

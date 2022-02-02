@@ -1,13 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.util.Collection;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -15,12 +9,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.json.Json;
-import javax.json.JsonReader;
 import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
@@ -30,10 +21,9 @@ import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
+import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
-import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
-import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoder;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.UncheckedParseException;
 import org.openstreetmap.josm.tools.date.DateUtils;
@@ -47,7 +37,10 @@ public final class MapillaryImageUtils {
     // Image specific
     /** Check if the node is for a panoramic image */
     public static final Predicate<INode> IS_PANORAMIC = node -> node != null
-        && MapillaryKeys.PANORAMIC_TRUE.equals(node.get(ImageProperties.IS_PANO.toString()));
+        && (MapillaryKeys.PANORAMIC_TRUE.equals(node.get(ImageProperties.IS_PANO.toString()))
+            || (!MapillaryKeys.PANORAMIC_FALSE.equals(node.get(ImageProperties.IS_PANO.toString()))
+                && ("spherical".equals(node.get(ImageProperties.CAMERA_TYPE.toString()))
+                    || "equirectangular".equals(node.get(ImageProperties.CAMERA_TYPE.toString())))));
 
     public static final Predicate<INode> IS_DOWNLOADABLE = node -> node != null
         && node.getKeys().keySet().stream().anyMatch(key -> BASE_IMAGE_KEY.matcher(key).matches());
@@ -64,7 +57,8 @@ public final class MapillaryImageUtils {
      * @return The sequence, if it exists
      */
     @Nullable
-    public static IWay<?> getSequence(@Nullable INode image) {
+    @SuppressWarnings("unchecked") // Only ways with type N should have nodes of type N
+    public static <N extends INode> IWay<N> getSequence(@Nullable N image) {
         if (image == null) {
             return null;
         }
@@ -135,12 +129,13 @@ public final class MapillaryImageUtils {
     public static Future<BufferedImageCacheEntry> getImage(@Nonnull INode image) {
         if (MapillaryImageUtils.IS_DOWNLOADABLE.test(image)) {
             CompletableFuture<BufferedImageCacheEntry> completableFuture = new CompletableFuture<>();
-            CacheUtils.submit(image, (entry, attributes, result) -> cacheImageFuture(completableFuture, entry));
+            CacheUtils.submit(image, MapillaryCache.Type.ORIGINAL,
+                (entry, attributes, result) -> cacheImageFuture(image, completableFuture, entry));
             return completableFuture;
         } else if (getKey(image) > 0) {
             try {
-                downloadImageDetails(image).get(10,
-                    SwingUtilities.isEventDispatchThread() ? TimeUnit.SECONDS : TimeUnit.MINUTES);
+                MapillaryUtils.getForkJoinPool().submit(() -> MapillaryDownloader.downloadImages(false, getKey(image)))
+                    .get(10, SwingUtilities.isEventDispatchThread() ? TimeUnit.SECONDS : TimeUnit.MINUTES);
                 if (MapillaryImageUtils.IS_DOWNLOADABLE.test(image)) {
                     return getImage(image);
                 }
@@ -157,10 +152,11 @@ public final class MapillaryImageUtils {
     /**
      * Complete a future with an entry. This should be called on a separate thread when the entry is ready.
      *
+     * @param image The image we are getting
      * @param completableFuture The future to complete when the data is downloaded
      * @param entry The entry to put in the future
      */
-    private static void cacheImageFuture(CompletableFuture<BufferedImageCacheEntry> completableFuture,
+    private static void cacheImageFuture(INode image, CompletableFuture<BufferedImageCacheEntry> completableFuture,
         CacheEntry entry) {
         if (entry instanceof BufferedImageCacheEntry) {
             // Using the BufferedImageCacheEntry may speed up processing, if the image is already loaded.
@@ -169,6 +165,8 @@ public final class MapillaryImageUtils {
             // Fall back. More expensive if the image has already been loaded twice.
             completableFuture.complete(new BufferedImageCacheEntry(entry.getContent()));
         } else {
+            Caches.META_DATA_CACHE.getICacheAccess().getMatching("/" + getKey(image) + "?").keySet()
+                .forEach(Caches.META_DATA_CACHE.getICacheAccess()::remove);
             completableFuture.completeExceptionally(
                 new NullPointerException("MapillaryImageUtils#getImage did not have required information"));
         }
@@ -248,58 +246,6 @@ public final class MapillaryImageUtils {
             }
         }
         return null;
-    }
-
-    /**
-     * Download image details
-     *
-     * @param images The image details to download
-     * @return A future which finishes when the image details finish downloading
-     */
-    public static Future<Void> downloadImageDetails(@Nonnull Collection<INode> images) {
-        return downloadImageDetails(images.toArray(new INode[0]));
-    }
-
-    /**
-     * Download additional image details
-     *
-     * @param images The image(s) to get additional details for
-     * @return A future which finishes when the image details finish downloading
-     */
-    public static Future<Void> downloadImageDetails(@Nonnull INode... images) {
-        return CompletableFuture.runAsync(() -> {
-            final long[] keys = Stream.of(images).filter(Objects::nonNull).mapToLong(IPrimitive::getId)
-                .filter(key -> key != 0).toArray();
-            downloadImageDetails(keys);
-        }, MapillaryUtils.getForkJoinPool());
-    }
-
-    /**
-     * Get image details for some specific keys
-     *
-     * @param keys the keys to get details for
-     */
-    private static void downloadImageDetails(long... keys) {
-        Objects.requireNonNull(keys, "Image keys cannot be null");
-        MapillaryURL.APIv4.getImageInformation(keys);
-        for (long key : keys) {
-            final String imageUrl = MapillaryURL.APIv4.getImageInformation(key);
-            final String cacheData = Caches.META_DATA_CACHE.get(imageUrl, () -> {
-                try {
-                    return OAuthUtils.getWithHeader(new URL(imageUrl)).toString();
-                } catch (IOException e) {
-                    Logging.error(e);
-                    return null;
-                }
-            });
-            if (cacheData == null) {
-                return;
-            }
-            try (JsonReader reader = Json
-                .createReader(new ByteArrayInputStream(cacheData.getBytes(StandardCharsets.UTF_8)))) {
-                JsonDecoder.decodeData(reader.readObject(), JsonImageDetailsDecoder::decodeImageInfos);
-            }
-        }
     }
 
     /**

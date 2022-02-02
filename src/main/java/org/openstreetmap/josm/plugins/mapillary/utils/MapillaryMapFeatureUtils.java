@@ -42,6 +42,10 @@ public class MapillaryMapFeatureUtils {
          * format)
          */
         /**
+         * Float, compass direction that the object faces
+         */
+        ALIGNED_DIRECTION,
+        /**
          * int, timestamp in ms since epoch, capture time of the earliest image on which the detection contribute to
          * this
          * map feature, can also be timestamp (YYYY-MM-DDTHH:MM:SS)
@@ -199,7 +203,7 @@ public class MapillaryMapFeatureUtils {
      */
     private static void updateMapFeature(@Nonnull final IPrimitive primitive) {
         final String url = MapillaryURL.APIv4.getMapFeatureInformation(getId(primitive), MapFeatureProperties.GEOMETRY,
-            MapFeatureProperties.IMAGES);
+            MapFeatureProperties.IMAGES, MapFeatureProperties.ALIGNED_DIRECTION);
         final String json = Caches.META_DATA_CACHE.get(url, () -> {
             try {
                 return OAuthUtils.getWithHeader(new URL(url)).toString();

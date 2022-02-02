@@ -98,6 +98,24 @@ public final class MapillaryURL {
          */
         public static final String CLIENT_SECRET = ApiKeyReader.readValue("MAPILLARY_CLIENT_SECRET");
 
+        /** Default image information to get */
+        private static final MapillaryImageUtils.ImageProperties[] DEFAULT_IMAGE_INFORMATION = Stream
+            .of(MapillaryImageUtils.ImageProperties.ALTITUDE, MapillaryImageUtils.ImageProperties.BEST_IMAGE,
+                MapillaryImageUtils.ImageProperties.CAPTURED_AT, MapillaryImageUtils.ImageProperties.CAMERA_TYPE,
+                MapillaryImageUtils.ImageProperties.COMPASS_ANGLE,
+                MapillaryImageUtils.ImageProperties.COMPUTED_ALTITUDE,
+                MapillaryImageUtils.ImageProperties.COMPUTED_COMPASS_ANGLE,
+                MapillaryImageUtils.ImageProperties.COMPUTED_GEOMETRY,
+                MapillaryImageUtils.ImageProperties.COMPUTED_ROTATION,
+                MapillaryImageUtils.ImageProperties.EXIF_ORIENTATION, MapillaryImageUtils.ImageProperties.GEOMETRY,
+                MapillaryImageUtils.ImageProperties.HEIGHT, MapillaryImageUtils.ImageProperties.ID,
+                MapillaryImageUtils.ImageProperties.QUALITY_SCORE, MapillaryImageUtils.ImageProperties.SEQUENCE,
+                MapillaryImageUtils.ImageProperties.THUMB_1024_URL, MapillaryImageUtils.ImageProperties.THUMB_2048_URL,
+                MapillaryImageUtils.ImageProperties.THUMB_256_URL,
+                MapillaryImageUtils.ImageProperties.THUMB_ORIGINAL_URL, MapillaryImageUtils.ImageProperties.WIDTH,
+                MapillaryImageUtils.ImageProperties.WORST_IMAGE)
+            .distinct().sorted().toArray(MapillaryImageUtils.ImageProperties[]::new);
+
         private APIv4() {
             // Hide constructor
         }
@@ -199,17 +217,7 @@ public final class MapillaryURL {
          * @return The default image properties to get
          */
         private static MapillaryImageUtils.ImageProperties[] getDefaultImageInformation() {
-            return new MapillaryImageUtils.ImageProperties[] { MapillaryImageUtils.ImageProperties.ALTITUDE,
-                MapillaryImageUtils.ImageProperties.BEST_IMAGE, MapillaryImageUtils.ImageProperties.CAPTURED_AT,
-                MapillaryImageUtils.ImageProperties.COMPASS_ANGLE,
-                MapillaryImageUtils.ImageProperties.COMPUTED_ALTITUDE,
-                MapillaryImageUtils.ImageProperties.COMPUTED_COMPASS_ANGLE,
-                MapillaryImageUtils.ImageProperties.COMPUTED_GEOMETRY,
-                MapillaryImageUtils.ImageProperties.COMPUTED_ROTATION,
-                MapillaryImageUtils.ImageProperties.EXIF_ORIENTATION, MapillaryImageUtils.ImageProperties.GEOMETRY,
-                MapillaryImageUtils.ImageProperties.ID, MapillaryImageUtils.ImageProperties.QUALITY_SCORE,
-                MapillaryImageUtils.ImageProperties.SEQUENCE, MapillaryImageUtils.ImageProperties.WORST_IMAGE,
-                MapillaryImageUtils.ImageProperties.DETECTIONS };
+            return DEFAULT_IMAGE_INFORMATION;
         }
 
         /**

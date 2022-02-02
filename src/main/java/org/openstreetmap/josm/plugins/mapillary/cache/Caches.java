@@ -12,23 +12,26 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.json.Json;
-import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
+import javax.json.stream.JsonParser;
 import javax.swing.JOptionPane;
 
 import org.apache.commons.jcs3.access.CacheAccess;
 import org.apache.commons.jcs3.access.behavior.ICacheAccess;
+import org.apache.commons.jcs3.engine.behavior.ICompositeCacheAttributes;
 import org.apache.commons.jcs3.engine.behavior.IElementAttributes;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
@@ -52,19 +55,29 @@ public final class Caches {
     /** The cache for metadata objects */
     public static final MapillaryCacheAccess<String> META_DATA_CACHE = new MapillaryCacheAccess<>(
         JCSCacheManager.getCache("mapillary:metadata", 100, 100000, getCacheDirectory().getPath()), string -> {
-            try (JsonReader reader = Json
-                .createReader(new ByteArrayInputStream(string.getBytes(StandardCharsets.UTF_8)))) {
-                JsonObject object = reader.readObject();
-                if (object.containsKey(ERROR) || object.containsKey("call_volume")
-                    || object.containsKey("call_count")) {
-                    Logging.error(object.toString());
-                    return false;
+            try (JsonParser reader = Json
+                .createParser(new ByteArrayInputStream(string.getBytes(StandardCharsets.UTF_8)))) {
+                while (reader.hasNext()) {
+                    JsonParser.Event event = reader.next();
+                    if (event != JsonParser.Event.START_OBJECT) {
+                        if (event == JsonParser.Event.START_ARRAY) {
+                            reader.skipArray();
+                        }
+                        continue;
+                    }
+                    Stream<Map.Entry<String, JsonValue>> object = reader.getObjectStream();
+                    if (object.anyMatch(entry -> ERROR.equals(entry.getKey()) || "call_value".equals(entry.getKey())
+                        || "call_count".equals(entry.getKey()))) {
+                        Logging.error(string);
+                        return false;
+                    }
                 }
                 return true;
             }
         });
 
-    private static final int MAX_DISK_IMAGES_SIZE = 100_000; // kb, ~500 full size images (average ~200 kb/image)
+    // kb, ~5000 2048 size images (~200 kb/image), ~400 original size images (~2.4 mb/image)
+    private static final int MAX_DISK_IMAGES_SIZE = 1_000_000;
     private static final byte MAX_MEMORY_OBJECTS = 4;
 
     /** The cache for full size images */
@@ -72,13 +85,24 @@ public final class Caches {
         JCSCacheManager.getCache("mapillary:image:fullImage", MAX_MEMORY_OBJECTS, MAX_DISK_IMAGES_SIZE,
             getCacheDirectory().getPath()));
     static {
+        /* Reuse mirror.maxtime configuration, but ensure that we only refresh stuff daily at most */
+        final long maxTime = Math.max(Config.getPref().getLong("mirror.maxtime", TimeUnit.DAYS.toSeconds(7)),
+            TimeUnit.DAYS.toSeconds(1));
         final IElementAttributes userProfileCacheAttributes = USER_PROFILE_CACHE.getDefaultElementAttributes();
-        userProfileCacheAttributes.setMaxLife(TimeUnit.DAYS.toSeconds(365));
+        userProfileCacheAttributes.setMaxLife(maxTime);
         USER_PROFILE_CACHE.setDefaultElementAttributes(userProfileCacheAttributes);
         final IElementAttributes metaDataCacheAttributes = META_DATA_CACHE.getDefaultElementAttributes();
-        /* Reuse mirror.maxtime configuration */
-        metaDataCacheAttributes.setMaxLife(Config.getPref().getLong("mirror.maxtime", TimeUnit.DAYS.toSeconds(7)));
+        metaDataCacheAttributes.setMaxLife(maxTime);
         META_DATA_CACHE.setDefaultElementAttributes(userProfileCacheAttributes);
+
+        final ICompositeCacheAttributes fullImageCacheAttributes = FULL_IMAGE_CACHE.getICacheAccess()
+            .getCacheAttributes();
+        fullImageCacheAttributes.setMaxMemoryIdleTimeSeconds(5);
+        fullImageCacheAttributes.setUseMemoryShrinker(true);
+        FULL_IMAGE_CACHE.getICacheAccess().setCacheAttributes(fullImageCacheAttributes);
+        final IElementAttributes fullImageElementCacheAttributes = FULL_IMAGE_CACHE.getDefaultElementAttributes();
+        fullImageElementCacheAttributes.setMaxLife(maxTime);
+        FULL_IMAGE_CACHE.setDefaultElementAttributes(fullImageElementCacheAttributes);
     }
 
     public static File getCacheDirectory() {

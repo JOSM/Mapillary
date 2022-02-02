@@ -73,7 +73,30 @@ public final class MapillaryDownloader {
      * @return The downloaded images
      */
     public static Map<String, Collection<VectorNode>> downloadImages(final boolean updateSequences, long... images) {
-        return realDownloadImages(updateSequences, MapillaryLayer.getInstance().getData(), images);
+        return downloadImages(updateSequences, MapillaryLayer.getInstance().getData(), images);
+    }
+
+    /**
+     * Download a specific set of images
+     *
+     * @param updateSequences Update the sequences for the images as well
+     * @param dataSet The dataset to update
+     * @param images The images to download
+     * @return The downloaded images
+     */
+    public static Map<String, Collection<VectorNode>> downloadImages(final boolean updateSequences,
+        final VectorDataSet dataSet, long... images) {
+        final byte step = 100;
+        final Map<String, Collection<VectorNode>> returnMap = new HashMap<>();
+        for (int i = 0; i <= images.length / step; i++) {
+            final long[] imagesToGet = Arrays.copyOfRange(images, i * step, Math.min((i + 1) * step, images.length));
+            realDownloadImages(updateSequences, dataSet, imagesToGet)
+                .forEach((sequence, nodes) -> returnMap.merge(sequence, new ArrayList<>(nodes), (key, value) -> {
+                    value.addAll(nodes);
+                    return value;
+                }));
+        }
+        return returnMap;
     }
 
     /**
@@ -95,8 +118,9 @@ public final class MapillaryDownloader {
         final Map<VectorDataSet, List<VectorNode>> groups = Stream.of(images)
             .collect(Collectors.groupingBy(VectorNode::getDataSet));
         for (Map.Entry<VectorDataSet, List<VectorNode>> entry : groups.entrySet()) {
-            realDownloadImages(updateSequences, entry.getKey(),
-                entry.getValue().stream().mapToLong(MapillaryImageUtils::getKey).filter(i -> i > 0).toArray());
+            final long[] ids = entry.getValue().stream().mapToLong(MapillaryImageUtils::getKey).filter(i -> i > 0)
+                .toArray();
+            downloadImages(updateSequences, entry.getKey(), ids);
         }
     }
 

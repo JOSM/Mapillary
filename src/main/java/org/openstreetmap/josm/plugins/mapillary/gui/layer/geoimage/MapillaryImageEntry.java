@@ -114,15 +114,28 @@ public class MapillaryImageEntry
      */
     public MapillaryImageEntry(final INode image) {
         Objects.requireNonNull(image, "image cannot be null");
+        if (MapillaryImageUtils.getKey(image) <= 0) {
+            throw new IllegalArgumentException("We can only show images with an actual id to get the download");
+        }
         this.image = image;
         // Then get the information for the rest of the sequence
         final IWay<?> sequence = MapillaryImageUtils.getSequence(this.image);
         // Avoid blocking the main worker
-        MapillaryUtils.getForkJoinPool().execute(() -> Optional.ofNullable(sequence).map(IWay::getNodes)
-            // Avoid CME by putting nodes in ArrayList
-            .map(nodes -> new ArrayList<>(nodes).stream().mapToLong(MapillaryImageUtils::getKey).filter(i -> i > 0)
-                .toArray())
-            .ifPresent(MapillaryDownloader::downloadImages));
+        MapillaryUtils.getForkJoinPool().execute(() -> {
+            // The string from getSequenceKey should be a singular object. This means we can use it to avoid calling
+            // the downloader multiple times.
+            final Object lock = Optional.ofNullable((Object) MapillaryImageUtils.getSequence(image))
+                .orElse(MapillaryImageEntry.class);
+            synchronized (lock) {
+                if (!MapillaryImageUtils.IS_DOWNLOADABLE.test(this.image)) {
+                    Optional.ofNullable(sequence).map(IWay::getNodes)
+                        // Avoid CME by putting nodes in ArrayList
+                        .map(nodes -> new ArrayList<>(nodes).stream().mapToLong(MapillaryImageUtils::getKey)
+                            .filter(i -> i > 0).toArray())
+                        .ifPresent(MapillaryDownloader::downloadImages);
+                }
+            }
+        });
     }
 
     /**
@@ -156,17 +169,21 @@ public class MapillaryImageEntry
 
     @Override
     public MapillaryImageEntry getFirstImage() {
-        return VectorDataSetUtils
-            .tryRead(this.image.getDataSet(), () -> Optional.ofNullable(MapillaryImageUtils.getSequence(this.image))
-                .map(IWay::firstNode).map(MapillaryImageEntry::getCachedEntry).orElse(null))
+        return VectorDataSetUtils.tryRead(this.image.getDataSet(),
+            () -> Optional.ofNullable(MapillaryImageUtils.getSequence(this.image))
+                .map(way -> way.getNodes().stream().filter(n -> n.getUniqueId() > 0).findFirst().orElse(this.image))
+                .map(MapillaryImageEntry::getCachedEntry).orElse(null))
             .orElse(null);
     }
 
     @Override
     public MapillaryImageEntry getLastImage() {
         return VectorDataSetUtils
-            .tryRead(this.image.getDataSet(), () -> Optional.ofNullable(MapillaryImageUtils.getSequence(this.image))
-                .map(IWay::lastNode).map(MapillaryImageEntry::getCachedEntry).orElse(null))
+            .tryRead(this.image.getDataSet(),
+                () -> Optional.ofNullable(MapillaryImageUtils.getSequence(this.image))
+                    .flatMap(way -> way.getNodes().stream().filter(MapillaryImageUtils::isImage)
+                        .reduce((first, second) -> second).map(MapillaryImageEntry::getCachedEntry))
+                    .orElse(null))
             .orElse(null);
     }
 
@@ -217,17 +234,17 @@ public class MapillaryImageEntry
         if (SwingUtilities.isEventDispatchThread()) {
             throw new JosmRuntimeException(tr("Mapillary image read should never occur on UI thread"));
         }
-        BufferedImageCacheEntry bufferedImageCacheEntry = (this.originalImage == null
-            || this.originalImage.get() == null) ? null : this.originalImage.get();
+        BufferedImageCacheEntry bufferedImageCacheEntry = Optional.ofNullable(this.originalImage)
+            .map(SoftReference::get).orElse(null);
         if (bufferedImageCacheEntry == null) {
             Future<BufferedImageCacheEntry> future = this.futureImage != null ? this.futureImage
                 : MapillaryImageUtils.getImage(this.image);
             this.futureImage = future;
             try {
-                MapillaryUtils.getForkJoinPool().execute(() -> preCacheImages(this));
                 // This should only every be called on a non-UI thread.
                 bufferedImageCacheEntry = Optional.ofNullable(future.get(1, TimeUnit.MINUTES))
                     .orElseThrow(() -> new IOException(new NullPointerException("Returned image should not be null")));
+                MapillaryUtils.getForkJoinPool().execute(() -> preCacheImages(this));
                 this.originalImage = new SoftReference<>(bufferedImageCacheEntry);
             } catch (ExecutionException | TimeoutException exception) {
                 throw new IOException(exception);
@@ -270,22 +287,23 @@ public class MapillaryImageEntry
             final int index = wayNodes.indexOf(entry.image);
             final List<? extends INode> nodes = wayNodes.subList(Math.max(0, index - realPrefetch),
                 Math.min(wayNodes.size(), index + realPrefetch));
-            nodes.stream().map(MapillaryImageEntry::getCachedEntry).forEach(imageEntry -> {
-                final Future<BufferedImageCacheEntry> future = MapillaryImageUtils.getImage(imageEntry.image);
-                imageEntry.futureImage = future;
-                try {
-                    imageEntry.originalImage = new SoftReference<>(future.get());
-                } catch (InterruptedException e) {
-                    Logging.error(e);
-                    Thread.currentThread().interrupt();
-                } catch (ExecutionException e) {
-                    Logging.error(e);
-                } finally {
-                    if (future.equals(imageEntry.futureImage)) {
-                        imageEntry.futureImage = null;
+            nodes.stream().filter(node -> node.getUniqueId() > 0).map(MapillaryImageEntry::getCachedEntry)
+                .forEach(imageEntry -> {
+                    final Future<BufferedImageCacheEntry> future = MapillaryImageUtils.getImage(imageEntry.image);
+                    imageEntry.futureImage = future;
+                    try {
+                        imageEntry.originalImage = new SoftReference<>(future.get());
+                    } catch (InterruptedException e) {
+                        Logging.error(e);
+                        Thread.currentThread().interrupt();
+                    } catch (ExecutionException e) {
+                        Logging.error(e);
+                    } finally {
+                        if (future.equals(imageEntry.futureImage)) {
+                            imageEntry.futureImage = null;
+                        }
                     }
-                }
-            });
+                });
         }
     }
 

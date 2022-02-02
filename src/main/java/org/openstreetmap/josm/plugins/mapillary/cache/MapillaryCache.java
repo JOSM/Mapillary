@@ -47,21 +47,28 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
      * @author nokutu
      */
     public enum Type {
-        /** Full quality image */
-        FULL_IMAGE(MapillaryImageUtils.ImageProperties.BEST_IMAGE),
-        /** Low quality image */
-        THUMBNAIL(MapillaryImageUtils.ImageProperties.WORST_IMAGE);
+        /** Original image */
+        ORIGINAL(MapillaryImageUtils.ImageProperties.THUMB_ORIGINAL_URL),
+        /** 2048px image */
+        THUMB_2048(MapillaryImageUtils.ImageProperties.THUMB_2048_URL),
+        /** 1024px image */
+        THUMB_1024(MapillaryImageUtils.ImageProperties.THUMB_1024_URL),
+        /** 256px image */
+        THUMB_256(MapillaryImageUtils.ImageProperties.THUMB_256_URL);
 
         private final int width;
         private final String imageUrl;
+        private final int maxSize;
 
         Type(final MapillaryImageUtils.ImageProperties properties) {
             this.imageUrl = properties.name().toLowerCase(Locale.ROOT);
             final Matcher matcher = MapillaryImageUtils.BASE_IMAGE_KEY.matcher(this.imageUrl);
             if (matcher.matches() && "original".equals(matcher.group(1))) {
                 this.width = Integer.MIN_VALUE;
+                this.maxSize = Integer.MIN_VALUE;
             } else if (matcher.matches()) {
                 this.width = Integer.parseInt(matcher.group(1));
+                this.maxSize = this.width * this.width * 4;
             } else {
                 throw new IllegalArgumentException("Mapillary: " + this.imageUrl + " is not a valid image type");
             }
@@ -104,6 +111,31 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
         public String getKey() {
             return this.imageUrl;
         }
+
+        /**
+         * Get the anticipated maximum size given an image
+         *
+         * @param image The image to use for original size information
+         * @return The best image type
+         */
+        public int getMaxSize(@Nullable final INode image) {
+            if (this == Type.ORIGINAL) {
+                return this.getHeight(image) * this.getWidth(image) * 4;
+            }
+            return this.maxSize;
+        }
+
+        /**
+         * Get the best type for the memory available (we currently load the whole thing in memory)
+         *
+         * @param image The image to check
+         * @return The best image size for the memory available
+         */
+        public static Type getTypeForMemory(@Nullable final INode image, final long otherImages) {
+            final long memory = Runtime.getRuntime().freeMemory();
+            return Stream.of(Type.values()).filter(type -> otherImages * type.getMaxSize(image) < memory).findFirst()
+                .orElse(Type.THUMB_256);
+        }
     }
 
     /**
@@ -119,6 +151,8 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
     private static void runnableCacheSurroundingImages(INode currentImage) {
         final ForkJoinPool pool = MapillaryUtils.getForkJoinPool(MapillaryCache.class);
         final int prefetchCount = MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get();
+        // We prefetch both ways
+        final MapillaryCache.Type type = MapillaryCache.Type.getTypeForMemory(currentImage, 2L * prefetchCount);
         final long freeMemory = Runtime.getRuntime().freeMemory();
         // 3 bytes for RGB (jpg doesn't support the Alpha channel). I'm using 4 bytes instead of 3 for a buffer.
         long estimatedImageSize = Stream.of(MapillaryCache.Type.values())
@@ -135,7 +169,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
             if (nextImage != null) {
                 if (MapillaryImageUtils.getKey(nextImage) != 0) {
                     INode current = nextImage;
-                    pool.execute(() -> CacheUtils.downloadPicture(current, CacheUtils.PICTURE.THUMBNAIL));
+                    pool.execute(() -> CacheUtils.downloadPicture(current, type));
                 }
                 nextImage = MapillarySequenceUtils.getNextOrPrevious(nextImage,
                     MapillarySequenceUtils.NextOrPrevious.NEXT);
@@ -143,7 +177,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
             if (prevImage != null) {
                 if (MapillaryImageUtils.getKey(prevImage) != 0) {
                     INode current = prevImage;
-                    pool.execute(() -> CacheUtils.downloadPicture(current, CacheUtils.PICTURE.THUMBNAIL));
+                    pool.execute(() -> CacheUtils.downloadPicture(current, type));
                 }
                 prevImage = MapillarySequenceUtils.getNextOrPrevious(prevImage,
                     MapillarySequenceUtils.NextOrPrevious.PREVIOUS);
@@ -191,15 +225,17 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
      * @param image
      *        The image.
      */
-    public MapillaryCache(final INode image) {
+    public MapillaryCache(final INode image, final Type type) {
         super(Caches.FULL_IMAGE_CACHE.getICacheAccess(),
             new TileJobOptions(50_000, 50_000, new HashMap<>(), TimeUnit.HOURS.toSeconds(4)), DEFAULT_JOB_EXECUTOR);
         if (image instanceof VectorNode) {
             MapillaryDownloader.downloadImages((VectorNode) image);
-        } else if (MapillaryImageUtils.getKey(image) != 0) {
+        } else if (MapillaryImageUtils.getKey(image) > 0) {
             MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(image));
+        } else {
+            throw new IllegalArgumentException(
+                "Image of id " + MapillaryImageUtils.getKey(image) + " could not be downloaded");
         }
-        final Type type = Type.FULL_IMAGE;
         try {
             if (image == null) {
                 this.key = null;
