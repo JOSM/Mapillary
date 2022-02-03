@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.OptionalLong;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
@@ -24,6 +26,7 @@ import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
+import org.openstreetmap.josm.data.osm.Tag;
 import org.openstreetmap.josm.data.osm.Way;
 import org.openstreetmap.josm.data.vector.VectorPrimitive;
 import org.openstreetmap.josm.gui.MainApplication;
@@ -83,6 +86,12 @@ public class SmartEditAddAction extends JosmAction {
             }
             final TaggingPreset preset = presets.iterator().next();
             final OsmPrimitive basePrimitive = toAdd.get(0);
+            final Pattern number = Pattern.compile("[0-9]{0,3}(\\.[0-9]+)?");
+            final Optional<Tag> direction = Optional
+                .ofNullable(
+                    basePrimitive.get(MapillaryMapFeatureUtils.MapFeatureProperties.ALIGNED_DIRECTION.toString()))
+                .filter(str -> number.matcher(str).matches()).map(Double::valueOf).map(Math::round)
+                .map(dir -> new Tag("direction", Long.toString(dir)));
             basePrimitive.removeAll();
             detection.getOsmKeys().forEach(basePrimitive::put);
 
@@ -93,9 +102,12 @@ public class SmartEditAddAction extends JosmAction {
             final int[] tSelection = new int[1];
             final Command[] tCommand = new Command[1];
             this.pointObjectLayer.hideAdditionalActionsWindow(() -> {
+                direction.ifPresent(addedPrimitive::put);
                 tSelection[0] = preset.showDialog(Collections.singleton(addedPrimitive), false);
-                tCommand[0] = TaggingPreset.createCommand(Collections.singleton(addedPrimitive),
-                    preset.getChangedTags());
+                direction.map(Tag::getKey).ifPresent(addedPrimitive::remove);
+                final List<Tag> changedTags = new ArrayList<>(preset.getChangedTags());
+                direction.ifPresent(changedTags::add);
+                tCommand[0] = TaggingPreset.createCommand(Collections.singleton(addedPrimitive), changedTags);
             });
             final int userSelection = tSelection[0];
             // Closing the window returns 0. Not in the TaggingPreset public answers at this time.
