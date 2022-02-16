@@ -131,7 +131,9 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
          * @param image The image to check
          * @return The best image size for the memory available
          */
-        public static Type getTypeForMemory(@Nullable final INode image, final long otherImages) {
+        public static Type getTypeForMemory(@Nullable final INode image) {
+            // We prefetch images forward/backward, and we should include the memory for the selected image.
+            final long otherImages = MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get() * 2 + 1L;
             final long memory = Runtime.getRuntime().freeMemory();
             return Stream.of(Type.values()).filter(type -> otherImages * type.getMaxSize(image) < memory).findFirst()
                 .orElse(Type.THUMB_256);
@@ -152,7 +154,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
         final ForkJoinPool pool = MapillaryUtils.getForkJoinPool(MapillaryCache.class);
         final int prefetchCount = MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get();
         // We prefetch both ways
-        final MapillaryCache.Type type = MapillaryCache.Type.getTypeForMemory(currentImage, 2L * prefetchCount);
+        final MapillaryCache.Type type = MapillaryCache.Type.getTypeForMemory(currentImage);
         final long freeMemory = Runtime.getRuntime().freeMemory();
         // 3 bytes for RGB (jpg doesn't support the Alpha channel). I'm using 4 bytes instead of 3 for a buffer.
         long estimatedImageSize = Stream.of(MapillaryCache.Type.values())

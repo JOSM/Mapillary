@@ -11,6 +11,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
@@ -35,6 +36,12 @@ import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
+import com.drew.imaging.jpeg.JpegMetadataReader;
+import com.drew.imaging.jpeg.JpegProcessingException;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.MetadataException;
+import com.drew.metadata.exif.ExifIFD0Directory;
 import org.apache.commons.jcs3.access.CacheAccess;
 import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
@@ -64,6 +71,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.OffsetUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.VectorDataSetUtils;
+import org.openstreetmap.josm.tools.ExifReader;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Utils;
@@ -81,6 +89,7 @@ public class MapillaryImageEntry
     private Future<BufferedImageCacheEntry> futureImage;
     private SoftReference<BufferedImageCacheEntry> originalImage;
     private SoftReference<BufferedImage> layeredImage;
+    private int exifOrientation = 1;
 
     private static class MapillaryValueChangeListener implements AbstractProperty.ValueChangeListener<Boolean> {
         static final MapillaryValueChangeListener INSTANCE = new MapillaryValueChangeListener();
@@ -247,6 +256,7 @@ public class MapillaryImageEntry
                     .orElseThrow(() -> new IOException(new NullPointerException("Returned image should not be null")));
                 MapillaryUtils.getForkJoinPool().execute(() -> preCacheImages(this));
                 this.originalImage = new SoftReference<>(bufferedImageCacheEntry);
+                this.updateExifInformation(bufferedImageCacheEntry.getContent());
             } catch (ExecutionException | TimeoutException exception) {
                 throw new IOException(exception);
             } catch (InterruptedException exception) {
@@ -270,7 +280,7 @@ public class MapillaryImageEntry
             this.layeredImage = new SoftReference<>(bufferedLayeredImage);
         }
         this.drawDetections();
-        return bufferedLayeredImage;
+        return this.applyRotation(bufferedLayeredImage);
     }
 
     private static void preCacheImages(final MapillaryImageEntry entry) {
@@ -505,5 +515,52 @@ public class MapillaryImageEntry
             ImageViewerDialog.getInstance().displayImage(temporaryImageEntry);
             ImageViewerDialog.getInstance().displayImage(this);
         });
+    }
+
+    // FIXME copied from ImageEntry
+    private BufferedImage applyRotation(BufferedImage img) {
+        int currentExifOrientation = getExifOrientation();
+        if (!ExifReader.orientationNeedsCorrection(currentExifOrientation)) {
+            return img;
+        }
+        boolean switchesDimensions = ExifReader.orientationSwitchesDimensions(currentExifOrientation);
+        int width = switchesDimensions ? img.getHeight() : img.getWidth();
+        int height = switchesDimensions ? img.getWidth() : img.getHeight();
+        BufferedImage rotated = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        AffineTransform transform = ExifReader.getRestoreOrientationTransform(currentExifOrientation, img.getWidth(),
+            img.getHeight());
+        Graphics2D g = rotated.createGraphics();
+        g.drawImage(img, transform, null);
+        g.dispose();
+        return rotated;
+    }
+
+    /**
+     * Update exif information based off of the byte buffer
+     *
+     * @param imageBytes The image bytes
+     */
+    private void updateExifInformation(byte[] imageBytes) {
+        try {
+            final Metadata metadata = JpegMetadataReader.readMetadata(new ByteArrayInputStream(imageBytes));
+            final Directory dirExif = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
+            try {
+                if (dirExif != null && dirExif.containsTag(ExifIFD0Directory.TAG_ORIENTATION)) {
+                    setExifOrientation(dirExif.getInt(ExifIFD0Directory.TAG_ORIENTATION));
+                }
+            } catch (MetadataException ex) {
+                Logging.debug(ex);
+            }
+        } catch (JpegProcessingException | IOException e) {
+            Logging.error(e);
+        }
+    }
+
+    private void setExifOrientation(int exifOrientation) {
+        this.exifOrientation = exifOrientation;
+    }
+
+    private int getExifOrientation() {
+        return this.exifOrientation;
     }
 }

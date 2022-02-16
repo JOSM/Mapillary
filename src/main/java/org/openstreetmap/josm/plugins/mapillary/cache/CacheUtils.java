@@ -39,7 +39,7 @@ public final class CacheUtils {
      *        The image whose picture is going to be downloaded.
      */
     public static void downloadPicture(INode img) {
-        downloadPicture(img, MapillaryCache.Type.getTypeForMemory(img, 0));
+        downloadPicture(img, MapillaryCache.Type.getTypeForMemory(img));
     }
 
     /**

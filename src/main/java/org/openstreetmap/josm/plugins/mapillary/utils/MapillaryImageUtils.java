@@ -129,7 +129,7 @@ public final class MapillaryImageUtils {
     public static Future<BufferedImageCacheEntry> getImage(@Nonnull INode image) {
         if (MapillaryImageUtils.IS_DOWNLOADABLE.test(image)) {
             CompletableFuture<BufferedImageCacheEntry> completableFuture = new CompletableFuture<>();
-            CacheUtils.submit(image, MapillaryCache.Type.ORIGINAL,
+            CacheUtils.submit(image, MapillaryCache.Type.getTypeForMemory(image),
                 (entry, attributes, result) -> cacheImageFuture(image, completableFuture, entry));
             return completableFuture;
         } else if (getKey(image) > 0) {
