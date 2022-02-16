@@ -1,6 +1,7 @@
 ## What's Changed
 ### [Unreleased](https://github.com/JOSM/Mapillary/compare/v2.0.0-beta.2...master)
 * Lint fixes (PMD)
+* JOSM [#21871](https://josm.openstreetmap.de/ticket/21871): Computed altitude and location can be wildly wrong
 
 ### [v2.0.0-beta.2](https://github.com/JOSM/Mapillary/compare/v2.0.0-beta.1...v2.0.0-beta.2)
 * JOSM [#20274](https://josm.openstreetmap.de/ticket/20274): Cannot zoom in to detail.

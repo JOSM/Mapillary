@@ -43,6 +43,9 @@ public final class MapillaryProperties {
     public static final StringProperty START_DIR = new StringProperty("mapillary.start-directory",
         System.getProperty("user.home"));
 
+    /** The assumed HDOP for Mapillary images. VDOP is assumed to be 3x this. Meters. */
+    public static final IntegerProperty ASSUMED_HDOP = new IntegerProperty("mapillary.assumed_hdop", 6);
+
     /**
      * The number of times the help popup for the {@link ImageInfoPanel} will be displayed.
      * But regardless of this number, the popup will only show up at most once between two (re)starts of JOSM.

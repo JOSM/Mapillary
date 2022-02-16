@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -22,7 +23,10 @@ import org.openstreetmap.josm.data.osm.Tag;
 import org.openstreetmap.josm.data.osm.TagMap;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
+import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.geoimage.MapillaryImageEntry;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
@@ -94,11 +98,7 @@ public final class JsonImageDetailsDecoder {
                 return null;
             }
             final long id = Long.parseLong(key);
-            final LatLon coordinates = JsonDecoder.decodeLatLon(json.getJsonObject(
-                useComputedData && json.containsKey(MapillaryImageUtils.ImageProperties.COMPUTED_GEOMETRY.toString())
-                    ? MapillaryImageUtils.ImageProperties.COMPUTED_GEOMETRY.toString()
-                    : MapillaryImageUtils.ImageProperties.GEOMETRY.toString())
-                .getJsonArray("coordinates"));
+            final LatLon coordinates = getCoordinates(json, useComputedData);
             final BBox searchBBox = new BBox(coordinates);
             searchBBox.addLatLon(coordinates, 0.001);
             VectorNode image = VectorDataSetUtils.tryRead(data, () -> data.getPrimitiveById(id, OsmPrimitiveType.NODE))
@@ -110,6 +110,21 @@ public final class JsonImageDetailsDecoder {
 
             if (coordinates != null) {
                 image.setCoor(coordinates);
+                // Force the dataset to recache the location
+                VectorDataSetUtils.tryWrite(data, () -> {
+                    if (data.containsNode(image)) {
+                        data.removePrimitive(image);
+                    }
+                    data.addPrimitive(image);
+                    if (Optional.ofNullable(MainApplication.getMap())
+                        .map(map -> map.getToggleDialog(ImageViewerDialog.class)).isPresent()
+                        && ImageViewerDialog.getCurrentImage() instanceof MapillaryImageEntry) {
+                        MapillaryImageEntry entry = (MapillaryImageEntry) ImageViewerDialog.getCurrentImage();
+                        if (coordinates.equals(entry.getPos())) {
+                            entry.reload();
+                        }
+                    }
+                });
             }
             for (Map.Entry<String, String> entry : JsonTagMapDecoder.getTagMap(json).entrySet()) {
                 image.put(entry.getKey(), entry.getValue());
@@ -137,6 +152,22 @@ public final class JsonImageDetailsDecoder {
             return Pair.create(sequence, image);
         }
         return null;
+    }
+
+    private static LatLon getCoordinates(JsonObject json, boolean useComputedData) {
+        final LatLon originalCoordinates = JsonDecoder.decodeLatLon(
+            json.getJsonObject(MapillaryImageUtils.ImageProperties.GEOMETRY.toString()).getJsonArray("coordinates"));
+        if (useComputedData && json.containsKey(MapillaryImageUtils.ImageProperties.COMPUTED_GEOMETRY.toString())) {
+            final LatLon computedCoordinates = JsonDecoder
+                .decodeLatLon(json.getJsonObject(MapillaryImageUtils.ImageProperties.COMPUTED_GEOMETRY.toString())
+                    .getJsonArray("coordinates"));
+            if (computedCoordinates != null && originalCoordinates != null && computedCoordinates
+                .greatCircleDistance(originalCoordinates) < MapillaryProperties.ASSUMED_HDOP.get()) {
+                return computedCoordinates;
+            }
+            return Utils.firstNonNull(originalCoordinates, computedCoordinates);
+        }
+        return originalCoordinates;
     }
 
     /**

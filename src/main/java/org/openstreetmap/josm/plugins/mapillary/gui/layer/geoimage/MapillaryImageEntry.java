@@ -18,7 +18,6 @@ import java.text.DateFormat;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -37,6 +36,7 @@ import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.jcs3.access.CacheAccess;
+import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.data.coor.ILatLon;
@@ -66,6 +66,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.OffsetUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.VectorDataSetUtils;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.Utils;
 import org.openstreetmap.josm.tools.date.DateUtils;
 
 public class MapillaryImageEntry
@@ -380,15 +381,29 @@ public class MapillaryImageEntry
     @Override
     @Nullable
     public Double getElevation() {
-        for (MapillaryImageUtils.ImageProperties property : Arrays.asList(
-            MapillaryImageUtils.ImageProperties.COMPUTED_ALTITUDE, MapillaryImageUtils.ImageProperties.ALTITUDE)) {
-            if (this.image.hasKey(property.toString())) {
-                try {
-                    return Double.parseDouble(this.image.get(property.toString()));
-                } catch (NumberFormatException e) {
-                    Logging.trace(e);
+        // Sometimes the computed altitude is very wrong. See JOSM #21871
+        try {
+            final Double computedAltitude = Optional
+                .ofNullable(this.image.get(MapillaryImageUtils.ImageProperties.COMPUTED_ALTITUDE.toString()))
+                .map(Double::parseDouble).orElse(null);
+            final Double originalAltitude = Optional
+                .ofNullable(this.image.get(MapillaryImageUtils.ImageProperties.ALTITUDE.toString()))
+                .map(Double::parseDouble).orElse(null);
+            // Assume that the max hdop is 3m, and vdop is 3x that.
+            if (computedAltitude != null && originalAltitude != null) {
+                if (Math.abs(computedAltitude - originalAltitude) < 3 * MapillaryProperties.ASSUMED_HDOP.get()) {
+                    return computedAltitude;
                 }
+                return originalAltitude;
             }
+            // Fall back to whichever is not null, preferring computedAltitude
+            return Utils.firstNonNull(computedAltitude, originalAltitude);
+        } catch (NumberFormatException e) {
+            // Experts hopefully know how to file a bug report.
+            if (ExpertToggleAction.isExpert()) {
+                throw e;
+            }
+            Logging.debug(e);
         }
         return null;
     }
@@ -474,6 +489,13 @@ public class MapillaryImageEntry
             return Projections.EQUIRECTANGULAR;
         }
         return IImageEntry.super.getProjectionType();
+    }
+
+    /**
+     * Refresh the image in the image viewer
+     */
+    public void reload() {
+        this.updateImageEntry();
     }
 
     private void updateImageEntry() {
