@@ -396,7 +396,7 @@ public class MapillaryImageEntry
     @Override
     @Nonnull
     public Double getExifImgDir() {
-        return MapillaryImageUtils.getAngle(this.image);
+        return Math.toDegrees(MapillaryImageUtils.getAngle(this.image));
     }
 
     @Override
