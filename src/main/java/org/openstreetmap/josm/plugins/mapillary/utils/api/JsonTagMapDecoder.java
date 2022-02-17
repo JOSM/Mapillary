@@ -35,6 +35,8 @@ public class JsonTagMapDecoder {
                 tags.put(entry.getKey(), Boolean.FALSE.toString());
             } else if (type == JsonValue.ValueType.NUMBER) {
                 tags.put(entry.getKey(), entry.getValue().toString());
+            } else {
+                tags.put(entry.getKey(), entry.getValue().toString());
             }
         }
         return tags;
