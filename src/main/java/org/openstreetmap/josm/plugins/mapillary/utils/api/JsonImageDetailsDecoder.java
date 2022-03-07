@@ -113,7 +113,7 @@ public final class JsonImageDetailsDecoder {
                 // Force the dataset to recache the location
                 VectorDataSetUtils.tryWrite(data, () -> {
                     if (data.containsNode(image)) {
-                        data.removePrimitive(image);
+                        VectorDataSetUtils.removeObject(image);
                     }
                     data.addPrimitive(image);
                     if (Optional.ofNullable(MainApplication.getMap())
