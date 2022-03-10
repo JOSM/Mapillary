@@ -81,15 +81,17 @@ public class VectorDataSetUtils {
      * @return The optional return
      */
     public static <T> Optional<T> tryRead(final OsmData<?, ?, ?, ?> dataSet, final Supplier<T> supplier) {
-        final Lock lock = dataSet.getReadLock();
-        try {
-            lock.lockInterruptibly();
-            return Optional.ofNullable(supplier.get());
-        } catch (InterruptedException e) {
-            Logging.error(e);
-            Thread.currentThread().interrupt();
-        } finally {
-            lock.unlock();
+        if (dataSet != null) {
+            final Lock lock = dataSet.getReadLock();
+            try {
+                lock.lockInterruptibly();
+                return Optional.ofNullable(supplier.get());
+            } catch (InterruptedException e) {
+                Logging.error(e);
+                Thread.currentThread().interrupt();
+            } finally {
+                lock.unlock();
+            }
         }
         return Optional.empty();
     }
