@@ -56,6 +56,7 @@ import org.junit.platform.commons.support.AnnotationSupport;
 import org.openstreetmap.josm.plugins.mapillary.spi.preferences.IMapillaryUrls;
 import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryUrls;
+import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Utils;
 
 /**
@@ -101,6 +102,14 @@ public @interface MapillaryURLWireMock {
                         Collectors.joining(System.lineSeparator(), "Failing URLs:" + System.lineSeparator(), "")));
                 }
             } finally {
+                // Log 500 responses for easier debugging
+                final String errors = server.getAllServeEvents().stream()
+                    .filter(event -> event.getResponse().getStatus() == 500)
+                    .map(event -> event.getResponse().getBodyAsString())
+                    .collect(Collectors.joining(System.lineSeparator()));
+                if (!Utils.isBlank(errors)) {
+                    Logging.error(errors);
+                }
                 // We want to reset it all regardless for future tests
                 server.resetAll();
                 List<?> stubs = context.getStore(namespace).get(StubMapping.class, List.class);
