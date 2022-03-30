@@ -86,6 +86,7 @@ public final class OAuthUtils {
         client.connect();
         final HttpClient.Response response = client.getResponse();
         if (response != null && response.getResponseCode() == HttpURLConnection.HTTP_SERVER_ERROR) {
+            Logging.error(response.getResponseMessage());
             Logging.error(response.fetchContent());
         }
         final String appUsage = response.getHeaderField("x-app-usage");
