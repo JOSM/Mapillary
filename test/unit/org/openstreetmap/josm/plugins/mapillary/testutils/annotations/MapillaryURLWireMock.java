@@ -8,13 +8,15 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +58,6 @@ import org.junit.platform.commons.support.AnnotationSupport;
 import org.openstreetmap.josm.plugins.mapillary.spi.preferences.IMapillaryUrls;
 import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryUrls;
-import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Utils;
 
 /**
@@ -102,14 +103,6 @@ public @interface MapillaryURLWireMock {
                         Collectors.joining(System.lineSeparator(), "Failing URLs:" + System.lineSeparator(), "")));
                 }
             } finally {
-                // Log 500 responses for easier debugging
-                final String errors = server.getAllServeEvents().stream()
-                    .filter(event -> event.getResponse().getStatus() == 500)
-                    .map(event -> event.getResponse().getBodyAsString())
-                    .collect(Collectors.joining(System.lineSeparator()));
-                if (!Utils.isBlank(errors)) {
-                    Logging.error(errors);
-                }
                 // We want to reset it all regardless for future tests
                 server.resetAll();
                 List<?> stubs = context.getStore(namespace).get(StubMapping.class, List.class);
@@ -124,11 +117,24 @@ public @interface MapillaryURLWireMock {
             final Object check = context.getStore(namespace).get(WireMockServer.class);
             assertNull(check, "A wiremock server shouldn't have been started yet");
 
-            final WireMockConfiguration wireMockConfiguration = new WireMockConfiguration().dynamicPort();// .usingFilesUnderDirectory("test/resources/api/v4");
+            final WireMockConfiguration wireMockConfiguration = new WireMockConfiguration().dynamicPort();
             final FillerUrlReplacer fillerUrlReplacer = new FillerUrlReplacer();
             wireMockConfiguration.extensions(new CollectionEndpoint(), new ResponseTemplateTransformer(false),
                 fillerUrlReplacer);
-            wireMockConfiguration.withRootDirectory("test" + File.separatorChar + "resources");
+            // See JOSM #21121 for why this is necessary
+            Path directory = Paths.get("test", "resources");
+            if (!Files.isDirectory(directory)) {
+                final String mapillary = "Mapillary";
+                if (Files.isDirectory(Paths.get(mapillary + "-git"))) {
+                    directory = Paths.get(mapillary + "-git", directory.toString());
+                } else if (Files.isDirectory(Paths.get(mapillary))) {
+                    directory = Paths.get(mapillary, directory.toString());
+                } else {
+                    fail("Mapillary test/resources directory not found." + System.lineSeparator() + Files
+                        .list(Paths.get(".")).map(Path::toString).collect(Collectors.joining(System.lineSeparator())));
+                }
+            }
+            wireMockConfiguration.withRootDirectory(directory.toString());
             final WireMockServer server = new WireMockServer(wireMockConfiguration);
             fillerUrlReplacer.server = server;
 
