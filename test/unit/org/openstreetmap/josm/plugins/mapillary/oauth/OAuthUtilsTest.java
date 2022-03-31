@@ -35,7 +35,6 @@ import mockit.Mock;
 import mockit.MockUp;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -298,7 +297,6 @@ class OAuthUtilsTest {
 
     @Test
     @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.SERVER_ERROR)
-    @Disabled("Disabled while debugging JOSM #21121")
     void testServerErrorResponse() throws IOException {
         final URL url = new URL(MapillaryURL.APIv4.getImageInformation(IMAGE_ID));
         verifyCorrectResponseCode(url, HttpURLConnection.HTTP_INTERNAL_ERROR);
