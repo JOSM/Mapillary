@@ -15,6 +15,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -374,6 +376,17 @@ public class MapillaryImageEntry
     public File getFile() {
         return new File(MapillaryURL.MainWebsite.browseImage(Long.toString(MapillaryImageUtils.getKey(this.image)))
             .toExternalForm());
+    }
+
+    // @Override -- added in JOSM r18427
+    public URI getImageURI() {
+        try {
+            return new URI(MapillaryURL.MainWebsite.browseImage(Long.toString(MapillaryImageUtils.getKey(this.image)))
+                .toExternalForm());
+        } catch (URISyntaxException e) {
+            // This should never happen.
+            throw new JosmRuntimeException(this.toString(), e);
+        }
     }
 
     @Override
