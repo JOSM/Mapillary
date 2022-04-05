@@ -59,11 +59,11 @@ import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ImageMode;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
@@ -72,7 +72,6 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.OffsetUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.VectorDataSetUtils;
 import org.openstreetmap.josm.tools.ExifReader;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
@@ -112,9 +111,15 @@ public class MapillaryImageEntry
     }
 
     public static MapillaryImageEntry getCachedEntry(final INode image) {
+        Objects.requireNonNull(image);
         final long id = MapillaryImageUtils.getKey(image);
         if (id > 0) {
-            return CACHE.get(id, () -> new MapillaryImageEntry(image));
+            MapillaryImageEntry entry = CACHE.get(id, () -> new MapillaryImageEntry(image));
+            if (entry.image.getNumKeys() <= image.getNumKeys()) {
+                CACHE.remove(id);
+                entry = CACHE.get(id, () -> new MapillaryImageEntry(image));
+            }
+            return entry;
         }
         return new MapillaryImageEntry(image);
     }
@@ -129,25 +134,10 @@ public class MapillaryImageEntry
         if (MapillaryImageUtils.getKey(image) <= 0) {
             throw new IllegalArgumentException("We can only show images with an actual id to get the download");
         }
+        if (!(image instanceof MapillaryNode)) {
+            throw new IllegalStateException("Image not downloaded");
+        }
         this.image = image;
-        // Then get the information for the rest of the sequence
-        final IWay<?> sequence = MapillaryImageUtils.getSequence(this.image);
-        // Avoid blocking the main worker
-        MapillaryUtils.getForkJoinPool().execute(() -> {
-            // The string from getSequenceKey should be a singular object. This means we can use it to avoid calling
-            // the downloader multiple times.
-            final Object lock = Optional.ofNullable((Object) MapillaryImageUtils.getSequence(image))
-                .orElse(MapillaryImageEntry.class);
-            synchronized (lock) {
-                if (!MapillaryImageUtils.IS_DOWNLOADABLE.test(this.image)) {
-                    Optional.ofNullable(sequence).map(IWay::getNodes)
-                        // Avoid CME by putting nodes in ArrayList
-                        .map(nodes -> new ArrayList<>(nodes).stream().mapToLong(MapillaryImageUtils::getKey)
-                            .filter(i -> i > 0).toArray())
-                        .ifPresent(MapillaryDownloader::downloadImages);
-                }
-            }
-        });
     }
 
     /**
@@ -181,21 +171,16 @@ public class MapillaryImageEntry
 
     @Override
     public MapillaryImageEntry getFirstImage() {
-        return VectorDataSetUtils.tryRead(this.image.getDataSet(),
-            () -> Optional.ofNullable(MapillaryImageUtils.getSequence(this.image))
-                .map(way -> way.getNodes().stream().filter(n -> n.getUniqueId() > 0).findFirst().orElse(this.image))
-                .map(MapillaryImageEntry::getCachedEntry).orElse(null))
-            .orElse(null);
+        return Optional.ofNullable(MapillaryImageUtils.getSequence(this.image))
+            .map(way -> way.getNodes().stream().filter(n -> n.getUniqueId() > 0).findFirst().orElse(this.image))
+            .map(MapillaryImageEntry::getCachedEntry).orElse(null);
     }
 
     @Override
     public MapillaryImageEntry getLastImage() {
-        return VectorDataSetUtils
-            .tryRead(this.image.getDataSet(),
-                () -> Optional.ofNullable(MapillaryImageUtils.getSequence(this.image))
-                    .flatMap(way -> way.getNodes().stream().filter(MapillaryImageUtils::isImage)
-                        .reduce((first, second) -> second).map(MapillaryImageEntry::getCachedEntry))
-                    .orElse(null))
+        return Optional.ofNullable(MapillaryImageUtils.getSequence(this.image))
+            .flatMap(way -> way.getNodes().stream().filter(MapillaryImageUtils::isImage)
+                .reduce((first, second) -> second).map(MapillaryImageEntry::getCachedEntry))
             .orElse(null);
     }
 
@@ -270,7 +255,7 @@ public class MapillaryImageEntry
                 }
             }
         }
-        if (this.imageDetections.isEmpty()) {
+        if (this.imageDetections.isEmpty() && !this.image.getReferrers().isEmpty()) {
             this.updateDetections(5_000);
             return bufferedImageCacheEntry.getImage();
         }

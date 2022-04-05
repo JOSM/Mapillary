@@ -68,7 +68,7 @@ public class JsonImageDetailsDecoderTest {
             final URL url = new URL(
                 MapillaryURL.APIv4.getImageInformation(image, MapillaryImageUtils.ImageProperties.values()));
             JsonDecoder.decodeData(OAuthUtils.getWithHeader(url),
-                value -> JsonImageDetailsDecoder.decodeImageInfos(value, data));
+                value -> JsonImageDetailsDecoder.decodeImageInfos(value));
         }
 
         final VectorNode i_135511895288847 = data.getNodes().stream().filter(image -> 135511895288847L == image.getId())
@@ -112,7 +112,7 @@ public class JsonImageDetailsDecoderTest {
             final VectorDataSet data = new VectorDataMock();
             Logging.clearLastErrorAndWarnings();
             assertDoesNotThrow(() -> JsonDecoder.decodeData(jsonReader.readObject(),
-                json -> JsonImageDetailsDecoder.decodeImageInfos(json, data)));
+                json -> JsonImageDetailsDecoder.decodeImageInfos(json)));
             // This is needed to ensure that the EDT finishes.
             AtomicBoolean edtFinished = new AtomicBoolean();
             GuiHelper.runInEDTAndWait(() -> edtFinished.set(true));
@@ -136,7 +136,7 @@ public class JsonImageDetailsDecoderTest {
             final URL url = new URL(
                 MapillaryURL.APIv4.getImageInformation(image, MapillaryImageUtils.ImageProperties.values()));
             assertDoesNotThrow(() -> JsonDecoder.decodeData(OAuthUtils.getWithHeader(url),
-                value -> JsonImageDetailsDecoder.decodeImageInfos(value, data)));
+                value -> JsonImageDetailsDecoder.decodeImageInfos(value)));
         }
     }
 
@@ -158,13 +158,13 @@ public class JsonImageDetailsDecoderTest {
     @Test
     void testInvalidImageInfos() {
         VectorDataMock data = new VectorDataMock();
-        JsonImageDetailsDecoder.decodeImageInfos(null, data);
-        JsonImageDetailsDecoder.decodeImageInfos(JsonUtil.string2jsonObject("{}"), null);
-        JsonImageDetailsDecoder.decodeImageInfos(JsonUtil.string2jsonObject("{}"), data);
+        JsonImageDetailsDecoder.decodeImageInfos(null);
+        JsonImageDetailsDecoder.decodeImageInfos(JsonUtil.string2jsonObject("{}"));
+        JsonImageDetailsDecoder.decodeImageInfos(JsonUtil.string2jsonObject("{}"));
         JsonImageDetailsDecoder
-            .decodeImageInfos(JsonUtil.string2jsonObject("{\"type\":\"FeatureCollection\", \"features\":0}"), data);
-        JsonImageDetailsDecoder.decodeImageInfos(
-            JsonUtil.string2jsonObject("{\"type\":\"FeatureCollection\", \"features\":[0, null]}"), data);
+            .decodeImageInfos(JsonUtil.string2jsonObject("{\"type\":\"FeatureCollection\", \"features\":0}"));
+        JsonImageDetailsDecoder
+            .decodeImageInfos(JsonUtil.string2jsonObject("{\"type\":\"FeatureCollection\", \"features\":[0, null]}"));
         assertEquals(0, data.getNumImageRetrievals());
     }
 

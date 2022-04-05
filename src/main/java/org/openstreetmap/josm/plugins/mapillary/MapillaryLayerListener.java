@@ -2,19 +2,11 @@ package org.openstreetmap.josm.plugins.mapillary;
 
 import java.util.stream.Stream;
 
-import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
-import org.openstreetmap.josm.data.vector.VectorNode;
-import org.openstreetmap.josm.data.vector.VectorPrimitive;
-import org.openstreetmap.josm.data.vector.VectorRelation;
-import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.gui.layer.LayerManager;
-import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.geoimage.MapillaryImageEntry;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.tools.Destroyable;
 
 /**
@@ -35,7 +27,6 @@ public class MapillaryLayerListener implements Destroyable, LayerManager.LayerCh
         if (e.getAddedLayer() instanceof MapillaryLayer) {
             VectorDataSet dataSet = ((MapillaryLayer) e.getAddedLayer()).getData();
             dataSet.addSelectionListener((VectorDataSelectionListener) ImageInfoPanel.getInstance());
-            dataSet.addSelectionListener(ImageDialogListener.INSTANCE);
             Stream.of(MapillaryPlugin.getMapillaryDataListeners()).forEach(dataSet::addSelectionListener);
         }
     }
@@ -45,7 +36,6 @@ public class MapillaryLayerListener implements Destroyable, LayerManager.LayerCh
         if (e.getRemovedLayer() instanceof MapillaryLayer) {
             VectorDataSet dataSet = ((MapillaryLayer) e.getRemovedLayer()).getData();
             dataSet.removeSelectionListener((VectorDataSelectionListener) ImageInfoPanel.getInstance());
-            dataSet.removeSelectionListener(ImageDialogListener.INSTANCE);
             Stream.of(MapillaryPlugin.getMapillaryDataListeners()).forEach(dataSet::removeSelectionListener);
         }
     }
@@ -60,18 +50,4 @@ public class MapillaryLayerListener implements Destroyable, LayerManager.LayerCh
         this.layerManager.removeAndFireLayerChangeListener(this);
     }
 
-    /**
-     * A class that listens for dataset updates and updates the image viewer
-     */
-    private static class ImageDialogListener implements VectorDataSelectionListener {
-        private static final ImageDialogListener INSTANCE = new ImageDialogListener();
-
-        @Override
-        public void selectionChanged(
-            SelectionChangeEvent<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> event) {
-            event.getAdded().stream().filter(MapillaryImageUtils::isImage).filter(INode.class::isInstance)
-                .map(INode.class::cast).findFirst().map(MapillaryImageEntry::getCachedEntry)
-                .ifPresent(ImageViewerDialog.getInstance()::displayImage);
-        }
-    }
 }

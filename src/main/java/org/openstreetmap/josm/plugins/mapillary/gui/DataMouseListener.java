@@ -2,8 +2,10 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
@@ -12,17 +14,15 @@ import javax.swing.event.MouseInputAdapter;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.AbstractPrimitive;
 import org.openstreetmap.josm.data.osm.BBox;
+import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.projection.ProjectionRegistry;
-import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
 import org.openstreetmap.josm.gui.layer.imagery.MVTLayer;
-import org.openstreetmap.josm.gui.util.GuiHelper;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.geoimage.MapillaryImageEntry;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.Geometry;
@@ -67,15 +67,12 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
      * @param searchBBox The bbox to search
      */
     private static void mouseClickedInner(final MouseEvent e, final MVTLayer layer, final BBox searchBBox) {
-        Collection<VectorNode> nodes = layer.getData().searchNodes(searchBBox).stream().distinct()
-            .filter(AbstractPrimitive::isVisible).collect(Collectors.toList());
+        Collection<INode> nodes = searchNodes(layer, searchBBox).stream().distinct()
+            .filter(AbstractPrimitive::isVisible).filter(INode.class::isInstance).map(INode.class::cast)
+            .collect(Collectors.toList());
         if (!nodes.isEmpty()) {
             // This is needed since Mapillary ids are only unique within a tile.
             layer.getData().setSelected(nodes);
-            if (layer instanceof MapillaryLayer && nodes.size() == 1) {
-                GuiHelper.runInEDT(() -> ImageViewerDialog.getInstance()
-                    .displayImage(MapillaryImageEntry.getCachedEntry(nodes.iterator().next())));
-            }
         } else if (layer instanceof MapillaryLayer) {
             if (e.getClickCount() >= MapillaryProperties.DESELECT_CLICK_COUNT.get()) {
                 layer.getData().clearSelection();
@@ -98,7 +95,13 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
                 final Lock readLock = layer.getData().getReadLock();
                 if (readLock.tryLock()) {
                     try {
-                        Collection<VectorNode> nodes = layer.getData().searchNodes(searchBBox);
+                        if (layer instanceof MapillaryLayer) {
+                            MapillaryNode node = ((MapillaryLayer) layer).getImage();
+                            if (node != null && node.getSequence() != null) {
+                                node.getSequence().getNodes().forEach(n -> n.setHighlighted(false));
+                            }
+                        }
+                        List<? extends AbstractPrimitive> nodes = searchNodes(layer, searchBBox);
                         if (!nodes.isEmpty()) {
                             layer.getData().setHighlighted(
                                 nodes.stream().map(IPrimitive::getPrimitiveId).collect(Collectors.toSet()));
@@ -119,6 +122,27 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
                 }
             }
         }
+    }
+
+    private static List<? extends AbstractPrimitive> searchNodes(MVTLayer layer, BBox searchBBox) {
+        if (layer instanceof MapillaryLayer) {
+            final MapillaryNode image = ((MapillaryLayer) layer).getImage();
+            if (image != null) {
+                final List<AbstractPrimitive> nodes;
+                if (image.getSequence() != null) {
+                    nodes = image.getSequence().getNodes().stream().filter(searchBBox::contains)
+                        .collect(Collectors.toCollection(ArrayList::new));
+                } else {
+                    nodes = new ArrayList<>();
+                    if (searchBBox.contains(image)) {
+                        nodes.add(image);
+                    }
+                }
+                nodes.addAll(layer.getData().searchNodes(searchBBox));
+                return nodes;
+            }
+        }
+        return layer.getData().searchNodes(searchBBox);
     }
 
     private static BBox getSmallBBox(Point point) {

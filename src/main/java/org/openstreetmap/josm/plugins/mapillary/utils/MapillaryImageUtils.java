@@ -134,8 +134,8 @@ public final class MapillaryImageUtils {
             return completableFuture;
         } else if (getKey(image) > 0) {
             try {
-                MapillaryUtils.getForkJoinPool().submit(() -> MapillaryDownloader.downloadImages(false, getKey(image)))
-                    .get(10, SwingUtilities.isEventDispatchThread() ? TimeUnit.SECONDS : TimeUnit.MINUTES);
+                MapillaryUtils.getForkJoinPool().submit(() -> MapillaryDownloader.downloadImages(getKey(image))).get(10,
+                    SwingUtilities.isEventDispatchThread() ? TimeUnit.SECONDS : TimeUnit.MINUTES);
                 if (MapillaryImageUtils.IS_DOWNLOADABLE.test(image)) {
                     return getImage(image);
                 }
@@ -297,6 +297,10 @@ public final class MapillaryImageUtils {
         if (image.getReferrers().isEmpty() || !MapillarySequenceUtils.hasKey(MapillaryImageUtils.getSequence(image))) {
             MapillarySequenceUtils.getSequence(MapillaryImageUtils.getSequenceKey(image));
         }
+    }
+
+    public static boolean equals(INode imageOne, INode imageTwo) {
+        return getKey(imageOne) == getKey(imageTwo);
     }
 
     /**

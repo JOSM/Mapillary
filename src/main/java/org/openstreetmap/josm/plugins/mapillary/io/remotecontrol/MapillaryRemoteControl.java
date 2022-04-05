@@ -17,10 +17,10 @@ import java.util.stream.Stream;
 import org.openstreetmap.josm.actions.AutoScaleAction;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.Node;
-import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.io.remotecontrol.PermissionPrefWithDefault;
 import org.openstreetmap.josm.io.remotecontrol.handler.RequestHandler;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 
@@ -79,7 +79,7 @@ public class MapillaryRemoteControl extends RequestHandler.RawURLParseRequestHan
     }
 
     @Override
-    protected void handleRequest() throws RequestHandlerErrorException, RequestHandlerBadRequestException {
+    protected void handleRequest() throws RequestHandlerBadRequestException {
         final long[] mapillaryImages = Stream.of(images).filter(image -> image.startsWith(MAPILLARY_PREFIX))
             .map(image -> image.substring(MAPILLARY_PREFIX.length())).mapToLong(Long::parseLong).toArray();
         final List<String> mapillarySequences = Stream.of(sequences)
@@ -92,7 +92,7 @@ public class MapillaryRemoteControl extends RequestHandler.RawURLParseRequestHan
         // This will create a mapillary layer if one does not already exist
         Collection<INode> nodes = new HashSet<>();
         if (mapillaryImages.length > 0) {
-            Map<String, Collection<VectorNode>> images = GuiHelper
+            Map<String, Collection<MapillaryNode>> images = GuiHelper
                 .runInEDTAndWaitAndReturn(() -> MapillaryDownloader.downloadImages(mapillaryImages));
             mapillarySequences.addAll(images.keySet());
             nodes.addAll(images.entrySet().stream().flatMap(e -> e.getValue().stream()).map(INode::getCoor)
@@ -107,7 +107,7 @@ public class MapillaryRemoteControl extends RequestHandler.RawURLParseRequestHan
         }
         mapillarySequences.removeIf(string -> string.trim().isEmpty());
         if (!mapillarySequences.isEmpty()) {
-            List<VectorNode> tNodes = Optional
+            List<MapillaryNode> tNodes = Optional
                 .ofNullable(GuiHelper.runInEDTAndWaitAndReturn(
                     () -> MapillaryDownloader.downloadSequences(mapillarySequences.toArray(new String[0])).stream()
                         .flatMap(seq -> seq.getNodes().stream()).collect(Collectors.toList())))

@@ -1,13 +1,12 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.LongStream;
 
 import javax.json.JsonArray;
 import javax.json.JsonNumber;
@@ -15,17 +14,11 @@ import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 
-import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IWay;
-import org.openstreetmap.josm.data.osm.OsmPrimitiveType;
-import org.openstreetmap.josm.data.vector.VectorDataSet;
-import org.openstreetmap.josm.data.vector.VectorNode;
-import org.openstreetmap.josm.data.vector.VectorWay;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
-import org.openstreetmap.josm.plugins.mapillary.utils.VectorDataSetUtils;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -48,7 +41,7 @@ public final class JsonSequencesDecoder {
      *         missing from the JSON or it's not meeting the expecting format in another way, an empty list will be
      *         returned.
      */
-    public static List<VectorWay> decodeSequence(final JsonValue json) {
+    public static List<MapillarySequence> decodeSequence(final JsonValue json) {
         /*
          * The response looks like:
          * {"data":[{"id":"0"},{"id":"1"},{"id":"2"},...]}
@@ -65,35 +58,18 @@ public final class JsonSequencesDecoder {
             .mapToLong(value -> value instanceof JsonString ? Long.parseLong(((JsonString) value).getString())
                 : ((JsonNumber) value).longValue())
             .distinct().toArray();
-        final VectorDataSet data = MapillaryLayer.getInstance().getData();
-        final long[] currentImageIds = VectorDataSetUtils
-            .tryRead(data,
-                () -> LongStream.of(imageIds).mapToObj(id -> data.getPrimitiveById(id, OsmPrimitiveType.NODE))
-                    .filter(Objects::nonNull).mapToLong(IPrimitive::getUniqueId)
-                    .filter(i -> LongStream.of(imageIds).anyMatch(l -> i == l)).sorted().toArray())
-            .orElseGet(() -> new long[0]);
-        MapillaryDownloader.downloadImages(
-            LongStream.of(imageIds).filter(id -> LongStream.of(currentImageIds).noneMatch(i -> i == id)).toArray());
-        final List<VectorNode> nodes = VectorDataSetUtils
-            .tryRead(data,
-                () -> LongStream.of(imageIds).mapToObj(id -> data.getPrimitiveById(id, OsmPrimitiveType.NODE))
-                    .filter(VectorNode.class::isInstance).map(VectorNode.class::cast).collect(Collectors.toList()))
-            .orElseGet(Collections::emptyList);
-        if (nodes.isEmpty()) {
+        Map<String, Collection<MapillaryNode>> images = MapillaryDownloader.downloadImages(imageIds);
+        if (images.size() != 1) {
+            throw new IllegalStateException(
+                "Images cannot belong to more than one sequence: " + String.join(", ", images.keySet()));
+        }
+        Map.Entry<String, Collection<MapillaryNode>> nodes = images.entrySet().iterator().next();
+        if (nodes.getValue().isEmpty()) {
             Logging.error("Mapillary: The sequence does not have any nodes");
             return Collections.emptyList();
         }
-        final VectorWay sequence = nodes.stream().map(MapillaryImageUtils::getSequence)
-            .filter(VectorWay.class::isInstance).map(VectorWay.class::cast)
-            .max(Comparator.comparingInt(IWay::getNodesCount)).orElseGet(() -> new VectorWay("mapillary-sequences"));
-        synchronized (JsonSequencesDecoder.class) {
-            VectorDataSetUtils.tryWrite(data, () -> {
-                nodes.stream().map(VectorNode::getReferrers).flatMap(Collection::stream)
-                    .filter(VectorWay.class::isInstance).map(VectorWay.class::cast).distinct()
-                    .forEach(way -> way.setNodes(Collections.emptyList()));
-                sequence.setNodes(nodes);
-            });
-        }
+        final MapillarySequence sequence = new MapillarySequence(nodes.getKey());
+        sequence.setNodes(new ArrayList<>(nodes.getValue()));
         return Collections.singletonList(sequence);
     }
 }

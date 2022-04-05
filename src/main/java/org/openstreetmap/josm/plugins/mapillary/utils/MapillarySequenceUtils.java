@@ -7,9 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -24,9 +22,8 @@ import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
-import org.openstreetmap.josm.data.vector.VectorNode;
-import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
@@ -65,10 +62,8 @@ public class MapillarySequenceUtils {
      */
     @Nullable
     public static INode getNextOrPrevious(@Nonnull INode node, @Nullable NextOrPrevious next) {
-        List<? extends IWay<?>> connectedWays = VectorDataSetUtils
-            .tryRead(node.getDataSet(), () -> node.getReferrers().stream().filter(IWay.class::isInstance)
-                .map(iway -> (IWay<?>) iway).distinct().collect(Collectors.toList()))
-            .orElseGet(Collections::emptyList);
+        List<IWay<?>> connectedWays = node.getReferrers().stream().filter(IWay.class::isInstance).map(w -> (IWay<?>) w)
+            .collect(Collectors.toList());
         if (connectedWays.isEmpty() || connectedWays.size() > 2) {
             return null;
         }
@@ -213,44 +208,8 @@ public class MapillarySequenceUtils {
         try (JsonReader jsonReader = Json
             .createReader(new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8)))) {
             JsonObject json = jsonReader.readObject();
-            Collection<VectorWay> seq = JsonDecoder.decodeData(json, JsonSequencesDecoder::decodeSequence);
-            VectorWay sequence = seq.stream().findFirst().orElse(null);
-            if (MapillaryLayer.hasInstance() && sequence != null) {
-                final VectorWay alreadyAdded = VectorDataSetUtils
-                    .tryRead(vectorDataSet, () -> vectorDataSet.searchWays(sequence.getBBox()).stream()
-                        .filter(way -> getKey(way).equals(getKey(sequence))).findFirst().orElse(null))
-                    .orElse(null);
-                sequence.put(KEY, key);
-                if (alreadyAdded != null) {
-                    VectorDataSetUtils.tryWrite(vectorDataSet, () -> {
-                        alreadyAdded.setNodes(
-                            sequence.getNodes().stream().filter(Objects::nonNull).collect(Collectors.toList()));
-                        sequence.setNodes(Collections.emptyList());
-                    });
-                    alreadyAdded.setKeys(sequence.getKeys());
-                } else {
-                    VectorDataSetUtils.tryWrite(vectorDataSet, () -> {
-                        vectorDataSet.addPrimitive(sequence);
-                        if (sequence.getDataSet() != null) {
-                            sequence.getNodes().stream().filter(node -> node.getDataSet() == null)
-                                .forEach(vectorDataSet::addPrimitive);
-                        }
-                    });
-                }
-                // Remove referrers to other sequences
-                final List<VectorWay> modifiedWays = new ArrayList<>();
-                sequence.getNodes().stream().filter(node -> node.getReferrers().size() > 1)
-                    .forEach(node -> node.getReferrers().stream().filter(referrer -> !sequence.equals(referrer))
-                        .filter(VectorWay.class::isInstance).map(VectorWay.class::cast)
-                        .forEach(way -> VectorDataSetUtils.tryWrite(vectorDataSet, () -> {
-                            List<VectorNode> nodes = new ArrayList<>(way.getNodes());
-                            nodes.remove(node);
-                            way.setNodes(nodes);
-                            modifiedWays.add(way);
-                        })));
-                modifiedWays.stream().filter(way -> way.getNodesCount() == 0).forEach(way -> way.setDeleted(true));
-            }
-            return sequence;
+            Collection<MapillarySequence> seq = JsonDecoder.decodeData(json, JsonSequencesDecoder::decodeSequence);
+            return seq.stream().findFirst().orElse(null);
         }
     }
 

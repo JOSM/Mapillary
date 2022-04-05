@@ -18,21 +18,17 @@ import javax.json.JsonValue;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.BBox;
-import org.openstreetmap.josm.data.osm.OsmPrimitiveType;
 import org.openstreetmap.josm.data.osm.Tag;
 import org.openstreetmap.josm.data.osm.TagMap;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
-import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.geoimage.MapillaryImageEntry;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv4;
-import org.openstreetmap.josm.plugins.mapillary.utils.VectorDataSetUtils;
 import org.openstreetmap.josm.tools.Pair;
 import org.openstreetmap.josm.tools.Utils;
 
@@ -53,30 +49,17 @@ public final class JsonImageDetailsDecoder {
      * @return The added or modified images sorted by sequences
      */
     @Nonnull
-    public static Collection<VectorNode> decodeImageInfos(final JsonValue json) {
-        return decodeImageInfos(json, MapillaryLayer.getInstance().getData());
-    }
-
-    /**
-     * Decode a json of image information
-     *
-     * @param json The JSON to decode
-     * @param data The data to add the information to
-     * @return The added or modified images sorted by sequences
-     */
-    @Nonnull
-    public static Collection<VectorNode> decodeImageInfos(final JsonValue json, final VectorDataSet data) {
-        if (data != null) {
-            if (json instanceof JsonObject) {
-                Pair<String, VectorNode> pair = decodeImageInfo((JsonObject) json, data);
-                if (pair == null) {
-                    return Collections.emptyList();
-                }
-                return Collections.singletonList(pair.b);
-            } else if (json instanceof JsonArray) {
-                return ((JsonArray) json).getValuesAs(JsonObject.class).stream().map(j -> decodeImageInfo(j, data))
-                    .filter(Objects::nonNull).map(pair -> pair.b).collect(Collectors.toList());
+    public static Collection<MapillaryNode> decodeImageInfos(final JsonValue json) {
+        if (json instanceof JsonObject) {
+            Pair<String, MapillaryNode> pair = decodeImageInfo((JsonObject) json);
+            if (pair == null) {
+                return Collections.emptyList();
             }
+            return Collections.singletonList(pair.b);
+        } else if (json instanceof JsonArray) {
+            return ((JsonArray) json).getValuesAs(JsonObject.class).stream()
+                .map(JsonImageDetailsDecoder::decodeImageInfo).filter(Objects::nonNull).map(pair -> pair.b)
+                .collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
@@ -85,13 +68,11 @@ public final class JsonImageDetailsDecoder {
      * Decode a single image info
      *
      * @param json The data json
-     * @param data The data to add the image info to
      * @return The MapillaryAbstractImage that was added/modified
      */
     @Nullable
-    private static Pair<String, VectorNode> decodeImageInfo(@Nullable final JsonObject json,
-        @Nullable final VectorDataSet data) {
-        if (json != null && data != null) {
+    private static Pair<String, MapillaryNode> decodeImageInfo(@Nullable final JsonObject json) {
+        if (json != null) {
             final boolean useComputedData = Boolean.TRUE.equals(MapillaryProperties.USE_COMPUTED_LOCATIONS.get());
             final String key = json.getString(MapillaryImageUtils.ImageProperties.ID.toString(), null);
             if (key == null) {
@@ -101,30 +82,18 @@ public final class JsonImageDetailsDecoder {
             final LatLon coordinates = getCoordinates(json, useComputedData);
             final BBox searchBBox = new BBox(coordinates);
             searchBBox.addLatLon(coordinates, 0.001);
-            VectorNode image = VectorDataSetUtils.tryRead(data, () -> data.getPrimitiveById(id, OsmPrimitiveType.NODE))
-                .filter(VectorNode.class::isInstance).map(VectorNode.class::cast).orElseGet(() -> {
-                    final VectorNode tNode = createNewImage(json, coordinates);
-                    VectorDataSetUtils.tryWrite(data, () -> data.addPrimitive(tNode));
-                    return tNode;
-                });
+            final MapillaryNode image = createNewImage(json, coordinates);
 
             if (coordinates != null) {
                 image.setCoor(coordinates);
-                // Force the dataset to recache the location
-                VectorDataSetUtils.tryWrite(data, () -> {
-                    if (data.containsNode(image)) {
-                        VectorDataSetUtils.removeObject(image);
+                if (Optional.ofNullable(MainApplication.getMap())
+                    .map(map -> map.getToggleDialog(ImageViewerDialog.class)).isPresent()
+                    && ImageViewerDialog.getCurrentImage() instanceof MapillaryImageEntry) {
+                    MapillaryImageEntry entry = (MapillaryImageEntry) ImageViewerDialog.getCurrentImage();
+                    if (coordinates.equals(entry.getPos())) {
+                        entry.reload();
                     }
-                    data.addPrimitive(image);
-                    if (Optional.ofNullable(MainApplication.getMap())
-                        .map(map -> map.getToggleDialog(ImageViewerDialog.class)).isPresent()
-                        && ImageViewerDialog.getCurrentImage() instanceof MapillaryImageEntry) {
-                        MapillaryImageEntry entry = (MapillaryImageEntry) ImageViewerDialog.getCurrentImage();
-                        if (coordinates.equals(entry.getPos())) {
-                            entry.reload();
-                        }
-                    }
-                });
+                }
             }
             for (Map.Entry<String, String> entry : JsonTagMapDecoder.getTagMap(json).entrySet()) {
                 image.put(entry.getKey(), entry.getValue());
@@ -178,8 +147,8 @@ public final class JsonImageDetailsDecoder {
      * @return A new image
      */
     @Nonnull
-    private static VectorNode createNewImage(@Nonnull final JsonObject json, @Nullable final LatLon coordinates) {
-        VectorNode tImage = new VectorNode(MapillaryKeys.IMAGE_LAYER);
+    private static MapillaryNode createNewImage(@Nonnull final JsonObject json, @Nullable final LatLon coordinates) {
+        MapillaryNode tImage = new MapillaryNode();
         for (final MapillaryImageUtils.ImageProperties property : MapillaryImageUtils.ImageProperties.values()) {
             final String propertyKey = property.toString();
             if (json.containsKey(propertyKey)) {

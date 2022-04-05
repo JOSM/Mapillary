@@ -16,6 +16,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.IntSummaryStatistics;
 import java.util.List;
@@ -44,6 +45,7 @@ import org.openstreetmap.josm.actions.UploadAction;
 import org.openstreetmap.josm.actions.upload.UploadHook;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.ILatLon;
+import org.openstreetmap.josm.data.imagery.street_level.IImageEntry;
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
 import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.DataSet;
@@ -52,8 +54,11 @@ import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
+import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorPrimitive;
+import org.openstreetmap.josm.data.vector.VectorRelation;
+import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
@@ -72,10 +77,14 @@ import org.openstreetmap.josm.gui.mappaint.Range;
 import org.openstreetmap.josm.gui.mappaint.mapcss.Selector;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.OldVersionDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.geoimage.MapillaryImageEntry;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapViewGeometryUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
@@ -91,6 +100,8 @@ import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.ListenerList;
 import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.Pair;
+import org.openstreetmap.josm.tools.Utils;
 
 /**
  * This class represents the layer shown in JOSM. There can only exist one
@@ -99,7 +110,7 @@ import org.openstreetmap.josm.tools.Logging;
  * @author nokutu
  */
 public final class MapillaryLayer extends MVTLayer
-    implements ActiveLayerChangeListener, LayerChangeListener, UploadHook {
+    implements ActiveLayerChangeListener, LayerChangeListener, UploadHook, VectorDataSelectionListener {
 
     /** The radius of the image marker */
     private static final int IMG_MARKER_RADIUS = 7;
@@ -148,6 +159,7 @@ public final class MapillaryLayer extends MVTLayer
         MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
     private static Point2D standardImageCentroid = null;
     private final ListenerList<MVTTile.TileListener> tileListeners = ListenerList.create();
+    private MapillaryNode image = null;
 
     private MapillaryLayer() {
         super(MapillaryKeys.MAPILLARY_IMAGES);
@@ -158,6 +170,7 @@ public final class MapillaryLayer extends MVTLayer
 
         this.addTileDownloadListener(OrganizationRecord::addFromTile);
         this.addTileDownloadListener(MapillaryFilterDialog.getInstance());
+        this.getData().addSelectionListener(this);
     }
 
     /**
@@ -306,10 +319,7 @@ public final class MapillaryLayer extends MVTLayer
         fadeComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
             MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
 
-        // Draw the blue and red line
-        final List<INode> selectedImages = this.getData().getSelectedNodes().stream().distinct()
-            .collect(Collectors.toList());
-        final INode selectedImage = selectedImages.stream().findFirst().orElse(null);
+        final INode selectedImage = this.image;
         synchronized (this) {
             for (int i = 0; i < this.nearestImages.size(); i++) {
                 if (i % 2 == 0) {
@@ -328,41 +338,40 @@ public final class MapillaryLayer extends MVTLayer
         // Draw sequence line
         g.setStroke(new BasicStroke(2));
         final String sequenceKey = MapillaryImageUtils.getSequenceKey(selectedImage);
-        Collection<IWay<?>> selectedSequences = new ArrayList<>();
         for (IWay<?> seq : getData().searchWays(box.toBBox()).stream().distinct().collect(Collectors.toList())) {
-            if (seq.getNodes().contains(selectedImage)
-                || (sequenceKey != null && sequenceKey.equals(MapillarySequenceUtils.getKey(seq)))) {
-                selectedSequences.add(seq);
-            } else {
-                drawSequence(g, mv, seq, false, selectedImage != null);
+            if (!Objects.equals(sequenceKey, MapillarySequenceUtils.getKey(seq))) {
+                drawSequence(g, mv, seq, selectedImage);
             }
         }
         final Collection<INode> images = this.getData().searchNodes(box.toBBox()).stream().distinct()
             .collect(Collectors.toList());
         if (images.size() < MapillaryProperties.MAXIMUM_DRAW_IMAGES.get()) {
             for (INode imageAbs : images) {
-                if (imageAbs.isVisible() && MapillaryImageUtils.isImage(imageAbs)) {
-                    drawImageMarker(selectedImages, g, imageAbs, false);
+                if (imageAbs.isVisible() && MapillaryImageUtils.isImage(imageAbs)
+                    && !MapillaryImageUtils.equals(this.image, imageAbs)
+                    && !Objects.equals(MapillaryImageUtils.getSequenceKey(imageAbs), sequenceKey)) {
+                    drawImageMarker(selectedImage, g, imageAbs, false);
                 }
             }
         }
-        // Paint the selected sequences
-        for (IWay<?> sequence : selectedSequences) {
-            drawSequence(g, mv, sequence, true, selectedImage != null);
-        }
-        // Paint selected images last. Not particularly worried about painting too much, since most people don't select
-        // thousands of images.
-        for (INode imageAbs : selectedImages) {
-            if (imageAbs.isVisible() && mv != null && (mv.contains(mv.getPoint(imageAbs))
-                || mv.contains(mv.getPoint(OffsetUtils.getOffsetLocation(imageAbs))))) {
-                drawImageMarker(selectedImages, g, imageAbs, true);
+        if (selectedImage != null) {
+            // Paint the selected sequences
+            for (IWay<?> way : selectedImage.getReferrers().stream().filter(IWay.class::isInstance)
+                .map(IWay.class::cast).collect(Collectors.toSet())) {
+                drawSequence(g, mv, way, selectedImage);
+                for (INode n : way.getNodes()) {
+                    drawImageMarker(selectedImage, g, n, false);
+                }
             }
+            // Paint selected images last. Not particularly worried about painting too much, since most people don't
+            // select
+            // thousands of images.
+            drawImageMarker(selectedImage, g, selectedImage, true);
         }
     }
 
-    private static void drawSequence(final Graphics2D g, final MapView mv, final IWay<?> sequence, boolean selected,
-        boolean selectedImage) {
-        if (selected) {
+    private static void drawSequence(final Graphics2D g, final MapView mv, final IWay<?> sequence, final INode image) {
+        if (sequence.getNodes().contains(image)) {
             g.setColor(!MapillarySequenceUtils.hasKey(sequence) ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED
                 : MapillaryColorScheme.SEQ_SELECTED);
         } else {
@@ -376,7 +385,7 @@ public final class MapillaryLayer extends MVTLayer
                 color = MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED;
             }
             g.setColor(color);
-            if (selectedImage) {
+            if (image != null) {
                 g.setComposite(fadeComposite);
             }
         }
@@ -400,20 +409,18 @@ public final class MapillaryLayer extends MVTLayer
     /**
      * Draws an image marker onto the given Graphics context.
      *
-     * @param selectedNodes Currently selected nodes
+     * @param selectedImg Currently selected nodes
      * @param g the Graphics context
      * @param img the image to be drawn onto the Graphics context
      * @param offset {@code true} if we may be painting the offset for an image
      */
-    private void drawImageMarker(final List<INode> selectedNodes, final Graphics2D g, final INode img,
-        final boolean offset) {
+    private void drawImageMarker(final INode selectedImg, final Graphics2D g, final INode img, final boolean offset) {
         if (img == null || img.getCoor() == null) {
             Logging.warn("An image is not painted, because it is null or has no LatLon!");
             return;
         }
-        final INode selectedImg = selectedNodes.stream().findFirst().orElse(null);
         if (!IMAGE_CA_PAINT_RANGE.contains(MainApplication.getMap().mapView.getDist100Pixel())
-            && !img.equals(selectedImg) && !selectedNodes.contains(img)
+            && !img.equals(selectedImg)
             && (selectedImg == null || (MapillaryImageUtils.getSequence(img) != null && !Objects
                 .equals(MapillaryImageUtils.getSequenceKey(img), MapillaryImageUtils.getSequenceKey(selectedImg))))) {
             Logging
@@ -428,18 +435,18 @@ public final class MapillaryLayer extends MVTLayer
         }
         final Point p = MainApplication.getMap().mapView.getPoint(drawnCoordinates);
         Composite composite = g.getComposite();
-        if (MapillaryImageUtils.getSequenceKey(selectedImg) != null
-            && !MapillaryImageUtils.getSequenceKey(selectedImg).equals(MapillaryImageUtils.getSequenceKey(img))) {
+        if (MapillaryImageUtils.getSequenceKey(selectedImg) != null && !Objects
+            .equals(MapillaryImageUtils.getSequenceKey(selectedImg), MapillaryImageUtils.getSequenceKey(img))) {
             g.setComposite(fadeComposite);
         }
         // Determine colors
         final Color directionC;
         final Image i;
-        if (selectedImg != null && selectedNodes.contains(img)) {
+        if (selectedImg != null && selectedImg.equals(img)) {
             i = SELECTED_IMAGE.getImage();
             directionC = MapillaryColorScheme.SEQ_HIGHLIGHTED_CA;
-        } else if (MapillaryImageUtils.getSequenceKey(selectedImg) != null
-            && MapillaryImageUtils.getSequenceKey(selectedImg).equals(MapillaryImageUtils.getSequenceKey(img))) {
+        } else if (MapillaryImageUtils.getSequenceKey(selectedImg) != null && Objects
+            .equals(MapillaryImageUtils.getSequenceKey(selectedImg), MapillaryImageUtils.getSequenceKey(img))) {
             directionC = MapillaryColorScheme.SEQ_SELECTED_CA;
             i = ACTIVE_SEQUENCE_SPRITE.getImage();
         } else {
@@ -480,7 +487,7 @@ public final class MapillaryLayer extends MVTLayer
 
         // Paint highlight for selected or highlighted images
         if (getData().getHighlighted().contains(img.getPrimitiveId())
-            || (selectedImg != null && selectedNodes.contains(img))) {
+            || (selectedImg != null && selectedImg.equals(img))) {
             g.setColor(Color.WHITE);
             g.setStroke(new BasicStroke(2));
             g.drawOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
@@ -728,5 +735,75 @@ public final class MapillaryLayer extends MVTLayer
 
     public void removeTileDownloadListener(final MVTTile.TileListener tileListener) {
         this.tileListeners.removeListener(tileListener);
+    }
+
+    public void setCurrentImage(final MapillaryNode image) {
+        this.image = image;
+        this.invalidate();
+        if (image == null) {
+            GuiHelper.runInEDT(() -> ImageViewerDialog.getInstance().displayImage(null));
+        } else {
+            MapillaryImageEntry entry = MapillaryImageEntry.getCachedEntry(image);
+            if (Objects.equals(entry, ImageViewerDialog.getCurrentImage())) {
+                entry.reload();
+            } else {
+                GuiHelper.runInEDT(() -> ImageViewerDialog.getInstance().displayImage(entry));
+            }
+        }
+    }
+
+    public MapillaryNode getImage() {
+        return this.image;
+    }
+
+    @Override
+    public void selectionChanged(
+        SelectionChangeEvent<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> event) {
+        final Collection<VectorNode> nodes = Utils.filteredCollection(event.getSelection(), VectorNode.class);
+        if (nodes.size() == 1) {
+            final VectorNode node = nodes.iterator().next();
+            IImageEntry<?> displayImage = ImageViewerDialog.getCurrentImage();
+            if (this.image != null && displayImage instanceof MapillaryImageEntry) {
+                final MapillaryNode tImage = this.image.getSequence().getNodes().stream()
+                    .filter(n -> MapillaryImageUtils.equals(n, node)).findFirst().orElse(null);
+                if (tImage != null) {
+                    this.setCurrentImage(tImage);
+                    return;
+                }
+            }
+            MainApplication.worker.submit(() -> downloadNode(node));
+            MainApplication.worker.submit(() -> this.downloadSequence(node));
+        }
+    }
+
+    /**
+     * Download a singular node. This is faster than downloading large sequences.
+     *
+     * @param node The node to download
+     */
+    private void downloadNode(VectorNode node) {
+        final MapillaryNode tImage = MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(node)).values()
+            .stream().flatMap(Collection::stream).filter(n -> MapillaryImageUtils.equals(n, node)).findFirst()
+            .orElse(null);
+        this.setCurrentImage(tImage);
+    }
+
+    /**
+     * Download the rest of the sequence
+     *
+     * @param node The node to download
+     */
+    private void downloadSequence(VectorNode node) {
+        final Collection<MapillarySequence> sequences = MapillaryDownloader
+            .downloadSequences(MapillaryImageUtils.getSequenceKey(node));
+        final List<MapillaryNode> downloadedNodes = sequences.stream().flatMap(seq -> seq.getNodes().stream())
+            .collect(Collectors.toList());
+        final MapillaryNode tImage = downloadedNodes.stream().filter(n -> MapillaryImageUtils.equals(n, node))
+            .findFirst()
+            .orElseGet(() -> downloadedNodes.stream().map(n -> new Pair<>(n, n.getCoor().distanceSq(node.getCoor())))
+                .max(Comparator.comparingDouble(pair -> pair.b)).map(pair -> pair.a).orElse(null));
+        if (Objects.equals(this.image, tImage)) {
+            this.setCurrentImage(tImage);
+        }
     }
 }

@@ -28,7 +28,7 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IWay;
-import org.openstreetmap.josm.data.vector.VectorWay;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryCaches;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
@@ -80,7 +80,7 @@ class JsonSequencesDecoderTest {
     void testDecodeSequence() throws IOException {
         final JsonObject json = OAuthUtils
             .getWithHeader(new URL(MapillaryURL.APIv4.getImagesBySequences("7nfcwfvjdtphz7yj6zat6a")));
-        final Collection<VectorWay> exampleSequences = JsonDecoder.decodeData(json,
+        final Collection<MapillarySequence> exampleSequences = JsonDecoder.decodeData(json,
             JsonSequencesDecoder::decodeSequence);
         assertEquals(1, exampleSequences.size());
         final IWay<?> exampleSequence = exampleSequences.iterator().next();
@@ -125,8 +125,8 @@ class JsonSequencesDecoderTest {
     @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.SERVER_ERROR)
     void testDecodeSequenceInvalid(final String toCheck) {
         final JsonValue json = toCheck != null ? stringToJsonValue(toCheck) : null;
-        final List<VectorWay> seq = JsonSequencesDecoder.decodeSequence(json);
-        assertTrue(seq.isEmpty(), seq.stream().map(VectorWay::getNodes).flatMap(Collection::stream)
+        final List<MapillarySequence> seq = JsonSequencesDecoder.decodeSequence(json);
+        assertTrue(seq.isEmpty(), seq.stream().map(IWay::getNodes).flatMap(Collection::stream)
             .mapToLong(IPrimitive::getUniqueId).mapToObj(Long::toString).collect(Collectors.joining(",")));
     }
 

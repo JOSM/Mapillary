@@ -29,16 +29,17 @@ import javax.json.JsonReader;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 
+import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
-import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
-import org.openstreetmap.josm.plugins.mapillary.utils.VectorDataSetUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoder;
@@ -61,40 +62,13 @@ public final class MapillaryDownloader {
      * @param images The images to download
      * @return The downloaded images
      */
-    public static Map<String, Collection<VectorNode>> downloadImages(long... images) {
-        return downloadImages(true, images);
-    }
-
-    /**
-     * Download a specific set of images
-     *
-     * @param updateSequences Update the sequences for the images as well
-     * @param images The images to download
-     * @return The downloaded images
-     */
-    public static Map<String, Collection<VectorNode>> downloadImages(final boolean updateSequences, long... images) {
-        return downloadImages(updateSequences, MapillaryLayer.getInstance().getData(), images);
-    }
-
-    /**
-     * Download a specific set of images
-     *
-     * @param updateSequences Update the sequences for the images as well
-     * @param dataSet The dataset to update
-     * @param images The images to download
-     * @return The downloaded images
-     */
-    public static Map<String, Collection<VectorNode>> downloadImages(final boolean updateSequences,
-        final VectorDataSet dataSet, long... images) {
+    public static Map<String, Collection<MapillaryNode>> downloadImages(long... images) {
         final byte step = 100;
-        final Map<String, Collection<VectorNode>> returnMap = new HashMap<>();
+        final Map<String, Collection<MapillaryNode>> returnMap = new HashMap<>();
         for (int i = 0; i <= images.length / step; i++) {
             final long[] imagesToGet = Arrays.copyOfRange(images, i * step, Math.min((i + 1) * step, images.length));
-            realDownloadImages(updateSequences, dataSet, imagesToGet)
-                .forEach((sequence, nodes) -> returnMap.merge(sequence, new ArrayList<>(nodes), (key, value) -> {
-                    value.addAll(nodes);
-                    return value;
-                }));
+            realDownloadImages(imagesToGet).forEach((sequence, nodes) -> returnMap
+                .computeIfAbsent(sequence, s -> new ArrayList<>(nodes.size())).addAll(nodes));
         }
         return returnMap;
     }
@@ -105,27 +79,16 @@ public final class MapillaryDownloader {
      * @param images The images to download and update
      */
     public static void downloadImages(final VectorNode... images) {
-        downloadImages(true, images);
-    }
-
-    /**
-     * Download a specific set of images
-     *
-     * @param updateSequences {@code true} to update sequences for the images as well
-     * @param images The images to download and update
-     */
-    public static void downloadImages(boolean updateSequences, final VectorNode... images) {
         final Map<VectorDataSet, List<VectorNode>> groups = Stream.of(images)
             .collect(Collectors.groupingBy(VectorNode::getDataSet));
         for (Map.Entry<VectorDataSet, List<VectorNode>> entry : groups.entrySet()) {
             final long[] ids = entry.getValue().stream().mapToLong(MapillaryImageUtils::getKey).filter(i -> i > 0)
                 .toArray();
-            downloadImages(updateSequences, entry.getKey(), ids);
+            downloadImages(ids);
         }
     }
 
-    private static Map<String, Collection<VectorNode>> realDownloadImages(final boolean updateSequences,
-        final VectorDataSet dataSet, final long... images) {
+    private static Map<String, Collection<MapillaryNode>> realDownloadImages(final long... images) {
         if (images.length == 0) {
             return Collections.emptyMap();
         }
@@ -135,13 +98,12 @@ public final class MapillaryDownloader {
             final JsonObject jsonObject = getUrlResponse(url);
             return jsonObject != null ? jsonObject.toString() : null;
         });
-        final Collection<VectorNode> nodes;
+        final Collection<MapillaryNode> nodes;
         if (stringJson != null) {
             try (JsonReader jsonReader = Json
                 .createReader(new ByteArrayInputStream(stringJson.getBytes(StandardCharsets.UTF_8)))) {
                 final JsonObject jsonObject = jsonReader.readObject();
-                nodes = JsonDecoder.decodeData(jsonObject,
-                    json -> JsonImageDetailsDecoder.decodeImageInfos(json, dataSet));
+                nodes = JsonDecoder.decodeData(jsonObject, json -> JsonImageDetailsDecoder.decodeImageInfos(json));
                 // OK. Cache each image separately as well.
                 if (images.length > 1) {
                     separatelyCacheDownloadedImages(jsonObject);
@@ -150,36 +112,15 @@ public final class MapillaryDownloader {
         } else {
             nodes = Collections.emptyList();
         }
-        final Map<String, Collection<VectorNode>> sequenceMap = Collections.unmodifiableMap(
+        return Collections.unmodifiableMap(
             nodes.stream().sorted(Comparator.comparingLong(image -> MapillaryImageUtils.getDate(image).toEpochMilli()))
-                .collect(Collector.of(HashMap<String, Collection<VectorNode>>::new,
+                .collect(Collector.of(HashMap<String, Collection<MapillaryNode>>::new,
                     (map, node) -> map
                         .computeIfAbsent(MapillaryImageUtils.getSequenceKey(node), key -> new ArrayList<>()).add(node),
                     (rMap, oMap) -> {
                         rMap.putAll(oMap);
                         return rMap;
                     })));
-        sequenceMap.forEach((sequenceKey, vectorNodes) -> {
-            Set<VectorWay> ways = vectorNodes.stream().map(VectorNode::getReferrers).filter(VectorWay.class::isInstance)
-                .map(VectorWay.class::cast).collect(Collectors.toSet());
-            if (ways.size() != 1 && updateSequences) {
-                ways.stream().filter(way -> way.getDataSet() != null)
-                    .forEach(way -> VectorDataSetUtils.tryWrite(way.getDataSet(), () -> {
-                        VectorDataSetUtils.removeObject(way);
-                        way.setNodes(Collections.emptyList());
-                        way.setDeleted(true);
-                    }));
-                vectorNodes.stream().map(MapillaryImageUtils::getSequenceKey).distinct()
-                    .map(MapillaryDownloader::downloadSequences).flatMap(Collection::stream).forEach(way -> {
-                        // We need to clear the cached bbox
-                        if (way.getDataSet() != null) {
-                            VectorDataSetUtils.removeObject(way);
-                        }
-                        VectorDataSetUtils.tryWrite(dataSet, () -> dataSet.addPrimitive(way));
-                    });
-            }
-        });
-        return sequenceMap;
     }
 
     private static void separatelyCacheDownloadedImages(final JsonObject jsonObject) {
@@ -208,7 +149,7 @@ public final class MapillaryDownloader {
      * @param sequences The sequences to download
      * @return The downloaded sequences
      */
-    public static Collection<VectorWay> downloadSequences(String... sequences) {
+    public static Collection<MapillarySequence> downloadSequences(String... sequences) {
         return downloadSequences(true, sequences);
     }
 
@@ -219,7 +160,7 @@ public final class MapillaryDownloader {
      * @param force Force the download if the sequence has already been downloaded once.
      * @return The downloaded sequences
      */
-    public static Collection<VectorWay> downloadSequences(boolean force, String... sequences) {
+    public static Collection<MapillarySequence> downloadSequences(boolean force, String... sequences) {
         // prevent infinite loops. See #20470.
         if (Arrays.stream(Thread.currentThread().getStackTrace())
             .skip(/* getStackTrace, downloadSequences(sequences), downloadSequences(force, sequences) */ 3)
@@ -231,11 +172,9 @@ public final class MapillaryDownloader {
             ? Stream.of(sequences).filter(Objects::nonNull).filter(s -> !s.trim().isEmpty()).toArray(String[]::new)
             : new String[0];
         if (MapillaryLayer.hasInstance() && !force) {
-            VectorDataSet data = MapillaryLayer.getInstance().getData();
-            Set<String> previousSequences = VectorDataSetUtils
-                .tryRead(data,
-                    () -> data.getWays().stream().map(MapillarySequenceUtils::getKey).collect(Collectors.toSet()))
-                .orElseGet(Collections::emptySet);
+            Set<String> previousSequences = MapillaryLayer.getInstance().getImage().getReferrers().stream()
+                .filter(IWay.class::isInstance).map(IWay.class::cast).map(MapillarySequenceUtils::getKey)
+                .collect(Collectors.toSet());
             toGet = Stream.of(toGet).filter(seq -> !previousSequences.contains(seq)).toArray(String[]::new);
         }
         if (toGet.length > 0) {
