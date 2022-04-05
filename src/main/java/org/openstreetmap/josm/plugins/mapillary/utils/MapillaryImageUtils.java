@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Predicate;
@@ -126,10 +125,14 @@ public final class MapillaryImageUtils {
      * @return The future with a potential image (image may be {@code null})
      */
     @Nonnull
-    public static Future<BufferedImageCacheEntry> getImage(@Nonnull INode image) {
+    public static CompletableFuture<BufferedImageCacheEntry> getImage(@Nonnull INode image,
+        @Nullable MapillaryCache.Type type) {
+        if (type == null) {
+            type = MapillaryCache.Type.getTypeForMemory(image);
+        }
         if (MapillaryImageUtils.IS_DOWNLOADABLE.test(image)) {
             CompletableFuture<BufferedImageCacheEntry> completableFuture = new CompletableFuture<>();
-            CacheUtils.submit(image, MapillaryCache.Type.getTypeForMemory(image),
+            CacheUtils.submit(image, type,
                 (entry, attributes, result) -> cacheImageFuture(image, completableFuture, entry));
             return completableFuture;
         } else if (getKey(image) > 0) {
@@ -137,7 +140,7 @@ public final class MapillaryImageUtils {
                 MapillaryUtils.getForkJoinPool().submit(() -> MapillaryDownloader.downloadImages(getKey(image))).get(10,
                     SwingUtilities.isEventDispatchThread() ? TimeUnit.SECONDS : TimeUnit.MINUTES);
                 if (MapillaryImageUtils.IS_DOWNLOADABLE.test(image)) {
-                    return getImage(image);
+                    return getImage(image, type);
                 }
             } catch (ExecutionException | TimeoutException e) {
                 Logging.error(e);

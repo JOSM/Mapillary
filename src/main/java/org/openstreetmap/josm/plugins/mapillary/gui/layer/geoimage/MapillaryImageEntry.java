@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.TimeZone;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -58,6 +59,7 @@ import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
 import org.openstreetmap.josm.gui.util.GuiHelper;
+import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ImageMode;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
@@ -86,8 +88,6 @@ public class MapillaryImageEntry
     private static final String MESSAGE_SEPARATOR = " — ";
     private final INode image;
     private final List<ImageDetection<?>> imageDetections = new ArrayList<>();
-    /** This exists to avoid getting the same image twice */
-    private Future<BufferedImageCacheEntry> futureImage;
     private SoftReference<BufferedImageCacheEntry> originalImage;
     private SoftReference<BufferedImage> layeredImage;
     private int exifOrientation = 1;
@@ -234,12 +234,29 @@ public class MapillaryImageEntry
         BufferedImageCacheEntry bufferedImageCacheEntry = Optional.ofNullable(this.originalImage)
             .map(SoftReference::get).orElse(null);
         if (bufferedImageCacheEntry == null) {
-            Future<BufferedImageCacheEntry> future = this.futureImage != null ? this.futureImage
-                : MapillaryImageUtils.getImage(this.image);
-            this.futureImage = future;
+            CompletableFuture<BufferedImageCacheEntry> bestForMemory = MapillaryImageUtils.getImage(this.image, null);
+            Rectangle rect = ImageViewerDialog.getInstance().getBounds();
+            final MapillaryCache.Type smallType;
+            if (rect.width < MapillaryCache.Type.THUMB_256.getWidth(null)
+                && rect.height < MapillaryCache.Type.THUMB_256.getHeight(null)) {
+                smallType = MapillaryCache.Type.THUMB_256;
+            } else {
+                smallType = MapillaryCache.Type.THUMB_1024;
+            }
+            Future<BufferedImageCacheEntry> quickLoad = bestForMemory.isDone() ? bestForMemory
+                : MapillaryImageUtils.getImage(this.image, smallType);
+            try {
+                bestForMemory.get(100, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                Logging.trace(e);
+                Thread.currentThread().interrupt();
+            } catch (ExecutionException | TimeoutException e) {
+                Logging.trace(e);
+            }
+            quickLoad = bestForMemory.isDone() ? bestForMemory : quickLoad;
             try {
                 // This should only every be called on a non-UI thread.
-                bufferedImageCacheEntry = Optional.ofNullable(future.get(1, TimeUnit.MINUTES))
+                bufferedImageCacheEntry = Optional.ofNullable(quickLoad.get(10, TimeUnit.SECONDS))
                     .orElseThrow(() -> new IOException(new NullPointerException("Returned image should not be null")));
                 MapillaryUtils.getForkJoinPool().execute(() -> preCacheImages(this));
                 this.originalImage = new SoftReference<>(bufferedImageCacheEntry);
@@ -250,8 +267,15 @@ public class MapillaryImageEntry
                 Thread.currentThread().interrupt();
                 throw new IOException(exception);
             } finally {
-                if (future.equals(this.futureImage)) {
-                    this.futureImage = null;
+                if (!this.image.getReferrers().isEmpty() && !bestForMemory.equals(quickLoad)) {
+                    bestForMemory.whenComplete((entry, exception) -> {
+                        this.originalImage = new SoftReference<>(entry);
+                        if (this.layeredImage != null) {
+                            this.layeredImage.clear();
+                        }
+                        this.updateExifInformation(entry.getContent());
+                        this.reload();
+                    });
                 }
             }
         }
@@ -287,8 +311,7 @@ public class MapillaryImageEntry
                 Math.min(wayNodes.size(), index + realPrefetch));
             nodes.stream().filter(node -> node.getUniqueId() > 0).map(MapillaryImageEntry::getCachedEntry)
                 .forEach(imageEntry -> {
-                    final Future<BufferedImageCacheEntry> future = MapillaryImageUtils.getImage(imageEntry.image);
-                    imageEntry.futureImage = future;
+                    final Future<BufferedImageCacheEntry> future = MapillaryImageUtils.getImage(imageEntry.image, null);
                     try {
                         imageEntry.originalImage = new SoftReference<>(future.get());
                     } catch (InterruptedException e) {
@@ -296,10 +319,6 @@ public class MapillaryImageEntry
                         Thread.currentThread().interrupt();
                     } catch (ExecutionException e) {
                         Logging.error(e);
-                    } finally {
-                        if (future.equals(imageEntry.futureImage)) {
-                            imageEntry.futureImage = null;
-                        }
                     }
                 });
         }
@@ -509,10 +528,12 @@ public class MapillaryImageEntry
     private void updateImageEntry() {
         // Clone this entry. Needed to ensure that the image display refreshes.
         final MapillaryImageEntry temporaryImageEntry = new MapillaryImageEntry(this);
-        GuiHelper.runInEDT(() -> {
-            ImageViewerDialog.getInstance().displayImage(temporaryImageEntry);
-            ImageViewerDialog.getInstance().displayImage(this);
-        });
+        if (this.equals(ImageViewerDialog.getCurrentImage())) {
+            GuiHelper.runInEDT(() -> {
+                ImageViewerDialog.getInstance().displayImage(temporaryImageEntry);
+                ImageViewerDialog.getInstance().displayImage(this);
+            });
+        }
     }
 
     // FIXME copied from ImageEntry
