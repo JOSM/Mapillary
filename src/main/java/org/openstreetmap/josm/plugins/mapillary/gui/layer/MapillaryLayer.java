@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
@@ -286,13 +287,16 @@ public final class MapillaryLayer extends MVTLayer
     public void paint(final Graphics2D g, final MapView mv, final Bounds box) {
         final Lock lock = this.getData().getReadLock();
         try {
-            lock.lockInterruptibly();
-            this.paintWithLock(g, mv, box);
+            if (lock.tryLock(100, TimeUnit.MILLISECONDS)) {
+                try {
+                    this.paintWithLock(g, mv, box);
+                } finally {
+                    lock.unlock();
+                }
+            }
         } catch (InterruptedException e) {
             Logging.error(e);
             Thread.currentThread().interrupt();
-        } finally {
-            lock.unlock();
         }
     }
 
@@ -608,7 +612,15 @@ public final class MapillaryLayer extends MVTLayer
 
     @Override
     public String getToolTipText() {
-        return I18n.tr("{0} images in {1} sequences", getData().getNodes().size(), getData().getWays().size());
+        final Lock readLock = getData().getReadLock();
+        if (readLock.tryLock()) {
+            try {
+                return I18n.tr("{0} images in {1} sequences", getData().getNodes().size(), getData().getWays().size());
+            } finally {
+                readLock.unlock();
+            }
+        }
+        return I18n.tr("Dataset is currently being updated");
     }
 
     @Override

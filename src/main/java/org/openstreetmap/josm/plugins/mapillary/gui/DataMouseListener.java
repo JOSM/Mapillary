@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
 import javax.swing.event.MouseInputAdapter;
@@ -46,7 +47,14 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
         }
         for (MVTLayer layer : MainApplication.getLayerManager().getLayersOfType(MVTLayer.class)) {
             if ((layer instanceof MapillaryLayer || layer instanceof PointObjectLayer) && layer.isVisible()) {
-                mouseClickedInner(e, layer, searchBBox);
+                final Lock readLock = layer.getData().getReadLock();
+                if (readLock.tryLock()) {
+                    try {
+                        mouseClickedInner(e, layer, searchBBox);
+                    } finally {
+                        readLock.unlock();
+                    }
+                }
             }
         }
     }
@@ -87,20 +95,27 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
         final BBox searchBBox = getSmallBBox(e.getPoint());
         for (MVTLayer layer : MainApplication.getLayerManager().getLayersOfType(MVTLayer.class)) {
             if (layer instanceof MapillaryLayer || layer instanceof PointObjectLayer) {
-                Collection<VectorNode> nodes = layer.getData().searchNodes(searchBBox);
-                if (!nodes.isEmpty()) {
-                    layer.getData()
-                        .setHighlighted(nodes.stream().map(IPrimitive::getPrimitiveId).collect(Collectors.toSet()));
-                    layer.invalidate();
-                    continue;
-                }
-                Collection<VectorWay> ways = layer.getData().searchWays(searchBBox);
-                if (!ways.isEmpty()) {
-                    layer.getData()
-                        .setHighlighted(ways.stream().map(IPrimitive::getPrimitiveId).collect(Collectors.toSet()));
-                    layer.invalidate();
-                } else {
-                    layer.getData().setHighlighted(Collections.emptyList());
+                final Lock readLock = layer.getData().getReadLock();
+                if (readLock.tryLock()) {
+                    try {
+                        Collection<VectorNode> nodes = layer.getData().searchNodes(searchBBox);
+                        if (!nodes.isEmpty()) {
+                            layer.getData().setHighlighted(
+                                nodes.stream().map(IPrimitive::getPrimitiveId).collect(Collectors.toSet()));
+                            layer.invalidate();
+                            continue;
+                        }
+                        Collection<VectorWay> ways = layer.getData().searchWays(searchBBox);
+                        if (!ways.isEmpty()) {
+                            layer.getData().setHighlighted(
+                                ways.stream().map(IPrimitive::getPrimitiveId).collect(Collectors.toSet()));
+                            layer.invalidate();
+                        } else {
+                            layer.getData().setHighlighted(Collections.emptyList());
+                        }
+                    } finally {
+                        readLock.unlock();
+                    }
                 }
             }
         }
