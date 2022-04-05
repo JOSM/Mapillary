@@ -2,20 +2,32 @@ package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.WeakHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 
+import org.openstreetmap.josm.data.osm.DataSet;
+import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.data.osm.IPrimitive;
+import org.openstreetmap.josm.data.osm.IRelation;
+import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.osm.OsmData;
+import org.openstreetmap.josm.data.osm.QuadBucketPrimitiveStore;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorDataStore;
+import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorPrimitive;
+import org.openstreetmap.josm.data.vector.VectorRelation;
+import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.ReflectionUtils;
@@ -123,7 +135,7 @@ public class VectorDataSetUtils {
      * @param object The object to remove
      * @param <O> The type of object to remove
      */
-    public static <O extends VectorPrimitive> void removeObject(final O object) {
+    public synchronized static <O extends VectorPrimitive> void removeObject(final O object) {
         if (object.getDataSet() != null) {
             final VectorDataSet vectorDataSet = object.getDataSet();
             try {
@@ -146,6 +158,68 @@ public class VectorDataSetUtils {
                 Logging.error(reflectiveOperationException);
                 throw new JosmRuntimeException(reflectiveOperationException);
             }
+        }
+    }
+
+    public static synchronized <P extends IPrimitive> void refreshQuadbucketIndex(final P object) {
+        Objects.requireNonNull(object);
+        Objects.requireNonNull(object.getDataSet());
+        Object ds = object.getDataSet();
+        try {
+            final Field f;
+            if (ds instanceof DataSet) {
+                f = ds.getClass().getDeclaredField("store");
+                ReflectionUtils.setObjectsAccessible(f);
+            } else if (ds instanceof VectorDataSet) {
+                final Field c = ds.getClass().getDeclaredField("customDataStore");
+                ReflectionUtils.setObjectsAccessible(c);
+                final VectorDataStore dsStore = (VectorDataStore) c.get(ds);
+                f = dsStore.getClass().getSuperclass().getDeclaredField("store");
+                ReflectionUtils.setObjectsAccessible(f);
+                QuadBucketPrimitiveStore<VectorNode, VectorWay, VectorRelation> qb = (QuadBucketPrimitiveStore<VectorNode, VectorWay, VectorRelation>) f
+                    .get(dsStore);
+                // Account for cases where the primitive isn't "custom" yet.
+                if ((object instanceof VectorNode && !qb.containsNode((VectorNode) object))
+                    || (object instanceof VectorWay && !qb.containsWay((VectorWay) object))
+                    || (object instanceof VectorRelation) && !qb.containsRelation((VectorRelation) object)) {
+                    final VectorDataSet vds = (VectorDataSet) ds;
+                    tryWrite((VectorDataSet) ds, () -> {
+                        removeObject((VectorPrimitive) object);
+                        vds.addPrimitive((VectorPrimitive) object);
+                    });
+                    return;
+                }
+                ds = dsStore;
+            } else {
+                throw new JosmRuntimeException("Unknown dataset type: " + ds.getClass().getName());
+            }
+            final QuadBucketPrimitiveStore<? extends P, ? extends P, ? extends P> store = (QuadBucketPrimitiveStore<? extends P, ? extends P, ? extends P>) f
+                .get(ds);
+
+            if (object instanceof INode) {
+                final Method m = QuadBucketPrimitiveStore.class.getDeclaredMethod("reindexNode", INode.class,
+                    Consumer.class, Consumer.class, Consumer.class);
+                ReflectionUtils.setObjectsAccessible(m);
+                m.invoke(store, (INode) object, (Consumer<INode>) node -> {
+                    /* Do nothing */}, (Consumer<IWay<?>>) way -> {
+                        /* Do nothing */}, (Consumer<IRelation<?>>) rel -> {
+                            /* Do nothing */});
+            } else if (object instanceof IWay) {
+                final Method m = QuadBucketPrimitiveStore.class.getDeclaredMethod("reindexWay", IWay.class,
+                    Consumer.class, Consumer.class);
+                ReflectionUtils.setObjectsAccessible(m);
+                m.invoke(store, (IWay) object, (Consumer<IWay<?>>) way -> {
+                    /* Do nothing */}, (Consumer<IRelation<?>>) rel -> {
+                        /* Do nothing */});
+            } else if (object instanceof IRelation) {
+                final Method m = QuadBucketPrimitiveStore.class.getDeclaredMethod("reindexRelation", IRelation.class,
+                    Consumer.class);
+                ReflectionUtils.setObjectsAccessible(m);
+                m.invoke(store, (IRelation) object, (Consumer<IRelation<?>>) rel -> {
+                    /* Do nothing */});
+            }
+        } catch (ReflectiveOperationException e) {
+            throw new JosmRuntimeException(e);
         }
     }
 
