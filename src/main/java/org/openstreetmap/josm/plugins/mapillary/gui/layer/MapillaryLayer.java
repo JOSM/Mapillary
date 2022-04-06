@@ -769,7 +769,8 @@ public final class MapillaryLayer extends MVTLayer
                 ? ImageViewerDialog.getCurrentImage()
                 : null;
             final MapillaryNode currentImage = this.image;
-            if (currentImage != null && displayImage instanceof MapillaryImageEntry) {
+            if (currentImage != null && displayImage instanceof MapillaryImageEntry
+                && currentImage.getSequence() != null) {
                 final MapillaryNode tImage = currentImage.getSequence().getNodes().stream()
                     .filter(n -> MapillaryImageUtils.equals(n, node)).findFirst().orElse(null);
                 if (tImage != null) {
@@ -777,7 +778,8 @@ public final class MapillaryLayer extends MVTLayer
                     return;
                 }
             }
-            MainApplication.worker.execute(() -> downloadNode(node));
+            // Try to use a worker with an available thread
+            MapillaryUtils.getForkJoinPool().execute(() -> downloadNode(node));
             // Run the rest of the sequence get in a non-blocking pool
             MapillaryUtils.getForkJoinPool().execute(() -> this.downloadSequence(node));
         }
