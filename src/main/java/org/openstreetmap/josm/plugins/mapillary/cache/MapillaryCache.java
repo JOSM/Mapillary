@@ -6,12 +6,14 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.stream.Stream;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
@@ -226,14 +228,13 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
      * @param image
      *        The image.
      */
-    public MapillaryCache(final INode image, final Type type) {
+    public MapillaryCache(@Nonnull final INode image, @Nonnull final Type type) {
         super(Caches.FULL_IMAGE_CACHE.getICacheAccess(),
             new TileJobOptions(50_000, 50_000, new HashMap<>(), TimeUnit.HOURS.toSeconds(4)), DEFAULT_JOB_EXECUTOR);
+        Objects.requireNonNull(image);
+        Objects.requireNonNull(type);
         try {
-            if (image == null) {
-                this.key = null;
-                this.url = null;
-            } else if (image.hasKey(type.getKey())) {
+            if (image.hasKey(type.getKey())) {
                 this.key = Long.toString(image.getUniqueId()) + '.' + type.width;
                 this.url = new URL(image.get(type.getKey()));
             } else {

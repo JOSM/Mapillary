@@ -765,17 +765,21 @@ public final class MapillaryLayer extends MVTLayer
         final Collection<VectorNode> nodes = Utils.filteredCollection(event.getSelection(), VectorNode.class);
         if (nodes.size() == 1) {
             final VectorNode node = nodes.iterator().next();
-            IImageEntry<?> displayImage = ReflectionUtils.hasImageViewerDialog() ? ImageViewerDialog.getCurrentImage() : null;
-            if (this.image != null && displayImage instanceof MapillaryImageEntry) {
-                final MapillaryNode tImage = this.image.getSequence().getNodes().stream()
+            final IImageEntry<?> displayImage = ReflectionUtils.hasImageViewerDialog()
+                ? ImageViewerDialog.getCurrentImage()
+                : null;
+            final MapillaryNode currentImage = this.image;
+            if (currentImage != null && displayImage instanceof MapillaryImageEntry) {
+                final MapillaryNode tImage = currentImage.getSequence().getNodes().stream()
                     .filter(n -> MapillaryImageUtils.equals(n, node)).findFirst().orElse(null);
                 if (tImage != null) {
                     this.setCurrentImage(tImage);
                     return;
                 }
             }
-            MainApplication.worker.submit(() -> downloadNode(node));
-            MainApplication.worker.submit(() -> this.downloadSequence(node));
+            MainApplication.worker.execute(() -> downloadNode(node));
+            // Run the rest of the sequence get in a non-blocking pool
+            MapillaryUtils.getForkJoinPool().execute(() -> this.downloadSequence(node));
         }
     }
 

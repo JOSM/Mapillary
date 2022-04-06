@@ -74,18 +74,30 @@ public final class MapillaryDownloader {
     }
 
     /**
+     * Download a specific image
+     *
+     * @param image The image to download
+     * @return The downloaded image
+     */
+    public static MapillaryNode downloadImage(long image) {
+        return downloadImages(image).values().stream().flatMap(Collection::stream).findFirst().orElse(null);
+    }
+
+    /**
      * Download a specific set of images
      *
      * @param images The images to download and update
      */
-    public static void downloadImages(final VectorNode... images) {
+    public static Collection<MapillaryNode> downloadImages(final VectorNode... images) {
         final Map<VectorDataSet, List<VectorNode>> groups = Stream.of(images)
             .collect(Collectors.groupingBy(VectorNode::getDataSet));
+        final List<MapillaryNode> nodes = new ArrayList<>(images.length);
         for (Map.Entry<VectorDataSet, List<VectorNode>> entry : groups.entrySet()) {
             final long[] ids = entry.getValue().stream().mapToLong(MapillaryImageUtils::getKey).filter(i -> i > 0)
                 .toArray();
-            downloadImages(ids);
+            downloadImages(ids).values().forEach(nodes::addAll);
         }
+        return nodes;
     }
 
     private static Map<String, Collection<MapillaryNode>> realDownloadImages(final long... images) {
@@ -98,12 +110,15 @@ public final class MapillaryDownloader {
             final JsonObject jsonObject = getUrlResponse(url);
             return jsonObject != null ? jsonObject.toString() : null;
         });
-        final Collection<MapillaryNode> nodes;
+        final List<MapillaryNode> nodes;
         if (stringJson != null) {
             try (JsonReader jsonReader = Json
                 .createReader(new ByteArrayInputStream(stringJson.getBytes(StandardCharsets.UTF_8)))) {
                 final JsonObject jsonObject = jsonReader.readObject();
-                nodes = JsonDecoder.decodeData(jsonObject, json -> JsonImageDetailsDecoder.decodeImageInfos(json));
+                nodes = new ArrayList<>(JsonDecoder.decodeData(jsonObject, JsonImageDetailsDecoder::decodeImageInfos));
+                final List<Long> imageList = Arrays.stream(images).boxed().collect(Collectors.toList());
+                // Needed just in case return order is important (i.e., this is being used for sequence creation)
+                nodes.sort(Comparator.comparingInt(img -> imageList.indexOf(MapillaryImageUtils.getKey(img))));
                 // OK. Cache each image separately as well.
                 if (images.length > 1) {
                     separatelyCacheDownloadedImages(jsonObject);
@@ -112,15 +127,17 @@ public final class MapillaryDownloader {
         } else {
             nodes = Collections.emptyList();
         }
-        return Collections.unmodifiableMap(
-            nodes.stream().sorted(Comparator.comparingLong(image -> MapillaryImageUtils.getDate(image).toEpochMilli()))
-                .collect(Collector.of(HashMap<String, Collection<MapillaryNode>>::new,
-                    (map, node) -> map
-                        .computeIfAbsent(MapillaryImageUtils.getSequenceKey(node), key -> new ArrayList<>()).add(node),
-                    (rMap, oMap) -> {
-                        rMap.putAll(oMap);
-                        return rMap;
-                    })));
+        return Collections.unmodifiableMap(nodes.stream()/*
+                                                          * .sorted(Comparator.comparingLong(image ->
+                                                          * MapillaryImageUtils.getDate(image).toEpochMilli()))
+                                                          */
+            .collect(Collector.of(
+                HashMap<String, Collection<MapillaryNode>>::new, (map, node) -> map
+                    .computeIfAbsent(MapillaryImageUtils.getSequenceKey(node), key -> new ArrayList<>()).add(node),
+                (rMap, oMap) -> {
+                    rMap.putAll(oMap);
+                    return rMap;
+                })));
     }
 
     private static void separatelyCacheDownloadedImages(final JsonObject jsonObject) {

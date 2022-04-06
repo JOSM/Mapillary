@@ -23,13 +23,14 @@ import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorWay;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.AwaitThreadFinish;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryCaches;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMockErrors;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoderTest;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 import org.openstreetmap.josm.tools.Logging;
@@ -46,17 +47,14 @@ class MapillaryCacheTest {
     @Test
     void test() {
         // Use 135511895288847 since that is an image we have real information for
-        VectorNode image = JsonImageDetailsDecoderTest.createDownloadedImage(135511895288847L,
-            new LatLon(39.068354972222, -108.57081597222), 0, false);
-        VectorDataSet vectorDataSet = new VectorDataSet();
-        vectorDataSet.addPrimitive(image);
+        MapillaryNode image = MapillaryDownloader.downloadImage(135511895288847L);
         MapillaryCache cache = new MapillaryCache(image, MapillaryCache.Type.ORIGINAL);
         assertNotNull(cache.getUrl());
         assertNotNull(cache.getCacheKey());
 
         assertFalse(cache.isObjectLoadable());
 
-        assertThrows(IllegalArgumentException.class, () -> new MapillaryCache(null, MapillaryCache.Type.ORIGINAL));
+        assertThrows(NullPointerException.class, () -> new MapillaryCache(null, MapillaryCache.Type.ORIGINAL));
     }
 
     /**

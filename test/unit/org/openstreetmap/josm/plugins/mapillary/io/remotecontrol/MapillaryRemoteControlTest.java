@@ -17,7 +17,6 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.io.remotecontrol.RemoteControl;
 import org.openstreetmap.josm.io.remotecontrol.handler.RequestHandler;
@@ -119,11 +118,9 @@ class MapillaryRemoteControlTest {
 
         final String id = request.replaceAll(".*=Mapillary/", "");
         if (request.startsWith("photo")) {
-            assertTrue(MapillaryLayer.getInstance().getData().getNodes().stream().mapToLong(IPrimitive::getId)
-                .mapToObj(Long::toString).anyMatch(id::equals));
+            assertEquals(Long.valueOf(id), MapillaryLayer.getInstance().getImage().getId());
         } else {
-            assertTrue(MapillaryLayer.getInstance().getData().getNodes().stream()
-                .map(MapillaryImageUtils::getSequenceKey).anyMatch(id::equals));
+            assertEquals(id, MapillaryImageUtils.getSequenceKey(MapillaryLayer.getInstance().getImage()));
         }
         assertEquals(1, MainApplication.getLayerManager().getLayersOfType(MapillaryLayer.class).size());
     }

@@ -19,6 +19,7 @@ import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.Tag;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.geoimage.MapillaryImageEntry;
 import org.openstreetmap.josm.testutils.annotations.FullPreferences;
 import org.openstreetmap.josm.testutils.mockers.JOptionPaneSimpleMocker;
@@ -31,9 +32,10 @@ class AddTagToPrimitiveActionTest {
     static class ImageViewerDialogMock extends MockUp<ImageViewerDialog> {
         @Mock
         public static IImageEntry<?> getCurrentImage() {
-            Node node = new Node(LatLon.ZERO);
+            MapillaryNode node = new MapillaryNode();
+            node.setCoor(LatLon.ZERO);
             node.setOsmId(135511895288847L, 1);
-            return new MapillaryImageEntry(TestUtils.addFakeDataSet(node));
+            return new MapillaryImageEntry(node);
         }
     }
 

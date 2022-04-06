@@ -15,8 +15,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.openstreetmap.josm.actions.AutoScaleAction;
-import org.openstreetmap.josm.data.osm.INode;
-import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.io.remotecontrol.PermissionPrefWithDefault;
 import org.openstreetmap.josm.io.remotecontrol.handler.RequestHandler;
@@ -90,18 +88,17 @@ public class MapillaryRemoteControl extends RequestHandler.RawURLParseRequestHan
             throw new RequestHandlerBadRequestException(tr("No known image provider used"));
         }
         // This will create a mapillary layer if one does not already exist
-        Collection<INode> nodes = new HashSet<>();
+        Collection<MapillaryNode> nodes = new HashSet<>();
         if (mapillaryImages.length > 0) {
             Map<String, Collection<MapillaryNode>> images = GuiHelper
                 .runInEDTAndWaitAndReturn(() -> MapillaryDownloader.downloadImages(mapillaryImages));
             mapillarySequences.addAll(images.keySet());
-            nodes.addAll(images.entrySet().stream().flatMap(e -> e.getValue().stream()).map(INode::getCoor)
-                .filter(Objects::nonNull).map(Node::new).collect(Collectors.toList()));
-            List<INode> addedImages = images.entrySet().stream().flatMap(entry -> entry.getValue().stream())
+            images.values().forEach(nodes::addAll);
+            List<MapillaryNode> addedImages = images.entrySet().stream().flatMap(entry -> entry.getValue().stream())
                 .collect(Collectors.toList());
             if (addedImages.size() == 1) {
-                GuiHelper.runInEDTAndWait(
-                    () -> MapillaryLayer.getInstance().getData().setSelected(addedImages.iterator().next()));
+                GuiHelper
+                    .runInEDTAndWait(() -> MapillaryLayer.getInstance().setCurrentImage(addedImages.iterator().next()));
                 // TODO zoom to selected image?
             }
         }
@@ -114,6 +111,9 @@ public class MapillaryRemoteControl extends RequestHandler.RawURLParseRequestHan
                 .orElseGet(Collections::emptyList);
             if (nodes.isEmpty()) {
                 nodes.addAll(tNodes);
+                if (!tNodes.isEmpty()) {
+                    GuiHelper.runInEDTAndWait(() -> MapillaryLayer.getInstance().setCurrentImage(tNodes.get(0)));
+                }
             }
         }
         nodes.removeIf(Objects::isNull);

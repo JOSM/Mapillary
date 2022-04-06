@@ -100,9 +100,9 @@ public final class MapillaryURL {
 
         /** Default image information to get */
         private static final MapillaryImageUtils.ImageProperties[] DEFAULT_IMAGE_INFORMATION = Stream
-            .of(MapillaryImageUtils.ImageProperties.ALTITUDE, MapillaryImageUtils.ImageProperties.BEST_IMAGE,
-                MapillaryImageUtils.ImageProperties.CAPTURED_AT, MapillaryImageUtils.ImageProperties.CAMERA_TYPE,
-                MapillaryImageUtils.ImageProperties.COMPASS_ANGLE,
+            .of(MapillaryImageUtils.ImageProperties.ALTITUDE, MapillaryImageUtils.ImageProperties.ATOMIC_SCALE,
+                MapillaryImageUtils.ImageProperties.BEST_IMAGE, MapillaryImageUtils.ImageProperties.CAPTURED_AT,
+                MapillaryImageUtils.ImageProperties.CAMERA_TYPE, MapillaryImageUtils.ImageProperties.COMPASS_ANGLE,
                 MapillaryImageUtils.ImageProperties.COMPUTED_ALTITUDE,
                 MapillaryImageUtils.ImageProperties.COMPUTED_COMPASS_ANGLE,
                 MapillaryImageUtils.ImageProperties.COMPUTED_GEOMETRY,

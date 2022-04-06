@@ -59,9 +59,12 @@ public final class JsonSequencesDecoder {
                 : ((JsonNumber) value).longValue())
             .distinct().toArray();
         Map<String, Collection<MapillaryNode>> images = MapillaryDownloader.downloadImages(imageIds);
-        if (images.size() != 1) {
+        if (images.size() > 1) {
             throw new IllegalStateException(
                 "Images cannot belong to more than one sequence: " + String.join(", ", images.keySet()));
+        } else if (images.isEmpty()) {
+            Logging.error("No sequences in json");
+            return Collections.emptyList();
         }
         Map.Entry<String, Collection<MapillaryNode>> nodes = images.entrySet().iterator().next();
         if (nodes.getValue().isEmpty()) {

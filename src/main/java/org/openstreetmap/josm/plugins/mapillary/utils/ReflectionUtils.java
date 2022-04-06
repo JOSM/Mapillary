@@ -45,6 +45,7 @@ public final class ReflectionUtils {
 
     /**
      * Check if the image viewer dialog has been instantiated
+     *
      * @return {@code true} if the image viewer dialog is present
      */
     public static boolean hasImageViewerDialog() {

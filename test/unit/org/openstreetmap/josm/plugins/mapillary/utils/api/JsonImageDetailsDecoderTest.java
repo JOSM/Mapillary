@@ -13,7 +13,9 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.LongStream;
 
@@ -31,6 +33,7 @@ import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.gui.util.GuiHelper;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMockErrors;
@@ -59,20 +62,16 @@ public class JsonImageDetailsDecoderTest {
         MapillaryProperties.USE_COMPUTED_LOCATIONS.put(computedLocations);
         final long[] images = new long[] { 135511895288847L };
 
-        final VectorDataSet data = new VectorDataMock();
-        LongStream.of(images)
-            .mapToObj(image -> createDownloadedImage(image, new LatLon(39.068354912098, -108.57081597085), 0, false))
-            .forEach(data::addPrimitive);
-
+        List<MapillaryNode> downloadedImages = new ArrayList<>();
         for (long image : images) {
             final URL url = new URL(
                 MapillaryURL.APIv4.getImageInformation(image, MapillaryImageUtils.ImageProperties.values()));
-            JsonDecoder.decodeData(OAuthUtils.getWithHeader(url),
-                value -> JsonImageDetailsDecoder.decodeImageInfos(value));
+            downloadedImages.addAll(
+                JsonDecoder.decodeData(OAuthUtils.getWithHeader(url), JsonImageDetailsDecoder::decodeImageInfos));
         }
 
-        final VectorNode i_135511895288847 = data.getNodes().stream().filter(image -> 135511895288847L == image.getId())
-            .findFirst().orElse(null);
+        final MapillaryNode i_135511895288847 = downloadedImages.stream()
+            .filter(image -> 135511895288847L == image.getId()).findFirst().orElse(null);
         assertNotNull(i_135511895288847);
         // JOSM currently (2021-06-09) only stores timestamps to the second level, not millisecond level
         assertEquals(Instant.ofEpochMilli(1_563_721_072_184L).getEpochSecond(),
@@ -109,10 +108,9 @@ public class JsonImageDetailsDecoderTest {
             + "\"thumb_256_url\": \"https://example.org/thumb_256_url\"" + "}]}";
         try (JsonReader jsonReader = Json
             .createReader(new ByteArrayInputStream(jsonString.getBytes(StandardCharsets.UTF_8)))) {
-            final VectorDataSet data = new VectorDataMock();
             Logging.clearLastErrorAndWarnings();
-            assertDoesNotThrow(() -> JsonDecoder.decodeData(jsonReader.readObject(),
-                json -> JsonImageDetailsDecoder.decodeImageInfos(json)));
+            assertDoesNotThrow(
+                () -> JsonDecoder.decodeData(jsonReader.readObject(), JsonImageDetailsDecoder::decodeImageInfos));
             // This is needed to ensure that the EDT finishes.
             AtomicBoolean edtFinished = new AtomicBoolean();
             GuiHelper.runInEDTAndWait(() -> edtFinished.set(true));
@@ -135,8 +133,8 @@ public class JsonImageDetailsDecoderTest {
         for (long image : images) {
             final URL url = new URL(
                 MapillaryURL.APIv4.getImageInformation(image, MapillaryImageUtils.ImageProperties.values()));
-            assertDoesNotThrow(() -> JsonDecoder.decodeData(OAuthUtils.getWithHeader(url),
-                value -> JsonImageDetailsDecoder.decodeImageInfos(value)));
+            assertDoesNotThrow(
+                () -> JsonDecoder.decodeData(OAuthUtils.getWithHeader(url), JsonImageDetailsDecoder::decodeImageInfos));
         }
     }
 
@@ -165,22 +163,18 @@ public class JsonImageDetailsDecoderTest {
             .decodeImageInfos(JsonUtil.string2jsonObject("{\"type\":\"FeatureCollection\", \"features\":0}"));
         JsonImageDetailsDecoder
             .decodeImageInfos(JsonUtil.string2jsonObject("{\"type\":\"FeatureCollection\", \"features\":[0, null]}"));
-        assertEquals(0, data.getNumImageRetrievals());
     }
 
     @Test
     void testInvalidImageInfo() throws NoSuchMethodException, SecurityException, IllegalAccessException,
         IllegalArgumentException, InvocationTargetException {
-        Method decodeImageInfo = JsonImageDetailsDecoder.class.getDeclaredMethod("decodeImageInfo", JsonObject.class,
-            org.openstreetmap.josm.data.vector.VectorDataSet.class);
-        VectorDataMock data = new VectorDataMock();
+        Method decodeImageInfo = JsonImageDetailsDecoder.class.getDeclaredMethod("decodeImageInfo", JsonObject.class);
         decodeImageInfo.setAccessible(true);
-        decodeImageInfo.invoke(null, null, data);
-        decodeImageInfo.invoke(null, JsonUtil.string2jsonObject("{}"), null);
-        decodeImageInfo.invoke(null, JsonUtil.string2jsonObject("{\"properties\":null}"), data);
-        decodeImageInfo.invoke(null, JsonUtil.string2jsonObject("{\"properties\":{}}"), data);
-        decodeImageInfo.invoke(null, JsonUtil.string2jsonObject("{\"properties\":{\"key\":\"arbitrary_key\"}}"), data);
-        assertEquals(0, data.getNumImageRetrievals());
+        decodeImageInfo.invoke(null, (JsonObject) null);
+        decodeImageInfo.invoke(null, JsonUtil.string2jsonObject("{}"));
+        decodeImageInfo.invoke(null, JsonUtil.string2jsonObject("{\"properties\":null}"));
+        decodeImageInfo.invoke(null, JsonUtil.string2jsonObject("{\"properties\":{}}"));
+        decodeImageInfo.invoke(null, JsonUtil.string2jsonObject("{\"properties\":{\"key\":\"arbitrary_key\"}}"));
     }
 
     static class VectorDataMock extends org.openstreetmap.josm.data.vector.VectorDataSet {

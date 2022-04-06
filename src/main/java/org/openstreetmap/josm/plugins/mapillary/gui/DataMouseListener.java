@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.event.MouseInputAdapter;
 
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -76,7 +78,7 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
         } else if (layer instanceof MapillaryLayer) {
             if (e.getClickCount() >= MapillaryProperties.DESELECT_CLICK_COUNT.get()) {
                 layer.getData().clearSelection();
-                layer.getData().clearSelection();
+                ((MapillaryLayer) layer).setCurrentImage(null);
             }
         } else {
             Collection<VectorWay> ways = layer.getData().searchWays(searchBBox);
@@ -125,6 +127,9 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
     }
 
     private static List<? extends AbstractPrimitive> searchNodes(MVTLayer layer, BBox searchBBox) {
+        if (searchBBox == null) {
+            return Collections.emptyList();
+        }
         if (layer instanceof MapillaryLayer) {
             final MapillaryNode image = ((MapillaryLayer) layer).getImage();
             if (image != null) {
@@ -145,7 +150,8 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
         return layer.getData().searchNodes(searchBBox);
     }
 
-    private static BBox getSmallBBox(Point point) {
+    @Nullable
+    private static BBox getSmallBBox(@Nonnull Point point) {
         final double scaleInEastNorthUnitsPerPixel = MainApplication.getMap().mapView.getScale();
         final double metersPerPixel = ProjectionRegistry.getProjection().getMetersPerUnit()
             * scaleInEastNorthUnitsPerPixel;
