@@ -237,11 +237,11 @@ public class MapillaryImageEntry
             .map(SoftReference::get).orElse(null);
         boolean tFullImage = this.fullImage;
         CompletableFuture<BufferedImageCacheEntry> bestForMemory;
-        if (!tFullImage) {
+        if (tFullImage) {
+            bestForMemory = CompletableFuture.completedFuture(bufferedImageCacheEntry);
+        } else {
             bestForMemory = MapillaryImageUtils.getImage(this.image, null).thenApplyAsync(this::setFullImage,
                 MapillaryUtils.getForkJoinPool());
-        } else {
-            bestForMemory = CompletableFuture.completedFuture(bufferedImageCacheEntry);
         }
         if (bufferedImageCacheEntry == null) {
             CompletableFuture<BufferedImageCacheEntry> quickLoad = MapillaryImageUtils

@@ -293,7 +293,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
     public void submit(ICachedLoaderListener listener, boolean force) throws IOException {
         // Clear the queue for larger images
         if (this.type == Type.ORIGINAL || this.type == Type.THUMB_2048) {
-            this.type.getDefaultJobExecutor().getQueue().clear();
+            this.cancelOutstandingTasks();
         }
         super.submit(listener, force);
     }
