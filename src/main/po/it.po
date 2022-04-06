@@ -4,16 +4,17 @@
 # FIRST AUTHOR, YEAR.
 #
 # Translators:
-# Simon Legner, 2020
 # Florian Schäfer, 2020
 # Marco, 2021
 # demetrio, 2021
+# Simon Legner, 2022
+# Livio Avalle, 2022
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.1-2-g20963ab\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.5-5-g487f881\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-26 15:07+0000\n"
+"POT-Creation-Date: 2022-04-06 15:05+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Italian (https://www.transifex.com/josm/teams/2544/it/)\n"
 "MIME-Version: 1.0\n"
@@ -36,11 +37,20 @@ msgstr ""
 msgid "Add"
 msgstr "Aggiungi"
 
+msgid "Add Map Feature to OSM"
+msgstr ""
+
 msgid "Add Mapillary tag"
 msgstr "Aggiungi etichetta Mapillary"
 
 msgid "Add filter."
 msgstr "Aggiungi filtro."
+
+msgid "All"
+msgstr "Tutti"
+
+msgid "At least one of the optional arguments must be used ({0})"
+msgstr ""
 
 msgid "Cancel"
 msgstr "Annulla"
@@ -60,6 +70,10 @@ msgstr "Cancella"
 
 msgid "Color"
 msgstr "Colore"
+
+msgctxt "Checkbox label in JOSM settings"
+msgid "Color images by capture date"
+msgstr ""
 
 msgid "Copied URL to clipboard …"
 msgstr "Copiato URL negli appunti…"
@@ -85,6 +99,9 @@ msgstr ""
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "Impossibile aprire l’indirizzo {0} in un browser"
+
+msgid "Could not refresh Mapillary token. HTTP Status Code {0}."
+msgstr ""
 
 #. filter mode: remove
 msgctxt "filter"
@@ -132,9 +149,6 @@ msgstr ""
 
 msgid "Down"
 msgstr "Giù"
-
-msgid "Downloaded images"
-msgstr "Immagini scaricate"
 
 msgid "Downloading…"
 msgstr "Download in corso…"
@@ -299,6 +313,12 @@ msgstr "Filtro per esperti di Mapillary"
 msgid "Mapillary Images"
 msgstr "Immagini Mapillary"
 
+msgid "Mapillary Point Objects"
+msgstr ""
+
+msgid "Mapillary Smart Edit: Add objects"
+msgstr ""
+
 msgid "Mapillary Traffic Signs"
 msgstr "Segnali Stradali di Mapillary"
 
@@ -307,6 +327,9 @@ msgstr "Filtro di Mapillary"
 
 msgid "Mapillary image"
 msgstr "Immagine di Mapillary"
+
+msgid "Mapillary image read should never occur on UI thread"
+msgstr ""
 
 msgid "Mapillary images Filter"
 msgstr "Filtro immagini di Mapillary"
@@ -322,6 +345,12 @@ msgstr "Livello degli elementi nodo di Mapillary"
 
 msgid "Mapillary traffic signs layer"
 msgstr "Livello dei segnali stradali di Mapillary"
+
+msgid "Mapillary: Could not refresh login, logging out"
+msgstr ""
+
+msgid "Maximum distance to consider for changeset source calculations"
+msgstr ""
 
 msgid "Month"
 msgstr "Mese"
@@ -359,6 +388,9 @@ msgstr "Divieto di parcheggio"
 msgid "No turn"
 msgstr "Divieto di svolta"
 
+msgid "Non-panoramic"
+msgstr ""
+
 msgid "Not older than: "
 msgstr "Non più vecchio di: "
 
@@ -366,8 +398,21 @@ msgstr "Non più vecchio di: "
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "Numero di immagini da pre-caricare (in avanti e indietro)"
 
+msgid "Number of images to draw in the map view (affects performance)"
+msgstr ""
+
 msgid "Object Detection Filters"
 msgstr "Filtri rilevamento oggetti"
+
+msgid ""
+"Only Mapillary images are supported at this time, use "
+"photo=Mapillary/<image_id>"
+msgstr ""
+
+msgid ""
+"Only Mapillary sequences are supported at this time, use "
+"sequence=Mapillary/<sequence_id>"
+msgstr ""
 
 msgid "Only images with signs"
 msgstr "Solo immagini con segnali stradali"
@@ -392,8 +437,8 @@ msgstr "Organizzazione"
 msgid "Organizations"
 msgstr "Organizzazioni"
 
-msgid "Panorama only"
-msgstr "Solo panoramiche"
+msgid "Panoramic"
+msgstr "Panoramica"
 
 msgid "Pedestrian crossing"
 msgstr "Strisce pedonali"
@@ -456,8 +501,14 @@ msgstr ""
 msgid "Sequence key"
 msgstr "Chiave della sequenza"
 
+msgid "Sequence offset"
+msgstr ""
+
 msgid "Sequence: "
 msgstr "Sequenza:"
+
+msgid "Show Image types: "
+msgstr ""
 
 msgid "Show Relevant"
 msgstr "Mostra rilevanti"
@@ -549,6 +600,12 @@ msgstr "Aspetta per ottenere immagini di alta qualità"
 
 msgid "We cannot export {0}"
 msgstr "Impossibile esportare {0}"
+
+msgid ""
+"We have reached the Mapillary API limit. Disabling Mapillary networking until JOSM restart. Sorry.\n"
+"Logging in after the rate limit subsides may help prevent this in the future.\n"
+"{0}"
+msgstr ""
 
 #. i18n: Checkbox label in JOSM settings
 msgid ""

@@ -4,13 +4,13 @@
 # FIRST AUTHOR, YEAR.
 #
 # Translators:
-# Nemanja Bračko, 2021
+# Nemanja Bračko, 2022
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.1-2-g20963ab\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.5-5-g487f881\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-26 15:07+0000\n"
+"POT-Creation-Date: 2022-04-06 15:05+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Serbian (Latin) (https://www.transifex.com/josm/teams/2544/sr@latin/)\n"
 "MIME-Version: 1.0\n"
@@ -31,11 +31,20 @@ msgstr "Atribut sa ključem <i>{0}</i> već postoji na izabranom OSM objektu."
 msgid "Add"
 msgstr "Dodaj"
 
+msgid "Add Map Feature to OSM"
+msgstr "Dodaj kartografske objekte na OSM"
+
 msgid "Add Mapillary tag"
 msgstr "Dodaj Mapillary atribut"
 
 msgid "Add filter."
 msgstr "Dodaj filter."
+
+msgid "All"
+msgstr "Sve"
+
+msgid "At least one of the optional arguments must be used ({0})"
+msgstr "Potrebno je da se koristi barem jedan neobavezan argument ({0})"
 
 msgid "Cancel"
 msgstr "Otkaži"
@@ -55,6 +64,10 @@ msgstr "Poništi"
 
 msgid "Color"
 msgstr "Boja"
+
+msgctxt "Checkbox label in JOSM settings"
+msgid "Color images by capture date"
+msgstr "Oboji fotografije po datumu slikanja"
 
 msgid "Copied URL to clipboard …"
 msgstr "URL je kopiran u ostavu…"
@@ -80,6 +93,9 @@ msgstr ""
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "Nije moguće otvoriti URL adresu {0} u pregledaču"
+
+msgid "Could not refresh Mapillary token. HTTP Status Code {0}."
+msgstr "Nije moguće osvežiti Mapillary token. Status HTTP kôda {0}."
 
 #. filter mode: remove
 msgctxt "filter"
@@ -127,9 +143,6 @@ msgstr ""
 
 msgid "Down"
 msgstr "Dole"
-
-msgid "Downloaded images"
-msgstr "Preuzete fotografije"
 
 msgid "Downloading…"
 msgstr "Preuzimanje…"
@@ -294,11 +307,23 @@ msgstr "Mapillary filter za stručnjake"
 msgid "Mapillary Images"
 msgstr "Mapillary fotografije"
 
+msgid "Mapillary Point Objects"
+msgstr "Mapillary tačkasti objekti"
+
+msgid "Mapillary Smart Edit: Add objects"
+msgstr "Mapillary pametno uređivanje: Dodavanje objekata"
+
+msgid "Mapillary Traffic Signs"
+msgstr "Mapillary saobraćajni znakovi"
+
 msgid "Mapillary filter"
 msgstr "Mapillary filter"
 
 msgid "Mapillary image"
 msgstr "Mapillary fotografija"
+
+msgid "Mapillary image read should never occur on UI thread"
+msgstr ""
 
 msgid "Mapillary images Filter"
 msgstr "Mapillary filtriranje fotografija"
@@ -314,6 +339,14 @@ msgstr "Mapillary podloga funkcija tačaka"
 
 msgid "Mapillary traffic signs layer"
 msgstr "Mapillary podloga saobraćajnih znakova"
+
+msgid "Mapillary: Could not refresh login, logging out"
+msgstr "Mapillary: Nije moguće osvežiti prijavu, odjavljivanje"
+
+msgid "Maximum distance to consider for changeset source calculations"
+msgstr ""
+"Maksimalno rastojanje koje će se uzimati u obzir za računanje izvora za skup"
+" promena"
 
 msgid "Month"
 msgstr "mesec"
@@ -351,6 +384,9 @@ msgstr "Zabrana zaustavljanja i parkiranja"
 msgid "No turn"
 msgstr "Zabrana skretanja"
 
+msgid "Non-panoramic"
+msgstr "Ne-panoramske"
+
 msgid "Not older than: "
 msgstr "Ne starije od: "
 
@@ -358,8 +394,25 @@ msgstr "Ne starije od: "
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "Broj fotografija koje će se unapred učitati (koje slede i prethode)"
 
+msgid "Number of images to draw in the map view (affects performance)"
+msgstr "Broj fotografija koji se prikazuje na karti (utiče na performanse)"
+
 msgid "Object Detection Filters"
 msgstr "Filter prepoznatih objekata"
+
+msgid ""
+"Only Mapillary images are supported at this time, use "
+"photo=Mapillary/<image_id>"
+msgstr ""
+"U ovom trenutku su podržane samo Mapillary fotografije, koristite "
+"photo=Mapillary/<image_id>"
+
+msgid ""
+"Only Mapillary sequences are supported at this time, use "
+"sequence=Mapillary/<sequence_id>"
+msgstr ""
+"U ovom trenutku su podržane samo Mapillary sekvence, koristite "
+"sequence=Mapillary/<sequence_id>"
 
 msgid "Only images with signs"
 msgstr "Samo fotografije sa znakovima"
@@ -377,11 +430,14 @@ msgstr "Otvori Mapillary podlogu"
 msgid "Org"
 msgstr "Org."
 
+msgid "Organization"
+msgstr "Organizacija"
+
 msgid "Organizations"
 msgstr "Organizacije"
 
-msgid "Panorama only"
-msgstr "Samo panoramske foto."
+msgid "Panoramic"
+msgstr "Panoramska"
 
 msgid "Pedestrian crossing"
 msgstr "Pešački prelaz"
@@ -400,6 +456,9 @@ msgstr "R"
 
 msgid "Remote Control has been asked to load:"
 msgstr "Daljinskoj kontroli je poslat zahtev za učitavanje:"
+
+msgid "Requires JOSM restart"
+msgstr "Zahteva ponovno pokretanje JOSM aplikacije"
 
 msgid "Reset"
 msgstr "Poništi"
@@ -440,8 +499,14 @@ msgstr ""
 msgid "Sequence key"
 msgstr "Ključ sekvence"
 
+msgid "Sequence offset"
+msgstr "Pomeraj sekvence"
+
 msgid "Sequence: "
 msgstr "Sekvenca:"
+
+msgid "Show Image types: "
+msgstr "Prikaži tipove fotografija:"
 
 msgid "Show Relevant"
 msgstr "Prikaži relevantne"
@@ -508,17 +573,40 @@ msgstr "Saobraćajni znakovi"
 msgid "Uneven road"
 msgstr "Neujednačen put"
 
+msgid ""
+"Unknown Mapillary exception.\n"
+"{0}"
+msgstr ""
+"Nepoznat Mapillary izuzetak.\n"
+"{0}"
+
 msgid "Up"
 msgstr "Gore"
 
 msgid "Update"
 msgstr "Ažuriraj"
 
+msgctxt "Checkbox label in JOSM settings"
+msgid "Use computed location information"
+msgstr "Koristi informacije o izračunatoj lokaciji"
+
 msgid "View in browser"
 msgstr "Prikaži u pregledaču"
 
 msgid "Wait for full quality pictures"
 msgstr "Sačekajte za pun kvalitet fotografija"
+
+msgid "We cannot export {0}"
+msgstr "Ne možemo da izvezemo {0}"
+
+msgid ""
+"We have reached the Mapillary API limit. Disabling Mapillary networking until JOSM restart. Sorry.\n"
+"Logging in after the rate limit subsides may help prevent this in the future.\n"
+"{0}"
+msgstr ""
+"Dostigli smo Mapillary API ograničenje. Onemogućite Mapillary umrežavanje dok se JOSM ponovo pokrene. Žao nam je zbog ovoga.\n"
+"Prijavljivanjem nakon što odnos ograničenja opadne može da spreči ovo da se ponovi u budućnosti.\n"
+"{0}"
 
 #. i18n: Checkbox label in JOSM settings
 msgid ""
@@ -544,6 +632,9 @@ msgstr "Trenutno niste prijavljeni."
 msgid "You are logged in as ''{0}''."
 msgstr "Trenutno ste prijavljeni kao ''{0}''."
 
+msgid "You are logged in."
+msgstr "Prijavljeni ste."
+
 msgid "Zoom to selected image"
 msgstr "Zumiraj obeleženu fotografiju"
 
@@ -564,6 +655,9 @@ msgstr "sekvenca nema ključ"
 
 msgid "shown"
 msgstr "prikazano"
+
+msgid "unknown organization"
+msgstr "nepoznata organizacija"
 
 #. i18n: {0} is the layer name, {1} the number of images in it
 msgid "{0} ({1} image)"
