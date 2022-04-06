@@ -91,6 +91,7 @@ public class MapillaryImageEntry
     private SoftReference<BufferedImageCacheEntry> originalImage;
     private SoftReference<BufferedImage> layeredImage;
     private int exifOrientation = 1;
+    private boolean fullImage;
 
     private static class MapillaryValueChangeListener implements AbstractProperty.ValueChangeListener<Boolean> {
         static final MapillaryValueChangeListener INSTANCE = new MapillaryValueChangeListener();
@@ -151,6 +152,7 @@ public class MapillaryImageEntry
         this.imageDetections.addAll(other.imageDetections);
         this.layeredImage = other.layeredImage;
         this.originalImage = other.originalImage;
+        this.fullImage = other.fullImage;
     }
 
     @Override
@@ -233,53 +235,39 @@ public class MapillaryImageEntry
         }
         BufferedImageCacheEntry bufferedImageCacheEntry = Optional.ofNullable(this.originalImage)
             .map(SoftReference::get).orElse(null);
+        boolean tFullImage = this.fullImage;
+        CompletableFuture<BufferedImageCacheEntry> bestForMemory;
+        if (!tFullImage) {
+            bestForMemory = MapillaryImageUtils.getImage(this.image, null).thenApplyAsync(this::setFullImage,
+                MapillaryUtils.getForkJoinPool());
+        } else {
+            bestForMemory = CompletableFuture.completedFuture(bufferedImageCacheEntry);
+        }
         if (bufferedImageCacheEntry == null) {
-            CompletableFuture<BufferedImageCacheEntry> bestForMemory = MapillaryImageUtils.getImage(this.image, null);
-            Rectangle rect = ImageViewerDialog.getInstance().getBounds();
-            final MapillaryCache.Type smallType;
-            if (rect.width < MapillaryCache.Type.THUMB_256.getWidth(null)
-                && rect.height < MapillaryCache.Type.THUMB_256.getHeight(null)) {
-                smallType = MapillaryCache.Type.THUMB_256;
-            } else {
-                smallType = MapillaryCache.Type.THUMB_1024;
-            }
-            Future<BufferedImageCacheEntry> quickLoad = bestForMemory.isDone() ? bestForMemory
-                : MapillaryImageUtils.getImage(this.image, smallType);
-            try {
-                bestForMemory.get(100, TimeUnit.MILLISECONDS);
-            } catch (InterruptedException e) {
-                Logging.trace(e);
-                Thread.currentThread().interrupt();
-            } catch (ExecutionException | TimeoutException e) {
-                Logging.trace(e);
-            }
-            quickLoad = bestForMemory.isDone() ? bestForMemory : quickLoad;
+            CompletableFuture<BufferedImageCacheEntry> quickLoad = MapillaryImageUtils
+                .getImage(this.image, MapillaryCache.Type.THUMB_256)
+                .thenApplyAsync(this::setQuickImage, MapillaryUtils.getForkJoinPool());
             try {
                 // This should only every be called on a non-UI thread.
-                bufferedImageCacheEntry = Optional.ofNullable(quickLoad.get(10, TimeUnit.SECONDS))
-                    .orElseThrow(() -> new IOException(new NullPointerException("Returned image should not be null")));
+                synchronized (this) {
+                    while ((this.originalImage == null || this.originalImage.get() == null)
+                        && !(quickLoad.isDone() || quickLoad.isCancelled())
+                        && !(bestForMemory.isDone() || bestForMemory.isCancelled())) {
+                        this.wait(10);
+                    }
+                    if (this.originalImage == null || this.originalImage.get() == null) {
+                        throw new IOException(tr("Could not load image: {0}", this.getImageURI()));
+                    }
+                    bufferedImageCacheEntry = this.originalImage.get();
+                    tFullImage = this.fullImage;
+                }
                 MapillaryUtils.getForkJoinPool().execute(() -> preCacheImages(this));
-                this.originalImage = new SoftReference<>(bufferedImageCacheEntry);
-                this.updateExifInformation(bufferedImageCacheEntry.getContent());
-            } catch (ExecutionException | TimeoutException exception) {
-                throw new IOException(exception);
             } catch (InterruptedException exception) {
                 Thread.currentThread().interrupt();
                 throw new IOException(exception);
-            } finally {
-                if (!this.image.getReferrers().isEmpty() && !bestForMemory.equals(quickLoad)) {
-                    bestForMemory.whenComplete((entry, exception) -> {
-                        this.originalImage = new SoftReference<>(entry);
-                        if (this.layeredImage != null) {
-                            this.layeredImage.clear();
-                        }
-                        this.updateExifInformation(entry.getContent());
-                        this.reload();
-                    });
-                }
             }
         }
-        if (this.imageDetections.isEmpty() && !this.image.getReferrers().isEmpty()) {
+        if (tFullImage && this.imageDetections.isEmpty() && !this.image.getReferrers().isEmpty()) {
             this.updateDetections(5_000);
             return bufferedImageCacheEntry.getImage();
         }
@@ -292,6 +280,49 @@ public class MapillaryImageEntry
         }
         this.drawDetections();
         return this.applyRotation(bufferedLayeredImage);
+    }
+
+    private BufferedImageCacheEntry setQuickImage(final BufferedImageCacheEntry entry) {
+        // Load image
+        try {
+            entry.getImage();
+        } catch (IOException e) {
+            Logging.error(e);
+        }
+        synchronized (this) {
+            if (this.originalImage == null || this.originalImage.get() == null) {
+                this.originalImage = new SoftReference<>(entry);
+                this.fullImage = false;
+            }
+            this.notifyAll();
+        }
+        return entry;
+    }
+
+    private BufferedImageCacheEntry setFullImage(final BufferedImageCacheEntry entry) {
+        final byte[] content = entry.getContent();
+        // Load image
+        try {
+            entry.getImage();
+        } catch (IOException e) {
+            Logging.error(e);
+        }
+        synchronized (this) {
+            final boolean forceRefresh = this.layeredImage != null;
+            this.originalImage = new SoftReference<>(entry);
+            if (forceRefresh) {
+                this.layeredImage.clear();
+            }
+            if (content.length > 0) {
+                this.updateExifInformation(content);
+            }
+            this.fullImage = true;
+            if (forceRefresh) {
+                this.reload();
+            }
+            this.notifyAll();
+        }
+        return entry;
     }
 
     private static void preCacheImages(final MapillaryImageEntry entry) {
@@ -311,9 +342,16 @@ public class MapillaryImageEntry
                 Math.min(wayNodes.size(), index + realPrefetch));
             nodes.stream().filter(node -> node.getUniqueId() > 0).map(MapillaryImageEntry::getCachedEntry)
                 .forEach(imageEntry -> {
-                    final Future<BufferedImageCacheEntry> future = MapillaryImageUtils.getImage(imageEntry.image, null);
+                    final Future<BufferedImageCacheEntry> future = MapillaryImageUtils.getImage(imageEntry.image,
+                        MapillaryCache.Type.THUMB_256);
                     try {
-                        imageEntry.originalImage = new SoftReference<>(future.get());
+                        while (!future.isCancelled() && !future.isDone()) {
+                            try {
+                                imageEntry.originalImage = new SoftReference<>(future.get(1, TimeUnit.SECONDS));
+                            } catch (TimeoutException e) {
+                                Logging.trace(e);
+                            }
+                        }
                     } catch (InterruptedException e) {
                         Logging.error(e);
                         Thread.currentThread().interrupt();
@@ -500,11 +538,14 @@ public class MapillaryImageEntry
                 || !imageDetections.containsAll(this.imageDetections);
             synchronized (this.imageDetections) {
                 if (reload) {
+                    if (this.layeredImage != null) {
+                        this.layeredImage.clear();
+                    }
                     this.imageDetections.clear();
                     this.imageDetections.addAll(imageDetections);
                 }
             }
-            if (reload && this.equals(ImageViewerDialog.getCurrentImage())) {
+            if (reload) {
                 this.updateImageEntry();
             }
         }

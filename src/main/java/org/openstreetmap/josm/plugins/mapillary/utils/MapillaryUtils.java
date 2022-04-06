@@ -44,6 +44,12 @@ public final class MapillaryUtils {
 
     private static final Map<String, ForkJoinPool> forkJoinPool = new HashMap<>();
     private static final long[] EMPTY_LONG = new long[0];
+    /**
+     * Check if we are running webstart -- the method call is actually fairly expensive (~18% of
+     * MapillaryImageEntry#read).
+     * This is largely due to checking for the classes that are used in webstart every time.
+     */
+    private static final boolean IS_RUNNING_WEBSTART = Utils.isRunningWebStart();
 
     private MapillaryUtils() {
         // Private constructor to avoid instantiation
@@ -245,7 +251,7 @@ public final class MapillaryUtils {
      * @return The default ForkJoin pool
      */
     public static ForkJoinPool getForkJoinPool() {
-        if (Utils.isRunningJavaWebStart() || System.getSecurityManager() != null) {
+        if (IS_RUNNING_WEBSTART || System.getSecurityManager() != null) {
             return getForkJoinPool(MapillaryUtils.class);
         }
         return ForkJoinPool.commonPool();

@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.cache;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -17,8 +18,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
+import org.openstreetmap.josm.data.cache.HostLimitQueue;
+import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.data.cache.JCSCachedTileLoaderJob;
-import org.openstreetmap.josm.data.imagery.TMSCachedTileLoader;
 import org.openstreetmap.josm.data.imagery.TileJobOptions;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
@@ -28,6 +30,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.Utils;
 
 /**
  * Stores the downloaded pictures locally.
@@ -35,12 +38,9 @@ import org.openstreetmap.josm.tools.Logging;
  * @author nokutu
  */
 public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImageCacheEntry> {
-
     private final URL url;
     private final String key;
-
-    private static final ThreadPoolExecutor DEFAULT_JOB_EXECUTOR = TMSCachedTileLoader
-        .getNewThreadPoolExecutor("Mapillary-image-downloader-%d", THREAD_LIMIT.get(), THREAD_LIMIT.get());
+    private final Type type;
 
     /**
      * Types of images.
@@ -49,19 +49,20 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
      */
     public enum Type {
         /** Original image */
-        ORIGINAL(MapillaryImageUtils.ImageProperties.THUMB_ORIGINAL_URL),
+        ORIGINAL(MapillaryImageUtils.ImageProperties.THUMB_ORIGINAL_URL, 1),
         /** 2048px image */
-        THUMB_2048(MapillaryImageUtils.ImageProperties.THUMB_2048_URL),
+        THUMB_2048(MapillaryImageUtils.ImageProperties.THUMB_2048_URL, 1),
         /** 1024px image */
-        THUMB_1024(MapillaryImageUtils.ImageProperties.THUMB_1024_URL),
+        THUMB_1024(MapillaryImageUtils.ImageProperties.THUMB_1024_URL, Math.max(THREAD_LIMIT.get() / 4, 2)),
         /** 256px image */
-        THUMB_256(MapillaryImageUtils.ImageProperties.THUMB_256_URL);
+        THUMB_256(MapillaryImageUtils.ImageProperties.THUMB_256_URL, Math.max(THREAD_LIMIT.get(), 4));
 
         private final int width;
         private final String imageUrl;
         private final int maxSize;
+        private final ThreadPoolExecutor executor;
 
-        Type(final MapillaryImageUtils.ImageProperties properties) {
+        Type(final MapillaryImageUtils.ImageProperties properties, final int downloadThreads) {
             this.imageUrl = properties.name().toLowerCase(Locale.ROOT);
             final Matcher matcher = MapillaryImageUtils.BASE_IMAGE_KEY.matcher(this.imageUrl);
             if (matcher.matches() && "original".equals(matcher.group(1))) {
@@ -73,6 +74,10 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
             } else {
                 throw new IllegalArgumentException("Mapillary: " + this.imageUrl + " is not a valid image type");
             }
+            this.executor = new ThreadPoolExecutor(downloadThreads, Math.max(downloadThreads, THREAD_LIMIT.get()),
+                // keep alive for thread
+                5, TimeUnit.MINUTES, new HostLimitQueue(2 * downloadThreads, downloadThreads * 10),
+                Utils.newThreadFactory("Mapillary-image-downloader-" + this + "-%d", Thread.NORM_PRIORITY));
         }
 
         /**
@@ -138,6 +143,15 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
             final long memory = Runtime.getRuntime().freeMemory();
             return Stream.of(Type.values()).filter(type -> otherImages * type.getMaxSize(image) < memory).findFirst()
                 .orElse(Type.THUMB_256);
+        }
+
+        /**
+         * Get the executor for getting images of this type
+         *
+         * @return The executor to download images with
+         */
+        public ThreadPoolExecutor getDefaultJobExecutor() {
+            return executor;
         }
     }
 
@@ -230,9 +244,11 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
      */
     public MapillaryCache(@Nonnull final INode image, @Nonnull final Type type) {
         super(Caches.FULL_IMAGE_CACHE.getICacheAccess(),
-            new TileJobOptions(50_000, 50_000, new HashMap<>(), TimeUnit.HOURS.toSeconds(4)), DEFAULT_JOB_EXECUTOR);
+            new TileJobOptions(50_000, 50_000, new HashMap<>(), TimeUnit.HOURS.toSeconds(4)),
+            type.getDefaultJobExecutor());
         Objects.requireNonNull(image);
         Objects.requireNonNull(type);
+        this.type = type;
         try {
             if (image.hasKey(type.getKey())) {
                 this.key = Long.toString(image.getUniqueId()) + '.' + type.width;
@@ -271,6 +287,15 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
     @Override
     protected BufferedImageCacheEntry createCacheEntry(byte[] content) {
         return new BufferedImageCacheEntry(content);
+    }
+
+    @Override
+    public void submit(ICachedLoaderListener listener, boolean force) throws IOException {
+        // Clear the queue for larger images
+        if (this.type == Type.ORIGINAL || this.type == Type.THUMB_2048) {
+            this.type.getDefaultJobExecutor().getQueue().clear();
+        }
+        super.submit(listener, force);
     }
 
     @Override
