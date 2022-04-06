@@ -29,19 +29,33 @@ public final class ReflectionUtils {
      */
     public static Optional<ImageDisplay> getImageViewer() {
         try {
-            final Field imgDisplayField = ImageViewerDialog.class.getDeclaredField("imgDisplay");
-            AccessController.doPrivileged((PrivilegedExceptionAction<Void>) () -> {
-                imgDisplayField.setAccessible(true);
-                return null;
-            });
-            Object imgDisplay = imgDisplayField.get(ImageViewerDialog.getInstance());
-            if (imgDisplay instanceof ImageDisplay) {
-                return Optional.of((ImageDisplay) imgDisplay);
+            if (hasImageViewerDialog()) {
+                final Field imgDisplayField = ImageViewerDialog.class.getDeclaredField("imgDisplay");
+                org.openstreetmap.josm.tools.ReflectionUtils.setObjectsAccessible(imgDisplayField);
+                Object imgDisplay = imgDisplayField.get(ImageViewerDialog.getInstance());
+                if (imgDisplay instanceof ImageDisplay) {
+                    return Optional.of((ImageDisplay) imgDisplay);
+                }
             }
-        } catch (PrivilegedActionException | ReflectiveOperationException exception) {
+        } catch (ReflectiveOperationException exception) {
             Logging.error(exception);
         }
         return Optional.empty();
+    }
+
+    /**
+     * Check if the image viewer dialog has been instantiated
+     * @return {@code true} if the image viewer dialog is present
+     */
+    public static boolean hasImageViewerDialog() {
+        try {
+            final Field f = ImageViewerDialog.class.getDeclaredField("dialog");
+            org.openstreetmap.josm.tools.ReflectionUtils.setObjectsAccessible(f);
+            return f.get(null) != null;
+        } catch (ReflectiveOperationException e) {
+            Logging.error(e);
+        }
+        return false;
     }
 
     /**

@@ -93,6 +93,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.OffsetUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.ReflectionUtils;
 import org.openstreetmap.josm.tools.ColorHelper;
 import org.openstreetmap.josm.tools.Geometry;
 import org.openstreetmap.josm.tools.I18n;
@@ -740,14 +741,16 @@ public final class MapillaryLayer extends MVTLayer
     public void setCurrentImage(final MapillaryNode image) {
         this.image = image;
         this.invalidate();
-        if (image == null) {
-            GuiHelper.runInEDT(() -> ImageViewerDialog.getInstance().displayImage(null));
-        } else {
-            MapillaryImageEntry entry = MapillaryImageEntry.getCachedEntry(image);
-            if (Objects.equals(entry, ImageViewerDialog.getCurrentImage())) {
-                entry.reload();
+        if (ReflectionUtils.hasImageViewerDialog()) {
+            if (image == null) {
+                GuiHelper.runInEDT(() -> ImageViewerDialog.getInstance().displayImage(null));
             } else {
-                GuiHelper.runInEDT(() -> ImageViewerDialog.getInstance().displayImage(entry));
+                MapillaryImageEntry entry = MapillaryImageEntry.getCachedEntry(image);
+                if (Objects.equals(entry, ImageViewerDialog.getCurrentImage())) {
+                    entry.reload();
+                } else {
+                    GuiHelper.runInEDT(() -> ImageViewerDialog.getInstance().displayImage(entry));
+                }
             }
         }
     }
@@ -762,7 +765,7 @@ public final class MapillaryLayer extends MVTLayer
         final Collection<VectorNode> nodes = Utils.filteredCollection(event.getSelection(), VectorNode.class);
         if (nodes.size() == 1) {
             final VectorNode node = nodes.iterator().next();
-            IImageEntry<?> displayImage = ImageViewerDialog.getCurrentImage();
+            IImageEntry<?> displayImage = ReflectionUtils.hasImageViewerDialog() ? ImageViewerDialog.getCurrentImage() : null;
             if (this.image != null && displayImage instanceof MapillaryImageEntry) {
                 final MapillaryNode tImage = this.image.getSequence().getNodes().stream()
                     .filter(n -> MapillaryImageUtils.equals(n, node)).findFirst().orElse(null);
