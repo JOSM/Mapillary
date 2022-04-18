@@ -16,8 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
@@ -63,12 +65,41 @@ public final class MapillaryDownloader {
      * @return The downloaded images
      */
     public static Map<String, Collection<MapillaryNode>> downloadImages(long... images) {
+        return downloadImages(null, null, images);
+    }
+
+    /**
+     * Download a specific set of images
+     *
+     * @param prioritizedImage The image to prioritize
+     * @param updater The method to call when the surrounding nodes have been pulled
+     * @param images The images to download
+     * @return The downloaded images
+     */
+    public static Map<String, Collection<MapillaryNode>> downloadImages(@Nullable MapillaryNode prioritizedImage,
+        @Nullable Consumer<Collection<MapillarySequence>> updater, long... images) {
         final byte step = 100;
         final Map<String, Collection<MapillaryNode>> returnMap = new HashMap<>();
+        // This will be null if the image is null
+        final long prioritizedId = MapillaryImageUtils.getKey(prioritizedImage);
+
         for (int i = 0; i <= images.length / step; i++) {
             final long[] imagesToGet = Arrays.copyOfRange(images, i * step, Math.min((i + 1) * step, images.length));
-            realDownloadImages(imagesToGet).forEach((sequence, nodes) -> returnMap
-                .computeIfAbsent(sequence, s -> new ArrayList<>(nodes.size())).addAll(nodes));
+            if (prioritizedImage == null
+                || prioritizedId > 0 && LongStream.of(imagesToGet).anyMatch(id -> id == prioritizedId)) {
+                realDownloadImages(imagesToGet).forEach((sequence, nodes) -> returnMap
+                    .computeIfAbsent(sequence, s -> new ArrayList<>(nodes.size())).addAll(nodes));
+                if (prioritizedImage != null && updater != null && returnMap.size() == 1) {
+                    final Map.Entry<String, Collection<MapillaryNode>> entry = returnMap.entrySet().iterator().next();
+                    final MapillarySequence sequence = new MapillarySequence(entry.getKey());
+                    sequence.setNodes(new ArrayList<>(entry.getValue()));
+                    updater.accept(Collections.singleton(sequence));
+                }
+            }
+        }
+
+        if (prioritizedImage != null) {
+            return downloadImages(null, null, images);
         }
         return returnMap;
     }
@@ -100,7 +131,7 @@ public final class MapillaryDownloader {
         return nodes;
     }
 
-    private static Map<String, Collection<MapillaryNode>> realDownloadImages(final long... images) {
+    private static Map<String, List<MapillaryNode>> realDownloadImages(final long... images) {
         if (images.length == 0) {
             return Collections.emptyMap();
         }
@@ -132,7 +163,7 @@ public final class MapillaryDownloader {
                                                           * MapillaryImageUtils.getDate(image).toEpochMilli()))
                                                           */
             .collect(Collector.of(
-                HashMap<String, Collection<MapillaryNode>>::new, (map, node) -> map
+                HashMap<String, List<MapillaryNode>>::new, (map, node) -> map
                     .computeIfAbsent(MapillaryImageUtils.getSequenceKey(node), key -> new ArrayList<>()).add(node),
                 (rMap, oMap) -> {
                     rMap.putAll(oMap);
@@ -167,17 +198,33 @@ public final class MapillaryDownloader {
      * @return The downloaded sequences
      */
     public static Collection<MapillarySequence> downloadSequences(String... sequences) {
-        return downloadSequences(true, sequences);
+        return downloadSequences(null, null, true, sequences);
+    }
+
+    /**
+     * Download a specific set of sequences, prioritizing the images around the specified image
+     *
+     * @param image The image to prioritize
+     * @param updater The method to call when the surrounding nodes have been pulled
+     * @param sequences The sequences to get
+     * @return The downloaded sequences
+     */
+    public static Collection<MapillarySequence> downloadSequences(MapillaryNode image,
+        Consumer<Collection<MapillarySequence>> updater, String... sequences) {
+        return downloadSequences(image, updater, true, sequences);
     }
 
     /**
      * Download a specific set of sequences
      *
+     * @param image The image to prioritize
+     * @param updater The method to call when the surrounding nodes have been pulled
      * @param sequences The sequences to download
      * @param force Force the download if the sequence has already been downloaded once.
      * @return The downloaded sequences
      */
-    public static Collection<MapillarySequence> downloadSequences(boolean force, String... sequences) {
+    private static Collection<MapillarySequence> downloadSequences(@Nullable MapillaryNode image,
+        @Nullable Consumer<Collection<MapillarySequence>> updater, boolean force, String... sequences) {
         // prevent infinite loops. See #20470.
         if (Arrays.stream(Thread.currentThread().getStackTrace())
             .skip(/* getStackTrace, downloadSequences(sequences), downloadSequences(force, sequences) */ 3)
@@ -205,8 +252,8 @@ public final class MapillaryDownloader {
                         return reader.readObject();
                     }
                 })
-                .flatMap(
-                    jsonObject -> JsonDecoder.decodeData(jsonObject, JsonSequencesDecoder::decodeSequence).stream())
+                .flatMap(jsonObject -> JsonDecoder
+                    .decodeData(jsonObject, json -> JsonSequencesDecoder.decodeSequence(json, image, updater)).stream())
                 .collect(Collectors.toSet());
         }
         return Collections.emptyList();

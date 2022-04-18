@@ -785,10 +785,7 @@ public final class MapillaryLayer extends MVTLayer
                     return;
                 }
             }
-            // Try to use a worker with an available thread
-            MapillaryUtils.getForkJoinPool().execute(() -> downloadNode(node));
-            // Run the rest of the sequence get in a non-blocking pool
-            MapillaryUtils.getForkJoinPool().execute(() -> this.downloadSequence(node));
+            MapillaryUtils.getForkJoinPool().execute(() -> this.downloadSequence(this.downloadNode(node)));
         }
     }
 
@@ -796,12 +793,14 @@ public final class MapillaryLayer extends MVTLayer
      * Download a singular node. This is faster than downloading large sequences.
      *
      * @param node The node to download
+     * @return The downloaded node
      */
-    private void downloadNode(VectorNode node) {
+    private MapillaryNode downloadNode(VectorNode node) {
         final MapillaryNode tImage = MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(node)).values()
             .stream().flatMap(Collection::stream).filter(n -> MapillaryImageUtils.equals(n, node)).findFirst()
             .orElse(null);
         this.setCurrentImage(tImage);
+        return tImage;
     }
 
     /**
@@ -809,9 +808,19 @@ public final class MapillaryLayer extends MVTLayer
      *
      * @param node The node to download
      */
-    private void downloadSequence(VectorNode node) {
-        final Collection<MapillarySequence> sequences = MapillaryDownloader
-            .downloadSequences(MapillaryImageUtils.getSequenceKey(node));
+    private void downloadSequence(MapillaryNode node) {
+        final Collection<MapillarySequence> sequences = MapillaryDownloader.downloadSequences(node,
+            nodes -> this.updateSequence(node, nodes), MapillaryImageUtils.getSequenceKey(node));
+        this.updateSequence(node, sequences);
+    }
+
+    /**
+     * Update the current sequence
+     *
+     * @param node The currently selected node
+     * @param sequences The sequences that have been updated
+     */
+    private void updateSequence(MapillaryNode node, Collection<MapillarySequence> sequences) {
         final List<MapillaryNode> downloadedNodes = sequences.stream().flatMap(seq -> seq.getNodes().stream())
             .collect(Collectors.toList());
         final MapillaryNode tImage = downloadedNodes.stream().filter(n -> MapillaryImageUtils.equals(n, node))
