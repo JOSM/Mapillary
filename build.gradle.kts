@@ -12,9 +12,9 @@ import kotlin.reflect.full.starProjectedType
 
 plugins {
   id("application")
-  id("com.diffplug.spotless") version "6.2.0"
-  id("com.github.ben-manes.versions") version "0.41.0"
-  id("com.github.spotbugs") version "5.0.5"
+  id("com.diffplug.spotless") version "6.4.2"
+  id("com.github.ben-manes.versions") version "0.42.0"
+  id("com.github.spotbugs") version "5.0.6"
   id("net.ltgt.errorprone") version "2.0.2"
   id("org.openstreetmap.josm") version "0.8.0"
   id("org.sonarqube") version "3.3"
@@ -44,7 +44,7 @@ tasks.withType(JavaCompile::class).configureEach {
     check("MultiVariableDeclaration", CheckSeverity.WARN)
     check("PrivateConstructorForUtilityClass", CheckSeverity.WARN)
     check("RemoveUnusedImports", CheckSeverity.WARN)
-    check("StringEquality", CheckSeverity.ERROR)
+    check("ReferenceEquality", CheckSeverity.ERROR)
     check("UngroupedOverloads", CheckSeverity.WARN)
     check("UnnecessaryLambda", CheckSeverity.OFF)
     check("WildcardImport", CheckSeverity.ERROR)
@@ -55,15 +55,15 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.targetCompatibility = JavaVersion.VERSION_1_8
 
 val versions = mapOf(
-  "awaitility" to "4.1.1",
+  "awaitility" to "4.2.0",
   // Errorprone 2.11 requires Java 11+
-  "errorprone" to if (JavaVersion.current() >= JavaVersion.VERSION_11) "2.11.0" else "2.10.0",
+  "errorprone" to if (JavaVersion.current() >= JavaVersion.VERSION_11) "2.13.1" else "2.10.0",
   "jdatepicker" to "1.3.4",
   "jmockit" to "1.49",
   "junit" to "5.8.2",
   "pmd" to "6.42.0",
-  "spotbugs" to "4.5.3",
-  "wiremock" to "2.32.0"
+  "spotbugs" to "4.6.0",
+  "wiremock" to "2.33.1"
 )
 
 dependencies {
