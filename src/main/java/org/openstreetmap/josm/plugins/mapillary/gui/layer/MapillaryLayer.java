@@ -10,6 +10,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.time.Instant;
@@ -141,6 +142,9 @@ public final class MapillaryLayer extends MVTLayer
     /** The sprite to use for the currently selected image */
     private static final ImageIcon SELECTED_IMAGE = new ImageProvider(IMAGE_SPRITE_DIR, "current-ca")
         .setMaxWidth(ImageProvider.ImageSizes.MAP.getAdjustedHeight()).get();
+
+    private static final Ellipse2D IMAGE_CIRCLE = new Ellipse2D.Double(-IMG_MARKER_RADIUS, -IMG_MARKER_RADIUS,
+        2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
 
     /** The milliseconds in a year (approx) */
     private static final long YEAR_MILLIS = 31_557_600_000L;
@@ -467,11 +471,13 @@ public final class MapillaryLayer extends MVTLayer
                 2 * CA_INDICATOR_RADIUS);
             g.setComposite(currentComposite);
         }
-
-        g.fillOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
+        AffineTransform backup = g.getTransform();
+        g.setTransform(AffineTransform.getTranslateInstance(p.x, p.y));
+        g.fill(IMAGE_CIRCLE);
+        g.setTransform(backup);
         if (i != null) {
             // This _must_ be set after operations complete (see JOSM 19516 for more information)
-            AffineTransform backup = g.getTransform();
+            backup = g.getTransform();
             // convert the angle to radians from degrees
             double angle = MapillaryImageUtils.getAngle(img);
 
