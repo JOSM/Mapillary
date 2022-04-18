@@ -739,6 +739,7 @@ public final class MapillaryLayer extends MVTLayer
     }
 
     public void setCurrentImage(final MapillaryNode image) {
+        this.setImageViewed(image);
         this.image = image;
         this.invalidate();
         if (ReflectionUtils.hasImageViewerDialog()) {
