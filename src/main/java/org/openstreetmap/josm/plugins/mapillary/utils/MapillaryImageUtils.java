@@ -61,8 +61,12 @@ public final class MapillaryImageUtils {
         if (image == null) {
             return null;
         }
-        return image.getReferrers().stream().filter(IWay.class::isInstance).map(IWay.class::cast).findFirst()
-            .orElse(null);
+        for (IPrimitive p : image.getReferrers()) {
+            if (p instanceof IWay) {
+                return (IWay<N>) p;
+            }
+        }
+        return null;
     }
 
     /**
@@ -221,8 +225,9 @@ public final class MapillaryImageUtils {
             if (image.getUniqueId() > 0 && !ignoreId) {
                 return image.getId();
             }
-            if (image.hasKey(ImageProperties.ID.toString())
-                && NUMBERS.matcher(image.get(ImageProperties.ID.toString())).matches()) {
+            // This should always be a parseable integer according to API docs. By not checking that all characters are
+            // digits, we save 55.6 MB of allocations in the test area during download.
+            if (image.hasKey(ImageProperties.ID.toString())) {
                 final long id = Long.parseLong(image.get(ImageProperties.ID.toString()));
                 if (id > 0) {
                     image.setOsmId(id, 1);

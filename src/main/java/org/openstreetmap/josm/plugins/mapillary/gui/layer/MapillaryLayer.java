@@ -466,18 +466,18 @@ public final class MapillaryLayer extends MVTLayer
         g.setColor(directionC);
         if (MapillaryImageUtils.IS_PANORAMIC.test(img)) {
             Composite currentComposite = g.getComposite();
+            AffineTransform scale = AffineTransform.getTranslateInstance(p.x, p.y);
+            scale.scale(2, 2);
+            g.setTransform(scale);
             g.setComposite(fadeComposite);
-            g.fillOval(p.x - CA_INDICATOR_RADIUS, p.y - CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS,
-                2 * CA_INDICATOR_RADIUS);
+            g.fill(IMAGE_CIRCLE);
             g.setComposite(currentComposite);
         }
-        AffineTransform backup = g.getTransform();
         g.setTransform(AffineTransform.getTranslateInstance(p.x, p.y));
         g.fill(IMAGE_CIRCLE);
-        g.setTransform(backup);
         if (i != null) {
-            // This _must_ be set after operations complete (see JOSM 19516 for more information)
-            backup = g.getTransform();
+            // This _must_ be set after operations complete (see JOSM #19516 for more information)
+            AffineTransform backup = g.getTransform();
             // convert the angle to radians from degrees
             double angle = MapillaryImageUtils.getAngle(img);
 

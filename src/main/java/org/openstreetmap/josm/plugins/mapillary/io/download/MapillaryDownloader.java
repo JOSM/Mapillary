@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ForkJoinTask;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -83,23 +85,33 @@ public final class MapillaryDownloader {
         // This will be null if the image is null
         final long prioritizedId = MapillaryImageUtils.getKey(prioritizedImage);
 
+        Collection<ForkJoinTask<Map<String, List<MapillaryNode>>>> tasks = new ArrayList<>(images.length / step);
+        AtomicReference<ForkJoinTask<Map<String, List<MapillaryNode>>>> prioritizedTask = new AtomicReference<>();
         for (int i = 0; i <= images.length / step; i++) {
             final long[] imagesToGet = Arrays.copyOfRange(images, i * step, Math.min((i + 1) * step, images.length));
-            if (prioritizedImage == null
-                || prioritizedId > 0 && LongStream.of(imagesToGet).anyMatch(id -> id == prioritizedId)) {
-                realDownloadImages(imagesToGet).forEach((sequence, nodes) -> returnMap
-                    .computeIfAbsent(sequence, s -> new ArrayList<>(nodes.size())).addAll(nodes));
-                if (prioritizedImage != null && updater != null && returnMap.size() == 1) {
-                    final Map.Entry<String, Collection<MapillaryNode>> entry = returnMap.entrySet().iterator().next();
+            final ForkJoinTask<Map<String, List<MapillaryNode>>> task = ForkJoinTask.adapt(() -> {
+                Map<String, List<MapillaryNode>> map = realDownloadImages(imagesToGet);
+                if (prioritizedImage != null && updater != null && map.size() == 1) {
+                    final Map.Entry<String, List<MapillaryNode>> entry = map.entrySet().iterator().next();
                     final MapillarySequence sequence = new MapillarySequence(entry.getKey());
                     sequence.setNodes(new ArrayList<>(entry.getValue()));
                     updater.accept(Collections.singleton(sequence));
+                    return Collections.singletonMap(entry.getKey(),
+                        entry.getValue().stream().map(MapillaryNode::new).collect(Collectors.toList()));
                 }
+                return map;
+            });
+            tasks.add(task);
+            if (prioritizedImage == null
+                || (prioritizedId > 0 && LongStream.of(imagesToGet).anyMatch(id -> id == prioritizedId))) {
+                task.fork();
+                prioritizedTask.set(task);
             }
         }
-
-        if (prioritizedImage != null) {
-            return downloadImages(null, null, images);
+        tasks.stream().filter(task -> !Objects.equals(task, prioritizedTask.get())).forEach(ForkJoinTask::fork);
+        for (ForkJoinTask<Map<String, List<MapillaryNode>>> task : tasks) {
+            task.join().forEach((sequence, nodes) -> returnMap
+                .computeIfAbsent(sequence, s -> new ArrayList<>(nodes.size())).addAll(nodes));
         }
         return returnMap;
     }

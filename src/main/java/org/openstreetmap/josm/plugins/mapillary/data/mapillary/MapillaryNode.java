@@ -19,6 +19,16 @@ public class MapillaryNode extends MapillaryPrimitive implements INode, IPrimiti
     private double lon;
     private MapillarySequence referrer;
 
+    public MapillaryNode() {
+        // Do nothing
+    }
+
+    public MapillaryNode(MapillaryNode clone) {
+        this.lat = clone.lat;
+        this.lon = clone.lon;
+        // DO NOT CLONE THE REFERRER -- we _specifically_ only allow the referrer to be set _once_.
+    }
+
     @Override
     public double lon() {
         return this.lon;
@@ -52,6 +62,9 @@ public class MapillaryNode extends MapillaryPrimitive implements INode, IPrimiti
 
     @Override
     public boolean isReferredByWays(int n) {
+        if (n == 1 && this.referrer != null) {
+            return true;
+        }
         return false;
     }
 
