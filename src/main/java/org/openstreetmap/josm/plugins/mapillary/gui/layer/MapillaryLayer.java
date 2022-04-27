@@ -305,11 +305,14 @@ public final class MapillaryLayer extends MVTLayer
     public void paint(final Graphics2D g, final MapView mv, final Bounds box) {
         final Lock lock = this.getData().getReadLock();
         try {
+            // This _must_ be set after operations complete (see JOSM #19516 for more information)
+            AffineTransform backup = g.getTransform();
             if (lock.tryLock(100, TimeUnit.MILLISECONDS)) {
                 try {
                     this.paintWithLock(g, mv, box);
                 } finally {
                     lock.unlock();
+                    g.setTransform(backup);
                 }
             }
         } catch (InterruptedException e) {
