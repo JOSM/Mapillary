@@ -80,7 +80,7 @@ public final class MapillaryDownloader {
      */
     public static Map<String, Collection<MapillaryNode>> downloadImages(@Nullable MapillaryNode prioritizedImage,
         @Nullable Consumer<Collection<MapillarySequence>> updater, long... images) {
-        final byte step = 100;
+        final byte step = 50;
         final Map<String, Collection<MapillaryNode>> returnMap = new HashMap<>();
         // This will be null if the image is null
         final long prioritizedId = MapillaryImageUtils.getKey(prioritizedImage);
@@ -89,9 +89,11 @@ public final class MapillaryDownloader {
         AtomicReference<ForkJoinTask<Map<String, List<MapillaryNode>>>> prioritizedTask = new AtomicReference<>();
         for (int i = 0; i <= images.length / step; i++) {
             final long[] imagesToGet = Arrays.copyOfRange(images, i * step, Math.min((i + 1) * step, images.length));
+            final boolean containsPrioritizedImage = updater != null && prioritizedId > 0
+                && LongStream.of(imagesToGet).anyMatch(id -> id == prioritizedId);
             final ForkJoinTask<Map<String, List<MapillaryNode>>> task = ForkJoinTask.adapt(() -> {
                 Map<String, List<MapillaryNode>> map = realDownloadImages(imagesToGet);
-                if (prioritizedImage != null && updater != null && map.size() == 1) {
+                if (containsPrioritizedImage && map.size() == 1) {
                     final Map.Entry<String, List<MapillaryNode>> entry = map.entrySet().iterator().next();
                     final MapillarySequence sequence = new MapillarySequence(entry.getKey());
                     sequence.setNodes(new ArrayList<>(entry.getValue()));
@@ -102,8 +104,7 @@ public final class MapillaryDownloader {
                 return map;
             });
             tasks.add(task);
-            if (prioritizedImage == null
-                || (prioritizedId > 0 && LongStream.of(imagesToGet).anyMatch(id -> id == prioritizedId))) {
+            if (containsPrioritizedImage) {
                 task.fork();
                 prioritizedTask.set(task);
             }
