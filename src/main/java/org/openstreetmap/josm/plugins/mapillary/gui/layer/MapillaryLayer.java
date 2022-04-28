@@ -490,7 +490,7 @@ public final class MapillaryLayer extends MVTLayer
              * if (Objects.equals(selectedImg, img))
              * angle += MapillaryMainDialog.getInstance().imageViewer.getRotation();
              */
-            g.setTransform(getTransform(angle, p, getOriginalCentroid(i), backup));
+            g.setTransform(getTransform(angle, p, getOriginalCentroid(i)));
             g.drawImage(i, p.x, p.y, null);
             g.setTransform(backup);
         }
@@ -500,7 +500,7 @@ public final class MapillaryLayer extends MVTLayer
             || (selectedImg != null && selectedImg.equals(img))) {
             g.setColor(Color.WHITE);
             g.setStroke(new BasicStroke(2));
-            g.drawOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
+            g.drawOval(-IMG_MARKER_RADIUS, -IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
         }
         // TODO get the following working
         /*
@@ -524,6 +524,7 @@ public final class MapillaryLayer extends MVTLayer
             g.setColor(MapillaryColorScheme.SEQ_IMPORTED_HIGHLIGHTED);
             g.fillOval(p.x - radius, p.y - radius, 2 * radius, 2 * radius);
         }
+        g.setTransform(AffineTransform.getTranslateInstance(0, 0));
     }
 
     /**
@@ -532,12 +533,10 @@ public final class MapillaryLayer extends MVTLayer
      * @param angle The angle to rotate (radians)
      * @param p The point to transform around
      * @param origin The origin of the transform
-     * @param original the original affine transform
      * @return An affine transform to rotate around an arbitrary point
      */
-    public static AffineTransform getTransform(double angle, Point p, Point2D origin, AffineTransform original) {
+    private static AffineTransform getTransform(double angle, Point p, Point2D origin) {
         AffineTransform move = AffineTransform.getRotateInstance(angle, p.getX(), p.getY());
-        move.preConcatenate(original);
         move.translate(-origin.getX(), -origin.getY());
         Point2D.Double d2 = new Point2D.Double(p.x + origin.getX(), p.y + origin.getY());
         move.transform(d2, d2);
