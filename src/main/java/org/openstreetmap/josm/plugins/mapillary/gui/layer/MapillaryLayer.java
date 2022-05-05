@@ -97,6 +97,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.OffsetUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.ReflectionUtils;
 import org.openstreetmap.josm.tools.ColorHelper;
 import org.openstreetmap.josm.tools.Geometry;
+import org.openstreetmap.josm.tools.HiDPISupport;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
@@ -351,6 +352,7 @@ public final class MapillaryLayer extends MVTLayer
                 drawSequence(g, mv, seq, selectedImage);
             }
         }
+        g.setTransform(AffineTransform.getScaleInstance(HiDPISupport.getHiDPIScale(), HiDPISupport.getHiDPIScale()));
         final Collection<INode> images = this.getData().searchNodes(box.toBBox()).stream().distinct()
             .collect(Collectors.toList());
         if (images.size() < MapillaryProperties.MAXIMUM_DRAW_IMAGES.get()) {
@@ -427,6 +429,8 @@ public final class MapillaryLayer extends MVTLayer
             Logging.warn("An image is not painted, because it is null or has no LatLon!");
             return;
         }
+        AffineTransform originalTransform = g.getTransform();
+        Composite originalComposite = g.getComposite();
         if (!IMAGE_CA_PAINT_RANGE.contains(MainApplication.getMap().mapView.getDist100Pixel())
             && !img.equals(selectedImg)
             && (selectedImg == null || (MapillaryImageUtils.getSequence(img) != null && !Objects
@@ -442,7 +446,6 @@ public final class MapillaryLayer extends MVTLayer
             drawnCoordinates = img;
         }
         final Point p = MainApplication.getMap().mapView.getPoint(drawnCoordinates);
-        Composite composite = g.getComposite();
         if (MapillaryImageUtils.getSequenceKey(selectedImg) != null && !Objects
             .equals(MapillaryImageUtils.getSequenceKey(selectedImg), MapillaryImageUtils.getSequenceKey(img))) {
             g.setComposite(fadeComposite);
@@ -470,17 +473,19 @@ public final class MapillaryLayer extends MVTLayer
         if (MapillaryImageUtils.IS_PANORAMIC.test(img)) {
             Composite currentComposite = g.getComposite();
             AffineTransform scale = AffineTransform.getTranslateInstance(p.x, p.y);
+            scale.preConcatenate(originalTransform);
             scale.scale(2, 2);
             g.setTransform(scale);
             g.setComposite(fadeComposite);
             g.fill(IMAGE_CIRCLE);
             g.setComposite(currentComposite);
         }
-        g.setTransform(AffineTransform.getTranslateInstance(p.x, p.y));
+        final AffineTransform translate = AffineTransform.getTranslateInstance(p.x, p.y);
+        translate.preConcatenate(originalTransform);
+        g.setTransform(translate);
         g.fill(IMAGE_CIRCLE);
         if (i != null) {
             // This _must_ be set after operations complete (see JOSM #19516 for more information)
-            AffineTransform backup = g.getTransform();
             // convert the angle to radians from degrees
             double angle = MapillaryImageUtils.getAngle(img);
 
@@ -490,9 +495,15 @@ public final class MapillaryLayer extends MVTLayer
              * if (Objects.equals(selectedImg, img))
              * angle += MapillaryMainDialog.getInstance().imageViewer.getRotation();
              */
-            g.setTransform(getTransform(angle, p, getOriginalCentroid(i)));
+            Point2D origin = getOriginalCentroid(i);
+            AffineTransform move = AffineTransform.getRotateInstance(angle, p.getX(), p.getY());
+            move.translate(-origin.getX(), -origin.getY());
+            Point2D.Double d2 = new Point2D.Double(p.x + origin.getX(), p.y + origin.getY());
+            move.transform(d2, d2);
+            move.preConcatenate(originalTransform);
+            g.setTransform(move);
             g.drawImage(i, p.x, p.y, null);
-            g.setTransform(backup);
+            g.setTransform(translate);
         }
 
         // Paint highlight for selected or highlighted images
@@ -509,7 +520,6 @@ public final class MapillaryLayer extends MVTLayer
          * null);
          * }
          */
-        g.setComposite(composite);
 
         // Draw a line to the original location
         if (offset && (Double.compare(drawnCoordinates.lat(), img.lat()) != 0
@@ -524,23 +534,8 @@ public final class MapillaryLayer extends MVTLayer
             g.setColor(MapillaryColorScheme.SEQ_IMPORTED_HIGHLIGHTED);
             g.fillOval(p.x - radius, p.y - radius, 2 * radius, 2 * radius);
         }
-        g.setTransform(AffineTransform.getTranslateInstance(0, 0));
-    }
-
-    /**
-     * Get the transformation of an angle and point
-     *
-     * @param angle The angle to rotate (radians)
-     * @param p The point to transform around
-     * @param origin The origin of the transform
-     * @return An affine transform to rotate around an arbitrary point
-     */
-    private static AffineTransform getTransform(double angle, Point p, Point2D origin) {
-        AffineTransform move = AffineTransform.getRotateInstance(angle, p.getX(), p.getY());
-        move.translate(-origin.getX(), -origin.getY());
-        Point2D.Double d2 = new Point2D.Double(p.x + origin.getX(), p.y + origin.getY());
-        move.transform(d2, d2);
-        return move;
+        g.setComposite(originalComposite);
+        g.setTransform(originalTransform);
     }
 
     private static Point2D getOriginalCentroid(Image i) {
