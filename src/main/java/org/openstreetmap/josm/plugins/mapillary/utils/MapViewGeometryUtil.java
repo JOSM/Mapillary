@@ -2,12 +2,12 @@
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.Shape;
 import java.awt.geom.Path2D;
-import java.util.Objects;
+import java.awt.geom.Point2D;
 
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.gui.MapView;
@@ -32,20 +32,22 @@ public final class MapViewGeometryUtil {
      * @return the {@link Path2D} object to which the {@link IWay} has been converted
      */
     public static Path2D getSequencePath(NavigatableComponent nc, IWay<?> seq) {
-        final Path2D.Double path = new Path2D.Double();
         final boolean anyVisible = seq.getNodes().stream().filter(MapillaryImageUtils::isImage)
-            .filter(node -> node.getReferrers().size() == 1).anyMatch(IPrimitive::isVisible);
-        seq.getNodes().stream().filter(Objects::nonNull)
-            .filter(node -> (node.isVisible() && MapillaryImageUtils.isImage(node))
-                || (anyVisible && seq.isFirstLastNode(node)))
-            .forEach(img -> {
-                Point p = nc.getPoint(img.getCoor());
-                if (path.getCurrentPoint() == null) {
-                    path.moveTo(p.getX(), p.getY());
-                } else {
-                    path.lineTo(p.getX(), p.getY());
-                }
-            });
-        return path;
+            .filter(node -> node.isReferredByWays(1)).anyMatch(IPrimitive::isVisible);
+        Path2D.Double path = null;
+        for (INode node : seq.getNodes()) {
+            if (node == null || (!node.isVisible() || !MapillaryImageUtils.isImage(node))
+                && !(anyVisible && seq.isFirstLastNode(node))) {
+                continue;
+            }
+            Point2D p = nc.getPoint2D(node.getEastNorth());
+            if (path == null) {
+                path = new Path2D.Double(Path2D.WIND_NON_ZERO, seq.getNodesCount());
+                path.moveTo(p.getX(), p.getY());
+            } else {
+                path.lineTo(p.getX(), p.getY());
+            }
+        }
+        return path != null ? path : new Path2D.Double();
     }
 }
