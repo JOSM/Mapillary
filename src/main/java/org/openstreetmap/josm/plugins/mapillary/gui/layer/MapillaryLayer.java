@@ -55,6 +55,7 @@ import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
+import org.openstreetmap.josm.data.preferences.AbstractProperty;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorPrimitive;
@@ -112,8 +113,8 @@ import org.openstreetmap.josm.tools.Utils;
  *
  * @author nokutu
  */
-public final class MapillaryLayer extends MVTLayer
-    implements ActiveLayerChangeListener, LayerChangeListener, UploadHook, VectorDataSelectionListener {
+public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeListener, LayerChangeListener,
+    UploadHook, VectorDataSelectionListener, AbstractProperty.ValueChangeListener<Boolean> {
 
     /** The radius of the image marker */
     private static final int IMG_MARKER_RADIUS = 7;
@@ -166,6 +167,7 @@ public final class MapillaryLayer extends MVTLayer
     private static Point2D standardImageCentroid = null;
     private final ListenerList<MVTTile.TileListener> tileListeners = ListenerList.create();
     private MapillaryNode image = null;
+    private boolean colorByCaptureDate;
 
     private MapillaryLayer() {
         super(MapillaryKeys.MAPILLARY_IMAGES);
@@ -177,6 +179,8 @@ public final class MapillaryLayer extends MVTLayer
         this.addTileDownloadListener(OrganizationRecord::addFromTile);
         this.addTileDownloadListener(MapillaryFilterDialog.getInstance());
         this.getData().addSelectionListener(this);
+        this.colorByCaptureDate = MapillaryProperties.COLOR_BY_CAPTURE_DATE.get();
+        MapillaryProperties.COLOR_BY_CAPTURE_DATE.addListener(this);
     }
 
     /**
@@ -283,6 +287,7 @@ public final class MapillaryLayer extends MVTLayer
                 ImageViewerDialog.getInstance().displayImage(null);
             }
             UploadAction.unregisterUploadHook(this);
+            MapillaryProperties.COLOR_BY_CAPTURE_DATE.removeListener(this);
             super.destroy();
         }
         destroyed = true;
@@ -352,15 +357,18 @@ public final class MapillaryLayer extends MVTLayer
                 drawSequence(g, mv, seq, selectedImage);
             }
         }
-        g.setTransform(AffineTransform.getScaleInstance(HiDPISupport.getHiDPIScale(), HiDPISupport.getHiDPIScale()));
+        final AffineTransform hiDpiTransform = AffineTransform.getScaleInstance(HiDPISupport.getHiDPIScale(),
+            HiDPISupport.getHiDPIScale());
+        g.setTransform(hiDpiTransform);
         final Collection<INode> images = this.getData().searchNodes(box.toBBox()).stream().distinct()
             .collect(Collectors.toList());
+        final double distPer100Pixel = mv.getDist100Pixel();
         if (images.size() < MapillaryProperties.MAXIMUM_DRAW_IMAGES.get()) {
             for (INode imageAbs : images) {
                 if (imageAbs.isVisible() && MapillaryImageUtils.isImage(imageAbs)
                     && !MapillaryImageUtils.equals(this.image, imageAbs)
                     && !Objects.equals(MapillaryImageUtils.getSequenceKey(imageAbs), sequenceKey)) {
-                    drawImageMarker(selectedImage, g, imageAbs, false);
+                    drawImageMarker(hiDpiTransform, selectedImage, g, imageAbs, distPer100Pixel, false);
                 }
             }
         }
@@ -370,17 +378,17 @@ public final class MapillaryLayer extends MVTLayer
                 .map(IWay.class::cast).collect(Collectors.toSet())) {
                 drawSequence(g, mv, way, selectedImage);
                 for (INode n : way.getNodes()) {
-                    drawImageMarker(selectedImage, g, n, false);
+                    drawImageMarker(hiDpiTransform, selectedImage, g, n, distPer100Pixel, false);
                 }
             }
             // Paint selected images last. Not particularly worried about painting too much, since most people don't
             // select
             // thousands of images.
-            drawImageMarker(selectedImage, g, selectedImage, true);
+            drawImageMarker(hiDpiTransform, selectedImage, g, selectedImage, distPer100Pixel, true);
         }
     }
 
-    private static void drawSequence(final Graphics2D g, final MapView mv, final IWay<?> sequence, final INode image) {
+    private void drawSequence(final Graphics2D g, final MapView mv, final IWay<?> sequence, final INode image) {
         if (sequence.getNodes().contains(image)) {
             g.setColor(!MapillarySequenceUtils.hasKey(sequence) ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED
                 : MapillaryColorScheme.SEQ_SELECTED);
@@ -403,8 +411,8 @@ public final class MapillaryLayer extends MVTLayer
         g.setComposite(AlphaComposite.SrcOver);
     }
 
-    private static Color getAgedColor(final INode node, final Color defaultColor) {
-        if (Boolean.TRUE.equals(MapillaryProperties.COLOR_BY_CAPTURE_DATE.get())) {
+    private Color getAgedColor(final INode node, final Color defaultColor) {
+        if (this.colorByCaptureDate) {
             final long timeDiff = Instant.now().toEpochMilli() - MapillaryImageUtils.getDate(node).toEpochMilli();
             // ms per year is ~31_556_952_000 ms
             if (timeDiff > 4 * YEAR_MILLIS) {
@@ -419,20 +427,21 @@ public final class MapillaryLayer extends MVTLayer
     /**
      * Draws an image marker onto the given Graphics context.
      *
+     * @param originalTransform The original transformation (do not modify this), precalculated for HiDPI displays.
      * @param selectedImg Currently selected nodes
      * @param g the Graphics context
      * @param img the image to be drawn onto the Graphics context
+     * @param dist100Pixel The distance per 100 px
      * @param offset {@code true} if we may be painting the offset for an image
      */
-    private void drawImageMarker(final INode selectedImg, final Graphics2D g, final INode img, final boolean offset) {
+    private void drawImageMarker(final AffineTransform originalTransform, final INode selectedImg, final Graphics2D g,
+        final INode img, final double dist100Pixel, final boolean offset) {
         if (img == null || img.getCoor() == null) {
             Logging.warn("An image is not painted, because it is null or has no LatLon!");
             return;
         }
-        AffineTransform originalTransform = g.getTransform();
         Composite originalComposite = g.getComposite();
-        if (!IMAGE_CA_PAINT_RANGE.contains(MainApplication.getMap().mapView.getDist100Pixel())
-            && !img.equals(selectedImg)
+        if (!IMAGE_CA_PAINT_RANGE.contains(dist100Pixel) && !img.equals(selectedImg)
             && (selectedImg == null || (MapillaryImageUtils.getSequence(img) != null && !Objects
                 .equals(MapillaryImageUtils.getSequenceKey(img), MapillaryImageUtils.getSequenceKey(selectedImg))))) {
             Logging
@@ -445,7 +454,10 @@ public final class MapillaryLayer extends MVTLayer
         } else {
             drawnCoordinates = img;
         }
-        final Point p = MainApplication.getMap().mapView.getPoint(drawnCoordinates);
+        final Point p = drawnCoordinates instanceof INode
+            // INode implementations may optimize getEastNorth, so prefer that where possible.
+            ? MainApplication.getMap().mapView.getPoint(((INode) drawnCoordinates).getEastNorth())
+            : MainApplication.getMap().mapView.getPoint(drawnCoordinates);
         if (MapillaryImageUtils.getSequenceKey(selectedImg) != null && !Objects
             .equals(MapillaryImageUtils.getSequenceKey(selectedImg), MapillaryImageUtils.getSequenceKey(img))) {
             g.setComposite(fadeComposite);
@@ -826,6 +838,13 @@ public final class MapillaryLayer extends MVTLayer
                 .max(Comparator.comparingDouble(pair -> pair.b)).map(pair -> pair.a).orElse(null));
         if (Objects.equals(this.image, tImage)) {
             this.setCurrentImage(tImage);
+        }
+    }
+
+    @Override
+    public void valueChanged(AbstractProperty.ValueChangeEvent<? extends Boolean> e) {
+        if (MapillaryProperties.COLOR_BY_CAPTURE_DATE.equals(e.getProperty())) {
+            this.colorByCaptureDate = MapillaryProperties.COLOR_BY_CAPTURE_DATE.get();
         }
     }
 }

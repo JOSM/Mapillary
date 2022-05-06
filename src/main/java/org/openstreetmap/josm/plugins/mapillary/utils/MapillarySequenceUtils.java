@@ -20,6 +20,7 @@ import org.apache.commons.jcs3.access.CacheAccess;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
@@ -138,11 +139,18 @@ public class MapillarySequenceUtils {
      * @return The sequence key, or {@code ""} if no key exists
      */
     public static String getKey(IWay<?> sequence) {
-        if (sequence != null && sequence.hasKey(KEY)) {
+        if (sequence == null) {
+            return "";
+        }
+        if (sequence.hasKey(KEY)) {
             return sequence.get(KEY);
-        } else if (sequence != null && sequence.getReferrers().size() == 1
-            && sequence.getReferrers().get(0).hasKey(KEY)) {
-            return sequence.getReferrers().get(0).get(KEY);
+        }
+        final List<? extends IPrimitive> referrers = sequence.getReferrers();
+        if (referrers.size() == 1 && referrers.get(0).hasKey(KEY)) {
+            // This is a heavy hit once, when we are initially getting the key, but it reduces expensive calls to
+            // getReferrers later.
+            referrers.get(0).getKeys().forEach(sequence::put);
+            return sequence.get(KEY);
         }
         return "";
     }
