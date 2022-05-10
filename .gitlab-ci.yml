@@ -1,8 +1,5 @@
 image: registry.gitlab.com/josm/docker-library/openjdk:8
 
-variables:
-  GIT_SUBMODULE_STRATEGY: recursive
-
 cache: &global_cache
   paths:
     - .gradle/wrapper
@@ -26,6 +23,7 @@ stages:
   - release
 
 variables:
+  GIT_SUBMODULE_STRATEGY: recursive
   PLUGIN_NAME: "Mapillary"
   PLUGIN_JAR_BASE_NAME: "Mapillary"
 
@@ -117,6 +115,7 @@ test:
   dependencies:
     - assemble
   interruptible: true
+  coverage: '/.*Instruction Coverage.*?([0-9.]{1,8}) ?%/'
 
 coverage:
   stage: deploy
@@ -128,7 +127,9 @@ coverage:
     - python /opt/cover2cover.py build/reports/jacoco/test/jacocoTestReport.xml $CI_PROJECT_DIR/src/main/java/ > build/reports/jacoco/test/coverage.xml
   artifacts:
     reports:
-      cobertura: "build/reports/jacoco/test/coverage.xml"
+      coverage_report:
+        coverage_format: cobertura
+        path: "build/reports/jacoco/test/coverage.xml"
   interruptible: true
   cache:
     <<: *global_cache
@@ -189,7 +190,6 @@ build with java 17:
   image: registry.gitlab.com/josm/docker-library/openjdk:17
   script:
     - ./gradlew build --stacktrace
-  needs: ["java 17 assemble"]
   allow_failure: true
   needs: ["assemble with java 17"]
   dependencies:
