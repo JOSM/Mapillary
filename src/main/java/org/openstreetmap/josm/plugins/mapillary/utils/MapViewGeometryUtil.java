@@ -50,4 +50,32 @@ public final class MapViewGeometryUtil {
         }
         return path != null ? path : new Path2D.Double();
     }
+
+    /**
+     * Converts a {@link IWay} into a {@link Path2D} that can be drawn
+     * on the specified {@link NavigatableComponent}'s {@link Graphics2D}-context.
+     *
+     * @param nc the {@link NavigatableComponent} for which this conversion should be performed, typically a
+     *        {@link MapView}
+     * @param seq the sequence to convert
+     * @param x The x coordinates
+     * @param y The y coordinates
+     * @return the number of points in x/y
+     */
+    public static int getSequencePath(NavigatableComponent nc, IWay<?> seq, int[] x, int[] y) {
+        final boolean anyVisible = seq.getNodes().stream().filter(MapillaryImageUtils::isImage)
+            .filter(node -> node.isReferredByWays(1)).anyMatch(IPrimitive::isVisible);
+        int index = 0;
+        for (INode node : seq.getNodes()) {
+            if (node == null || (!node.isVisible() || !MapillaryImageUtils.isImage(node))
+                && !(anyVisible && seq.isFirstLastNode(node))) {
+                continue;
+            }
+            Point2D p = nc.getPoint2D(node.getEastNorth());
+            x[index] = (int) p.getX();
+            y[index] = (int) p.getY();
+            index++;
+        }
+        return index;
+    }
 }

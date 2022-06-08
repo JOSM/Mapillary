@@ -28,6 +28,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.openstreetmap.josm.data.preferences.AbstractProperty;
 import org.openstreetmap.josm.data.preferences.AbstractToStringProperty;
 import org.openstreetmap.josm.data.preferences.BooleanProperty;
 import org.openstreetmap.josm.data.preferences.StringProperty;
@@ -104,12 +105,13 @@ class MapillaryPreferenceSettingTest {
             Arguments.of(MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR, "imageLinkToBlurEditor"),
             Arguments.of(MapillaryProperties.COLOR_BY_CAPTURE_DATE, "colorImagesByCaptureDate"),
             Arguments.of(MapillaryProperties.USE_COMPUTED_LOCATIONS, "useComputedLocations"),
+            Arguments.of(MapillaryProperties.USE_CUSTOM_RENDERER, "useCustomRenderer"),
             Arguments.of(MapillaryProperties.DEVELOPER, "developer"));
     }
 
     @ParameterizedTest
     @MethodSource
-    void testOkCheckbox(final BooleanProperty property, final String fieldName) {
+    void testOkCheckbox(final AbstractProperty<Boolean> property, final String fieldName) {
         // Set the pref poorly
         new StringProperty(property.getKey(), "default").put("arbitrary");
 

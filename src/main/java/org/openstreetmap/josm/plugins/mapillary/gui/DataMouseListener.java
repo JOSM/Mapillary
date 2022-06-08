@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -18,6 +19,8 @@ import org.openstreetmap.josm.data.osm.AbstractPrimitive;
 import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
+import org.openstreetmap.josm.data.osm.IWay;
+import org.openstreetmap.josm.data.osm.PrimitiveId;
 import org.openstreetmap.josm.data.projection.ProjectionRegistry;
 import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.gui.MainApplication;
@@ -29,6 +32,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.Geometry;
 import org.openstreetmap.josm.tools.HiDPISupport;
+import org.openstreetmap.josm.tools.SubclassFilteredCollection;
 
 /**
  * A basic class to listen for mouse events in the map
@@ -75,6 +79,8 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
         if (!nodes.isEmpty()) {
             // This is needed since Mapillary ids are only unique within a tile.
             layer.getData().setSelected(nodes);
+            nodes.stream().filter(AbstractPrimitive.class::isInstance).map(AbstractPrimitive.class::cast)
+                .forEach(prim -> prim.isSelected());
         } else if (layer instanceof MapillaryLayer) {
             if (e.getClickCount() >= MapillaryProperties.DESELECT_CLICK_COUNT.get()) {
                 layer.getData().clearSelection();
@@ -96,7 +102,13 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
             if (layer instanceof MapillaryLayer || layer instanceof PointObjectLayer) {
                 final Lock readLock = layer.getData().getReadLock();
                 if (readLock.tryLock()) {
+                    layer.getData().getPrimitivesById(layer.getData().getHighlighted().toArray(new PrimitiveId[0]))
+                        .forEach(vectorPrimitive -> vectorPrimitive.setHighlighted(false));
                     try {
+                        if (searchBBox == null) {
+                            layer.getData().setHighlighted(Collections.emptyList());
+                            continue;
+                        }
                         if (layer instanceof MapillaryLayer) {
                             MapillaryNode node = ((MapillaryLayer) layer).getImage();
                             if (node != null && node.getSequence() != null) {
@@ -107,10 +119,13 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
                         if (!nodes.isEmpty()) {
                             layer.getData().setHighlighted(
                                 nodes.stream().map(IPrimitive::getPrimitiveId).collect(Collectors.toSet()));
+                            nodes.forEach(node -> node.setHighlighted(true));
                             layer.invalidate();
                             continue;
                         }
-                        Collection<VectorWay> ways = layer.getData().searchWays(searchBBox);
+                        Collection<VectorWay> ways = SubclassFilteredCollection.filter(
+                            layer.getData().searchWays(searchBBox),
+                            way -> convertToWaySegmentBBox(way).anyMatch(searchBBox::intersects));
                         if (!ways.isEmpty()) {
                             layer.getData().setHighlighted(
                                 ways.stream().map(IPrimitive::getPrimitiveId).collect(Collectors.toSet()));
@@ -124,6 +139,17 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
                 }
             }
         }
+    }
+
+    private static <N extends INode, W extends IWay<N>> Stream<BBox> convertToWaySegmentBBox(W way) {
+        // TODO: Stream.iterate would be good here (Java 9)
+        Stream.Builder<BBox> builder = Stream.builder();
+        for (int i = 0; i < way.getNodesCount() - 1; i++) {
+            BBox bbox = new BBox(way.getNode(i));
+            bbox.add(way.getNode(i + 1));
+            builder.add(bbox);
+        }
+        return builder.build();
     }
 
     private static List<? extends AbstractPrimitive> searchNodes(MVTLayer layer, BBox searchBBox) {

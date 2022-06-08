@@ -71,6 +71,10 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
         I18n.trc("Checkbox label in JOSM settings", "Use computed location information"),
         MapillaryProperties.USE_COMPUTED_LOCATIONS.get());
 
+    private final JCheckBox useCustomRenderer = new JCheckBox(
+        I18n.trc("Checkbox label in JOSM settings", "Use the custom Mapillary renderer"),
+        MapillaryProperties.USE_CUSTOM_RENDERER.get());
+
     private final SpinnerNumberModel maxDistanceForChangesetSource = new SpinnerNumberModel(
         MapillaryProperties.MAXIMUM_DISTANCE_FOR_CHANGESET_SOURCE.get().doubleValue(), 0.0,
         2 * WGS84Datum.INSTANCE.getEllipsoid().a, 0.5);
@@ -149,6 +153,9 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
         mainPanel.add(numberOfImagesToDraw, GBC.eol());
         ExpertToggleAction.addVisibilitySwitcher(numberOfImagesToDraw);
 
+        mainPanel.add(this.useCustomRenderer, GBC.eol());
+        ExpertToggleAction.addVisibilitySwitcher(this.useCustomRenderer);
+
         developer.addActionListener(e -> DeveloperToggleAction.getInstance().actionPerformed(null));
 
         ExpertToggleAction.addVisibilitySwitcher(developer);
@@ -158,7 +165,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
         }
         MapillaryColorScheme.styleAsDefaultPanel(mainPanel, this.displayHour, this.moveTo, this.imageLinkToBlurEditor,
             this.colorImagesByCaptureDate, this.useComputedLocations, this.developer, preFetchPanel,
-            changesetSourceDistancePanel, numberOfImagesToDraw, this.requiresLogin);
+            changesetSourceDistancePanel, numberOfImagesToDraw, this.useCustomRenderer, this.requiresLogin);
         mainPanel.add(Box.createVerticalGlue(), GBC.eol().fill(GridBagConstraints.BOTH));
 
         container.add(mainPanel, BorderLayout.CENTER);
@@ -221,6 +228,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
         MapillaryProperties.MAXIMUM_DRAW_IMAGES.put(maxForImagesToDraw.getNumber().intValue());
         MapillaryProperties.MAXIMUM_DISTANCE_FOR_CHANGESET_SOURCE
             .put(maxDistanceForChangesetSource.getNumber().doubleValue());
+
+        MapillaryProperties.USE_CUSTOM_RENDERER.put(this.useCustomRenderer.isSelected());
 
         if (ExpertToggleAction.isExpert()) {
             MapillaryProperties.MAXIMUM_DISTANCE_FOR_CHANGESET_SOURCE

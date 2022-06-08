@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import org.openstreetmap.josm.data.preferences.BooleanProperty;
+import org.openstreetmap.josm.data.preferences.CachingProperty;
 import org.openstreetmap.josm.data.preferences.DoubleProperty;
 import org.openstreetmap.josm.data.preferences.IntegerProperty;
 import org.openstreetmap.josm.data.preferences.LongProperty;
@@ -100,6 +101,14 @@ public final class MapillaryProperties {
      * The maximum number of images to show in the map view
      */
     public static final IntegerProperty MAXIMUM_DRAW_IMAGES = new IntegerProperty("mapillary.images.max_draw", 10_000);
+    /**
+     * Use the custom renderer. This should be removed once the mapcss renderer works properly.
+     *
+     * @deprecated
+     */
+    @Deprecated
+    public static final CachingProperty<Boolean> USE_CUSTOM_RENDERER = new BooleanProperty(
+        "mapillary.use-custom-renderer", true).cached();
 
     private MapillaryProperties() {
         // Private constructor to avoid instantiation

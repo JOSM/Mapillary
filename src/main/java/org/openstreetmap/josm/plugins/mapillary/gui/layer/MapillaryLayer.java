@@ -50,6 +50,7 @@ import org.openstreetmap.josm.data.imagery.street_level.IImageEntry;
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
 import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.DataSet;
+import org.openstreetmap.josm.data.osm.HighlightUpdateListener;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.osm.Node;
@@ -83,6 +84,7 @@ import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.visitor.paint.MapillaryMapRenderer;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.OldVersionDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.geoimage.MapillaryImageEntry;
@@ -98,7 +100,6 @@ import org.openstreetmap.josm.plugins.mapillary.utils.OffsetUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.ReflectionUtils;
 import org.openstreetmap.josm.tools.ColorHelper;
 import org.openstreetmap.josm.tools.Geometry;
-import org.openstreetmap.josm.tools.HiDPISupport;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
@@ -114,7 +115,7 @@ import org.openstreetmap.josm.tools.Utils;
  * @author nokutu
  */
 public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeListener, LayerChangeListener,
-    UploadHook, VectorDataSelectionListener, AbstractProperty.ValueChangeListener<Boolean> {
+    UploadHook, VectorDataSelectionListener, AbstractProperty.ValueChangeListener<Boolean>, HighlightUpdateListener {
 
     /** The radius of the image marker */
     private static final int IMG_MARKER_RADIUS = 7;
@@ -179,6 +180,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         this.addTileDownloadListener(OrganizationRecord::addFromTile);
         this.addTileDownloadListener(MapillaryFilterDialog.getInstance());
         this.getData().addSelectionListener(this);
+        this.getData().addHighlightUpdateListener(this);
         this.colorByCaptureDate = MapillaryProperties.COLOR_BY_CAPTURE_DATE.get();
         MapillaryProperties.COLOR_BY_CAPTURE_DATE.addListener(this);
     }
@@ -329,62 +331,64 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
 
     private void paintWithLock(final Graphics2D g, final MapView mv, final Bounds box) {
         this.getData().setZoom(this.getZoomLevel());
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        fadeComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-            MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
+        final boolean useCustomRenderer = MapillaryProperties.USE_CUSTOM_RENDERER.get();
+        if (useCustomRenderer) {
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            fadeComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+                MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
 
-        final INode selectedImage = this.image;
-        synchronized (this) {
-            for (int i = 0; i < this.nearestImages.size(); i++) {
-                if (i % 2 == 0) {
-                    g.setColor(Color.RED);
-                } else {
-                    g.setColor(Color.BLUE);
-                }
-                if (selectedImage != null) {
-                    final Point selected = mv.getPoint(selectedImage.getCoor());
-                    final Point p = mv.getPoint(this.nearestImages.get(i).getCoor());
-                    g.draw(new Line2D.Double(p.getX(), p.getY(), selected.getX(), selected.getY()));
+            final INode selectedImage = this.image;
+            synchronized (this) {
+                for (int i = 0; i < this.nearestImages.size(); i++) {
+                    if (i % 2 == 0) {
+                        g.setColor(Color.RED);
+                    } else {
+                        g.setColor(Color.BLUE);
+                    }
+                    if (selectedImage != null) {
+                        final Point selected = mv.getPoint(selectedImage.getCoor());
+                        final Point p = mv.getPoint(this.nearestImages.get(i).getCoor());
+                        g.draw(new Line2D.Double(p.getX(), p.getY(), selected.getX(), selected.getY()));
+                    }
                 }
             }
-        }
 
-        // Draw sequence line
-        g.setStroke(new BasicStroke(2));
-        final String sequenceKey = MapillaryImageUtils.getSequenceKey(selectedImage);
-        for (IWay<?> seq : getData().searchWays(box.toBBox()).stream().distinct().collect(Collectors.toList())) {
-            if (!Objects.equals(sequenceKey, MapillarySequenceUtils.getKey(seq))) {
-                drawSequence(g, mv, seq, selectedImage);
-            }
-        }
-        final AffineTransform hiDpiTransform = AffineTransform.getScaleInstance(HiDPISupport.getHiDPIScale(),
-            HiDPISupport.getHiDPIScale());
-        g.setTransform(hiDpiTransform);
-        final Collection<INode> images = this.getData().searchNodes(box.toBBox()).stream().distinct()
-            .collect(Collectors.toList());
-        final double distPer100Pixel = mv.getDist100Pixel();
-        if (images.size() < MapillaryProperties.MAXIMUM_DRAW_IMAGES.get()) {
-            for (INode imageAbs : images) {
-                if (imageAbs.isVisible() && MapillaryImageUtils.isImage(imageAbs)
-                    && !MapillaryImageUtils.equals(this.image, imageAbs)
-                    && !Objects.equals(MapillaryImageUtils.getSequenceKey(imageAbs), sequenceKey)) {
-                    drawImageMarker(hiDpiTransform, selectedImage, g, imageAbs, distPer100Pixel, false);
+            // Draw sequence line
+            g.setStroke(new BasicStroke(2));
+            final String sequenceKey = MapillaryImageUtils.getSequenceKey(selectedImage);
+            for (IWay<?> seq : getData().searchWays(box.toBBox()).stream().distinct().collect(Collectors.toList())) {
+                if (!Objects.equals(sequenceKey, MapillarySequenceUtils.getKey(seq))) {
+                    drawSequence(g, mv, seq, selectedImage);
                 }
             }
-        }
-        if (selectedImage != null) {
-            // Paint the selected sequences
-            for (IWay<?> way : selectedImage.getReferrers().stream().filter(IWay.class::isInstance)
-                .map(IWay.class::cast).collect(Collectors.toSet())) {
-                drawSequence(g, mv, way, selectedImage);
-                for (INode n : way.getNodes()) {
-                    drawImageMarker(hiDpiTransform, selectedImage, g, n, distPer100Pixel, false);
+            final AffineTransform originalTransform = g.getTransform();
+            final Collection<INode> images = this.getData().searchNodes(box.toBBox()).stream().distinct()
+                .collect(Collectors.toList());
+            final double distPer100Pixel = mv.getDist100Pixel();
+            if (images.size() < MapillaryProperties.MAXIMUM_DRAW_IMAGES.get()) {
+                for (INode imageAbs : images) {
+                    if (imageAbs.isVisible() && MapillaryImageUtils.isImage(imageAbs)
+                        && !MapillaryImageUtils.equals(this.image, imageAbs)
+                        && !Objects.equals(MapillaryImageUtils.getSequenceKey(imageAbs), sequenceKey)) {
+                        drawImageMarker(originalTransform, selectedImage, g, imageAbs, distPer100Pixel, false);
+                    }
                 }
             }
-            // Paint selected images last. Not particularly worried about painting too much, since most people don't
-            // select
-            // thousands of images.
-            drawImageMarker(hiDpiTransform, selectedImage, g, selectedImage, distPer100Pixel, true);
+            if (selectedImage != null) {
+                // Paint the selected sequences
+                for (IWay<?> way : selectedImage.getReferrers().stream().filter(IWay.class::isInstance)
+                    .map(IWay.class::cast).collect(Collectors.toSet())) {
+                    drawSequence(g, mv, way, selectedImage);
+                    for (INode n : way.getNodes()) {
+                        drawImageMarker(originalTransform, selectedImage, g, n, distPer100Pixel, false);
+                    }
+                }
+                // Paint selected images last. Not particularly worried about painting too much, since most people don't
+                // select thousands of images.
+                drawImageMarker(originalTransform, selectedImage, g, selectedImage, distPer100Pixel, true);
+            }
+        } else {
+            new MapillaryMapRenderer(g, mv).render(this.getData(), false, box);
         }
     }
 
@@ -407,7 +411,11 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
                 g.setComposite(fadeComposite);
             }
         }
-        g.draw(MapViewGeometryUtil.getSequencePath(mv, sequence));
+        int[] x = new int[sequence.getNodesCount()];
+        int[] y = new int[sequence.getNodesCount()];
+        int count = MapViewGeometryUtil.getSequencePath(mv, sequence, x, y);
+        g.drawPolyline(x, y, count);
+        // g.draw(MapViewGeometryUtil.getSequencePath(mv, sequence));
         g.setComposite(AlphaComposite.SrcOver);
     }
 
@@ -796,6 +804,12 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
             }
             MapillaryUtils.getForkJoinPool().execute(() -> this.downloadSequence(this.downloadNode(node)));
         }
+        MapillaryMapRenderer.selectionOrHighlightChanged();
+    }
+
+    @Override
+    public void highlightUpdated(HighlightUpdateEvent e) {
+        MapillaryMapRenderer.selectionOrHighlightChanged();
     }
 
     /**

@@ -1,0 +1,172 @@
+meta {
+    title: "Mapillary Images";
+    description: "A stylesheet for Mapillary Images";
+    author: "Taylor Smock";
+}
+
+setting::selected_image {
+    type: boolean;
+    label: tr("A Mapillary Image has been selected");
+    default: false;
+}
+
+setting::mapillary_seq_default {
+    type: color;
+    label: tr("Mapillary Sequences (default color)");
+    default: mapillary_seq_green#05CB63;
+}
+
+setting::mapillary_seq_highlighted {
+    type: color;
+    label: tr("Mapillary Sequences (highlighted)");
+    default: mapillary_seq_highlighted#f5811a;
+}
+
+setting::mapillary_seq_selected {
+    type: color;
+    label: tr("Mapillary Sequences (selected)");
+    default: mapillary_seq_selected#00BCFF;
+}
+
+setting::mapillary_ca_default {
+    type: color;
+    label: tr("Mapillary Images (default color)");
+    /* This was #187A45 many years ago */
+    default: mapillary_ca_default#05CB63;
+}
+
+setting::mapillary_ca_selected {
+    type: color;
+    label: tr("Selected Mapillary Images");
+    default: mapillary_ca_selected#356685;
+}
+
+setting::mapillary_ca_highlighted {
+    type: color;
+    label: tr("Highlighted Mapillary Images");
+    default: mapillary_ca_highlighted#f5b81a;
+}
+
+setting::mapillary_old_color {
+    type: color;
+    label: tr("Old Mapillary Images");
+    default: mapillary_old_color#fbc01b;
+}
+
+setting::mapillary_really_old_color {
+    type: color;
+    label: tr("Really old Mapillary Images");
+    default: mapillary_really_old_color#e17155;
+}
+
+setting::mapillary_color_by_capture_date {
+    type: boolean;
+    label: tr("Color Mapillary Images and Sequences by capture date");
+    default: false;
+}
+
+setting::mapillary_old_age {
+    type: double;
+    label: tr("Number of years to consider Mapillary Images old");
+    default: 1.0;
+}
+
+setting::mapillary_really_old_age {
+    type: double;
+    label: tr("Number of years to consider Mapillary Images really old");
+    default: 4.0;
+}
+
+setting::mapillary_opacity {
+    type: double;
+    label: tr("Mapillary Opacity for when a Mapillary Image is selected");
+    default: 0.50;
+}
+
+setting::mapillary_image_radius {
+    type: double;
+    label: tr("Mapillary Image radius");
+    default: 7.0;
+}
+
+setting::mapillary_seq_width {
+    type: double;
+    label: tr("Mapillary Sequence width");
+    default: 2.0;
+}
+
+node[id]!:selected!:highlighted {
+    image_color: setting("mapillary_ca_default");
+    image_opacity: cond(setting("selected_image"), setting("mapillary_opacity"), 1.0);
+}
+
+node[id]:selected < way {
+    set .selected;
+}
+way.selected > node {
+    set .selected;
+}
+
+node[id]:selected, node[id].selected {
+    image_color: setting("mapillary_ca_selected");
+    image_opacity: 1.0;
+}
+
+node[id]:highlighted {
+    image_color: setting("mapillary_ca_highlighted");
+    image_opacity: 1.0;
+}
+
+/* captured_at is broken right now, since there isn't currently a good way to get the current time in millis */
+node[id]["captured_at"][tag("captured_at") > 31557600000 * setting("mapillary_old_age")][setting("mapillary_color_by_capture_date")] {
+    image_color: setting("mapillary_old_color");
+    set .old;
+}
+
+node[id]["captured_at"][tag("captured_at") > 31557600_000 * setting("mapillary_really_old_age")][setting("mapillary_color_by_capture_date")] {
+    image_color: setting("mapillary_really_old_color");
+    set .really_old;
+}
+
+node[id][is_pano][tag("is_pano") == true]::pano {
+    symbol-shape: circle;
+    symbol-size: 4 * setting("mapillary_image_radius");
+    symbol-fill-color: prop("image_color", "default");
+    symbol-fill-opacity: prop("image_opacity", "default") - setting("mapillary_opacity") / 2;
+}
+
+node[id] {
+    symbol-shape: circle;
+    symbol-size: 2 * setting("mapillary_image_radius");
+    symbol-fill-color: prop("image_color");
+    symbol-fill-opacity: prop("image_opacity");
+}
+
+way[id], relation[id] > way {
+    sequence_color: setting("mapillary_seq_default");
+    sequence_opacity: cond(setting("selected_image"), setting("mapillary_opacity"), 1.0);
+}
+
+node.old < way {
+    sequence_color: setting("mapillary_old_color");
+}
+
+node.really_old < way {
+    sequence_color: setting("mapillary_really_old_color");
+}
+
+way.selected {
+    sequence_color: setting("mapillary_seq_selected");
+    sequence_opacity: 1.0;
+}
+
+node[id]:highlighted < way {
+    sequence_color: setting("mapillary_seq_highlighted");
+    sequence_opacity: 1.0;
+}
+
+way {
+    width: setting("mapillary_seq_width");
+    color: prop("sequence_color");
+    opacity: prop("sequence_opacity");
+}
