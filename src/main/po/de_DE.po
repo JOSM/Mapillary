@@ -1,0 +1,388 @@
+# Translations for the JOSM plugin 'Mapillary' (de_DE)
+# Copyright (C) 2022
+# This file is distributed under the same license as the josm-plugin_Mapillary package.
+# FIRST AUTHOR, YEAR.
+#
+# Translators:
+# Danny Hartmann, 2019
+# Simon Legner, 2020
+# Schlagi123, 2022
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.9-2-g707836e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-06-08 15:04+0000\n"
+"PO-Revision-Date: 2018-01-15 10:33+0000\n"
+"Language-Team: German (Germany) (https://www.transifex.com/josm/teams/2544/de_DE/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de_DE\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid ""
+"A tag with key <i>{0}</i> is already present on the selected OSM object."
+msgstr ""
+"Ein Tag mit dem Schlüssel <i>{0}</i> existiert bereits auf dem selektierten "
+"OSM-Objekt."
+
+msgid "Add"
+msgstr "Hinzufügen"
+
+msgid "Add Mapillary tag"
+msgstr "Mapillary Tag hinzufügen"
+
+msgid "Add filter."
+msgstr "Filter Hinzufügen"
+
+msgid "All"
+msgstr "Alle"
+
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgid "Color"
+msgstr "Farbe"
+
+msgid "Copied URL to clipboard …"
+msgstr "URL in die Zwischenablage kopiert"
+
+msgid "Copied color to clipboard"
+msgstr "Farbe in die Zwischenablage kopiert"
+
+msgid "Copied key to clipboard …"
+msgstr "Schlüssel in die Zwischenablage kopiert"
+
+msgid "Copy URL"
+msgstr "URL kopieren"
+
+msgid "Copy color"
+msgstr "Farbe kopieren"
+
+msgid "Copy key"
+msgstr "Schlüssel kopieren"
+
+msgid "Could not load image: {0}"
+msgstr "Bild konnte nicht geladen werden: {0}"
+
+msgid "Could not open the URL {0} in a browser"
+msgstr "URL {0} kann im Browser nicht geöffnet werden"
+
+msgid "Could not refresh Mapillary token. HTTP Status Code {0}."
+msgstr ""
+"Das Mapillary Token konnte nicht erneuert werden. HTTP Status Code {0}."
+
+msgid "Dataset is currently being updated"
+msgstr "Datensatz wird derzeit aktualisiert"
+
+msgid "Days"
+msgstr "Tage"
+
+msgid "Delete"
+msgstr "Löschen"
+
+msgid "Delete Mapillary object"
+msgstr "Mapillary-Objekt löschen"
+
+msgid "Delete filter."
+msgstr "Filter löschen"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Display hour when the picture was taken"
+msgstr "Zeige Aufnahmezeitpunkt des Bildes"
+
+msgid "Displays detail information on the currently selected Mapillary image"
+msgstr "Zeigt Detailinformationen zum aktuell ausgewählten Mapillary-Bild an"
+
+msgid ""
+"Displays the layer displaying the map point objects detected by Mapillary"
+msgstr ""
+"Zeigt die Ebene mit den von Mapillary erkannten Kartenpunktobjekten an"
+
+msgid ""
+"Displays the layer displaying the traffic sign objects detected by Mapillary"
+msgstr ""
+"Zeigt die Ebene mit den von Mapillary erkannten Verkehrszeichenobjekten an"
+
+msgid ""
+"Do you really want to replace the current value <i>{0}</i> with the new "
+"value <i>{1}</i>?"
+msgstr ""
+"Möchtest du wirklich den aktuellen Wert <i>{0}</i> mit dem neuen Wert "
+"<i>{1}</i> ersetzen?"
+
+msgid "Down"
+msgstr "Runter"
+
+msgid "Downloading…"
+msgstr "Wird heruntergeladen…"
+
+msgid "Edit"
+msgstr "Bearbeiten"
+
+msgid "Edit filter."
+msgstr "Filter Bearbeiten"
+
+msgid "Enable filter"
+msgstr "Filter einschalten"
+
+msgid "Enable/disable developer mode"
+msgstr "Ein-/Ausschalten des Entwicklermodus"
+
+msgid "End"
+msgstr "Ende"
+
+msgid "Export Mapillary images"
+msgstr "Exportiere Mapillary Bilder"
+
+msgid "Export all images"
+msgstr "Exportiere alle Bilder"
+
+msgid "Export selected images"
+msgstr "Exportiere markierte Bilder"
+
+msgid "Export selected sequence"
+msgstr "Exportiere markierte Sequenz"
+
+msgid "Exporting Mapillary Images…"
+msgstr "Exportiere Mapillary Bilder..."
+
+msgid "Filter"
+msgstr "Filter"
+
+msgid "Filter Hidden:{0} Disabled:{1}"
+msgstr "Filter Versteckt:{0} Ausgeschaltet:{1}"
+
+msgid "Filter mode"
+msgstr "Filtermodus"
+
+msgid "Image Quality"
+msgstr "Bildqualität"
+
+msgid "Image actions"
+msgstr "Bildaktionen"
+
+msgid "Image detections"
+msgstr "Bilderkennungen"
+
+msgid "Image info"
+msgstr "Bildinformation"
+
+msgid "Image info dialog"
+msgstr "Bildinformationendialog"
+
+msgid "Image key"
+msgstr "Bildschlüssel"
+
+msgid "Image: "
+msgstr "Bild"
+
+msgid "Import"
+msgstr "Import"
+
+msgid "Login"
+msgstr "Login"
+
+msgid "Logout"
+msgstr "Abmelden"
+
+msgid "Mapillary"
+msgstr "Mapillary"
+
+#. ImageInfos
+msgid "Mapillary Images"
+msgstr "Mapillary-Bilder"
+
+msgid "Mapillary Point Objects"
+msgstr "Mapillary Punkt-Objekte"
+
+msgid "Mapillary Traffic Signs"
+msgstr "Mapillary-Verkehrsschilder"
+
+msgid "Mapillary filter"
+msgstr "Mapillary-Filter"
+
+msgid "Mapillary image"
+msgstr "Mapillary-Bild"
+
+msgid "Mapillary images Filter"
+msgstr "Mapillary Bilderfilter"
+
+msgid "Mapillary login"
+msgstr "Mapillary-Anmeldung"
+
+msgid "Mapillary traffic signs layer"
+msgstr "Mapillary-Verkehrsschilder-Ebene"
+
+msgid "Month"
+msgstr "Monat"
+
+msgid "Months"
+msgstr "Monate"
+
+msgid "Move filter down."
+msgstr "Filter nach unten verschieben"
+
+msgid "Move filter up."
+msgstr "Filter nach oben verschieben"
+
+msgid "No color selected"
+msgstr "Keine Farbe ausgewählt"
+
+msgid "No images found"
+msgstr "Keine Bilder gefunden"
+
+msgid "No known image provider used"
+msgstr "Kein bekannter Bildanbieter genutzt"
+
+msgid "No overtaking"
+msgstr "Überholverbot"
+
+msgid "No parking"
+msgstr "Parkverbot"
+
+msgid "No turn"
+msgstr "Wendeverbot"
+
+msgid "Not older than: "
+msgstr "Nicht älter als: "
+
+msgid "Only images with signs"
+msgstr "Nur Bilder mit Verkehrszeichen"
+
+msgid "Open Mapillary filter dialog"
+msgstr "Mapillary-Filterdialog öffnen"
+
+msgid "Open Mapillary layer"
+msgstr "Mapillary-Ebene öffnen"
+
+msgid "Organization"
+msgstr "Organisation"
+
+msgid "Organizations"
+msgstr "Organisationen"
+
+msgid "Picture Filters"
+msgstr "Bildfilter"
+
+msgid "Point Objects"
+msgstr "Punktobjekte"
+
+msgid "Reset"
+msgstr "Zurücksetzen"
+
+msgid "Reverse"
+msgstr "Umkehren"
+
+msgid "Sequence key"
+msgstr "Sequenzschlüssel"
+
+msgid "Sequence: "
+msgstr "Sequenz:"
+
+msgid "Show Image types: "
+msgstr "Zeige BIldtyp"
+
+msgid "Sort"
+msgstr "Sortieren"
+
+msgid "Sort filters."
+msgstr "Filter sortieren."
+
+msgid "Speed limit"
+msgstr "Geschwindigkeitsbegrenzung"
+
+msgid "Start"
+msgstr "Starten"
+
+msgctxt "name of the traffic sign"
+msgid "Stop"
+msgstr "Stoppen"
+
+msgid "Tag conflict"
+msgstr "Tag Konflikt"
+
+#. column header: filter text
+msgctxt "filter"
+msgid "Text"
+msgstr "Text"
+
+msgid "Today"
+msgstr "Heute"
+
+msgid "Traffic Signs"
+msgstr "Verkehrsschilder"
+
+msgid ""
+"Unknown Mapillary exception.\n"
+"{0}"
+msgstr ""
+"Unbekannter Mapillary Fehler.\n"
+"{0}"
+
+msgid "Update"
+msgstr "Update"
+
+msgid "View in browser"
+msgstr "Im Webbrowser ansehen"
+
+msgid "Year"
+msgstr "Jahr"
+
+msgid "Years"
+msgstr "Jahre"
+
+msgid "You are currently not logged in."
+msgstr "Du bist gerade nicht angemeldet."
+
+msgid "You are logged in as ''{0}''."
+msgstr "Du bist als \"{0}\" angemeldet."
+
+msgid "You are logged in."
+msgstr "Du bist angemeldet."
+
+msgid "Zoom to selected image"
+msgstr "Auf ausgewähltes Bild zoomen"
+
+msgid "Zoom to the currently selected Mapillary image"
+msgstr "Auf das aktuell ausgewählte Mapillary-Bild zoomen"
+
+msgid "hidden"
+msgstr "versteckt"
+
+msgid "image has no key"
+msgstr "Bild hat keinen Schlüssel"
+
+msgid "sequence has no key"
+msgstr "Sequenz hat keinen Schlüssel"
+
+msgid "unknown organization"
+msgstr "Unbekannte Organisation"
+
+msgid "{0} consists of:"
+msgstr "{0} besteht aus:"
+
+msgid "{0} node"
+msgid_plural "{0} nodes"
+msgstr[0] "{0} Knoten"
+msgstr[1] "{0} Knoten"
+
+msgid "{0} relation"
+msgid_plural "{0} relations"
+msgstr[0] "{0} Relation"
+msgstr[1] "{0} Relationen"
+
+msgid "{0} way"
+msgid_plural "{0} ways"
+msgstr[0] "{0} Weg"
+msgstr[1] "{0} Wege"
+
+msgid "{0}: {1}"
+msgstr "{0}: {1}"
+
+#. Plugin description for root project 'Mapillary'.name
+msgid "Allows the user to work with pictures hosted at mapillary.com"
+msgstr ""
+"Ermöglicht dem Benutzer das Arbeiten mit von mapillary.com bereitgestellten "
+"Bildern"
