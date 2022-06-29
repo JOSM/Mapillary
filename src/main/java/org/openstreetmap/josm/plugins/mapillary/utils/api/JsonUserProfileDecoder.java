@@ -9,12 +9,12 @@ import javax.json.JsonObject;
 import javax.swing.ImageIcon;
 
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
- * Decodes the JSON returned by {@link APIv3} into Java objects.
+ * Decodes the JSON returned by {@link MapillaryURL.APIv4} into Java objects.
  * Takes a {@link JsonObject} and {@link #decodeUserProfile(JsonObject)} tries to convert it to a {@link UserProfile}.
  */
 public final class JsonUserProfileDecoder {

@@ -100,8 +100,8 @@ class MapillaryRemoteControlTest {
     @MapillaryCaches
     @ParameterizedTest
     @MethodSource
-    void testHandleRequest(final String request, final boolean createLayerFirst) throws UnknownHostException,
-        RequestHandler.RequestHandlerBadRequestException, RequestHandler.RequestHandlerErrorException {
+    void testHandleRequest(final String request, final boolean createLayerFirst)
+        throws UnknownHostException, RequestHandler.RequestHandlerBadRequestException {
         if (createLayerFirst) {
             assertTrue(MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance()),
                 "getInstance should add the layer");

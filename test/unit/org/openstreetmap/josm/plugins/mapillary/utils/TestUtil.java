@@ -84,11 +84,4 @@ public final class TestUtil {
         }
     }
 
-    public static String getMainWebsiteBaseUrl() {
-        return MapillaryURL.MainWebsite.baseUrl;
-    }
-
-    public static void setMainWebsiteBaseUrl(final String baseUrl) {
-        MapillaryURL.MainWebsite.baseUrl = baseUrl;
-    }
 }

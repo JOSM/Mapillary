@@ -5,9 +5,9 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -131,7 +131,7 @@ public class MapillaryExportWriterThread extends Thread {
                         throw new IOException("Could not set last modified date: " + parentFile.getPath());
                     }
                 }
-                try (OutputStream os = new BufferedOutputStream(new FileOutputStream(file))) {
+                try (OutputStream os = new BufferedOutputStream(Files.newOutputStream(file.toPath()))) {
                     new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);
                 }
                 if (!file.setLastModified(MapillaryImageUtils.getDate(mimg).toEpochMilli())) {

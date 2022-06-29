@@ -12,15 +12,14 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.Imaging;
+import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import org.openstreetmap.josm.tools.Logging;
-import org.openstreetmap.josm.tools.XmlUtils;
 
 public final class ImageMetaDataUtil {
 
@@ -55,22 +54,6 @@ public final class ImageMetaDataUtil {
         try {
             pano = checkXmpProjectionType(Imaging.getXmpXml(is, null), "equirectangular");
         } catch (ImageReadException | IOException ex) {
-            Logging.trace(ex);
-        }
-        return pano;
-    }
-
-    /**
-     * check whether image file is a panorama photo or not.
-     *
-     * @param ba image byte[] to check.
-     * @return true if image is a panorama.
-     */
-    public static boolean isPanorama(final byte[] ba) {
-        boolean pano = false;
-        try {
-            pano = checkXmpProjectionType(Imaging.getXmpXml(ba), "equirectangular");
-        } catch (IOException | ImageReadException ex) {
             Logging.trace(ex);
         }
         return pano;

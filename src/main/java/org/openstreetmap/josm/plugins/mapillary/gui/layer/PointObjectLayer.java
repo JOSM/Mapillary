@@ -10,9 +10,7 @@ import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,13 +27,6 @@ import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonException;
-import javax.json.JsonObject;
-import javax.json.JsonString;
-import javax.json.JsonValue;
-import javax.json.stream.JsonParser;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -117,13 +108,12 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
     private boolean showingPresetWindow;
     private final ListenerList<TileAddListener<MVTTile>> listeners = ListenerList.create();
 
-    private static MapCSSStyleSource getMapCSSStyle() {
+    private static synchronized void getMapCSSStyle() {
         List<MapCSSStyleSource> styles = MapPaintStyles.getStyles().getStyleSources().parallelStream()
             .filter(MapCSSStyleSource.class::isInstance).map(MapCSSStyleSource.class::cast)
             .filter(s -> PAINT_STYLE_SOURCE.equals(s.url)).collect(Collectors.toList());
         mapcss = styles.isEmpty() ? new MapCSSStyleSource(PAINT_STYLE_SOURCE, "Mapillary", "Mapillary Point Objects")
             : styles.get(0);
-        return mapcss;
     }
 
     public PointObjectLayer(ImageryInfo info) {
@@ -391,37 +381,6 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
             }
         }
         return null;
-    }
-
-    /**
-     * Parse detections
-     *
-     * @param detectionsValue The value from the detections key
-     * @return A list of {@code Map<String, String>} of detections. Keys usually include detection_key, image_key, and
-     *         user_key.
-     */
-    public static List<Map<String, String>> parseDetections(String detectionsValue) {
-        List<Map<String, String>> detections = new ArrayList<>();
-        try (JsonParser parser = Json
-            .createParser(new ByteArrayInputStream(detectionsValue.getBytes(StandardCharsets.UTF_8)))) {
-            while (parser.hasNext() && JsonParser.Event.START_ARRAY == parser.next()) {
-                JsonArray array = parser.getArray();
-                for (JsonObject obj : array.getValuesAs(JsonObject.class)) {
-                    Map<String, String> detection = new HashMap<>();
-                    for (Map.Entry<String, JsonValue> entry : obj.entrySet()) {
-                        if (entry.getValue().getValueType() == JsonValue.ValueType.STRING) {
-                            detection.putIfAbsent(entry.getKey(), ((JsonString) entry.getValue()).getString());
-                        } else {
-                            detection.putIfAbsent(entry.getKey(), entry.getValue().toString());
-                        }
-                    }
-                    detections.add(detection);
-                }
-            }
-        } catch (JsonException e) {
-            Logging.error(e);
-        }
-        return detections;
     }
 
     @Override

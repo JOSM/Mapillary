@@ -14,7 +14,6 @@ import javax.swing.JPopupMenu;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MainMenu;
 import org.openstreetmap.josm.gui.MapFrame;
-import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.dialogs.properties.PropertiesDialog;
 import org.openstreetmap.josm.gui.layer.Layer;
@@ -181,19 +180,6 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
     @Override
     public PreferenceSetting getPreferenceSetting() {
         return new MapillaryPreferenceSetting();
-    }
-
-    /**
-     * Get the current mapview
-     *
-     * @return the current {@link MapView} without throwing a {@link NullPointerException}
-     */
-    public static MapView getMapView() {
-        final MapFrame mf = MainApplication.getMap();
-        if (mf != null) {
-            return mf.mapView;
-        }
-        return null;
     }
 
     @Override

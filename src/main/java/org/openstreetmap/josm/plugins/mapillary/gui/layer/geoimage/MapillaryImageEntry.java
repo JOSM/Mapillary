@@ -23,6 +23,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -76,7 +77,7 @@ import org.openstreetmap.josm.tools.Utils;
 import org.openstreetmap.josm.tools.date.DateUtils;
 
 public class MapillaryImageEntry
-    implements IImageEntry<MapillaryImageEntry>, BiConsumer<Long, List<ImageDetection<?>>> {
+    implements IImageEntry<MapillaryImageEntry>, BiConsumer<Long, Collection<ImageDetection<?>>> {
     private static final CacheAccess<Long, MapillaryImageEntry> CACHE = JCSCacheManager
         .getCache("mapillary:mapillaryimageentry");
     private static final String BASE_TITLE = marktr("Mapillary image");
@@ -490,9 +491,9 @@ public class MapillaryImageEntry
     }
 
     @Override
-    public void accept(Long key, List<ImageDetection<?>> imageDetections) {
+    public void accept(Long key, Collection<ImageDetection<?>> imageDetections) {
         if (key != null && key == MapillaryImageUtils.getKey(this.image)) {
-            boolean reload = !this.imageDetections.containsAll(imageDetections)
+            boolean reload = !new HashSet<>(this.imageDetections).containsAll(imageDetections)
                 || !imageDetections.containsAll(this.imageDetections);
             synchronized (this.imageDetections) {
                 if (reload) {

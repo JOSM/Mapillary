@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,13 +14,11 @@ import java.util.Map;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 import javax.json.JsonWriter;
 import javax.json.JsonWriterFactory;
 import javax.json.stream.JsonGenerator;
-import javax.json.stream.JsonParser;
 
 public final class JsonUtil {
 
@@ -51,25 +48,6 @@ public final class JsonUtil {
             }
         }
         assertEquals(expected, actual, errorMessage(String.format("JSON is different at %s", path), expected, actual));
-    }
-
-    public static void assertJsonEquals(final Class<?> resourcesBaseClass, final String expectedResourceFilePath,
-        final JsonObjectBuilder actualJson) {
-        System.out.println("Expected JSON is loaded from file: "
-            + resourcesBaseClass.getResource(expectedResourceFilePath).toString());
-        try (InputStream stream = resourcesBaseClass.getResourceAsStream(expectedResourceFilePath);
-            JsonParser parser = Json.createParser(stream)) {
-            assertEquals(JsonParser.Event.START_OBJECT, parser.next());
-            final JsonObject expected = parser.getObject();
-            final JsonObject actual = actualJson.build();
-            assertJsonObjectEquals(expected, actual);
-        } catch (IOException e) {
-            fail(e);
-        }
-    }
-
-    private static void assertJsonObjectEquals(final JsonObject expected, final JsonObject actual) {
-        assertJsonObjectEquals(expected, actual, "");
     }
 
     private static void assertJsonObjectEquals(final JsonObject expected, final JsonObject actual, final String path) {

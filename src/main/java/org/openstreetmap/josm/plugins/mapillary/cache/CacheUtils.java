@@ -31,17 +31,6 @@ public final class CacheUtils {
     }
 
     /**
-     * Downloads the the thumbnail and the full resolution picture of the given
-     * image. Does nothing if it is already in cache.
-     *
-     * @param img
-     *        The image whose picture is going to be downloaded.
-     */
-    public static void downloadPicture(INode img) {
-        downloadPicture(img, MapillaryCache.Type.getTypeForMemory(img));
-    }
-
-    /**
      * Downloads the picture of the given image. Does nothing when it is already
      * in cache.
      *

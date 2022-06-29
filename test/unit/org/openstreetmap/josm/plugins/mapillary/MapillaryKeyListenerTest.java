@@ -6,7 +6,6 @@ import java.lang.reflect.Field;
 
 import javax.swing.JPopupMenu;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -44,10 +43,7 @@ class MapillaryKeyListenerTest {
     /** This is the JOSM standard component count. Update as needed. */
     private static final int TAG_MENU_COMPONENT_COUNT = 15;
     @RegisterExtension
-    JOSMTestRules josmTestRules = new JOSMTestRules().main().projection();
-
-    @BasicWiremock
-    WireMockServer wireMock;
+    static JOSMTestRules josmTestRules = new JOSMTestRules().main().projection();
 
     @Test
     void testListenerNoSpuriousActions() throws ReflectiveOperationException {
@@ -59,7 +55,7 @@ class MapillaryKeyListenerTest {
         tagMenuField.setAccessible(true);
         final JPopupMenu tagMenu = (JPopupMenu) tagMenuField.get(properties);
 
-        MapillaryKeyListener mapillaryKeyListener = new MapillaryKeyListener(properties, tagMenu);
+        new MapillaryKeyListener(properties, tagMenu);
 
         assertEquals(TAG_MENU_COMPONENT_COUNT, tagMenu.getComponentCount());
         GuiHelper.runInEDTAndWait(() -> tagMenu.setVisible(true));
@@ -112,7 +108,7 @@ class MapillaryKeyListenerTest {
         tagMenuField.setAccessible(true);
         final JPopupMenu tagMenu = (JPopupMenu) tagMenuField.get(properties);
 
-        MapillaryKeyListener mapillaryKeyListener = new MapillaryKeyListener(properties, tagMenu);
+        new MapillaryKeyListener(properties, tagMenu);
 
         Node node1 = new Node(LatLon.ZERO);
         if (!key.contains("map_feature")) {

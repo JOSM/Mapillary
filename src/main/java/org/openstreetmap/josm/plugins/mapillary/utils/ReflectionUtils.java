@@ -9,7 +9,6 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.openstreetmap.josm.gui.layer.geoimage.ImageDisplay;
 import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -19,28 +18,6 @@ import org.openstreetmap.josm.tools.Logging;
 public final class ReflectionUtils {
     private ReflectionUtils() {
         // Hide constructor
-    }
-
-    /**
-     * Get the JOSM image viewer
-     * TODO: Make it accessible upstream
-     *
-     * @return The ImageDisplay object, if available and present
-     */
-    public static Optional<ImageDisplay> getImageViewer() {
-        try {
-            if (hasImageViewerDialog()) {
-                final Field imgDisplayField = ImageViewerDialog.class.getDeclaredField("imgDisplay");
-                org.openstreetmap.josm.tools.ReflectionUtils.setObjectsAccessible(imgDisplayField);
-                Object imgDisplay = imgDisplayField.get(ImageViewerDialog.getInstance());
-                if (imgDisplay instanceof ImageDisplay) {
-                    return Optional.of((ImageDisplay) imgDisplay);
-                }
-            }
-        } catch (ReflectiveOperationException exception) {
-            Logging.error(exception);
-        }
-        return Optional.empty();
     }
 
     /**

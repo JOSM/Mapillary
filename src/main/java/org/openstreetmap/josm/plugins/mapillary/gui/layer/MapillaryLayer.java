@@ -25,9 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
@@ -39,9 +37,6 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
-import org.openstreetmap.gui.jmapviewer.Tile;
-import org.openstreetmap.gui.jmapviewer.TileXY;
-import org.openstreetmap.gui.jmapviewer.interfaces.TileJob;
 import org.openstreetmap.josm.actions.UploadAction;
 import org.openstreetmap.josm.actions.upload.UploadHook;
 import org.openstreetmap.josm.data.Bounds;
@@ -120,23 +115,16 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
 
     /** The radius of the image marker */
     private static final int IMG_MARKER_RADIUS = 7;
-    /** The radius of the circular sector that indicates the camera angle */
-    private static final int CA_INDICATOR_RADIUS = 15;
 
     /** The color for really old imagery */
     private static final Color REALLY_OLD_COLOR = ColorHelper.html2color("e17155");
     /** The color for older imagery */
     private static final Color OLD_COLOR = ColorHelper.html2color("fbc01b");
 
-    /** Length of the edge of the small sign, which indicates that traffic signs have been found in an image. */
-    private static final int TRAFFIC_SIGN_SIZE = (int) (ImageProvider.ImageSizes.MAP.getAdjustedWidth() / 1.5);
     /** The range to paint the full detection image at */
     private static final Range IMAGE_CA_PAINT_RANGE = Selector.GeneralSelector.fromLevel(18, Integer.MAX_VALUE);
 
     private static final String IMAGE_SPRITE_DIR = "josm-ca";
-    /** The sprite to use to indicate that there are sign detections in the image */
-    private static final Image YIELD_SIGN = new ImageProvider(IMAGE_SPRITE_DIR, "sign-detection")
-        .setMaxSize(TRAFFIC_SIGN_SIZE).get().getImage();
     /** The default sprite for a Mapillary image */
     private static final ImageIcon DEFAULT_SPRITE = new ImageProvider(IMAGE_SPRITE_DIR, "default-ca")
         .setMaxWidth(ImageProvider.ImageSizes.MAP.getAdjustedHeight()).get();
@@ -248,20 +236,6 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
      */
     public static boolean hasInstance() {
         return !MainApplication.getLayerManager().getLayersOfType(MapillaryLayer.class).isEmpty();
-    }
-
-    /**
-     * Returns the n-nearest image, for n=1 the nearest one is returned, for n=2 the second nearest one and so on.
-     * The "n-nearest image" is picked from the list of one image from every sequence that is nearest to the currently
-     * selected image, excluding the sequence to which the selected image belongs.
-     *
-     * @param n the index for picking from the list of "nearest images", beginning from 1
-     * @return the n-nearest image to the currently selected image, or null if no such image can be found
-     */
-    public INode getNNearestImage(final int n) {
-        synchronized (this.nearestImages) {
-            return n >= 1 && n <= this.nearestImages.size() ? this.nearestImages.get(n - 1) : null;
-        }
     }
 
     /**
@@ -537,6 +511,9 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         // TODO get the following working
         /*
          * if (img instanceof Detections && !((Detections) img).getDetections().isEmpty()) {
+         * TRAFFIC_SIGN_SIZE = (int) (ImageProvider.ImageSizes.MAP.getAdjustedWidth() / 1.5);
+         * YIELD_SIGN = new ImageProvider(IMAGE_SPRITE_DIR,
+         * "sign-detection").setMaxSize(TRAFFIC_SIGN_SIZE).get().getImage()
          * g.drawImage(YIELD_SIGN, (int) (p.getX() - TRAFFIC_SIGN_SIZE / 3d), (int) (p.getY() - TRAFFIC_SIGN_SIZE / 3d),
          * null);
          * }
@@ -695,49 +672,6 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         return false;
     }
 
-    /**
-     * The tile for a location
-     *
-     * @param location The location to load the tile for
-     * @return A future indicating if loading finished
-     */
-    public Future<Tile> loadTileFor(ILatLon location) {
-        if (this.tileSource == null) {
-            return CompletableFuture.completedFuture(null);
-        }
-        TileXY tileXY = this.tileSource.latLonToTileXY(location.lat(), location.lon(), this.getZoomLevel());
-        final MVTTile tile;
-        final boolean first;
-        if (this.tileCache.getTile(this.tileSource, tileXY.getXIndex(), tileXY.getYIndex(),
-            this.getZoomLevel()) != null) {
-            tile = (MVTTile) this.tileCache.getTile(this.tileSource, tileXY.getXIndex(), tileXY.getYIndex(),
-                this.getZoomLevel());
-            first = false;
-        } else {
-            tile = (MVTTile) this.createTile(this.tileSource, tileXY.getXIndex(), tileXY.getYIndex(),
-                this.getZoomLevel());
-            first = true;
-        }
-        CompletableFuture<Tile> futureTile = new CompletableFuture<>();
-        tile.addTileLoaderFinisher(t -> {
-            if (first) {
-                this.tileLoadingFinished(tile, tile.isLoaded());
-                this.getData().addTileData(tile);
-                this.tileCache.addTile(tile);
-            }
-            futureTile.complete(tile);
-        });
-        // If not first, the first job may have already finished.
-        if (tile.isLoaded()) {
-            return CompletableFuture.completedFuture(tile);
-        }
-        if (first) {
-            TileJob job = this.tileLoader.createTileLoaderJob(tile);
-            job.submit();
-        }
-        return futureTile;
-    }
-
     @Override
     public void finishedLoading(final MVTTile tile) {
         tile.getData().getAllPrimitives().stream().filter(MapillaryImageUtils::isImage)
@@ -757,10 +691,6 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
      */
     public void addTileDownloadListener(final MVTTile.TileListener tileListener) {
         this.tileListeners.addListener(tileListener);
-    }
-
-    public void removeTileDownloadListener(final MVTTile.TileListener tileListener) {
-        this.tileListeners.removeListener(tileListener);
     }
 
     public void setCurrentImage(final MapillaryNode image) {

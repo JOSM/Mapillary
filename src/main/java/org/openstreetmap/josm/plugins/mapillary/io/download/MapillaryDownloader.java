@@ -34,8 +34,6 @@ import javax.json.JsonString;
 import javax.json.JsonValue;
 
 import org.openstreetmap.josm.data.osm.IWay;
-import org.openstreetmap.josm.data.vector.VectorDataSet;
-import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillarySequence;
@@ -125,23 +123,6 @@ public final class MapillaryDownloader {
      */
     public static MapillaryNode downloadImage(long image) {
         return downloadImages(image).values().stream().flatMap(Collection::stream).findFirst().orElse(null);
-    }
-
-    /**
-     * Download a specific set of images
-     *
-     * @param images The images to download and update
-     */
-    public static Collection<MapillaryNode> downloadImages(final VectorNode... images) {
-        final Map<VectorDataSet, List<VectorNode>> groups = Stream.of(images)
-            .collect(Collectors.groupingBy(VectorNode::getDataSet));
-        final List<MapillaryNode> nodes = new ArrayList<>(images.length);
-        for (Map.Entry<VectorDataSet, List<VectorNode>> entry : groups.entrySet()) {
-            final long[] ids = entry.getValue().stream().mapToLong(MapillaryImageUtils::getKey).filter(i -> i > 0)
-                .toArray();
-            downloadImages(ids).values().forEach(nodes::addAll);
-        }
-        return nodes;
     }
 
     private static Map<String, List<MapillaryNode>> realDownloadImages(final long... images) {

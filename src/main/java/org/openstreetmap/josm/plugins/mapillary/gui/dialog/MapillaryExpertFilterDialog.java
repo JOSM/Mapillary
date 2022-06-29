@@ -19,7 +19,6 @@ import javax.swing.DefaultListSelectionModel;
 import javax.swing.JCheckBox;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
@@ -370,14 +369,6 @@ public class MapillaryExpertFilterDialog extends ToggleDialog implements DataSet
             setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
             return this;
         }
-    }
-
-    /**
-     * Updates the headline of this dialog to display the number of active filters.
-     */
-    public void updateDialogHeader() {
-        SwingUtilities.invokeLater(() -> setTitle(tr("Filter Hidden:{0} Disabled:{1}",
-            filterModel.model.getDisabledAndHiddenCount(), filterModel.model.getDisabledCount())));
     }
 
     @Override

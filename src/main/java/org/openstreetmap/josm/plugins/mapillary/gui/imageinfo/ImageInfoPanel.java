@@ -22,7 +22,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextPane;
 import javax.swing.SpinnerNumberModel;
 
 import org.openstreetmap.josm.data.osm.DataSelectionListener;
@@ -39,10 +38,10 @@ import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.util.GuiHelper;
+import org.openstreetmap.josm.gui.widgets.HtmlPanel;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
-import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.SelectableLabel;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.widget.DisableShortcutsOnFocusGainedJSpinner;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
@@ -64,12 +63,12 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
     private final JLabel numDetectionsLabel;
     private final JCheckBox showDetectionsCheck;
     private final JLabel usernameLabel;
-    private final JTextPane imgKeyValue;
+    private final HtmlPanel imgKeyValue;
     private final WebLinkAction imgLinkAction;
     private final ClipboardAction copyImgUrlAction;
     private final ClipboardAction copyImgKeyAction;
     private final AddTagToPrimitiveAction addMapillaryTagAction;
-    private final JTextPane seqKeyValue;
+    private final HtmlPanel seqKeyValue;
     private final SpinnerNumberModel offsetModel;
 
     private ValueChangeListener<Boolean> imageLinkChangeListener;
@@ -104,7 +103,7 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
         usernameLabel = new JLabel();
         usernameLabel.setFont(usernameLabel.getFont().deriveFont(Font.PLAIN));
 
-        imgKeyValue = new SelectableLabel();
+        imgKeyValue = new HtmlPanel();
 
         imgLinkAction = new WebLinkAction(tr("View in browser"), null);
 
@@ -125,7 +124,7 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
         imgButtons.add(new MapillaryButton(imgLinkAction, true), GBC.eol());
         imgButtons.add(copyUrlButton, GBC.eol());
         imgButtons.add(new MapillaryButton(addMapillaryTagAction, true), GBC.eol());
-        seqKeyValue = new SelectableLabel();
+        seqKeyValue = new HtmlPanel();
 
         JPanel offsetPanel = new JPanel();
         offsetModel = new SpinnerNumberModel(OffsetUtils.getOffset(null), -100, 100, 1);

@@ -10,9 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 class MapillaryURLTest {
@@ -46,20 +44,6 @@ class MapillaryURLTest {
     }
 
     @Test
-    @Disabled("No current replacement exists in the v4 API documentation")
-    void testUploadSecretsURL() throws MalformedURLException {
-        assertEquals(new URL("https://a.mapillary.com/v3/me/uploads?" + CLIENT_ID_QUERY_PART),
-            MapillaryURL.APIv3.uploadSecretsURL());
-    }
-
-    @Test
-    @Disabled("No current replacement exists in the v4 API documentation")
-    void testUserURL() throws MalformedURLException {
-        assertEquals(new URL("https://a.mapillary.com/v3/me?" + CLIENT_ID_QUERY_PART),
-            MapillaryURL.APIv4.getUserInformation());
-    }
-
-    @Test
     void testString2MalformedURL() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
         NoSuchMethodException, SecurityException {
         Method method = MapillaryURL.class.getDeclaredMethod("string2URL", String[].class);
@@ -73,15 +57,8 @@ class MapillaryURLTest {
     @Test
     void testUtilityClass() {
         TestUtil.testUtilityClass(MapillaryURL.class);
-        TestUtil.testUtilityClass(MapillaryURL.APIv3.class);
         TestUtil.testUtilityClass(MapillaryURL.APIv4.class);
         TestUtil.testUtilityClass(MapillaryURL.MainWebsite.class);
-    }
-
-    protected static void assertUrlEquals(Collection<URL> actualUrl, String expectedBaseUrl, String... expectedParams) {
-        for (URL url : actualUrl) {
-            assertUrlEquals(url, expectedBaseUrl, expectedParams);
-        }
     }
 
     protected static void assertUrlEquals(URL actualUrl, String expectedBaseUrl, String... expectedParams) {

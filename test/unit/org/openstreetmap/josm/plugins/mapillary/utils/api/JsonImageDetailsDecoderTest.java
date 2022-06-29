@@ -155,7 +155,7 @@ public class JsonImageDetailsDecoderTest {
 
     @Test
     void testInvalidImageInfos() {
-        VectorDataMock data = new VectorDataMock();
+        new VectorDataMock();
         JsonImageDetailsDecoder.decodeImageInfos(null);
         JsonImageDetailsDecoder.decodeImageInfos(JsonUtil.string2jsonObject("{}"));
         JsonImageDetailsDecoder.decodeImageInfos(JsonUtil.string2jsonObject("{}"));

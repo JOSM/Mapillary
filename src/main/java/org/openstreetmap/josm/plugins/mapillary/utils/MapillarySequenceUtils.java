@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,10 +21,8 @@ import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IWay;
-import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillarySequence;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoder;
@@ -178,7 +175,7 @@ public class MapillarySequenceUtils {
         // There should be a method to get a sequence in v4
         IWay<?> sequence = SEQUENCE_CACHE.get(key);
         if (sequence == null) {
-            sequence = downloadSequence(key, MapillaryLayer.getInstance().getData());
+            sequence = downloadSequence(key);
             // Ensure that we don't cache a null sequence -- this will throw an InvalidArgumentException if the
             // sequence
             // is null which is why we cannot use {@link CacheAccess#get(Object, Supplier)}
@@ -186,7 +183,7 @@ public class MapillarySequenceUtils {
                 SEQUENCE_CACHE.put(key, sequence);
             }
         } else if (sequence.getKeys().isEmpty()) {
-            downloadSequence(key, MapillaryLayer.getInstance().getData());
+            downloadSequence(key);
         }
         return sequence;
     }
@@ -196,10 +193,9 @@ public class MapillarySequenceUtils {
      * Note: This is synchronized to avoid a CME (JOSM #20948).
      *
      * @param key The key to download
-     * @param vectorDataSet The dataset to add the way to and get nodes from
      * @return The downloaded sequence
      */
-    private static synchronized IWay<?> downloadSequence(final String key, final VectorDataSet vectorDataSet) {
+    private static synchronized IWay<?> downloadSequence(final String key) {
         final String sequenceUrl = MapillaryURL.APIv4.getImagesBySequences(key);
         final String data = Caches.META_DATA_CACHE.get(sequenceUrl, () -> {
             try {
@@ -219,19 +215,6 @@ public class MapillarySequenceUtils {
             Collection<MapillarySequence> seq = JsonDecoder.decodeData(json, JsonSequencesDecoder::decodeSequence);
             return seq.stream().findFirst().orElse(null);
         }
-    }
-
-    /**
-     * Get the time the sequence was created at
-     *
-     * @param sequence The sequence
-     * @return The instant the sequence was created, or {@link Instant#EPOCH} if unknown.
-     */
-    public static Instant getCreatedAt(IWay<?> sequence) {
-        if (sequence.hasKey(CREATED_AT)) {
-            return Instant.parse(sequence.get(CREATED_AT));
-        }
-        return Instant.EPOCH;
     }
 
     private MapillarySequenceUtils() {

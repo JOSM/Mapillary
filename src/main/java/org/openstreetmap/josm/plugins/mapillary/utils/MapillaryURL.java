@@ -8,7 +8,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -274,75 +273,6 @@ public final class MapillaryURL {
         }
     }
 
-    public static final class APIv3 {
-        static String baseUrl = "https://a.mapillary.com/v3/";
-
-        private APIv3() {
-            // Private constructor to avoid instantiation
-        }
-
-        public static URL getUser(String key) {
-            return string2URL(baseUrl, "users/", key, MapillaryURL.queryString(null));
-        }
-
-        public static URL retrieveOrganizations(String user) {
-            return string2URL(baseUrl, "users/" + user + "/organizations", queryString(null));
-        }
-
-        public static URL retrieveOrganization(String organization) {
-            return string2URL(baseUrl, "organizations/" + organization, queryString(null));
-        }
-
-        /**
-         * Attempt to get an organization URL for the avatar
-         *
-         * @param organization The key to get the avatar from
-         * @return A URL to get data from
-         */
-        public static String retrieveOrganizationAvatar(String organization) {
-            return baseUrl + "organizations/" + organization + "/avatar" + queryString(null);
-        }
-
-        /**
-         * Get the upload secrets URL
-         *
-         * @return the URL where you'll find the upload secrets as JSON
-         */
-        public static URL uploadSecretsURL() {
-            return string2URL(baseUrl, "me/uploads", queryString(null));
-        }
-
-        /**
-         * Vote for a detection
-         *
-         * @param layer The object layer
-         * @param key The object key
-         * @return A URL to vote for the detection
-         */
-        public static URL vote(String layer, String key) {
-            return string2URL(baseUrl, String.format("object_detections/%s/%s/votes", layer, key),
-                MapillaryURL.queryString(null));
-        }
-
-        /**
-         * Get the detections for an image
-         *
-         * @param key The image key
-         * @param layer The layer to retrieve (should be one of {@code trafficsigns}, {@code segmentations}, or
-         *        {@code instances})
-         * @return The url for detections
-         */
-        public static URL getDetections(String key, String layer) {
-            Objects.requireNonNull(key);
-            Objects.requireNonNull(layer);
-            if (!Arrays.asList("trafficsigns", "segmentations", "instances").contains(layer)) {
-                throw new UnsupportedOperationException("Mapillary is unknown: " + layer);
-            }
-            return string2URL(baseUrl, String.format("images/%s/object_detections/%s", key, layer),
-                MapillaryURL.queryString(null));
-        }
-    }
-
     public static final class MainWebsite {
         static String baseUrl = "https://www.mapillary.com/";
 
@@ -407,10 +337,6 @@ public final class MapillaryURL {
                 parts.put("redirect_uri", redirectURI);
             }
             return string2URL(baseUrl, "connect", queryString(parts));
-        }
-
-        public static URL mapObjectIcon(String key) {
-            return string2URL(baseUrl, "developer/api-documentation/images/traffic_sign/" + key + ".png");
         }
     }
 

@@ -23,7 +23,7 @@ import org.openstreetmap.josm.testutils.JOSMTestRules;
 @MapillaryCaches
 class ImageDetectionTest {
     @RegisterExtension
-    JOSMTestRules josmTestRules = new JOSMTestRules();
+    static JOSMTestRules josmTestRules = new JOSMTestRules();
 
     @Test
     void testBasics() {

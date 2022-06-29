@@ -88,7 +88,7 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
      * @param timeout The time to wait prior to getting the detections (milliseconds)
      */
     public static void getDetectionsLaterOptional(final long key,
-        final BiConsumer<Long, List<ImageDetection<?>>> listener, long timeout) {
+        final BiConsumer<Long, Collection<ImageDetection<?>>> listener, long timeout) {
 
         synchronized (DETECTION_TIMER) {
             if (currentTask != null && currentTask.task.key != key) {
@@ -143,7 +143,7 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
      * @return A ForkJoinTask (just in case it needs to be cancelled)
      */
     public static ImageDetectionForkJoinTask getDetections(long key,
-        BiConsumer<Long, List<ImageDetection<?>>> listener) {
+        BiConsumer<Long, Collection<ImageDetection<?>>> listener) {
         return (ImageDetectionForkJoinTask) MapillaryUtils.getForkJoinPool()
             .submit(new ImageDetectionForkJoinTask(key, listener));
     }
@@ -249,24 +249,6 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
         return MapillaryColorScheme.IMAGEDETECTION_UNKNOWN;
     }
 
-    /**
-     * Set the approval type
-     *
-     * @param type The approval type
-     */
-    public void setApprovalType(DetectionVerification.TYPE type) {
-        this.approvalType = type;
-    }
-
-    /**
-     * Get the approval type
-     *
-     * @return The approval type
-     */
-    public DetectionVerification.TYPE getApprovalType() {
-        return this.approvalType;
-    }
-
     @Override
     public boolean equals(Object other) {
         if (super.equals(other) && other instanceof ImageDetection) {
@@ -304,12 +286,12 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
      */
     public static class ImageDetectionForkJoinTask extends ForkJoinTask<List<ImageDetection<?>>> {
         private static final long serialVersionUID = 1356001237946179L;
-        private final transient ListenerList<BiConsumer<Long, List<ImageDetection<?>>>> listenerList = ListenerList
+        private final transient ListenerList<BiConsumer<Long, Collection<ImageDetection<?>>>> listenerList = ListenerList
             .create();
         public final long key;
         private List<ImageDetection<?>> results;
 
-        public ImageDetectionForkJoinTask(long key, BiConsumer<Long, List<ImageDetection<?>>> listener) {
+        public ImageDetectionForkJoinTask(long key, BiConsumer<Long, Collection<ImageDetection<?>>> listener) {
             this.key = key;
             if (listener != null) {
                 this.listenerList.addListener(listener);

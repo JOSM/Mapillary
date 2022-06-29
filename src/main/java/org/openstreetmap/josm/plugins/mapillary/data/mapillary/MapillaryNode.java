@@ -62,10 +62,7 @@ public class MapillaryNode extends MapillaryPrimitive implements INode, IPrimiti
 
     @Override
     public boolean isReferredByWays(int n) {
-        if (n == 1 && this.referrer != null) {
-            return true;
-        }
-        return false;
+        return (n == 0 && this.referrer == null) || (n == 1 && this.referrer != null);
     }
 
     @Override

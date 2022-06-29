@@ -4,7 +4,6 @@ package org.openstreetmap.josm.plugins.mapillary.io.export;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,6 +26,7 @@ import org.openstreetmap.josm.tools.Logging;
  * {@link ArrayBlockingQueue}. Then it is picked by the first one and written on
  * the selected folder. Each image will be named by its key.
  *
+ * @param <T> The type of node being exported
  * @author nokutu
  * @see MapillaryExportWriterThread
  * @see MapillaryExportDownloadThread
@@ -36,7 +36,7 @@ public class MapillaryExportManager<T extends INode> extends PleaseWaitRunnable 
     private final ArrayBlockingQueue<BufferedImage> queue = new ArrayBlockingQueue<>(10);
     private final ArrayBlockingQueue<INode> queueImages = new ArrayBlockingQueue<>(10);
 
-    private int amount;
+    private final int amount;
     private final Set<T> images;
     private final String path;
 
@@ -63,7 +63,7 @@ public class MapillaryExportManager<T extends INode> extends PleaseWaitRunnable 
     }
 
     @Override
-    protected void realRun() throws IOException {
+    protected void realRun() {
         // Starts a writer thread in order to write the pictures on the disk.
         this.writer = new MapillaryExportWriterThread(this.path, this.queue, this.queueImages, this.amount,
             this.getProgressMonitor());
@@ -108,5 +108,6 @@ public class MapillaryExportManager<T extends INode> extends PleaseWaitRunnable 
 
     @Override
     protected void finish() {
+        this.cancel();
     }
 }

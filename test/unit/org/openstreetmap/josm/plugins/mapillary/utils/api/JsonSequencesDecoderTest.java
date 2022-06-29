@@ -97,6 +97,9 @@ class JsonSequencesDecoderTest {
         assertArrayEquals(expectedArray, actualArray);
     }
 
+    /**
+     * Check various strings that are not valid sequences.
+     */
     @ParameterizedTest
     // null input
     @NullSource
@@ -116,9 +119,6 @@ class JsonSequencesDecoderTest {
         "[null]",
     /* *** End new graph API checks */
     })
-    /**
-     * Check various strings that are not valid sequences.
-     */
     @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.SERVER_ERROR)
     void testDecodeSequenceInvalid(final String toCheck) {
         final JsonValue json = toCheck != null ? stringToJsonValue(toCheck) : null;

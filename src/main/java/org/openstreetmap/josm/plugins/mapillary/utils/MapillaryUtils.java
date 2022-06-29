@@ -4,13 +4,8 @@ package org.openstreetmap.josm.plugins.mapillary.utils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
@@ -24,8 +19,6 @@ import javax.json.JsonString;
 import javax.json.JsonStructure;
 import javax.json.JsonValue;
 
-import org.apache.commons.imaging.common.RationalNumber;
-import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
@@ -53,86 +46,6 @@ public final class MapillaryUtils {
 
     private MapillaryUtils() {
         // Private constructor to avoid instantiation
-    }
-
-    /**
-     * Returns the current date formatted as EXIF timestamp.
-     * As timezone the default timezone of the JVM is used ({@link java.util.TimeZone#getDefault()}).
-     *
-     * @return A {@code String} object containing the current date.
-     */
-    public static String currentDate() {
-        return new SimpleDateFormat("yyyy:MM:dd HH:mm:ss", Locale.UK).format(Calendar.getInstance().getTime());
-    }
-
-    /**
-     * Parses a string with a given format and returns the Epoch time.
-     * If no timezone information is given, the default timezone of the JVM is used
-     * ({@link java.util.TimeZone#getDefault()}).
-     *
-     * @param date The string containing the date.
-     * @param format The format of the date.
-     * @return The date in Epoch format.
-     * @throws ParseException if the date cannot be parsed with the given format
-     */
-    public static Instant getEpoch(String date, String format) throws ParseException {
-        return new SimpleDateFormat(format, Locale.UK).parse(date).toInstant();
-    }
-
-    /**
-     * Calculates the decimal degree-value from a degree value given in
-     * degrees-minutes-seconds-format
-     *
-     * @param degMinSec an array of length 3, the values in there are (in this order)
-     *        degrees, minutes and seconds
-     * @param ref the latitude or longitude reference determining if the given value
-     *        is:
-     *        <ul>
-     *        <li>north (
-     *        {@link GpsTagConstants#GPS_TAG_GPS_LATITUDE_REF_VALUE_NORTH}) or
-     *        south (
-     *        {@link GpsTagConstants#GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH}) of
-     *        the equator</li>
-     *        <li>east (
-     *        {@link GpsTagConstants#GPS_TAG_GPS_LONGITUDE_REF_VALUE_EAST}) or
-     *        west ({@link GpsTagConstants#GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST}
-     *        ) of the equator</li>
-     *        </ul>
-     * @return the decimal degree-value for the given input, negative when west of
-     *         0-meridian or south of the equator, positive otherwise
-     * @throws IllegalArgumentException if {@code degMinSec} doesn't have length 3 or if {@code ref} is
-     *         not one of the values mentioned above
-     */
-    public static double degMinSecToDouble(RationalNumber[] degMinSec, String ref) {
-        if (degMinSec == null || degMinSec.length != 3) {
-            throw new IllegalArgumentException("Array's length must be 3.");
-        }
-        for (int i = 0; i < 3; i++) {
-            if (degMinSec[i] == null)
-                throw new IllegalArgumentException("Null value in array.");
-        }
-
-        switch (ref) {
-        case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_NORTH:
-        case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH:
-        case GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_EAST:
-        case GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST:
-            break;
-        default:
-            throw new IllegalArgumentException("Invalid ref.");
-        }
-
-        double result = degMinSec[0].doubleValue(); // degrees
-        result += degMinSec[1].doubleValue() / 60; // minutes
-        result += degMinSec[2].doubleValue() / 3600; // seconds
-
-        if (GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH.equals(ref)
-            || GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST.equals(ref)) {
-            result *= -1;
-        }
-
-        result = 360 * ((result + 180) / 360 - Math.floor((result + 180) / 360)) - 180;
-        return result;
     }
 
     /**

@@ -80,7 +80,7 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
             // This is needed since Mapillary ids are only unique within a tile.
             layer.getData().setSelected(nodes);
             nodes.stream().filter(AbstractPrimitive.class::isInstance).map(AbstractPrimitive.class::cast)
-                .forEach(prim -> prim.isSelected());
+                .forEach(IPrimitive::isSelected);
         } else if (layer instanceof MapillaryLayer) {
             if (e.getClickCount() >= MapillaryProperties.DESELECT_CLICK_COUNT.get()) {
                 layer.getData().clearSelection();
