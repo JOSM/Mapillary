@@ -124,7 +124,8 @@ public final class Caches {
      * @param <V> The value type
      */
     public static class MapillaryCacheAccess<V> {
-        private static final String UNKNOWN_MAPILLARY_EXCEPTION = marktr("Unknown Mapillary exception.\n{0}");
+        private static final String UNKNOWN_MAPILLARY_EXCEPTION = marktr(
+            "Unknown Mapillary exception.\nThis message may contain potentially sensitive information!\n{0}\n{1}");
         @Nonnull
         private final CacheAccess<String, V> cacheAccess;
         @Nonnull
@@ -233,7 +234,7 @@ public final class Caches {
                     final String message = checkReturnObject(newReturnObject);
                     GuiHelper.runInEDT(() -> {
                         Notification notification = new Notification();
-                        notification.setContent(tr(message, newReturnObject));
+                        notification.setContent(tr(message, newReturnObject, url));
                         notification.setDuration(Notification.TIME_LONG);
                         notification.setIcon(JOptionPane.ERROR_MESSAGE);
                         notification.show();

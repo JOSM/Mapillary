@@ -120,7 +120,7 @@ public class MapillaryExportWriterThread extends Thread {
                     .format(DateTimeFormatter.ofPattern("yyyy:MM:dd HH:mm:ss"));
                 exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL, dateTime);
 
-                outputSet.setGPSInDegrees(mimg.getCoor().lon(), mimg.getCoor().lat());
+                outputSet.setGPSInDegrees(mimg.lon(), mimg.lat());
                 File file = new File(finalPath + ".jpg");
                 File parentFile = file.getParentFile();
                 if (!parentFile.exists() && !parentFile.isDirectory()) {

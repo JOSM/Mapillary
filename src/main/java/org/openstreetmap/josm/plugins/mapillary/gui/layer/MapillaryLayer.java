@@ -46,6 +46,7 @@ import org.openstreetmap.josm.actions.UploadAction;
 import org.openstreetmap.josm.actions.upload.UploadHook;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.ILatLon;
+import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.imagery.street_level.IImageEntry;
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
 import org.openstreetmap.josm.data.osm.BBox;
@@ -346,8 +347,8 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
                         g.setColor(Color.BLUE);
                     }
                     if (selectedImage != null) {
-                        final Point selected = mv.getPoint(selectedImage.getCoor());
-                        final Point p = mv.getPoint(this.nearestImages.get(i).getCoor());
+                        final Point selected = mv.getPoint(selectedImage);
+                        final Point p = mv.getPoint(this.nearestImages.get(i));
                         g.draw(new Line2D.Double(p.getX(), p.getY(), selected.getX(), selected.getY()));
                     }
                 }
@@ -444,7 +445,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
      */
     private void drawImageMarker(final AffineTransform originalTransform, final INode selectedImg, final Graphics2D g,
         final INode img, final double dist100Pixel, final boolean offset) {
-        if (img == null || img.getCoor() == null) {
+        if (img == null || !img.isLatLonKnown()) {
             Logging.warn("An image is not painted, because it is null or has no LatLon!");
             return;
         }
@@ -591,10 +592,11 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
                 for (INode image : imageViewedList) {
                     BBox bbox = new BBox();
                     // 96m-556m, depending upon N/S location (low at 80 degrees, high at 0)
-                    bbox.addLatLon(image.getCoor(), 0.005);
+                    final LatLon coor = image.getCoor();
+                    bbox.addLatLon(coor, 0.005);
                     List<OsmPrimitive> searchPrimitives = ds.searchPrimitives(bbox);
                     if (primitives.parallelStream().filter(searchPrimitives::contains)
-                        .mapToDouble(prim -> Geometry.getDistance(prim, new Node(image.getCoor())))
+                        .mapToDouble(prim -> Geometry.getDistance(prim, new Node(coor)))
                         .anyMatch(d -> d < maxDistance)) {
                         isApplicable = true;
                         break;

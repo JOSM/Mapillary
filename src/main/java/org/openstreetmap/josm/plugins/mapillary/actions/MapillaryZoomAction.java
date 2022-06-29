@@ -45,7 +45,7 @@ public class MapillaryZoomAction extends JosmAction implements VectorDataSelecti
         if (selected == null) {
             throw new IllegalStateException();
         }
-        MainApplication.getMap().mapView.zoomTo(selected.getCoor());
+        MainApplication.getMap().mapView.zoomTo(selected);
     }
 
     @Override

@@ -216,7 +216,7 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
         if (mv.getDist100Pixel() < 50) {
             g.setColor(MapPaintSettings.INSTANCE.getSelectedColor());
             for (INode node : this.getData().getSelectedNodes()) {
-                final Point p = mv.getPoint(node.getCoor());
+                final Point p = mv.getPoint(node);
                 final ImageSizes size = ImageSizes.MAP;
                 g.drawRect(p.x - size.getAdjustedWidth(), p.y - size.getAdjustedHeight(), 2 * size.getAdjustedWidth(),
                     2 * size.getAdjustedHeight());
@@ -225,7 +225,7 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
             for (INode node : this.getData()
                 .getPrimitivesById(this.getData().getHighlighted().toArray(new PrimitiveId[0]))
                 .filter(INode.class::isInstance).map(INode.class::cast).collect(Collectors.toList())) {
-                final Point p = mv.getPoint(node.getCoor());
+                final Point p = mv.getPoint(node);
                 final ImageSizes size = ImageSizes.MAP;
                 g.drawRect(p.x - size.getAdjustedWidth(), p.y - size.getAdjustedHeight(), 2 * size.getAdjustedWidth(),
                     2 * size.getAdjustedHeight());
