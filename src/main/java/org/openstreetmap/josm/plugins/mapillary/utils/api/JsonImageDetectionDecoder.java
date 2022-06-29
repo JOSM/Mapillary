@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -138,13 +137,17 @@ public final class JsonImageDetectionDecoder {
         // The decoded bytes are further encoded in the Mapbox Vector Tile format
         try (ProtobufParser parser = new ProtobufParser(base64Decode)) {
             final Collection<ProtobufRecord> layerRecord = parser.allRecords();
-            // the layer field is 3
-            if (layerRecord.size() == 1 && layerRecord.iterator().next().getField() == 3) {
-                try (ProtobufParser layerParser = new ProtobufParser(layerRecord.iterator().next().getBytes())) {
-                    final Layer layer = new Layer(layerParser.allRecords());
-                    final Optional<Feature> feature = layer.getFeatures().stream().findFirst();
-                    if (layer.getFeatures().size() == 1 && feature.isPresent()) {
-                        return resizeShapes(feature.get().getGeometryObject().getShapes(), layer.getExtent());
+            if (layerRecord.size() == 1) {
+                try (ProtobufRecord protobufRecord = layerRecord.iterator().next()) {
+                    // the layer field is 3
+                    if (protobufRecord.getField() == 3) {
+                        try (ProtobufParser layerParser = new ProtobufParser(protobufRecord.getBytes())) {
+                            final Layer layer = new Layer(layerParser.allRecords());
+                            if (layer.getFeatures().size() == 1) {
+                                final Feature feature = layer.getFeatures().iterator().next();
+                                return resizeShapes(feature.getGeometryObject().getShapes(), layer.getExtent());
+                            }
+                        }
                     }
                 }
             }

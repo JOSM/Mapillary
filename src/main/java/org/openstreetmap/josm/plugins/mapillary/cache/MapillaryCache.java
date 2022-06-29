@@ -26,7 +26,6 @@ import org.openstreetmap.josm.data.cache.JCSCachedTileLoaderJob;
 import org.openstreetmap.josm.data.imagery.TileJobOptions;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IWay;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
@@ -185,24 +184,9 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
             final int index = wayNodes.indexOf(currentImage);
             final List<? extends INode> nodes = wayNodes.subList(Math.max(0, index - realPrefetch),
                 Math.min(wayNodes.size(), index + realPrefetch));
-            prefetchImageDetails(new ArrayList<>(wayNodes.subList(Math.max(0, index - 2 * realPrefetch),
-                Math.min(wayNodes.size(), index + 2 * realPrefetch))));
             nodes.stream().filter(node -> node.getUniqueId() > 0)
                 .forEach(image -> pool.execute(() -> CacheUtils.downloadPicture(image, type)));
         }
-    }
-
-    /**
-     * Prefetch image details forward and behind
-     *
-     * @param nodes the nodes to prefetch details for
-     */
-    private static void prefetchImageDetails(List<? extends INode> nodes) {
-        // Prefetch
-        final ForkJoinPool pool = MapillaryUtils.getForkJoinPool();
-        nodes.removeIf(MapillaryImageUtils.IS_DOWNLOADABLE);
-        long[] images = nodes.stream().mapToLong(MapillaryImageUtils::getKey).toArray();
-        pool.execute(() -> MapillaryDownloader.downloadImages(images));
     }
 
     /**

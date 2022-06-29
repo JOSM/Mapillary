@@ -35,6 +35,17 @@ import javax.json.JsonReader;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.platform.commons.support.AnnotationSupport;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.IMapillaryUrls;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryUrls;
+import org.openstreetmap.josm.tools.Utils;
+
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.common.FileSource;
@@ -49,16 +60,6 @@ import com.github.tomakehurst.wiremock.matching.AnythingPattern;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
-import org.junit.jupiter.api.extension.AfterAllCallback;
-import org.junit.jupiter.api.extension.AfterEachCallback;
-import org.junit.jupiter.api.extension.BeforeAllCallback;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.platform.commons.support.AnnotationSupport;
-import org.openstreetmap.josm.plugins.mapillary.spi.preferences.IMapillaryUrls;
-import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
-import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryUrls;
-import org.openstreetmap.josm.tools.Utils;
 
 /**
  * Mock Mapillary API calls
@@ -130,8 +131,10 @@ public @interface MapillaryURLWireMock {
                 } else if (Files.isDirectory(Paths.get(mapillary))) {
                     directory = Paths.get(mapillary, directory.toString());
                 } else {
-                    fail("Mapillary test/resources directory not found." + System.lineSeparator() + Files
-                        .list(Paths.get(".")).map(Path::toString).collect(Collectors.joining(System.lineSeparator())));
+                    try (Stream<Path> paths = Files.list(Paths.get("."))) {
+                        fail("Mapillary test/resources directory not found." + System.lineSeparator()
+                            + paths.map(Path::toString).collect(Collectors.joining(System.lineSeparator())));
+                    }
                 }
             }
             wireMockConfiguration.withRootDirectory(directory.toString());

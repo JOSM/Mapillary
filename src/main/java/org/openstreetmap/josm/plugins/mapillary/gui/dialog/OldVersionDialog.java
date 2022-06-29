@@ -86,6 +86,7 @@ public final class OldVersionDialog {
      *
      * @return The current JOSM tested version, or -1 if we couldn't get the current version
      */
+    @SuppressWarnings("DuplicatedCode")
     static int getTestedVersion() {
         try (CachedFile testedVersion = new CachedFile(Config.getUrls().getJOSMWebsite() + "/tested")) {
             testedVersion.setMaxAge(60L * 15); // 15 Minutes
