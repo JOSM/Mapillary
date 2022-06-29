@@ -71,7 +71,7 @@ public final class MapViewGeometryUtil {
                 && !(anyVisible && seq.isFirstLastNode(node))) {
                 continue;
             }
-            Point2D p = nc.getPoint2D(node.getEastNorth());
+            Point2D p = nc.getPoint2D(node);
             x[index] = (int) p.getX();
             y[index] = (int) p.getY();
             index++;

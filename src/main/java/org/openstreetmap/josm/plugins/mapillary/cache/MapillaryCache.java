@@ -4,7 +4,9 @@ package org.openstreetmap.josm.plugins.mapillary.cache;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -23,10 +25,10 @@ import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.data.cache.JCSCachedTileLoaderJob;
 import org.openstreetmap.josm.data.imagery.TileJobOptions;
 import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
@@ -167,73 +169,40 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
 
     private static void runnableCacheSurroundingImages(INode currentImage) {
         final ForkJoinPool pool = MapillaryUtils.getForkJoinPool(MapillaryCache.class);
-        final int prefetchCount = MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get();
-        // We prefetch both ways
-        final MapillaryCache.Type type = MapillaryCache.Type.getTypeForMemory(currentImage);
-        final long freeMemory = Runtime.getRuntime().freeMemory();
-        // 3 bytes for RGB (jpg doesn't support the Alpha channel). I'm using 4 bytes instead of 3 for a buffer.
-        long estimatedImageSize = Stream.of(MapillaryCache.Type.values())
-            .mapToLong(v -> (long) v.getHeight(currentImage) * v.getWidth(currentImage) * 4).sum();
-
-        INode nextImage = MapillarySequenceUtils.getNextOrPrevious(currentImage,
-            MapillarySequenceUtils.NextOrPrevious.NEXT);
-        INode prevImage = MapillarySequenceUtils.getNextOrPrevious(currentImage,
-            MapillarySequenceUtils.NextOrPrevious.PREVIOUS);
-        for (int i = 0; i < prefetchCount; i++) {
-            if (freeMemory - estimatedImageSize < 0) {
-                break; // It doesn't make sense to try to cache images that won't be kept.
-            }
-            if (nextImage != null) {
-                if (MapillaryImageUtils.getKey(nextImage) != 0) {
-                    INode current = nextImage;
-                    pool.execute(() -> CacheUtils.downloadPicture(current, type));
-                }
-                nextImage = MapillarySequenceUtils.getNextOrPrevious(nextImage,
-                    MapillarySequenceUtils.NextOrPrevious.NEXT);
-            }
-            if (prevImage != null) {
-                if (MapillaryImageUtils.getKey(prevImage) != 0) {
-                    INode current = prevImage;
-                    pool.execute(() -> CacheUtils.downloadPicture(current, type));
-                }
-                prevImage = MapillarySequenceUtils.getNextOrPrevious(prevImage,
-                    MapillarySequenceUtils.NextOrPrevious.PREVIOUS);
-            }
+        final Integer prefetch = MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get();
+        final int realPrefetch;
+        if (prefetch == null) {
+            realPrefetch = MapillaryProperties.PRE_FETCH_IMAGE_COUNT.getDefaultValue();
+        } else {
+            realPrefetch = prefetch > 0 ? prefetch : 0;
         }
-        prefetchImageDetails(2 * prefetchCount, currentImage);
+        final IWay<?> iWay = MapillaryImageUtils.getSequence(currentImage);
+        // We prefetch both ways
+        final Type type = Type.THUMB_256;
+        if (iWay != null) {
+            // Avoid CME -- getImage may remove nodes from the way
+            final List<? extends INode> wayNodes = new ArrayList<>(iWay.getNodes());
+            final int index = wayNodes.indexOf(currentImage);
+            final List<? extends INode> nodes = wayNodes.subList(Math.max(0, index - realPrefetch),
+                Math.min(wayNodes.size(), index + realPrefetch));
+            prefetchImageDetails(new ArrayList<>(wayNodes.subList(Math.max(0, index - 2 * realPrefetch),
+                Math.min(wayNodes.size(), index + 2 * realPrefetch))));
+            nodes.stream().filter(node -> node.getUniqueId() > 0)
+                .forEach(image -> pool.execute(() -> CacheUtils.downloadPicture(image, type)));
+        }
     }
 
     /**
      * Prefetch image details forward and behind
      *
-     * @param prefetchCount The number of images to prefetch ahead and behind
-     * @param currentImage The current image
+     * @param nodes the nodes to prefetch details for
      */
-    private static void prefetchImageDetails(final int prefetchCount, final INode currentImage) {
+    private static void prefetchImageDetails(List<? extends INode> nodes) {
         // Prefetch
         final ForkJoinPool pool = MapillaryUtils.getForkJoinPool();
-        INode nextImage = MapillarySequenceUtils.getNextOrPrevious(currentImage,
-            MapillarySequenceUtils.NextOrPrevious.NEXT);
-        INode prevImage = MapillarySequenceUtils.getNextOrPrevious(currentImage,
-            MapillarySequenceUtils.NextOrPrevious.PREVIOUS);
-        for (int i = 0; i < prefetchCount; i++) {
-            if (nextImage != null) {
-                if (MapillaryImageUtils.getKey(nextImage) != 0) {
-                    INode current = nextImage;
-                    pool.execute(() -> MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(current)));
-                }
-                nextImage = MapillarySequenceUtils.getNextOrPrevious(nextImage,
-                    MapillarySequenceUtils.NextOrPrevious.NEXT);
-            }
-            if (prevImage != null) {
-                if (MapillaryImageUtils.getKey(prevImage) != 0) {
-                    INode current = prevImage;
-                    pool.execute(() -> MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(current)));
-                }
-                prevImage = MapillarySequenceUtils.getNextOrPrevious(prevImage,
-                    MapillarySequenceUtils.NextOrPrevious.PREVIOUS);
-            }
-        }
+        nodes.removeIf(MapillaryImageUtils.IS_DOWNLOADABLE);
+        long[] images = nodes.stream().mapToLong(MapillaryImageUtils::getKey).toArray();
+        pool.execute(() -> MapillaryDownloader.downloadImages(images));
     }
 
     /**

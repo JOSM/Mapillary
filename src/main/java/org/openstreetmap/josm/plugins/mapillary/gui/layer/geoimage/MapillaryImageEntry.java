@@ -28,10 +28,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.TimeZone;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.function.BiConsumer;
 
 import javax.annotation.Nonnull;
@@ -53,7 +49,6 @@ import org.openstreetmap.josm.data.coor.ILatLon;
 import org.openstreetmap.josm.data.imagery.street_level.IImageEntry;
 import org.openstreetmap.josm.data.imagery.street_level.Projections;
 import org.openstreetmap.josm.data.osm.INode;
-import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.preferences.AbstractProperty;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.gui.MainApplication;
@@ -261,7 +256,7 @@ public class MapillaryImageEntry
                     bufferedImageCacheEntry = this.originalImage.get();
                     tFullImage = this.fullImage;
                 }
-                MapillaryUtils.getForkJoinPool().execute(() -> preCacheImages(this));
+                MapillaryCache.cacheSurroundingImages(this.image);
             } catch (InterruptedException exception) {
                 Thread.currentThread().interrupt();
                 throw new IOException(exception);
@@ -323,43 +318,6 @@ public class MapillaryImageEntry
             this.notifyAll();
         }
         return entry;
-    }
-
-    private static void preCacheImages(final MapillaryImageEntry entry) {
-        final Integer prefetch = MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get();
-        final int realPrefetch;
-        if (prefetch == null) {
-            realPrefetch = MapillaryProperties.PRE_FETCH_IMAGE_COUNT.getDefaultValue();
-        } else {
-            realPrefetch = prefetch > 0 ? prefetch : 0;
-        }
-        final IWay<?> iWay = MapillaryImageUtils.getSequence(entry.image);
-        if (iWay != null) {
-            // Avoid CME -- getImage may remove nodes from the way
-            final List<? extends INode> wayNodes = new ArrayList<>(iWay.getNodes());
-            final int index = wayNodes.indexOf(entry.image);
-            final List<? extends INode> nodes = wayNodes.subList(Math.max(0, index - realPrefetch),
-                Math.min(wayNodes.size(), index + realPrefetch));
-            nodes.stream().filter(node -> node.getUniqueId() > 0).map(MapillaryImageEntry::getCachedEntry)
-                .forEach(imageEntry -> {
-                    final Future<BufferedImageCacheEntry> future = MapillaryImageUtils.getImage(imageEntry.image,
-                        MapillaryCache.Type.THUMB_256);
-                    try {
-                        while (!future.isCancelled() && !future.isDone()) {
-                            try {
-                                imageEntry.originalImage = new SoftReference<>(future.get(1, TimeUnit.SECONDS));
-                            } catch (TimeoutException e) {
-                                Logging.trace(e);
-                            }
-                        }
-                    } catch (InterruptedException e) {
-                        Logging.error(e);
-                        Thread.currentThread().interrupt();
-                    } catch (ExecutionException e) {
-                        Logging.error(e);
-                    }
-                });
-        }
     }
 
     private void drawDetections() throws IOException {
