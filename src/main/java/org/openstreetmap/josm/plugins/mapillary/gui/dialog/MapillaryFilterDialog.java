@@ -105,6 +105,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
     private boolean destroyed;
 
     private final transient ImageFilterPredicate shouldHidePredicate = new ImageFilterPredicate();
+    private IDatePicker<JComponent> startDate;
+    private IDatePicker<JComponent> endDate;
 
     private MapillaryFilterDialog() {
         super(tr("Mapillary filter"), "mapillary-filter", tr("Open Mapillary filter dialog"),
@@ -260,8 +262,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
         panel.add(fromPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
         // Time panel
         final JPanel timePanel = new JPanel(new GridBagLayout());
-        final IDatePicker<JComponent> startDate = IDatePicker.getNewDatePicker();
-        final IDatePicker<JComponent> endDate = IDatePicker.getNewDatePicker();
+        startDate = IDatePicker.getNewDatePicker();
+        endDate = IDatePicker.getNewDatePicker();
         final Consumer<IDatePicker<?>> function = modified -> updateDates(startDate, endDate, modified);
         startDate.addEventHandler(function);
         endDate.addEventHandler(function);
@@ -317,6 +319,34 @@ public final class MapillaryFilterDialog extends ToggleDialog
         };
         this.resetObjects.addListener(setFields);
         setFields.reset();
+    }
+
+    /**
+     * Set the start date for the filter
+     *
+     * @param start The start date
+     */
+    public void setStartDate(Instant start) {
+        this.startDate.setInstant(start);
+    }
+
+    /**
+     * Set the end date for the filter
+     *
+     * @param end The end date
+     */
+    public void setEndDate(Instant end) {
+        this.endDate.setInstant(end);
+    }
+
+    /**
+     * Set the organization to filter on
+     *
+     * @param organization The organization to filter on
+     */
+    public void setOrganization(String organization) {
+        OrganizationRecord organizationRecord = OrganizationRecord.getOrganization(organization);
+        this.organizations.setSelectedItem(organizationRecord);
     }
 
     @Nonnull

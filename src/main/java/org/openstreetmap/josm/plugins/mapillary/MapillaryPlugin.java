@@ -36,6 +36,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
+import org.openstreetmap.josm.plugins.mapillary.io.remotecontrol.MapillaryFilterRemoteControl;
 import org.openstreetmap.josm.plugins.mapillary.io.remotecontrol.MapillaryRemoteControl;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
@@ -103,8 +104,10 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
 
         // TODO remove in destroy (not currently possible)
         RequestProcessor.addRequestHandlerClass("photo", MapillaryRemoteControl.class);
+        RequestProcessor.addRequestHandlerClass("mapillaryfilter", MapillaryFilterRemoteControl.class);
         // instantiate to get action into Remote Control Preferences
         new MapillaryRemoteControl();
+        new MapillaryFilterRemoteControl();
         destroyables.add(new MapillaryLayerListener(MainApplication.getLayerManager()));
 
         SecurityManagerUtils.doInitializations();
