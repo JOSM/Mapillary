@@ -5,23 +5,23 @@
 #
 # Translators:
 # Florian Schäfer, 2020
-# Marco, 2021
-# demetrio, 2021
 # Simon Legner, 2022
 # Livio Avalle, 2022
+# demetrio, 2022
+# Marco, 2022
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.5-5-g487f881\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.11\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-06 15:05+0000\n"
+"POT-Creation-Date: 2022-06-29 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Italian (https://www.transifex.com/josm/teams/2544/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: it\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #. filter mode: add
 msgctxt "filter"
@@ -37,9 +37,6 @@ msgstr ""
 msgid "Add"
 msgstr "Aggiungi"
 
-msgid "Add Map Feature to OSM"
-msgstr ""
-
 msgid "Add Mapillary tag"
 msgstr "Aggiungi etichetta Mapillary"
 
@@ -48,9 +45,6 @@ msgstr "Aggiungi filtro."
 
 msgid "All"
 msgstr "Tutti"
-
-msgid "At least one of the optional arguments must be used ({0})"
-msgstr ""
 
 msgid "Cancel"
 msgstr "Annulla"
@@ -70,10 +64,6 @@ msgstr "Cancella"
 
 msgid "Color"
 msgstr "Colore"
-
-msgctxt "Checkbox label in JOSM settings"
-msgid "Color images by capture date"
-msgstr ""
 
 msgid "Copied URL to clipboard …"
 msgstr "Copiato URL negli appunti…"
@@ -99,9 +89,6 @@ msgstr ""
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "Impossibile aprire l’indirizzo {0} in un browser"
-
-msgid "Could not refresh Mapillary token. HTTP Status Code {0}."
-msgstr ""
 
 #. filter mode: remove
 msgctxt "filter"
@@ -313,12 +300,6 @@ msgstr "Filtro per esperti di Mapillary"
 msgid "Mapillary Images"
 msgstr "Immagini Mapillary"
 
-msgid "Mapillary Point Objects"
-msgstr ""
-
-msgid "Mapillary Smart Edit: Add objects"
-msgstr ""
-
 msgid "Mapillary Traffic Signs"
 msgstr "Segnali Stradali di Mapillary"
 
@@ -327,9 +308,6 @@ msgstr "Filtro di Mapillary"
 
 msgid "Mapillary image"
 msgstr "Immagine di Mapillary"
-
-msgid "Mapillary image read should never occur on UI thread"
-msgstr ""
 
 msgid "Mapillary images Filter"
 msgstr "Filtro immagini di Mapillary"
@@ -345,12 +323,6 @@ msgstr "Livello degli elementi nodo di Mapillary"
 
 msgid "Mapillary traffic signs layer"
 msgstr "Livello dei segnali stradali di Mapillary"
-
-msgid "Mapillary: Could not refresh login, logging out"
-msgstr ""
-
-msgid "Maximum distance to consider for changeset source calculations"
-msgstr ""
 
 msgid "Month"
 msgstr "Mese"
@@ -388,9 +360,6 @@ msgstr "Divieto di parcheggio"
 msgid "No turn"
 msgstr "Divieto di svolta"
 
-msgid "Non-panoramic"
-msgstr ""
-
 msgid "Not older than: "
 msgstr "Non più vecchio di: "
 
@@ -398,21 +367,8 @@ msgstr "Non più vecchio di: "
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "Numero di immagini da pre-caricare (in avanti e indietro)"
 
-msgid "Number of images to draw in the map view (affects performance)"
-msgstr ""
-
 msgid "Object Detection Filters"
 msgstr "Filtri rilevamento oggetti"
-
-msgid ""
-"Only Mapillary images are supported at this time, use "
-"photo=Mapillary/<image_id>"
-msgstr ""
-
-msgid ""
-"Only Mapillary sequences are supported at this time, use "
-"sequence=Mapillary/<sequence_id>"
-msgstr ""
 
 msgid "Only images with signs"
 msgstr "Solo immagini con segnali stradali"
@@ -501,14 +457,8 @@ msgstr ""
 msgid "Sequence key"
 msgstr "Chiave della sequenza"
 
-msgid "Sequence offset"
-msgstr ""
-
 msgid "Sequence: "
 msgstr "Sequenza:"
-
-msgid "Show Image types: "
-msgstr ""
 
 msgid "Show Relevant"
 msgstr "Mostra rilevanti"
@@ -575,13 +525,6 @@ msgstr "Segnali stradali"
 msgid "Uneven road"
 msgstr "Strada sconnessa"
 
-msgid ""
-"Unknown Mapillary exception.\n"
-"{0}"
-msgstr ""
-"Eccezione di Mapillary sconosciuta.\n"
-"{0}"
-
 msgid "Up"
 msgstr "Su"
 
@@ -600,12 +543,6 @@ msgstr "Aspetta per ottenere immagini di alta qualità"
 
 msgid "We cannot export {0}"
 msgstr "Impossibile esportare {0}"
-
-msgid ""
-"We have reached the Mapillary API limit. Disabling Mapillary networking until JOSM restart. Sorry.\n"
-"Logging in after the rate limit subsides may help prevent this in the future.\n"
-"{0}"
-msgstr ""
 
 #. i18n: Checkbox label in JOSM settings
 msgid ""
@@ -662,6 +599,7 @@ msgid "{0} ({1} image)"
 msgid_plural "{0} ({1} images)"
 msgstr[0] "{0} ({1} immagine)"
 msgstr[1] "{0} ({1} immagini)"
+msgstr[2] "{0} ({1} immagini)"
 
 msgid "{0} consists of:"
 msgstr "{0} è composto da:"
@@ -673,6 +611,7 @@ msgid "{0} image in total"
 msgid_plural "{0} images in total"
 msgstr[0] "{0} immagine in totale"
 msgstr[1] "{0} immagini in totale"
+msgstr[2] "{0} immagini in totale"
 
 msgid "{0} images in {1} sequences"
 msgstr "{0} immagini in {1} sequenze"
@@ -681,11 +620,13 @@ msgid "{0} node"
 msgid_plural "{0} nodes"
 msgstr[0] "{0} nodo"
 msgstr[1] "{0} nodi"
+msgstr[2] "{0} nodi"
 
 msgid "{0} relation"
 msgid_plural "{0} relations"
 msgstr[0] "{0} relazione"
 msgstr[1] "{0} relazioni"
+msgstr[2] "{0} relazioni"
 
 msgid "{0} sequence, containing between {1} and {2} images (ø {3})"
 msgid_plural ""
@@ -694,11 +635,14 @@ msgstr[0] ""
 "{0} sequenza, ognuna contenente tra le {1} e le {2} immagini (ø {3})"
 msgstr[1] ""
 "{0} sequenze, ognuna contenente tra le {1} e le {2} immagini (ø {3})"
+msgstr[2] ""
+"{0} sequenze, ognuna contenente tra le {1} e le {2} immagini (ø {3})"
 
 msgid "{0} way"
 msgid_plural "{0} ways"
 msgstr[0] "{0} percorso"
 msgstr[1] "{0} percorsi"
+msgstr[2] "{0} percorsi"
 
 msgid "{0}: {1}"
 msgstr "{0}: {1}"

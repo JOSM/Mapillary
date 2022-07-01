@@ -8,9 +8,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.5-5-g487f881\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.11\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-06 15:05+0000\n"
+"POT-Creation-Date: 2022-06-29 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Serbian (Latin) (https://www.transifex.com/josm/teams/2544/sr@latin/)\n"
 "MIME-Version: 1.0\n"
@@ -322,9 +322,6 @@ msgstr "Mapillary filter"
 msgid "Mapillary image"
 msgstr "Mapillary fotografija"
 
-msgid "Mapillary image read should never occur on UI thread"
-msgstr ""
-
 msgid "Mapillary images Filter"
 msgstr "Mapillary filtriranje fotografija"
 
@@ -572,13 +569,6 @@ msgstr "Saobraćajni znakovi"
 
 msgid "Uneven road"
 msgstr "Neujednačen put"
-
-msgid ""
-"Unknown Mapillary exception.\n"
-"{0}"
-msgstr ""
-"Nepoznat Mapillary izuzetak.\n"
-"{0}"
 
 msgid "Up"
 msgstr "Gore"

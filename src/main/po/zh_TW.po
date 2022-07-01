@@ -4,15 +4,15 @@
 # FIRST AUTHOR, YEAR.
 #
 # Translators:
-# Simon Legner, 2020
 # Florian Schäfer, 2020
-# Supaplex, 2021
+# Simon Legner, 2022
+# Supaplex, 2022
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.1-2-g20963ab\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.11\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-26 15:07+0000\n"
+"POT-Creation-Date: 2022-06-29 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Chinese (Taiwan) (https://www.transifex.com/josm/teams/2544/zh_TW/)\n"
 "MIME-Version: 1.0\n"
@@ -41,6 +41,9 @@ msgstr "新增 Mapillary 標籤"
 
 msgid "Add filter."
 msgstr "加入過濾條件。"
+
+msgid "All"
+msgstr "全部"
 
 msgid "At least one of the optional arguments must be used ({0})"
 msgstr "必須使用其中一個選填參數 ({0})"
@@ -87,6 +90,9 @@ msgstr "複製鍵值"
 msgid "Could not import a geotagged image to the Mapillary layer!"
 msgstr "無法匯入有地理標記圖片到 Mapillary 圖層！"
 
+msgid "Could not load image: {0}"
+msgstr "無法讀取影像： {0}"
+
 msgid "Could not open the URL {0} in a browser"
 msgstr "無法用瀏覽器打開網址 {0}"
 
@@ -97,6 +103,9 @@ msgstr "無法更新 Mapillary token，HTTP 狀態碼 {0}。"
 msgctxt "filter"
 msgid "D"
 msgstr "D"
+
+msgid "Dataset is currently being updated"
+msgstr "目前正在更新資料集"
 
 msgid "Days"
 msgstr "日"
@@ -132,9 +141,6 @@ msgstr "你真的要將目前的值 <i>{0}</i> 覆寫為新的值 <i>{1}</i> 嗎
 
 msgid "Down"
 msgstr "下"
-
-msgid "Downloaded images"
-msgstr "下載的影像"
 
 msgid "Downloading…"
 msgstr "正在下載..."
@@ -329,6 +335,9 @@ msgstr "Mapillary 登入"
 msgid "Mapillary point features layer"
 msgstr "Mapillary 節點圖徵圖層"
 
+msgid "Mapillary style sheet"
+msgstr "Mapillary 樣式表"
+
 msgid "Mapillary traffic signs layer"
 msgstr "Mapillary 交通號誌圖層"
 
@@ -374,6 +383,9 @@ msgstr "禁止停車"
 msgid "No turn"
 msgstr "禁止轉彎"
 
+msgid "Non-panoramic"
+msgstr "非全景影像"
+
 msgid "Not older than: "
 msgstr "不早於： "
 
@@ -418,8 +430,8 @@ msgstr "組織"
 msgid "Organizations"
 msgstr "組織"
 
-msgid "Panorama only"
-msgstr "只有全景圖"
+msgid "Panoramic"
+msgstr "全景影像"
 
 msgid "Pedestrian crossing"
 msgstr "行人穿越"
@@ -483,6 +495,9 @@ msgstr "片段偏移"
 
 msgid "Sequence: "
 msgstr "片段"
+
+msgid "Show Image types: "
+msgstr "顯示影像類型："
 
 msgid "Show Relevant"
 msgstr "顯示相關的"
@@ -550,10 +565,10 @@ msgstr "坎坷的道路"
 
 msgid ""
 "Unknown Mapillary exception.\n"
-"{0}"
+"This message may contain potentially sensitive information!\n"
+"{0}\n"
+"{1}"
 msgstr ""
-"未知的 Mapillary 異常。\n"
-"{0}"
 
 msgid "Up"
 msgstr "上"
@@ -564,6 +579,10 @@ msgstr "更新"
 msgctxt "Checkbox label in JOSM settings"
 msgid "Use computed location information"
 msgstr "使用計算出來的位置資訊"
+
+msgctxt "Checkbox label in JOSM settings"
+msgid "Use the custom Mapillary renderer"
+msgstr "使用客製化的 Mapillary 渲染器"
 
 msgid "View in browser"
 msgstr "在瀏覽器中觀看"

@@ -6,15 +6,16 @@
 # Translators:
 # Right Path, 2018
 # Alicja Bartczak, 2020
-# Simon Legner, 2020
 # Florian Schäfer, 2020
 # Piotr Strębski, 2021
+# Simon Legner, 2022
+# Michał Gątkowski, 2022
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.1-2-g20963ab\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.11\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-26 15:07+0000\n"
+"POT-Creation-Date: 2022-06-29 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Polish (https://www.transifex.com/josm/teams/2544/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -42,6 +43,9 @@ msgstr "Dodaj znacznik Mapillary"
 msgid "Add filter."
 msgstr "Dodaje filtr."
 
+msgid "All"
+msgstr "Wszystkie"
+
 msgid "Cancel"
 msgstr "Anuluj"
 
@@ -60,6 +64,10 @@ msgstr "Wyczyść"
 
 msgid "Color"
 msgstr "Kolor"
+
+msgctxt "Checkbox label in JOSM settings"
+msgid "Color images by capture date"
+msgstr "Koloruj zdjęcia według daty wykonania"
 
 msgid "Copy URL"
 msgstr "Kopiuj adres URL"
@@ -102,9 +110,6 @@ msgstr "Na pewno chcesz zamienić obecną wartość <i>{0}</i> nową <i>{1}</i>?
 
 msgid "Down"
 msgstr "W dół"
-
-msgid "Downloaded images"
-msgstr "Pobrane obrazy:"
 
 msgid "Downloading…"
 msgstr "Pobieranie..."
@@ -278,6 +283,9 @@ msgstr "Zakaz postoju"
 msgid "No turn"
 msgstr "Zakaz zawracania"
 
+msgid "Non-panoramic"
+msgstr "Nie-panoramiczne"
+
 msgid "Not older than: "
 msgstr "Nie starsze niż: "
 
@@ -297,8 +305,14 @@ msgstr "Otwórz wartwę Mapillary"
 msgid "Organizations"
 msgstr "Organizacje"
 
+msgid "Panoramic"
+msgstr "Panoramiczne"
+
 msgid "Pedestrian crossing"
 msgstr "Przejście dla pieszych"
+
+msgid "Picture Filters"
+msgstr "Filtry zdjęć"
 
 #. translators notes must be in front
 #. filter mode: replace
@@ -320,6 +334,9 @@ msgstr "Wybierz katalog"
 
 msgid "Sequence key"
 msgstr "Klucz sekwencji"
+
+msgid "Show Image types: "
+msgstr "Typ wyświetlanych zdjęć:"
 
 msgid "Show detections on top of image"
 msgstr "Pokaż wykrywanie na górze obrazu"
@@ -380,7 +397,7 @@ msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
 msgstr ""
-"Podczas odwierania obrazu Mapillary w przeglądarce, pokaż edytor rozmazania "
+"Podczas otwierania obrazu Mapillary w przeglądarce, pokaż edytor rozmazania "
 "zamiast podglądu zdjęcia"
 
 msgid "Which image layers do you want to import into the Mapillary layer?"
@@ -397,6 +414,9 @@ msgstr "Nie jesteś zalogowany."
 
 msgid "You are logged in as ''{0}''."
 msgstr "Jesteś zalogowany jako \"{0}\"."
+
+msgid "You are logged in."
+msgstr "Jesteś zalogowany."
 
 msgid "Zoom to selected image"
 msgstr "Powiększ do wybranego obrazu"

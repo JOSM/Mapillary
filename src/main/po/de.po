@@ -8,17 +8,17 @@
 # Markus Maurer, 2020
 # Martin Rey, 2020
 # Julian Schwarz, 2020
-# Simon Legner, 2020
 # Claudius Henrichs, 2020
-# Florian Schäfer, 2020
 # H b, 2021
-# Andre Thum, 2021
+# Florian Schäfer, 2022
+# Simon Legner, 2022
+# Andre Thum, 2022
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.1-2-g20963ab\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.11\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-26 15:07+0000\n"
+"POT-Creation-Date: 2022-06-29 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: German (https://www.transifex.com/josm/teams/2544/de/)\n"
 "MIME-Version: 1.0\n"
@@ -49,6 +49,9 @@ msgstr "Mapillary-Tag hinzufügen"
 
 msgid "Add filter."
 msgstr "Filter hinzufügen."
+
+msgid "All"
+msgstr "Alle"
 
 msgid "At least one of the optional arguments must be used ({0})"
 msgstr "Mindestens eines der optionalen Argumente muss verwendet werden ({0})"
@@ -98,6 +101,9 @@ msgid "Could not import a geotagged image to the Mapillary layer!"
 msgstr ""
 "Konnte ein georeferenziertes Bild nicht in die Mapillary-Ebene importieren!"
 
+msgid "Could not load image: {0}"
+msgstr "Bild konnte nicht geladen werden: {0}"
+
 msgid "Could not open the URL {0} in a browser"
 msgstr "Konnte die URL {0} nicht in einem Browser öffnen"
 
@@ -109,6 +115,9 @@ msgstr ""
 msgctxt "filter"
 msgid "D"
 msgstr "L"
+
+msgid "Dataset is currently being updated"
+msgstr "Datensatz wird derzeit aktualisiert"
 
 msgid "Days"
 msgstr "Tage"
@@ -151,9 +160,6 @@ msgstr ""
 
 msgid "Down"
 msgstr "Runter"
-
-msgid "Downloaded images"
-msgstr "Heruntergeladene Bilder"
 
 msgid "Downloading…"
 msgstr "Wird heruntergeladen …"
@@ -333,6 +339,9 @@ msgstr "Mapillary-Filter"
 msgid "Mapillary image"
 msgstr "Mapillary-Bild"
 
+msgid "Mapillary image read should never occur on UI thread"
+msgstr "Auf dem UI-Thread sollten niemals Mapillary-Bilder gelesen werden"
+
 msgid "Mapillary images Filter"
 msgstr "Mapillary Bilderfilter"
 
@@ -393,6 +402,9 @@ msgstr "Parkverbot"
 msgid "No turn"
 msgstr "Abbiegen verboten"
 
+msgid "Non-panoramic"
+msgstr "Nicht-Panorama"
+
 msgid "Not older than: "
 msgstr "Nicht älter als: "
 
@@ -443,8 +455,8 @@ msgstr "Organisation"
 msgid "Organizations"
 msgstr "Organisationen"
 
-msgid "Panorama only"
-msgstr "Nur Panorama"
+msgid "Panoramic"
+msgstr "Panorama"
 
 msgid "Pedestrian crossing"
 msgstr "Fußgängerübergang"
@@ -504,8 +516,14 @@ msgstr "Wähle alle Objekterkennungen auf der aktuellen Seite aus/ab"
 msgid "Sequence key"
 msgstr "Sequenzschlüssel"
 
+msgid "Sequence offset"
+msgstr "Sequenz-Versatz"
+
 msgid "Sequence: "
 msgstr "Sequenz: "
+
+msgid "Show Image types: "
+msgstr "Zeige Bildtyp"
 
 msgid "Show Relevant"
 msgstr "Relevante anzeigen"
@@ -572,13 +590,6 @@ msgstr "Verkehrsschilder"
 
 msgid "Uneven road"
 msgstr "Unebene Fahrbahn"
-
-msgid ""
-"Unknown Mapillary exception.\n"
-"{0}"
-msgstr ""
-"Unbekannter Mapillary Fehler.\n"
-"{0}"
 
 msgid "Up"
 msgstr "Hoch"

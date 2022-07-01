@@ -6,17 +6,17 @@
 # Translators:
 # Florian Schäfer, 2018
 # Herman Lee, 2020
-# Simon Legner, 2020
 # y941s, 2021
 # JOJOforshaun, 2021
 # anodern, 2021
 # 储油站, 2021
+# Simon Legner, 2022
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.1-2-g20963ab\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.11\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-26 15:07+0000\n"
+"POT-Creation-Date: 2022-06-29 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/josm/teams/2544/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -45,6 +45,9 @@ msgstr "添加 Mapillary 标签"
 
 msgid "Add filter."
 msgstr "添加过滤器。"
+
+msgid "All"
+msgstr "全部"
 
 msgid "At least one of the optional arguments must be used ({0})"
 msgstr "必须至少使用一个可选参数 ({0})"
@@ -91,6 +94,9 @@ msgstr "复制键值"
 msgid "Could not import a geotagged image to the Mapillary layer!"
 msgstr "无法将地理标签图像导入Mapillary层！"
 
+msgid "Could not load image: {0}"
+msgstr ""
+
 msgid "Could not open the URL {0} in a browser"
 msgstr "无法在浏览器中打开 URL {0}"
 
@@ -101,6 +107,9 @@ msgstr "无法刷新Mapillary令牌。HTTP状态代码  {0} 。 "
 msgctxt "filter"
 msgid "D"
 msgstr "删除"
+
+msgid "Dataset is currently being updated"
+msgstr ""
 
 msgid "Days"
 msgstr "日"
@@ -136,9 +145,6 @@ msgstr "您真的想要将当前值 <i>{0}</i> 替换为新值 <i>{1}</i>吗？"
 
 msgid "Down"
 msgstr "下"
-
-msgid "Downloaded images"
-msgstr "已下载图像"
 
 msgid "Downloading…"
 msgstr "下载中……"
@@ -206,6 +212,12 @@ msgstr "过滤mapillary对象并隐藏/禁用它们。"
 msgid "Filter mode"
 msgstr "过滤器模式"
 
+msgid "First Seen End"
+msgstr ""
+
+msgid "First Seen Start"
+msgstr ""
+
 msgid "Follow selected image"
 msgstr "跟随所选图像"
 
@@ -246,6 +258,9 @@ msgstr "图片信息"
 msgid "Image info dialog"
 msgstr "图像信息对话框"
 
+msgid "Image key"
+msgstr ""
+
 msgid "Image: "
 msgstr "图像："
 
@@ -257,6 +272,12 @@ msgstr "危险交叉"
 
 msgid "Inverse filter"
 msgstr "逆转过滤器"
+
+msgid "Last Seen End"
+msgstr ""
+
+msgid "Last Seen Start"
+msgstr ""
 
 msgid "Layer"
 msgstr "层"
@@ -303,6 +324,9 @@ msgstr "Mapillary过滤器"
 msgid "Mapillary image"
 msgstr "Mapillary图像"
 
+msgid "Mapillary image read should never occur on UI thread"
+msgstr ""
+
 msgid "Mapillary images Filter"
 msgstr "Mapillary图像过滤器"
 
@@ -314,6 +338,9 @@ msgstr "登录Mapillary"
 
 msgid "Mapillary point features layer"
 msgstr "Mapillary点要素图层"
+
+msgid "Mapillary style sheet"
+msgstr ""
 
 msgid "Mapillary traffic signs layer"
 msgstr "Mapillary交通标志图层"
@@ -360,6 +387,9 @@ msgstr "禁止停车"
 msgid "No turn"
 msgstr "禁止掉头"
 
+msgid "Non-panoramic"
+msgstr ""
+
 msgid "Not older than: "
 msgstr "不大于 "
 
@@ -404,8 +434,8 @@ msgstr "组织"
 msgid "Organizations"
 msgstr "组织"
 
-msgid "Panorama only"
-msgstr "仅全景"
+msgid "Panoramic"
+msgstr ""
 
 msgid "Pedestrian crossing"
 msgstr "人行道十字路口"
@@ -461,8 +491,17 @@ msgstr "选择 {1} 图层的 Mapillary 图像 {0} (需要时会下载)"
 msgid "Select/Deselect all object detections on the current page"
 msgstr "选择 / 取消选择当前页面上的所有物体检测"
 
+msgid "Sequence key"
+msgstr ""
+
+msgid "Sequence offset"
+msgstr ""
+
 msgid "Sequence: "
 msgstr "序列："
+
+msgid "Show Image types: "
+msgstr ""
 
 msgid "Show Relevant"
 msgstr "显示相关的"
@@ -530,10 +569,10 @@ msgstr "不平整的路"
 
 msgid ""
 "Unknown Mapillary exception.\n"
-"{0}"
+"This message may contain potentially sensitive information!\n"
+"{0}\n"
+"{1}"
 msgstr ""
-"未知的Mapillary异常。\n"
-"{0} "
 
 msgid "Up"
 msgstr "上"
@@ -544,6 +583,10 @@ msgstr "更新"
 msgctxt "Checkbox label in JOSM settings"
 msgid "Use computed location information"
 msgstr "使用计算出的位置信息"
+
+msgctxt "Checkbox label in JOSM settings"
+msgid "Use the custom Mapillary renderer"
+msgstr ""
 
 msgid "View in browser"
 msgstr "在浏览器中查看"
@@ -599,6 +642,18 @@ msgstr "下载街景图像（目前支持 {0}）"
 msgid "hidden"
 msgstr "隐藏"
 
+msgid "image has no key"
+msgstr ""
+
+msgid "sequence has no key"
+msgstr ""
+
+msgid "shown"
+msgstr ""
+
+msgid "unknown organization"
+msgstr ""
+
 #. i18n: {0} is the layer name, {1} the number of images in it
 msgid "{0} ({1} image)"
 msgid_plural "{0} ({1} images)"
@@ -606,6 +661,9 @@ msgstr[0] "{0} ({1} 图像)"
 
 msgid "{0} consists of:"
 msgstr "{0} 组成："
+
+msgid "{0} detections"
+msgstr ""
 
 msgid "{0} image in total"
 msgid_plural "{0} images in total"
@@ -621,6 +679,11 @@ msgstr[0] "{0} 节点"
 msgid "{0} relation"
 msgid_plural "{0} relations"
 msgstr[0] "{0} 关系"
+
+msgid "{0} sequence, containing between {1} and {2} images (ø {3})"
+msgid_plural ""
+"{0} sequences, each containing between {1} and {2} images (ø {3})"
+msgstr[0] ""
 
 msgid "{0} way"
 msgid_plural "{0} ways"
