@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.awt.GraphicsEnvironment;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,6 +15,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import mockit.Invocation;
+import mockit.Mock;
+import mockit.MockUp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -44,10 +48,6 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
-
-import mockit.Invocation;
-import mockit.Mock;
-import mockit.MockUp;
 
 /**
  * Test class for {@link SmartEditAddAction}
@@ -81,6 +81,8 @@ class SmartEditAddActionTest {
         pointObjectLayer = new PointObjectLayer(MapillaryKeys.MAPILLARY_TRAFFIC_SIGNS);
         node = new VectorNode("");
         node.setCoor(LatLon.ZERO);
+        // This id is actually for complementary--both-directions--g2
+        node.setOsmId(496980935069177L, 1);
         pointObjectLayer.getData().addPrimitive(node);
     }
 

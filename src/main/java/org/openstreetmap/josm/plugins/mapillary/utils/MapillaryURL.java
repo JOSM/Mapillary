@@ -146,6 +146,7 @@ public final class MapillaryURL {
          * @return The URL to get detections
          */
         public static String getDetectionInformation(long image) {
+            checkIds(image);
             return MapillaryConfig.getUrls().getBaseMetaDataUrl() + image + "/detections"
                 + queryString(Collections.singletonMap(FIELDS, "value,created_at,image,geometry"));
         }
@@ -171,9 +172,7 @@ public final class MapillaryURL {
          */
         @Nonnull
         public static String getImageInformation(long[] images) {
-            if (LongStream.of(images).anyMatch(i -> i == 0)) {
-                throw new JosmRuntimeException("Mapillary shouldn't have in ids at 0");
-            }
+            checkIds(images);
             if (images.length > 1) {
                 Map<String, String> queryFields = new HashMap<>(2);
                 queryFields.put(FIELDS,
@@ -205,6 +204,7 @@ public final class MapillaryURL {
             } else {
                 imageProperties = properties;
             }
+            checkIds(image);
             return MapillaryConfig.getUrls().getBaseMetaDataUrl() + image
                 + queryString(Collections.singletonMap(FIELDS, Stream.of(imageProperties)
                     .map(MapillaryImageUtils.ImageProperties::toString).collect(Collectors.joining(","))));
@@ -239,6 +239,7 @@ public final class MapillaryURL {
          */
         public static String getMapFeatureInformation(final long id,
             @Nonnull final MapillaryMapFeatureUtils.MapFeatureProperties... properties) {
+            checkIds(id);
             return MapillaryConfig.getUrls().getBaseMetaDataUrl() + id + queryString(Collections.singletonMap(FIELDS,
                 Stream.of(properties).map(Object::toString).collect(Collectors.joining(","))));
         }
@@ -250,6 +251,7 @@ public final class MapillaryURL {
          */
         public static String getOrganizationInformation(long id) {
             // profile_photo_url for profile photos, possibly (currently not public -- errors out) TODO
+            checkIds(id);
             return MapillaryConfig.getUrls().getBaseMetaDataUrl() + id
                 + queryString(Collections.singletonMap(FIELDS, "slug,name,description"));
         }
@@ -270,6 +272,25 @@ public final class MapillaryURL {
          */
         public static String getTokenUrl() {
             return MapillaryConfig.getUrls().getBaseMetaDataUrl() + "token";
+        }
+
+        private static void checkIds(long... ids) {
+            if (ids == null || ids.length == 0) {
+                throw new JosmRuntimeException("Mapillary ids are not set");
+            }
+            if (ids.length == 1) {
+                checkIds(ids[0]);
+            } else {
+                for (long id : ids) {
+                    checkIds(id);
+                }
+            }
+        }
+
+        private static void checkIds(long id) {
+            if (id <= 0) {
+                throw new JosmRuntimeException("Mapillary shouldn't have in ids at 0");
+            }
         }
     }
 

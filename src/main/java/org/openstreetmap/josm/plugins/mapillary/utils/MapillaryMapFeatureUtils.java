@@ -93,11 +93,16 @@ public class MapillaryMapFeatureUtils {
      * @return The ID for the feature (should be convertable to an int)
      */
     public static long getId(@Nullable final IPrimitive primitive) {
-        final String str = getKeyValue(primitive, MapFeatureProperties.ID);
-        if (str != null) {
-            return Long.parseLong(str);
+        if (primitive == null) {
+            return 0;
         }
-        return 0;
+        if (primitive.getUniqueId() <= 0) {
+            final String str = getKeyValue(primitive, MapFeatureProperties.ID);
+            if (str != null) {
+                primitive.setOsmId(Long.parseLong(str), 1);
+            }
+        }
+        return primitive.getId();
     }
 
     /**
