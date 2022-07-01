@@ -140,6 +140,11 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
 
     @Override
     public void finishedLoading(MVTTile tile) {
+        // First, don't load empty tiles
+        if (tile.getData().getAllPrimitives().size() == 6
+            && tile.getData().getAllPrimitives().stream().anyMatch(i -> "water".equals(i.getLayer()))) {
+            return;
+        }
         // This is required for the mapcss to work properly
         tile.getData().getAllPrimitives().forEach(primitive -> primitive.put("layer", primitive.getLayer()));
         tile.getData().getAllPrimitives().stream().filter(primitive -> primitive.getId() != 0)
