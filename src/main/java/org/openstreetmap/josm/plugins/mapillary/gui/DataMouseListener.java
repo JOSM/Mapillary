@@ -75,7 +75,7 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
     private static void mouseClickedInner(final MouseEvent e, final MVTLayer layer, final BBox searchBBox) {
         Collection<INode> nodes = searchNodes(layer, searchBBox).stream().distinct()
             .filter(AbstractPrimitive::isVisible).filter(INode.class::isInstance).map(INode.class::cast)
-            .collect(Collectors.toList());
+            .filter(i -> i.getUniqueId() > 0).collect(Collectors.toList());
         if (!nodes.isEmpty()) {
             // This is needed since Mapillary ids are only unique within a tile.
             layer.getData().setSelected(nodes);
@@ -88,6 +88,7 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
             }
         } else {
             Collection<VectorWay> ways = layer.getData().searchWays(searchBBox);
+            ways.removeIf(way -> way.getUniqueId() <= 0);
             if (!ways.isEmpty()) {
                 layer.getData().setSelected(ways);
             }
@@ -173,7 +174,9 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
                 return nodes;
             }
         }
-        return layer.getData().searchNodes(searchBBox);
+        List<? extends AbstractPrimitive> primitives = layer.getData().searchNodes(searchBBox);
+        primitives.removeIf(prim -> prim.getUniqueId() <= 0);
+        return primitives;
     }
 
     @Nullable
