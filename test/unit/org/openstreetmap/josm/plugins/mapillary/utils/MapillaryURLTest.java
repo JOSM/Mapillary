@@ -21,7 +21,7 @@ class MapillaryURLTest {
 
     @Test
     void testBrowseImageURL() throws MalformedURLException {
-        assertEquals(new URL("https://www.mapillary.com/map/im/1234567890123456789012"),
+        assertEquals(new URL("https://www.mapillary.com/app/?pKey=1234567890123456789012"),
             MapillaryURL.MainWebsite.browseImage("1234567890123456789012"));
     }
 
