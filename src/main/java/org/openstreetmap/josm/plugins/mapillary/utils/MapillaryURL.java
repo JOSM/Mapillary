@@ -312,7 +312,7 @@ public final class MapillaryURL {
             if (key == null) {
                 throw new IllegalArgumentException("The image key must not be null!");
             }
-            return string2URL(baseUrl, "map/im/", key);
+            return string2URL(baseUrl, "app/?pKey=", key);
         }
 
         /**
