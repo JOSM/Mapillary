@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import java.io.ByteArrayInputStream;
@@ -96,7 +97,10 @@ public class MapillaryMapFeatureUtils {
         if (primitive == null) {
             return 0;
         }
-        if (primitive.getUniqueId() <= 0) {
+        // Mapillary doesn't give them an id of 0, and instead an id inside the tile. I have no clue why they don't make
+        // them match (the id inside the key list == the id of the object in the tile). Most ids are actually longs,
+        // but the id in the tile is usually not in the long range (AKA, < Integer.MAX_VALUE, more often < 100_000)
+        if (primitive.getUniqueId() <= Integer.MAX_VALUE) {
             final String str = getKeyValue(primitive, MapFeatureProperties.ID);
             if (str != null) {
                 primitive.setOsmId(Long.parseLong(str), 1);
