@@ -88,7 +88,6 @@ msgstr "Mapillary-Objekt löschen"
 msgid "Delete filter."
 msgstr "Filter löschen"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Zeige Aufnahmezeitpunkt des Bildes"
 
@@ -190,7 +189,6 @@ msgstr "Abmelden"
 msgid "Mapillary"
 msgstr "Mapillary"
 
-#. ImageInfos
 msgid "Mapillary Images"
 msgstr "Mapillary-Bilder"
 
@@ -303,7 +301,6 @@ msgstr "Stoppen"
 msgid "Tag conflict"
 msgstr "Tag Konflikt"
 
-#. column header: filter text
 msgctxt "filter"
 msgid "Text"
 msgstr "Text"
@@ -374,7 +371,6 @@ msgstr[1] "{0} Wege"
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
-#. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr ""
 "Ermöglicht dem Benutzer das Arbeiten mit von mapillary.com bereitgestellten "

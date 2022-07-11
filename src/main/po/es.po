@@ -25,7 +25,6 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
-#. filter mode: add
 msgctxt "filter"
 msgid "A"
 msgstr "A"
@@ -51,7 +50,6 @@ msgstr "Todo"
 msgid "Cancel"
 msgstr "Cancelar"
 
-#. i18n: Checkbox label in JOSM settings
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr ""
@@ -95,7 +93,6 @@ msgstr "¡No se pudo importar una imagen geoetiquetada a la capa Mapillary!"
 msgid "Could not open the URL {0} in a browser"
 msgstr "No se pudo abrir la URL {0} en un navegador"
 
-#. filter mode: remove
 msgctxt "filter"
 msgid "D"
 msgstr "D"
@@ -112,7 +109,6 @@ msgstr "Eliminar objeto Mapillary"
 msgid "Delete filter."
 msgstr "Borrar filtro."
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Mostrar la hora de cuando la fotografía fue tomada."
 
@@ -144,8 +140,6 @@ msgstr "Bajar"
 msgid "Downloading…"
 msgstr "Descargando... "
 
-#. translators notes must be in front
-#. column header: enable filter
 msgctxt "filter"
 msgid "E"
 msgstr "E"
@@ -156,7 +150,6 @@ msgstr "Editar"
 msgid "Edit filter."
 msgstr "Editar filtro."
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr ""
 "Permitir características beta experimentales (podría comportarse de forma "
@@ -189,7 +182,6 @@ msgstr "Exportar la secuencia seleccionada"
 msgid "Exporting Mapillary Images…"
 msgstr "Exportando imágenes de Mapillary..."
 
-#. filter mode: in selection
 msgctxt "filter"
 msgid "F"
 msgstr "F"
@@ -224,7 +216,6 @@ msgstr "Ceda el paso"
 msgid "Go forward"
 msgstr "Avanzar"
 
-#. column header: hide filter
 msgctxt "filter"
 msgid "H"
 msgstr "H"
@@ -235,7 +226,6 @@ msgstr "Ocultar filtro"
 msgid "Hiding filter"
 msgstr "Ocultar filtro"
 
-#. column header: inverted filter
 msgctxt "filter"
 msgid "I"
 msgstr "I"
@@ -288,7 +278,6 @@ msgstr "Acceso correcto, volver a JOSM."
 msgid "Logout"
 msgstr "Cerrar sesión"
 
-#. column header: filter mode
 msgctxt "filter"
 msgid "M"
 msgstr "M"
@@ -302,7 +291,6 @@ msgstr "Mapillary"
 msgid "Mapillary Expert Filter"
 msgstr "Filtro experto Mapillary"
 
-#. ImageInfos
 msgid "Mapillary Images"
 msgstr "Imágenes de Mapillary"
 
@@ -378,7 +366,6 @@ msgstr "No gire"
 msgid "Not older than: "
 msgstr "No más antiguas que: "
 
-#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "Número de imágenes a ser pre-cargadas (adelante y hacia atrás)"
 
@@ -419,8 +406,6 @@ msgstr "Filtros de imagen"
 msgid "Point Objects"
 msgstr "Objetos puntuales"
 
-#. translators notes must be in front
-#. filter mode: replace
 msgctxt "filter"
 msgid "R"
 msgstr "R"
@@ -514,7 +499,6 @@ msgstr "Stop"
 msgid "Tag conflict"
 msgstr "Conflicto de etiquetas"
 
-#. column header: filter text
 msgctxt "filter"
 msgid "Text"
 msgstr "Texto"
@@ -568,7 +552,6 @@ msgstr ""
 "Iniciar sesión después de que disminuya el límite de tarifa puede ayudar a prevenir esto en el futuro.\n"
 "{0}"
 
-#. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
@@ -618,7 +601,6 @@ msgstr "mostrado"
 msgid "unknown organization"
 msgstr "organización desconocida"
 
-#. i18n: {0} is the layer name, {1} the number of images in it
 msgid "{0} ({1} image)"
 msgid_plural "{0} ({1} images)"
 msgstr[0] "{0} ({1} imagen)"
@@ -668,6 +650,5 @@ msgstr[2] "{0} vías"
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
-#. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr "Permite al usuario trabajar con fotos hospedadas en mapillary.com"

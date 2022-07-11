@@ -22,7 +22,6 @@ msgstr ""
 "Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#. filter mode: add
 msgctxt "filter"
 msgid "A"
 msgstr "A"
@@ -43,7 +42,6 @@ msgstr "フィルターを追加。"
 msgid "Cancel"
 msgstr "キャンセル"
 
-#. i18n: Checkbox label in JOSM settings
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr "他の画像へボタンでジャンプしたときに、新しい画像は中央表示する。"
@@ -66,7 +64,6 @@ msgstr "Mapillaryレイヤに、ジオタグされた画像のインポートが
 msgid "Could not open the URL {0} in a browser"
 msgstr "URL {0} をブラウザで開けませんでした。"
 
-#. filter mode: remove
 msgctxt "filter"
 msgid "D"
 msgstr "D"
@@ -80,7 +77,6 @@ msgstr "削除"
 msgid "Delete filter."
 msgstr "フィルターを削除。"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "写真のとられた時刻を表示"
 
@@ -101,8 +97,6 @@ msgstr "ダウンロードした画像"
 msgid "Downloading…"
 msgstr "ダウンロード中..."
 
-#. translators notes must be in front
-#. column header: enable filter
 msgctxt "filter"
 msgid "E"
 msgstr "E"
@@ -113,7 +107,6 @@ msgstr "編集"
 msgid "Edit filter."
 msgstr "フィルターを編集。"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "実験的ベータ機能を有効化(不安定です)"
 
@@ -138,7 +131,6 @@ msgstr "選択したシーケンスをエクスポート"
 msgid "Exporting Mapillary Images…"
 msgstr "Mapillary画像のエクスポート中..."
 
-#. filter mode: in selection
 msgctxt "filter"
 msgid "F"
 msgstr "F"
@@ -161,7 +153,6 @@ msgstr "徐行"
 msgid "Go forward"
 msgstr "次にすすむ"
 
-#. column header: hide filter
 msgctxt "filter"
 msgid "H"
 msgstr "H"
@@ -172,7 +163,6 @@ msgstr "フィルターを非表示にする"
 msgid "Hiding filter"
 msgstr "フィルタを隠す"
 
-#. column header: inverted filter
 msgctxt "filter"
 msgid "I"
 msgstr "I"
@@ -210,7 +200,6 @@ msgstr "ログインに成功しました。JOSMにもどります。"
 msgid "Logout"
 msgstr "ログアウト"
 
-#. column header: filter mode
 msgctxt "filter"
 msgid "M"
 msgstr "M"
@@ -221,7 +210,6 @@ msgstr "一方通行(各種)"
 msgid "Mapillary"
 msgstr "Mapillary"
 
-#. ImageInfos
 msgid "Mapillary Images"
 msgstr "Mapillary 画像"
 
@@ -267,7 +255,6 @@ msgstr "転回禁止"
 msgid "Not older than: "
 msgstr "アップロード期間"
 
-#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "先行して取得する画像数(前向きと後ろ向き)"
 
@@ -283,8 +270,6 @@ msgstr "Mapillaryレイヤを開く"
 msgid "Pedestrian crossing"
 msgstr "横断歩道"
 
-#. translators notes must be in front
-#. filter mode: replace
 msgctxt "filter"
 msgid "R"
 msgstr "R"
@@ -320,7 +305,6 @@ msgstr "停止"
 msgid "Tag conflict"
 msgstr "タグの衝突"
 
-#. column header: filter text
 msgctxt "filter"
 msgid "Text"
 msgstr "テキスト"
@@ -346,7 +330,6 @@ msgstr "ブラウザで表示"
 msgid "Wait for full quality pictures"
 msgstr "フル品質の写真を待つ"
 
-#. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
@@ -376,7 +359,6 @@ msgstr "画像にはキーがない"
 msgid "sequence has no key"
 msgstr "シーケンスにキーがない"
 
-#. i18n: {0} is the layer name, {1} the number of images in it
 msgid "{0} ({1} image)"
 msgid_plural "{0} ({1} images)"
 msgstr[0] "{0} ({1} 画像)"
@@ -402,6 +384,5 @@ msgstr[0] " {1} から {2} までの画像 (ø {3})を含むシーケンス数 {
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
-#. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr "ユーザがmapillary.comで保持している写真で作業できるようにする"

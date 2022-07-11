@@ -21,7 +21,6 @@ msgstr ""
 "Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#. filter mode: add
 msgctxt "filter"
 msgid "A"
 msgstr "A"
@@ -51,7 +50,6 @@ msgstr "必須使用其中一個選填參數 ({0})"
 msgid "Cancel"
 msgstr "取消"
 
-#. i18n: Checkbox label in JOSM settings
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr "使用按鈕跳到其他影像時，置中新的影像"
@@ -99,7 +97,6 @@ msgstr "無法用瀏覽器打開網址 {0}"
 msgid "Could not refresh Mapillary token. HTTP Status Code {0}."
 msgstr "無法更新 Mapillary token，HTTP 狀態碼 {0}。"
 
-#. filter mode: remove
 msgctxt "filter"
 msgid "D"
 msgstr "D"
@@ -119,7 +116,6 @@ msgstr "刪除 Mapillary 物件"
 msgid "Delete filter."
 msgstr "刪除過濾條件。"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "顯示圖片拍攝時的小時時間"
 
@@ -145,8 +141,6 @@ msgstr "下"
 msgid "Downloading…"
 msgstr "正在下載..."
 
-#. translators notes must be in front
-#. column header: enable filter
 msgctxt "filter"
 msgid "E"
 msgstr "東"
@@ -157,7 +151,6 @@ msgstr "編輯"
 msgid "Edit filter."
 msgstr "編輯過濾條件。"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "啟用實驗性質的 beta 功能 (可能不穩定)"
 
@@ -188,7 +181,6 @@ msgstr "匯出選取片段"
 msgid "Exporting Mapillary Images…"
 msgstr "匯出 Mapillary 圖片..."
 
-#. filter mode: in selection
 msgctxt "filter"
 msgid "F"
 msgstr "F"
@@ -223,7 +215,6 @@ msgstr "禮讓路口"
 msgid "Go forward"
 msgstr "往前。"
 
-#. column header: hide filter
 msgctxt "filter"
 msgid "H"
 msgstr "H"
@@ -234,7 +225,6 @@ msgstr "隱藏過濾條件"
 msgid "Hiding filter"
 msgstr "正在隱藏過濾條件"
 
-#. column header: inverted filter
 msgctxt "filter"
 msgid "I"
 msgstr "I"
@@ -287,7 +277,6 @@ msgstr "登入成功，回去 JOSM。"
 msgid "Logout"
 msgstr "登出"
 
-#. column header: filter mode
 msgctxt "filter"
 msgid "M"
 msgstr "M"
@@ -301,7 +290,6 @@ msgstr "Mapillary"
 msgid "Mapillary Expert Filter"
 msgstr "Mapillary 輸出過濾器"
 
-#. ImageInfos
 msgid "Mapillary Images"
 msgstr "Mapillary影像"
 
@@ -389,7 +377,6 @@ msgstr "非全景影像"
 msgid "Not older than: "
 msgstr "不早於： "
 
-#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "要預載的圖片數目 (向前和向後)"
 
@@ -442,8 +429,6 @@ msgstr "圖片篩選器"
 msgid "Point Objects"
 msgstr "點物件"
 
-#. translators notes must be in front
-#. filter mode: replace
 msgctxt "filter"
 msgid "R"
 msgstr "R"
@@ -539,7 +524,6 @@ msgstr "禁止通行"
 msgid "Tag conflict"
 msgstr "標籤衝突"
 
-#. column header: filter text
 msgctxt "filter"
 msgid "Text"
 msgstr "文字"
@@ -602,7 +586,6 @@ msgstr ""
 "在速度限制消除之後，未來也許能夠防範再次發生類型事情。\n"
 "{0}"
 
-#. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
@@ -650,7 +633,6 @@ msgstr "顯示"
 msgid "unknown organization"
 msgstr "未知的組織"
 
-#. i18n: {0} is the layer name, {1} the number of images in it
 msgid "{0} ({1} image)"
 msgid_plural "{0} ({1} images)"
 msgstr[0] "{0} ({1} 圖片)"
@@ -688,6 +670,5 @@ msgstr[0] "{0} 路徑"
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
-#. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr "Mapillary外掛"

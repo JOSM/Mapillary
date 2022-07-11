@@ -25,7 +25,6 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#. filter mode: add
 msgctxt "filter"
 msgid "A"
 msgstr "Ö"
@@ -47,7 +46,6 @@ msgstr "Új szűrő készítése"
 msgid "Cancel"
 msgstr "Mégse"
 
-#. i18n: Checkbox label in JOSM settings
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr "Új képre való váltáskor az új kép középre igazítása"
@@ -85,7 +83,6 @@ msgstr "Nem sikerült a geokódolt kép importlása a Mapillary rétegre!"
 msgid "Could not open the URL {0} in a browser"
 msgstr "A(z) {0} URL nem nyitható meg böngészőben"
 
-#. filter mode: remove
 msgctxt "filter"
 msgid "D"
 msgstr "T"
@@ -102,7 +99,6 @@ msgstr "Mapillary-objektum törlése"
 msgid "Delete filter."
 msgstr "Szűrő törlése"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Kép készítési idejének megjelenítése"
 
@@ -138,8 +134,6 @@ msgstr "Letöltött képek"
 msgid "Downloading…"
 msgstr "Letöltés…"
 
-#. translators notes must be in front
-#. column header: enable filter
 msgctxt "filter"
 msgid "E"
 msgstr "K"
@@ -150,7 +144,6 @@ msgstr "Szerkesztés"
 msgid "Edit filter."
 msgstr "Szűrő szerkesztése"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "Kísérleti béta funkciók engedélyezése (lehet hogy nem stabilak)"
 
@@ -181,7 +174,6 @@ msgstr "Kijelölt sorozat exportálása"
 msgid "Exporting Mapillary Images…"
 msgstr "Mapillary képek exportálása…"
 
-#. filter mode: in selection
 msgctxt "filter"
 msgid "F"
 msgstr "K"
@@ -207,7 +199,6 @@ msgstr "Elsőbbségadás kötelező"
 msgid "Go forward"
 msgstr "Előre"
 
-#. column header: hide filter
 msgctxt "filter"
 msgid "H"
 msgstr "R"
@@ -218,7 +209,6 @@ msgstr "Szűrő elrejt"
 msgid "Hiding filter"
 msgstr "Elrejtő szűrő"
 
-#. column header: inverted filter
 msgctxt "filter"
 msgid "I"
 msgstr "I"
@@ -256,7 +246,6 @@ msgstr "Bejelentkezés sikeres, vissza a JOSM-hez."
 msgid "Logout"
 msgstr "Kijelentkezés"
 
-#. column header: filter mode
 msgctxt "filter"
 msgid "M"
 msgstr "M"
@@ -267,7 +256,6 @@ msgstr "Kötelező haladási irány"
 msgid "Mapillary"
 msgstr "Mapillary"
 
-#. ImageInfos
 msgid "Mapillary Images"
 msgstr "Mapillary képek"
 
@@ -313,7 +301,6 @@ msgstr "Bekanyarodni tilos"
 msgid "Not older than: "
 msgstr "Nem régebbi mint: "
 
-#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "Előtöltendő képek száma (előre és hátra)"
 
@@ -329,8 +316,6 @@ msgstr "Mapillary réteg megnyitása"
 msgid "Pedestrian crossing"
 msgstr "Gyalogosátkelő"
 
-#. translators notes must be in front
-#. filter mode: replace
 msgctxt "filter"
 msgid "R"
 msgstr "Cs"
@@ -369,7 +354,6 @@ msgstr "Stoptábla"
 msgid "Tag conflict"
 msgstr "Címkeütközés"
 
-#. column header: filter text
 msgctxt "filter"
 msgid "Text"
 msgstr "Szöveg"
@@ -398,7 +382,6 @@ msgstr "Megtekintés böngészőben"
 msgid "Wait for full quality pictures"
 msgstr "Várj a teljes minőségű képekre"
 
-#. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
@@ -433,7 +416,6 @@ msgstr "a sorozatnak nincs kulcsa"
 msgid "shown"
 msgstr "megjelenítve"
 
-#. i18n: {0} is the layer name, {1} the number of images in it
 msgid "{0} ({1} image)"
 msgid_plural "{0} ({1} images)"
 msgstr[0] "{0} ({1} kép)"
@@ -477,6 +459,5 @@ msgstr[1] "{0} vonal"
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
-#. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr "Lehetővé teszi a mapillary.com fotóinak használatát"

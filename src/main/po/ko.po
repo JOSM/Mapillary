@@ -20,7 +20,6 @@ msgstr ""
 "Language: ko\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#. filter mode: add
 msgctxt "filter"
 msgid "A"
 msgstr "A"
@@ -50,7 +49,6 @@ msgstr "최소한 ({0}) 을 옵션으로 사용해야합니다."
 msgid "Cancel"
 msgstr "취소"
 
-#. i18n: Checkbox label in JOSM settings
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr "다른 이미지로 넘어가는 버튼을 사용 할 때 새로운 이미지로 센터로 보여줍니다."
@@ -95,7 +93,6 @@ msgstr "URL {0} 을 브라우저에 열수 없습니다."
 msgid "Could not refresh Mapillary token. HTTP Status Code {0}."
 msgstr "Mapillary 토큰을 새로 고침 할 수 없습니다. HTTP 상태 코드 {0}"
 
-#. filter mode: remove
 msgctxt "filter"
 msgid "D"
 msgstr "D"
@@ -112,7 +109,6 @@ msgstr "Mapillary 개체 삭제"
 msgid "Delete filter."
 msgstr "필터를 삭제합니다."
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "사진을 찍은 시간 표시 합니다."
 
@@ -138,8 +134,6 @@ msgstr "아래"
 msgid "Downloading…"
 msgstr "다운로딩 중"
 
-#. translators notes must be in front
-#. column header: enable filter
 msgctxt "filter"
 msgid "E"
 msgstr "동"
@@ -150,7 +144,6 @@ msgstr "편집"
 msgid "Edit filter."
 msgstr "필터를 편집합니다."
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "실험용 베타 기능 사용(안정적이지 않은)"
 
@@ -181,7 +174,6 @@ msgstr "선택된 순서를 내보냅니다."
 msgid "Exporting Mapillary Images…"
 msgstr "Mapillary 이미지 추출 하는 중입니다."
 
-#. filter mode: in selection
 msgctxt "filter"
 msgid "F"
 msgstr "F"
@@ -216,7 +208,6 @@ msgstr "방법을 제공"
 msgid "Go forward"
 msgstr "앞으로 전진"
 
-#. column header: hide filter
 msgctxt "filter"
 msgid "H"
 msgstr "H"
@@ -227,7 +218,6 @@ msgstr "숨긴 필터"
 msgid "Hiding filter"
 msgstr "숨겨져 있는 필터"
 
-#. column header: inverted filter
 msgctxt "filter"
 msgid "I"
 msgstr "I"
@@ -280,7 +270,6 @@ msgstr "로그인 성공적입니다, JOSM으로 돌아갑니다."
 msgid "Logout"
 msgstr "로그아웃"
 
-#. column header: filter mode
 msgctxt "filter"
 msgid "M"
 msgstr "M"
@@ -294,7 +283,6 @@ msgstr "Mapillary"
 msgid "Mapillary Expert Filter"
 msgstr "Mapillary 전문 필터"
 
-#. ImageInfos
 msgid "Mapillary Images"
 msgstr "Mapillary 이미지들"
 
@@ -376,7 +364,6 @@ msgstr "턴 금지"
 msgid "Not older than: "
 msgstr "오래되지 않은:"
 
-#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "미리 가져올 이미지 수(앞과 뒤로)"
 
@@ -426,8 +413,6 @@ msgstr "그림 필터들"
 msgid "Point Objects"
 msgstr "주요 객체들"
 
-#. translators notes must be in front
-#. filter mode: replace
 msgctxt "filter"
 msgid "R"
 msgstr "R"
@@ -520,7 +505,6 @@ msgstr "멈춤"
 msgid "Tag conflict"
 msgstr "태그 충돌"
 
-#. column header: filter text
 msgctxt "filter"
 msgid "Text"
 msgstr "텍스트"
@@ -572,7 +556,6 @@ msgstr ""
 "제한이 완화 된 후 로그인 하는 것이 미래에 발생하는 것을 막아줄 것입니다.\n"
 "{0}"
 
-#. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
@@ -620,7 +603,6 @@ msgstr "표시"
 msgid "unknown organization"
 msgstr "안알려진 조직"
 
-#. i18n: {0} is the layer name, {1} the number of images in it
 msgid "{0} ({1} image)"
 msgid_plural "{0} ({1} images)"
 msgstr[0] "{0} ({1} 이미지)"
@@ -658,6 +640,5 @@ msgstr[0] "{0} 방법들"
 msgid "{0}: {1}"
 msgstr "{0} : {1}"
 
-#. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr "mapillary.com 에서 작업이 된 이미지들을 사용자들이 사용하는것을 허락합니다."

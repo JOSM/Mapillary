@@ -19,7 +19,6 @@ msgstr ""
 "Language: sr@latin\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#. filter mode: add
 msgctxt "filter"
 msgid "A"
 msgstr "A"
@@ -49,7 +48,6 @@ msgstr "Potrebno je da se koristi barem jedan neobavezan argument ({0})"
 msgid "Cancel"
 msgstr "Otkaži"
 
-#. i18n: Checkbox label in JOSM settings
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr ""
@@ -97,7 +95,6 @@ msgstr "Nije moguće otvoriti URL adresu {0} u pregledaču"
 msgid "Could not refresh Mapillary token. HTTP Status Code {0}."
 msgstr "Nije moguće osvežiti Mapillary token. Status HTTP kôda {0}."
 
-#. filter mode: remove
 msgctxt "filter"
 msgid "D"
 msgstr "D"
@@ -114,7 +111,6 @@ msgstr "Izbriši Mapillary objekat"
 msgid "Delete filter."
 msgstr "Ukloni filter."
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Prikaži vreme kada je fotografija napravljena"
 
@@ -147,8 +143,6 @@ msgstr "Dole"
 msgid "Downloading…"
 msgstr "Preuzimanje…"
 
-#. translators notes must be in front
-#. column header: enable filter
 msgctxt "filter"
 msgid "E"
 msgstr "E"
@@ -159,7 +153,6 @@ msgstr "Uredi"
 msgid "Edit filter."
 msgstr "Uredi filter."
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "Omogući eksperimentalne beta funkcije (može biti nestabilno)"
 
@@ -190,7 +183,6 @@ msgstr "Izvezite obeleženu sekvencu"
 msgid "Exporting Mapillary Images…"
 msgstr "Izvoz Mapillary fotografija…"
 
-#. filter mode: in selection
 msgctxt "filter"
 msgid "F"
 msgstr "F"
@@ -225,7 +217,6 @@ msgstr "Ukrštanje sa putem sa prvenstvom prolaza"
 msgid "Go forward"
 msgstr "Idi napred"
 
-#. column header: hide filter
 msgctxt "filter"
 msgid "H"
 msgstr "H"
@@ -236,7 +227,6 @@ msgstr "Sakrij filter"
 msgid "Hiding filter"
 msgstr "Sakrivanje filtera"
 
-#. column header: inverted filter
 msgctxt "filter"
 msgid "I"
 msgstr "I"
@@ -289,7 +279,6 @@ msgstr "Uspešna prijava, vratite se u JOSM."
 msgid "Logout"
 msgstr "Odjava"
 
-#. column header: filter mode
 msgctxt "filter"
 msgid "M"
 msgstr "M"
@@ -303,7 +292,6 @@ msgstr "Mapillary"
 msgid "Mapillary Expert Filter"
 msgstr "Mapillary filter za stručnjake"
 
-#. ImageInfos
 msgid "Mapillary Images"
 msgstr "Mapillary fotografije"
 
@@ -387,7 +375,6 @@ msgstr "Ne-panoramske"
 msgid "Not older than: "
 msgstr "Ne starije od: "
 
-#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "Broj fotografija koje će se unapred učitati (koje slede i prethode)"
 
@@ -445,8 +432,6 @@ msgstr "Filteri fotografija"
 msgid "Point Objects"
 msgstr "Tačke objekata"
 
-#. translators notes must be in front
-#. filter mode: replace
 msgctxt "filter"
 msgid "R"
 msgstr "R"
@@ -545,7 +530,6 @@ msgstr "Znak stop"
 msgid "Tag conflict"
 msgstr "Konflikt u atributima"
 
-#. column header: filter text
 msgctxt "filter"
 msgid "Text"
 msgstr "Tekst"
@@ -598,7 +582,6 @@ msgstr ""
 "Prijavljivanjem nakon što odnos ograničenja opadne može da spreči ovo da se ponovi u budućnosti.\n"
 "{0}"
 
-#. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
@@ -649,7 +632,6 @@ msgstr "prikazano"
 msgid "unknown organization"
 msgstr "nepoznata organizacija"
 
-#. i18n: {0} is the layer name, {1} the number of images in it
 msgid "{0} ({1} image)"
 msgid_plural "{0} ({1} images)"
 msgstr[0] "{0} ({1} fotografija)"
@@ -699,7 +681,6 @@ msgstr[2] "{0} linija"
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
-#. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr ""
 "Pruža korisniku mogućnost da radi sa fotografijama koje se nalaze na "
