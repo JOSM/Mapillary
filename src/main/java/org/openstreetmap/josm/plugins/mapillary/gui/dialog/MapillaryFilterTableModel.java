@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary.gui.dialog;
 import static org.openstreetmap.josm.tools.I18n.trc;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -133,10 +134,11 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
     }
 
     private void cleanup() {
-        List<Filter> toRemove = getFilters().parallelStream().filter(f -> f.text.isEmpty())
-            .collect(Collectors.toList());
-        for (Filter f : toRemove) {
-            removeFilter(getFilters().indexOf(f));
+        List<Filter> originalFilters = getFilters();
+        List<Integer> toRemove = getFilters().parallelStream().filter(f -> f.text.isEmpty())
+            .map(originalFilters::indexOf).sorted(Collections.reverseOrder()).collect(Collectors.toList());
+        for (int i : toRemove) {
+            removeFilter(i);
         }
     }
 
