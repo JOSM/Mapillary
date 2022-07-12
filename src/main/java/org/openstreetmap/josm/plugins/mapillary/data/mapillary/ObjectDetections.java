@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -2039,7 +2040,7 @@ public enum ObjectDetections {
         if (!detection.startsWith("void--")) {
             Logging.error("Unknown detection \"" + detection + "\"");
         }
-        String toFind = detection.replaceAll("--g[0-9]+$", "");
+        String toFind = detection.replaceAll("--g\\d+$", "");
         return new Pair<>(false, Stream.of(ObjectDetections.values()).filter(d -> d.getKey().contains(toFind))
             .findFirst().orElse(ObjectDetections.UNKNOWN));
     }
@@ -2065,11 +2066,25 @@ public enum ObjectDetections {
         return this.key;
     }
 
-    public TagMap getOsmKeys() {
-        TagMap tagMap = new TagMap();
+    /**
+     * Check if this detection has OSM keys
+     *
+     * @return {@code true} if there is an OSM equivalent in presets
+     */
+    public boolean hasOsmKeys() {
+        return this.osmKey != null;
+    }
+
+    /**
+     * Get the tag map
+     *
+     * @return
+     */
+    public Map<String, String> getOsmKeys() {
         if (this.osmKey == null) {
-            return tagMap;
+            return Collections.emptyMap();
         }
+        TagMap tagMap = new TagMap();
         for (String tag : this.osmKey) {
             Tag parsedTag = Tag.ofString(tag);
             tagMap.put(parsedTag.getKey(), parsedTag.getValue());

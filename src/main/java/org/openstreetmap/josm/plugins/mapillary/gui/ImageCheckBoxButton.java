@@ -51,7 +51,7 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
         image.setIcon(icon);
         add(image, GBC.std().anchor(GridBagConstraints.WEST));
         String name = splitName[splitName.length - 1].replace(".svg", "");
-        if (name.matches("g[0-9]+")) {
+        if (name.matches("g\\d+")) {
             name = splitName[splitName.length - 2];
         }
 
@@ -99,10 +99,11 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
             filter.enable = true;
         } else if (!jcheckbox.isSelected()) {
             filter.enable = false;
-            MapillaryExpertFilterDialog.getInstance().getFilterModel().removeFilter(index);
         }
         if (index < 0 && filter.enable) {
             MapillaryExpertFilterDialog.getInstance().getFilterModel().addFilter(filter);
+        } else if (index >= 0 && !filter.enable) {
+            MapillaryExpertFilterDialog.getInstance().getFilterModel().removeFilter(index);
         }
     }
 
