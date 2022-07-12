@@ -1616,7 +1616,10 @@ public enum ObjectDetections {
     MARKING__DISCRETE__OTHER_MARKING(DetectionType.POINT, DetectionType.SEGMENTATION),
     MARKING__DISCRETE__STOP_LINE(DetectionType.POINT, DetectionType.SEGMENTATION),
     MARKING__DISCRETE__SYMBOL__BICYCLE(DetectionType.POINT),
+    MARKING__DISCRETE__SYMBOL__WHEELCHAIR(DetectionType.POINT),
     MARKING__DISCRETE__TEXT(DetectionType.POINT, DetectionType.SEGMENTATION),
+    MARKING__DISCRETE__TEXT__STOP(DetectionType.POINT, DetectionType.SEGMENTATION),
+    MARKING__DISCRETE__TEXT__OTHER(DetectionType.POINT, DetectionType.SEGMENTATION),
     OBJECT__BANNER(DetectionType.POINT, DetectionType.SEGMENTATION),
     OBJECT__BENCH("amenity=bench", TaggingPresetType.NODE,
         new DetectionType[] { DetectionType.POINT, DetectionType.SEGMENTATION }, DataType.PRODUCTION),
@@ -1637,6 +1640,7 @@ public enum ObjectDetections {
     OBJECT__PARKING_METER(DetectionType.POINT, DetectionType.SEGMENTATION),
     OBJECT__PHONE_BOOTH(DetectionType.POINT, DetectionType.SEGMENTATION),
     OBJECT__SIGN__ADVERTISEMENT(DetectionType.POINT),
+    OBJECT__SIGN__BACK(DetectionType.POINT),
     OBJECT__SIGN__INFORMATION(DetectionType.POINT),
     OBJECT__SIGN__STORE(DetectionType.POINT),
     OBJECT__SIGN__OTHER(DetectionType.POINT),
@@ -1648,7 +1652,8 @@ public enum ObjectDetections {
     OBJECT__SUPPORT__UTILITY_POLE("man_made=utility_pole", TaggingPresetType.NODE,
         new DetectionType[] { DetectionType.POINT, DetectionType.SEGMENTATION }, DataType.PREVIEW),
     OBJECT__TRAFFIC_CONE(DetectionType.POINT, DetectionType.SEGMENTATION),
-    OBJECT__TRAFFIC_LIGHT__CYCLISTS(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
+    OBJECT__TRAFFIC_LIGHT__CYCLISTS(DetectionType.POINT, DetectionType.SEGMENTATION),
+    OBJECT__TRAFFIC_LIGHT__CYCLISTS_FRONT(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
         new DetectionType[] { DetectionType.POINT, DetectionType.SEGMENTATION }, DataType.PRODUCTION),
 
     OBJECT__TRAFFIC_LIGHT__GENERAL_HORIZONTAL(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
@@ -1659,8 +1664,12 @@ public enum ObjectDetections {
 
     OBJECT__TRAFFIC_LIGHT__GENERAL_UPRIGHT(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
         new DetectionType[] { DetectionType.POINT }, DataType.PRODUCTION),
+    OBJECT__TRAFFIC_LIGHT__PEDESTRIANS_BACK(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
+        new DetectionType[] {DetectionType.POINT}, DataType.PRODUCTION),
     OBJECT__TRAFFIC_LIGHT__PEDESTRIANS_FRONT(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
             new DetectionType[] {DetectionType.POINT}, DataType.PRODUCTION),
+    OBJECT__TRAFFIC_LIGHT__PEDESTRIANS_SIDE(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
+        new DetectionType[] {DetectionType.POINT}, DataType.PRODUCTION),
     OBJECT__TRAFFIC_LIGHT__OTHER(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
         new DetectionType[] { DetectionType.POINT }, DataType.PRODUCTION),
 
@@ -1722,6 +1731,9 @@ public enum ObjectDetections {
         DetectionType.SEGMENTATION, DataType.PRODUCTION),
 
     OBJECT__TRAFFIC_LIGHT__GENERAL_HORIZONTAL_SIDE(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
+        DetectionType.SEGMENTATION, DataType.PRODUCTION),
+
+    OBJECT__TRAFFIC_LIGHT__GENERAL_SINGLE_FRONT(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
         DetectionType.SEGMENTATION, DataType.PRODUCTION),
 
     OBJECT__TRAFFIC_LIGHT__GENERAL_UPRIGHT_BACK(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
