@@ -81,6 +81,7 @@ import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelecti
 import org.openstreetmap.josm.plugins.mapillary.data.osm.event.FilterEventListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.dialog.TrafficSignFilter;
 import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddEventSource;
 import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddListener;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
@@ -155,6 +156,10 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
         primitives.forEach(primitive -> tile.getData().getPrimitivesMap().put(primitive.getPrimitiveId(), primitive));
         super.finishedLoading(tile);
         this.listeners.fireEvent(listener -> listener.tileAdded(tile));
+        // Force a refresh of the data for filtering on OSM duplicates
+        if (Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get())) {
+            TrafficSignFilter.updateNearbyOsmKey(tile.getData().getAllPrimitives());
+        }
         // Run filters on tile updates.
         MapillaryExpertFilterDialog.getInstance().getFilterModel().executeFilters(tile.getData().getAllPrimitives());
     }

@@ -37,7 +37,7 @@ import javax.swing.event.ChangeListener;
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
 import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.Filter;
-import org.openstreetmap.josm.data.osm.TagMap;
+import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.preferences.AbstractProperty.ValueChangeEvent;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.gui.MainApplication;
@@ -338,36 +338,8 @@ public final class TrafficSignFilter extends JPanel
         int index = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().indexOf(filter);
 
         if (hideObjects) {
-            final Collection<ObjectDetections> osmEquivalentPossible = Stream.of(ObjectDetections.values())
-                .filter(obj -> !obj.getOsmKeys().isEmpty()).collect(Collectors.toList());
-            final double distance = Config.getPref().getDouble("mapillary.nearby_osm_objects", 15.0); // meters
-            MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).forEach(layer -> {
-                VectorDataSet dataSet = layer.getData();
-                boolean locked = dataSet.isLocked();
-                try {
-                    dataSet.unlock();
-                    dataSet.allNonDeletedPrimitives().stream()
-                        .filter(p -> !p.hasKey(NEARBY_KEY)
-                            && osmEquivalentPossible.contains(ObjectDetections.valueOfMapillaryValue(p.get("value"))))
-                        .forEach(p -> {
-                            TagMap tags = ObjectDetections.valueOfMapillaryValue(p.get("value")).getOsmKeys();
-                            BBox searchBBox = new BBox(p.getBBox());
-                            searchBBox.addPrimitive(p, distance / 111000); // convert meters to degrees (roughly)
-                            String nearby = MainApplication.getLayerManager().getLayersOfType(OsmDataLayer.class)
-                                .stream().map(OsmDataLayer::getDataSet)
-                                .flatMap(d -> d.searchPrimitives(searchBBox).stream()).filter(pr -> !pr.isDeleted())
-                                .filter(pr -> tagMapIsSubset(pr.getKeys(), tags))
-                                .map(o -> o.getOsmPrimitiveId().toString()).collect(Collectors.joining(";"));
-                            if (!Utils.isBlank(nearby)) {
-                                p.put(NEARBY_KEY, nearby);
-                            }
-                        });
-                } finally {
-                    if (locked) {
-                        dataSet.lock();
-                    }
-                }
-            });
+            MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class)
+                .forEach(TrafficSignFilter::updateNearbyOsmKey);
             filter.enable = true;
             if (index < 0) {
                 MapillaryExpertFilterDialog.getInstance().getFilterModel().addFilter(filter);
@@ -378,6 +350,37 @@ public final class TrafficSignFilter extends JPanel
         }
     }
 
+    private static void updateNearbyOsmKey(PointObjectLayer layer) {
+        VectorDataSet dataSet = layer.getData();
+        boolean locked = dataSet.isLocked();
+        try {
+            dataSet.unlock();
+            updateNearbyOsmKey(dataSet.allNonDeletedPrimitives());
+        } finally {
+            if (locked) {
+                dataSet.lock();
+            }
+        }
+    }
+
+    public static void updateNearbyOsmKey(Collection<? extends IPrimitive> primitives) {
+        final double distance = Config.getPref().getDouble("mapillary.nearby_osm_objects", 15.0); // meters
+        primitives.stream()
+            .filter(p -> !p.hasKey(NEARBY_KEY) && ObjectDetections.valueOfMapillaryValue(p.get("value")).hasOsmKeys())
+            .forEach(p -> {
+                Map<String, String> tags = ObjectDetections.valueOfMapillaryValue(p.get("value")).getOsmKeys();
+                BBox searchBBox = new BBox(p.getBBox());
+                searchBBox.addPrimitive(p, distance / 111_000); // convert meters to degrees (roughly)
+                String nearby = MainApplication.getLayerManager().getLayersOfType(OsmDataLayer.class).stream()
+                    .map(OsmDataLayer::getDataSet).flatMap(d -> d.searchPrimitives(searchBBox).stream())
+                    .filter(pr -> !pr.isDeleted()).filter(pr -> tagMapIsSubset(pr.getKeys(), tags))
+                    .map(o -> o.getOsmPrimitiveId().toString()).collect(Collectors.joining(";"));
+                if (!Utils.isBlank(nearby)) {
+                    p.put(NEARBY_KEY, nearby);
+                }
+            });
+    }
+
     /**
      * Check if a TagMap is a subset of another tagmap
      *
@@ -385,7 +388,7 @@ public final class TrafficSignFilter extends JPanel
      * @param subSet The TagMap that should be contained by the other TagMap
      * @return {@code true} if the subSet TagMap is actually a subset of the superSet TagMap.
      */
-    private static boolean tagMapIsSubset(TagMap superSet, TagMap subSet) {
+    private static boolean tagMapIsSubset(Map<String, String> superSet, Map<String, String> subSet) {
         return subSet.entrySet().stream()
             .allMatch(t -> superSet.containsKey(t.getKey()) && superSet.get(t.getKey()).equals(t.getValue()));
     }
@@ -487,6 +490,11 @@ public final class TrafficSignFilter extends JPanel
         GuiHelper.runInEDT(this::invalidate);
     }
 
+    /**
+     * Get the {@link ImageIcon}s for the panel
+     *
+     * @param panel The panel to add the {@link ImageIcon} to
+     */
     public void getIcons(JComponent panel) {
         if (SwingUtilities.isEventDispatchThread()) {
             MainApplication.worker.execute(() -> getIcons(panel));
