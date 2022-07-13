@@ -77,6 +77,7 @@ import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.SmartEditAddAction;
+import org.openstreetmap.josm.plugins.mapillary.actions.SmartEditRemoveAction;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
 import org.openstreetmap.josm.plugins.mapillary.data.osm.event.FilterEventListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
@@ -110,7 +111,7 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
     private final ListenerList<TileAddListener<MVTTile>> listeners = ListenerList.create();
 
     private static synchronized void getMapCSSStyle() {
-        List<MapCSSStyleSource> styles = MapPaintStyles.getStyles().getStyleSources().parallelStream()
+        List<MapCSSStyleSource> styles = MapPaintStyles.getStyles().getStyleSources().stream()
             .filter(MapCSSStyleSource.class::isInstance).map(MapCSSStyleSource.class::cast)
             .filter(s -> PAINT_STYLE_SOURCE.equals(s.url)).collect(Collectors.toList());
         mapcss = styles.isEmpty() ? new MapCSSStyleSource(PAINT_STYLE_SOURCE, "Mapillary", "Mapillary Point Objects")
@@ -201,7 +202,7 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
         MainApplication.getMap().conflictDialog.paintConflicts(g, mv);
         if (slowOperations) {
             // TODO is the box the same thing?
-            List<IPrimitive> selectedInView = this.getData().getSelected().parallelStream().filter(p -> {
+            List<VectorPrimitive> selectedInView = this.getData().getSelected().stream().filter(p -> {
                 Point point = mv.getPoint(p.getBBox().getCenter());
                 return mv.contains(point);
             }).collect(Collectors.toList());
@@ -233,7 +234,7 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
         }
     }
 
-    private void paintAdditionalPanel(IPrimitive mapillaryObject, final MapView mv) {
+    private void paintAdditionalPanel(VectorPrimitive mapillaryObject, final MapView mv) {
         if (!(mapillaryObject instanceof INode)) {
             Logging.error("Mapillary Additional actions does not support {0}", mapillaryObject.getType());
             return;
@@ -259,9 +260,13 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
 
         if (displayedPanel == null) {
             final SmartEditAddAction addAction = new SmartEditAddAction(this, mapillaryObject);
+            final SmartEditRemoveAction removeAction = new SmartEditRemoveAction(this, mapillaryObject);
             final JButton addButton = new JButton(tr("Add"));
+            final JButton removeButton = new JButton(tr("Remove"));
+            removeButton.setToolTipText(removeAction.getToolTip());
             addButton.setAction(addAction);
-            displayedPanel = new AdditionalActionPanel(addButton);
+            removeButton.setAction(removeAction);
+            displayedPanel = new AdditionalActionPanel(addButton, removeButton);
             pTooltip = fixPanelSizeAndLocation(mv, displayedPanel, xl, xr, yt, yb);
             displayedWindow.setAutoRequestFocus(false);
             displayedWindow.add(displayedPanel);
@@ -539,12 +544,12 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
     private void selectedMapFeatureChanged(
         SelectionChangeEvent<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> event) {
         Collection<VectorPrimitive> selection = event.getSelection();
-        VectorPrimitive prim = selection.parallelStream()
+        VectorPrimitive prim = selection.stream()
             .filter(p -> !p.isDeleted() && MapillaryMapFeatureUtils.getImageIds(p).length != 0).findFirst()
             .orElse(null);
-        this.displayedWindows.entrySet().parallelStream().filter(e -> !selection.contains(e.getKey()))
+        this.displayedWindows.entrySet().stream().filter(e -> !selection.contains(e.getKey()))
             .forEach(e -> realHideWindow(e.getValue()));
-        Map<IPrimitive, JWindow> temporaryWindows = this.displayedWindows.entrySet().parallelStream()
+        Map<IPrimitive, JWindow> temporaryWindows = this.displayedWindows.entrySet().stream()
             .filter(e -> selection.contains(e.getKey()))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         this.displayedWindows.clear();
@@ -579,7 +584,7 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
             .map(VectorNode.class::cast).findFirst().orElse(null);
         if (newImage != null && !ImageDetection.getDetections(newImage.getId()).isEmpty()) {
             final long key = newImage.getId();
-            final Collection<IPrimitive> nodes = ImageDetection.getDetections(key).parallelStream()
+            final Collection<IPrimitive> nodes = ImageDetection.getDetections(key).stream()
                 .map(detection -> data.getPrimitiveById(detection.getKey(), OsmPrimitiveType.NODE))
                 .collect(Collectors.toList());
 
