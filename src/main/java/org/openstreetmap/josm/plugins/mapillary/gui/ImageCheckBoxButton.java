@@ -5,7 +5,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.List;
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.stream.Stream;
@@ -19,11 +19,9 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
 import org.openstreetmap.josm.data.osm.Filter;
-import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.GBC;
 
@@ -191,12 +189,15 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
     /**
      * Check if the button is relevant
      *
+     * @param detections The detections to filter on
      * @return {@code true} if a point object layer has it. Or if there are no point object layers.
      */
-    public boolean isRelevant() {
-        List<PointObjectLayer> layers = MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class);
-        return layers.isEmpty()
-            || layers.parallelStream().map(PointObjectLayer::getData).flatMap(ds -> ds.allPrimitives().parallelStream())
-                .filter(p -> p.hasKey("value")).map(p -> p.get("value")).anyMatch(p -> p.contains(detection));
+    public boolean isRelevant(Collection<String> detections) {
+        return detections.contains(this.detection) || detections.stream().anyMatch(det -> det.contains(detection));
+    }
+
+    @Override
+    public String toString() {
+        return this.detection;
     }
 }

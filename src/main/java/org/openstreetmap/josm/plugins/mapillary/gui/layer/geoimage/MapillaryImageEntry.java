@@ -50,6 +50,7 @@ import org.openstreetmap.josm.data.coor.ILatLon;
 import org.openstreetmap.josm.data.imagery.street_level.IImageEntry;
 import org.openstreetmap.josm.data.imagery.street_level.Projections;
 import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.preferences.AbstractProperty;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.gui.MainApplication;
@@ -64,7 +65,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
@@ -344,7 +344,7 @@ public class MapillaryImageEntry
             if (MapillaryUtils.checkIfDetectionIsFilteredBasic(detectionLayers, imageDetection)
                 || (ImageMode.getMode() == ImageMode.SMART_EDIT && detectionLayers.stream()
                     .map(PointObjectLayer::getData).map(VectorDataSet::getSelected).flatMap(Collection::stream)
-                    .map(MapillaryMapFeatureUtils::getId).anyMatch(imageDetection.getKey()::equals))) {
+                    .map(IPrimitive::getId).anyMatch(imageDetection.getKey()::equals))) {
                 continue;
             }
             final Color color = imageDetection.getColor();

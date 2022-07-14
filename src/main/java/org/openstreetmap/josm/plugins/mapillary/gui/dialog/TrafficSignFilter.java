@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -55,6 +56,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.DeveloperToggleAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.ImageCheckBoxButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddListener;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.spi.preferences.Config;
@@ -214,7 +216,12 @@ public final class TrafficSignFilter extends JPanel
         }
         long visible;
         synchronized (this.buttons) {
-            visible = this.buttons.parallelStream().filter(b -> checkRelevant(b, this.filterField.getText())).count();
+            final Collection<String> detections = MainApplication.getLayerManager()
+                .getLayersOfType(PointObjectLayer.class).stream().map(PointObjectLayer::getData)
+                .flatMap(ds -> ds.allPrimitives().stream()).map(MapillaryMapFeatureUtils::getValue)
+                .filter(Objects::nonNull).collect(Collectors.toSet());
+            visible = this.buttons.stream().filter(b -> checkRelevant(b, this.filterField.getText(), detections))
+                .count();
         }
         while ((long) detectionPage * showMaxNumberModel.getNumber().intValue() > visible) {
             detectionPage--;
@@ -231,14 +238,17 @@ public final class TrafficSignFilter extends JPanel
         long notSelected;
         long selected;
         synchronized (this.buttons) {
-            this.buttons.parallelStream().forEach(i -> SwingUtilities.invokeLater(() -> i.setVisible(false)));
-            this.buttons.stream().filter(i -> checkRelevant(i, this.filterField.getText()))
+            this.buttons.forEach(i -> SwingUtilities.invokeLater(() -> i.setVisible(false)));
+            final Collection<String> detections = MainApplication.getLayerManager()
+                .getLayersOfType(PointObjectLayer.class).stream().map(PointObjectLayer::getData)
+                .flatMap(ds -> ds.allPrimitives().stream()).map(MapillaryMapFeatureUtils::getValue)
+                .filter(Objects::nonNull).collect(Collectors.toSet());
+            this.buttons.stream().filter(i -> checkRelevant(i, this.filterField.getText(), detections))
                 .skip(this.detectionPage * model.getNumber().longValue()).limit(model.getNumber().longValue())
                 .forEach(i -> SwingUtilities.invokeLater(() -> i.setVisible(true)));
-            notSelected = this.buttons.parallelStream().filter(Component::isVisible).filter(i -> !i.isSelected())
+            notSelected = this.buttons.stream().filter(Component::isVisible).filter(i -> !i.isSelected()).count();
+            selected = this.buttons.stream().filter(Component::isVisible).filter(ImageCheckBoxButton::isSelected)
                 .count();
-            selected = this.buttons.parallelStream().filter(Component::isVisible)
-                .filter(ImageCheckBoxButton::isSelected).count();
         }
         toggleVisibleCheckbox.setSelected(notSelected < selected);
         toggleVisibleCheckbox.invalidate();
@@ -251,8 +261,8 @@ public final class TrafficSignFilter extends JPanel
      * @param expr The filter text
      * @return {@code true} if the button should be shown
      */
-    private boolean checkRelevant(ImageCheckBoxButton button, String expr) {
-        boolean relevant = !this.showRelevant || button.isRelevant();
+    private boolean checkRelevant(ImageCheckBoxButton button, String expr, Collection<String> detections) {
+        boolean relevant = !this.showRelevant || button.isRelevant(detections);
         boolean addable = Boolean.FALSE.equals(MapillaryProperties.SMART_EDIT.get())
             || ObjectDetections.getTaggingPresetsFor(button.getDetectionName()).length > 0;
         return button.isFiltered(expr) && (relevant && addable);
@@ -363,12 +373,20 @@ public final class TrafficSignFilter extends JPanel
         }
     }
 
-    public static void updateNearbyOsmKey(Collection<? extends IPrimitive> primitives) {
+    /**
+     * Update the {@link #NEARBY_KEY} value for detections (uses all {@link OsmDataLayer}s in
+     * {@link MainApplication#getLayerManager()})
+     *
+     * @param primitives The primitives to update
+     */
+    private static void updateNearbyOsmKey(Collection<? extends IPrimitive> primitives) {
         final double distance = Config.getPref().getDouble("mapillary.nearby_osm_objects", 15.0); // meters
         primitives.stream()
-            .filter(p -> !p.hasKey(NEARBY_KEY) && ObjectDetections.valueOfMapillaryValue(p.get("value")).hasOsmKeys())
+            .filter(p -> !p.hasKey(NEARBY_KEY)
+                && ObjectDetections.valueOfMapillaryValue(MapillaryMapFeatureUtils.getValue(p)).hasOsmKeys())
             .forEach(p -> {
-                Map<String, String> tags = ObjectDetections.valueOfMapillaryValue(p.get("value")).getOsmKeys();
+                Map<String, String> tags = ObjectDetections.valueOfMapillaryValue(MapillaryMapFeatureUtils.getValue(p))
+                    .getOsmKeys();
                 BBox searchBBox = new BBox(p.getBBox());
                 searchBBox.addPrimitive(p, distance / 111_000); // convert meters to degrees (roughly)
                 String nearby = MainApplication.getLayerManager().getLayersOfType(OsmDataLayer.class).stream()
@@ -406,7 +424,16 @@ public final class TrafficSignFilter extends JPanel
     private void smartEditMode(boolean smartEditMode) {
         SwingUtilities.invokeLater(() -> MapillaryProperties.SMART_EDIT.put(smartEditMode));
         this.smartEditModeEnabled = smartEditMode;
+        this.updateSmartEditFilters();
+    }
+
+    /**
+     * Update the filters
+     */
+    private void updateSmartEditFilters() {
         MapillaryFilterTableModel filterModel = MapillaryExpertFilterDialog.getInstance().getFilterModel();
+        filterModel.selectionModel.clearSelection();
+        filterModel.model.clearFilters();
         synchronized (filterModel) {
             try {
                 filterModel.pauseUpdates();
@@ -417,7 +444,11 @@ public final class TrafficSignFilter extends JPanel
         }
         final Collection<ImageCheckBoxButton> nonAddable;
         synchronized (this.buttons) {
-            nonAddable = this.buttons.stream().filter(ImageCheckBoxButton::isRelevant)
+            List<PointObjectLayer> layers = MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class);
+            Set<String> detections = layers.stream().map(PointObjectLayer::getData)
+                .flatMap(ds -> ds.allPrimitives().stream()).map(MapillaryMapFeatureUtils::getValue)
+                .filter(Objects::nonNull).collect(Collectors.toSet());
+            nonAddable = this.buttons.stream().filter(button -> button.isRelevant(detections))
                 .filter(button -> Stream.of(button.getDetections())
                     .allMatch(d -> !d.shouldBeAddable() || d.getTaggingPresets().isEmpty()))
                 .collect(Collectors.toList());
@@ -484,7 +515,11 @@ public final class TrafficSignFilter extends JPanel
      */
     private void filterButtons(String expr) {
         synchronized (this.buttons) {
-            this.buttons.stream().map(checkbox -> new Pair<>(checkbox, this.checkRelevant(checkbox, expr)))
+            final Collection<String> detections = MainApplication.getLayerManager()
+                .getLayersOfType(PointObjectLayer.class).stream().map(PointObjectLayer::getData)
+                .flatMap(ds -> ds.allPrimitives().stream()).map(MapillaryMapFeatureUtils::getValue)
+                .filter(Objects::nonNull).collect(Collectors.toSet());
+            this.buttons.stream().map(checkbox -> new Pair<>(checkbox, this.checkRelevant(checkbox, expr, detections)))
                 .forEach(pair -> GuiHelper.runInEDT(() -> pair.a.setVisible(pair.b)));
         }
         GuiHelper.runInEDT(this::invalidate);
@@ -611,6 +646,11 @@ public final class TrafficSignFilter extends JPanel
     public void tileAdded(MVTTile tile) {
         if (Arrays.asList(this.show).contains(Boolean.TRUE)) {
             this.updateShownButtons();
+        }
+        if (this.smartEditModeEnabled) {
+            updateNearbyOsmKey(tile.getData().getAllPrimitives());
+            // This update needs to be run in the EDT to avoid deadlocks
+            GuiHelper.runInEDT(this::updateSmartEditFilters);
         }
     }
 }

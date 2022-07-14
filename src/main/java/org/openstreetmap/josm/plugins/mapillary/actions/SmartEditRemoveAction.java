@@ -5,7 +5,9 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.event.ActionEvent;
 import java.util.Locale;
+import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.json.Json;
 import javax.json.JsonObjectBuilder;
@@ -36,9 +38,11 @@ public class SmartEditRemoveAction extends JosmAction {
      * @param pointObjectLayer The originating object layer
      * @param primitive The primitive that may be removed
      */
-    public SmartEditRemoveAction(final PointObjectLayer pointObjectLayer, final VectorPrimitive primitive) {
-
+    public SmartEditRemoveAction(@Nonnull final PointObjectLayer pointObjectLayer,
+        @Nonnull final VectorPrimitive primitive) {
         super(tr("Remove"), new ImageProvider("dialogs", "delete"), TOOLTIP, null, false, null, false);
+        Objects.requireNonNull(primitive);
+        Objects.requireNonNull(pointObjectLayer);
         this.mapillaryObject = primitive;
         this.pointObjectLayer = pointObjectLayer;
         this.updateEnabledState();
@@ -57,7 +61,7 @@ public class SmartEditRemoveAction extends JosmAction {
             return;
         }
         JsonObjectBuilder builder = Json.createObjectBuilder();
-        builder.add("object_id", MapillaryMapFeatureUtils.getId(this.mapillaryObject));
+        builder.add("object_id", this.mapillaryObject.getId());
         builder.add("data_source", this.pointObjectLayer.getInfo().getSourceName());
         builder.add("feedback_type", problem.name().toLowerCase(Locale.ROOT));
         Logging.error("Mapillary feedback not yet implemented");

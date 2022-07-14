@@ -82,7 +82,6 @@ import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelecti
 import org.openstreetmap.josm.plugins.mapillary.data.osm.event.FilterEventListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
-import org.openstreetmap.josm.plugins.mapillary.gui.dialog.TrafficSignFilter;
 import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddEventSource;
 import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddListener;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
@@ -149,20 +148,30 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
         }
         // This is required for the mapcss to work properly
         tile.getData().getAllPrimitives().forEach(primitive -> primitive.put("layer", primitive.getLayer()));
-        tile.getData().getAllPrimitives().stream().filter(primitive -> primitive.getId() != 0)
-            .forEach(primitive -> primitive.setOsmId(MapillaryMapFeatureUtils.getId(primitive), 1));
+        tile.getData().getAllPrimitives().forEach(PointObjectLayer::setId);
         // We need to ensure that the primitives are reset
         final Set<VectorPrimitive> primitives = new HashSet<>(tile.getData().getAllPrimitives());
         tile.getData().getPrimitivesMap().clear();
         primitives.forEach(primitive -> tile.getData().getPrimitivesMap().put(primitive.getPrimitiveId(), primitive));
         super.finishedLoading(tile);
         this.listeners.fireEvent(listener -> listener.tileAdded(tile));
-        // Force a refresh of the data for filtering on OSM duplicates
-        if (Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get())) {
-            TrafficSignFilter.updateNearbyOsmKey(tile.getData().getAllPrimitives());
-        }
         // Run filters on tile updates.
-        MapillaryExpertFilterDialog.getInstance().getFilterModel().executeFilters(tile.getData().getAllPrimitives());
+        MapillaryFilterDialog.getInstance().finishedLoading(tile);
+    }
+
+    /**
+     * Set the id for new primitives
+     *
+     * @param primitive The prmitive to set the id for
+     */
+    private static void setId(IPrimitive primitive) {
+        if (primitive == null) {
+            return;
+        }
+        final String str = primitive.get(MapillaryMapFeatureUtils.MapFeatureProperties.ID.toString());
+        if (str != null) {
+            primitive.setOsmId(Long.parseLong(str), 1);
+        }
     }
 
     @Override

@@ -28,7 +28,7 @@ import org.openstreetmap.josm.tools.date.DateUtils;
 /**
  * Parse point objects (map features) from Mapillary
  */
-public class MapillaryMapFeatureUtils {
+public final class MapillaryMapFeatureUtils {
     /**
      * v4 API keys for Map Features
      */
@@ -79,34 +79,12 @@ public class MapillaryMapFeatureUtils {
     private static final long[] EMPTY_IDS = new long[0];
 
     /** Pattern to use for checking instants */
-    private static final Pattern NUMBERS_ONLY = Pattern.compile("^[0-9]+$");
+    private static final Pattern NUMBERS_ONLY = Pattern.compile("^\\d+$");
     /** Pattern to use for checking instants for trailing +0000 */
-    private static final Pattern TIMESTAMP_TRAILING_ZONE = Pattern.compile("\\+[0]{4}$");
+    private static final Pattern TIMESTAMP_TRAILING_ZONE = Pattern.compile("\\+0{4}$");
 
     private MapillaryMapFeatureUtils() {
         // Hide constructor
-    }
-
-    /**
-     * Get the id of the map feature
-     *
-     * @param primitive The primitive to check
-     * @return The ID for the feature (should be convertable to an int)
-     */
-    public static long getId(@Nullable final IPrimitive primitive) {
-        if (primitive == null) {
-            return 0;
-        }
-        // Mapillary doesn't give them an id of 0, and instead an id inside the tile. I have no clue why they don't make
-        // them match (the id inside the key list == the id of the object in the tile). Most ids are actually longs,
-        // but the id in the tile is usually not in the long range (AKA, < Integer.MAX_VALUE, more often < 100_000)
-        if (primitive.getUniqueId() <= Integer.MAX_VALUE) {
-            final String str = getKeyValue(primitive, MapFeatureProperties.ID);
-            if (str != null) {
-                primitive.setOsmId(Long.parseLong(str), 1);
-            }
-        }
-        return primitive.getId();
     }
 
     /**
@@ -164,6 +142,9 @@ public class MapillaryMapFeatureUtils {
 
     /**
      * Get the images the object was seen in
+     *
+     * @param primitive The primitive to get the image ids for
+     * @return The image ids
      */
     @Nonnull
     public static long[] getImageIds(@Nullable final IPrimitive primitive) {
@@ -211,7 +192,7 @@ public class MapillaryMapFeatureUtils {
      * @param primitive The primitive to update
      */
     private static void updateMapFeature(@Nonnull final IPrimitive primitive) {
-        final String url = MapillaryURL.APIv4.getMapFeatureInformation(getId(primitive), MapFeatureProperties.GEOMETRY,
+        final String url = MapillaryURL.APIv4.getMapFeatureInformation(primitive.getId(), MapFeatureProperties.GEOMETRY,
             MapFeatureProperties.IMAGES, MapFeatureProperties.ALIGNED_DIRECTION);
         final String json = Caches.META_DATA_CACHE.get(url, () -> {
             try {

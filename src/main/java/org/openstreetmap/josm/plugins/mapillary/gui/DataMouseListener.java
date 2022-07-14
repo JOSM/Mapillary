@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import java.awt.Point;
@@ -74,7 +75,7 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
      */
     private static void mouseClickedInner(final MouseEvent e, final MVTLayer layer, final BBox searchBBox) {
         Collection<INode> nodes = searchNodes(layer, searchBBox).stream().distinct()
-            .filter(AbstractPrimitive::isVisible).filter(INode.class::isInstance).map(INode.class::cast)
+            .filter(AbstractPrimitive::isDrawable).filter(INode.class::isInstance).map(INode.class::cast)
             .filter(i -> i.getUniqueId() > 0).collect(Collectors.toList());
         if (!nodes.isEmpty()) {
             // This is needed since Mapillary ids are only unique within a tile.
@@ -118,8 +119,8 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
                         }
                         List<? extends AbstractPrimitive> nodes = searchNodes(layer, searchBBox);
                         if (!nodes.isEmpty()) {
-                            layer.getData().setHighlighted(
-                                nodes.stream().map(IPrimitive::getPrimitiveId).collect(Collectors.toSet()));
+                            layer.getData().setHighlighted(nodes.stream().filter(IPrimitive::isDrawable)
+                                .map(IPrimitive::getPrimitiveId).collect(Collectors.toSet()));
                             nodes.forEach(node -> node.setHighlighted(true));
                             layer.invalidate();
                             continue;

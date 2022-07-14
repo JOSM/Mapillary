@@ -99,7 +99,8 @@ class JsonMapObjectDecoderTest {
         assertEquals(2_000_000_000L, MapillaryMapFeatureUtils.getLastSeenAt(node1).toEpochMilli()); // 2017-08-23T21:32:34
                                                                                                     // UTC
         assertEquals("complementary--both-directions--g2", MapillaryMapFeatureUtils.getValue(node1));
-        assertEquals(496980935069177L, MapillaryMapFeatureUtils.getId(node1));
+        assertEquals(496980935069177L,
+            Long.parseLong(node1.get(MapillaryMapFeatureUtils.MapFeatureProperties.ID.toString())));
         assertEquals(new LatLon(41.341166490122, -83.417193328459), node1.getCoor());
 
         final long[] images = MapillaryMapFeatureUtils.getImageIds(node1);
