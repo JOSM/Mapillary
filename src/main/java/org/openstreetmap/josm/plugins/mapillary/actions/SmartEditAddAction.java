@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.actions;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
@@ -7,11 +8,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,6 +34,7 @@ import org.openstreetmap.josm.data.osm.Way;
 import org.openstreetmap.josm.data.vector.VectorPrimitive;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.tagging.presets.TaggingPreset;
+import org.openstreetmap.josm.gui.tagging.presets.items.KeyedItem;
 import org.openstreetmap.josm.plugins.mapillary.command.AddMapillaryObjectCommand;
 import org.openstreetmap.josm.plugins.mapillary.command.DeleteCommand;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.AdditionalInstructions;
@@ -50,8 +54,16 @@ public class SmartEditAddAction extends JosmAction {
     private final transient PointObjectLayer pointObjectLayer;
     private final ObjectDetections detection;
 
+    /**
+     * Create a new {@link SmartEditRemoveAction}
+     *
+     * @param pointObjectLayer The point object layer we are adding data from
+     * @param primitive The primitive to be added (it should be in/on the layer)
+     */
     public SmartEditAddAction(final PointObjectLayer pointObjectLayer, final IPrimitive primitive) {
         super(tr("Add"), new ImageProvider("dialogs", "add"), tr("Add Map Feature to OSM"), null, false, null, false);
+        Objects.requireNonNull(pointObjectLayer);
+        Objects.requireNonNull(primitive);
         this.mapillaryObject = primitive;
         this.pointObjectLayer = pointObjectLayer;
         this.detection = ObjectDetections.valueOfMapillaryValue(mapillaryObject.get("value"));
@@ -86,12 +98,17 @@ public class SmartEditAddAction extends JosmAction {
             }
             final TaggingPreset preset = presets.iterator().next();
             final OsmPrimitive basePrimitive = toAdd.get(0);
-            final Pattern number = Pattern.compile("[0-9]{0,3}(\\.[0-9]+)?");
-            final Optional<Tag> direction = Optional
-                .ofNullable(
-                    basePrimitive.get(MapillaryMapFeatureUtils.MapFeatureProperties.ALIGNED_DIRECTION.toString()))
-                .filter(str -> number.matcher(str).matches()).map(Double::valueOf).map(Math::round)
-                .map(dir -> new Tag("direction", Long.toString(dir)));
+            final Pattern number = Pattern.compile("\\d{0,3}(\\.\\d+)?");
+            final Optional<Tag> direction;
+            if (getPresetKeys(preset).anyMatch("direction"::equals)) {
+                direction = Optional
+                    .ofNullable(
+                        basePrimitive.get(MapillaryMapFeatureUtils.MapFeatureProperties.ALIGNED_DIRECTION.toString()))
+                    .filter(str -> number.matcher(str).matches()).map(Double::valueOf).map(Math::round)
+                    .map(dir -> new Tag("direction", Long.toString(dir)));
+            } else {
+                direction = Optional.empty();
+            }
             basePrimitive.removeAll();
             detection.getOsmKeys().forEach(basePrimitive::put);
 
@@ -128,6 +145,17 @@ public class SmartEditAddAction extends JosmAction {
             this.pointObjectLayer.getData().setSelected(this.pointObjectLayer.getData().getSelected().stream()
                 .filter(n -> !n.equals(this.mapillaryObject)).collect(Collectors.toList()));
         }
+    }
+
+    /**
+     * Get the preset keys
+     *
+     * @param preset The preset to get keys for
+     * @return A stream of keys for the preset
+     */
+    private static Stream<String> getPresetKeys(TaggingPreset preset) {
+        return preset.data.stream().filter(KeyedItem.class::isInstance).map(KeyedItem.class::cast)
+            .map(item -> item.key);
     }
 
     /**

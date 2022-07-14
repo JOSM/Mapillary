@@ -57,6 +57,8 @@ public class SmartEditRemoveAction extends JosmAction {
             return;
         }
         this.mapillaryObject.setDeleted(true);
+        this.pointObjectLayer.hideAdditionalActionsWindow(() -> {
+            /* Do nothing for now */ });
         if (problem == Problem.DONT_REPORT) {
             return;
         }
@@ -79,8 +81,7 @@ public class SmartEditRemoveAction extends JosmAction {
     private static class RemoveDialog extends ExtendedDialog {
         public RemoveDialog(VectorPrimitive primitive) {
             super(MainApplication.getMainFrame(), tr("Why are you removing the object?"), tr("False Positive"),
-                tr("Duplicate"), tr("Bad Imagery"), tr("Erroneous Data"),
-                tr("Just remove it"));
+                tr("Duplicate"), tr("Bad Imagery"), tr("Erroneous Data"), tr("Just remove it"));
             setContent(MapillaryMapFeatureUtils.getValue(primitive));
         }
 
