@@ -11,11 +11,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.json.Json;
 import javax.json.JsonObjectBuilder;
+import javax.swing.JOptionPane;
 
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.data.vector.VectorPrimitive;
+import org.openstreetmap.josm.gui.ConditionalOptionPaneUtil;
 import org.openstreetmap.josm.gui.ExtendedDialog;
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.widgets.JosmTextField;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -56,13 +59,24 @@ public class SmartEditRemoveAction extends JosmAction {
         if (problem == null) {
             return;
         }
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        if (problem == Problem.COMMENT) {
+            JosmTextField textField = new JosmTextField(null, null, 64);
+            if (!ConditionalOptionPaneUtil.showConfirmationDialog("mapillary.feedback.comment",
+                MainApplication.getMainFrame(), textField, tr("Comment to send to Mapillary"),
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_OPTION)) {
+                // This must come before the deletion of the object
+                return;
+            }
+            builder.add("comment", textField.getText());
+        }
         this.mapillaryObject.setDeleted(true);
         this.pointObjectLayer.hideAdditionalActionsWindow(() -> {
             /* Do nothing for now */ });
         if (problem == Problem.DONT_REPORT) {
+            // This must come after the deletion of the object
             return;
         }
-        JsonObjectBuilder builder = Json.createObjectBuilder();
         builder.add("object_id", this.mapillaryObject.getId());
         builder.add("data_source", this.pointObjectLayer.getInfo().getSourceName());
         builder.add("feedback_type", problem.name().toLowerCase(Locale.ROOT));
@@ -75,13 +89,14 @@ public class SmartEditRemoveAction extends JosmAction {
     }
 
     private enum Problem {
-        DONT_REPORT, FALSE_POSITIVE, DUPLICATE, BAD_IMAGERY, ERRONEOUS_DATA
+        DONT_REPORT, FALSE_POSITIVE, DUPLICATE, BAD_IMAGERY, ERRONEOUS_DATA, COMMENT
     }
 
     private static class RemoveDialog extends ExtendedDialog {
         public RemoveDialog(VectorPrimitive primitive) {
-            super(MainApplication.getMainFrame(), tr("Why are you removing the object?"), tr("False Positive"),
-                tr("Duplicate"), tr("Bad Imagery"), tr("Erroneous Data"), tr("Just remove it"));
+            super(MainApplication.getMainFrame(),
+                tr("Why are you removing the object? (Note: not yet sent to Mapillary)"), tr("False Positive"),
+                tr("Duplicate"), tr("Bad Imagery"), tr("Erroneous Data"), tr("Comment"), tr("Just remove it"));
             setContent(MapillaryMapFeatureUtils.getValue(primitive));
         }
 
@@ -97,6 +112,8 @@ public class SmartEditRemoveAction extends JosmAction {
             case 4:
                 return Problem.ERRONEOUS_DATA;
             case 5:
+                return Problem.COMMENT;
+            case 6:
                 return Problem.DONT_REPORT;
             case ExtendedDialog.DialogClosedOtherwise:
                 // OK. They cancelled/closed the dialog.
