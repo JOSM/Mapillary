@@ -39,6 +39,7 @@ import javax.swing.SwingUtilities;
 import org.openstreetmap.josm.actions.RenameLayerAction;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.imagery.ImageryInfo;
+import org.openstreetmap.josm.data.imagery.street_level.IImageEntry;
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
 import org.openstreetmap.josm.data.osm.HighlightUpdateListener;
 import org.openstreetmap.josm.data.osm.INode;
@@ -82,6 +83,7 @@ import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelecti
 import org.openstreetmap.josm.plugins.mapillary.data.osm.event.FilterEventListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.geoimage.MapillaryImageEntry;
 import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddEventSource;
 import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddListener;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
@@ -579,6 +581,12 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
 
             if (!inDetections && (selectedImage == null || !selectedImage.equals(toSelect))) {
                 mapillaryData.setSelected(toSelect);
+            }
+        }
+        if (ImageViewerDialog.getInstance().hasImage()) {
+            IImageEntry<?> entry = ImageViewerDialog.getCurrentImage();
+            if (entry instanceof MapillaryImageEntry) {
+                ((MapillaryImageEntry) entry).reload();
             }
         }
         ImageViewerDialog.getInstance().repaint();

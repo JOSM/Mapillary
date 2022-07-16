@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.layer.geoimage;
 
 import static org.openstreetmap.josm.tools.I18n.marktr;
@@ -76,6 +77,11 @@ import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Utils;
 import org.openstreetmap.josm.tools.date.DateUtils;
 
+/**
+ * A container to show Mapillary images in JOSM
+ *
+ * @author Taylor Smock
+ */
 public class MapillaryImageEntry
     implements IImageEntry<MapillaryImageEntry>, BiConsumer<Long, Collection<ImageDetection<?>>> {
     private static final CacheAccess<Long, MapillaryImageEntry> CACHE = JCSCacheManager
@@ -107,6 +113,12 @@ public class MapillaryImageEntry
         MapillaryProperties.SHOW_DETECTION_OUTLINES.addListener(MapillaryValueChangeListener.INSTANCE);
     }
 
+    /**
+     * Get a cached instance of an image, if available
+     *
+     * @param image The image to get
+     * @return The cached instance, or a new object
+     */
     public static MapillaryImageEntry getCachedEntry(final INode image) {
         Objects.requireNonNull(image);
         final long id = MapillaryImageUtils.getKey(image);
@@ -149,6 +161,7 @@ public class MapillaryImageEntry
         this.layeredImage = other.layeredImage;
         this.originalImage = other.originalImage;
         this.fullImage = other.fullImage;
+        this.exifOrientation = other.exifOrientation;
     }
 
     @Override
