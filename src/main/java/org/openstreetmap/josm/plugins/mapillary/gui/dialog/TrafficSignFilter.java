@@ -58,7 +58,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddListener;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.GBC;
@@ -338,25 +337,31 @@ public final class TrafficSignFilter extends JPanel
     }
 
     private static void hideNearbyAddableObjs(boolean hideObjects) {
-        Filter filter = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().parallelStream()
-            .filter(f -> NEARBY_KEY.equals(f.text)).findAny().orElseGet(() -> {
-                Filter nfilter = new Filter();
-                nfilter.hiding = true;
-                nfilter.text = NEARBY_KEY;
-                return nfilter;
-            });
-        int index = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().indexOf(filter);
+        MapillaryFilterTableModel model = MapillaryExpertFilterDialog.getInstance().getFilterModel();
+        synchronized (model) {
+            Filter filter = model.getFilters().stream().filter(f -> NEARBY_KEY.equals(f.text)).findAny()
+                .orElseGet(() -> {
+                    Filter nfilter = new Filter();
+                    nfilter.hiding = true;
+                    nfilter.text = NEARBY_KEY;
+                    return nfilter;
+                });
 
-        if (hideObjects) {
-            MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class)
-                .forEach(TrafficSignFilter::updateNearbyOsmKey);
-            filter.enable = true;
-            if (index < 0) {
-                MapillaryExpertFilterDialog.getInstance().getFilterModel().addFilter(filter);
+            int index = model.getFilters().indexOf(filter);
+
+            if (hideObjects) {
+                MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class)
+                    .forEach(TrafficSignFilter::updateNearbyOsmKey);
+                filter.enable = true;
+                if (index < 0) {
+                    model.addFilter(filter);
+                }
+            } else {
+                filter.enable = false;
+                if (index >= 0) {
+                    model.removeFilter(index);
+                }
             }
-        } else {
-            filter.enable = false;
-            MapillaryExpertFilterDialog.getInstance().getFilterModel().removeFilter(index);
         }
     }
 
@@ -434,13 +439,8 @@ public final class TrafficSignFilter extends JPanel
         MapillaryFilterTableModel filterModel = MapillaryExpertFilterDialog.getInstance().getFilterModel();
         filterModel.selectionModel.clearSelection();
         filterModel.model.clearFilters();
-        synchronized (filterModel) {
-            try {
-                filterModel.pauseUpdates();
-                hideNearbyAddableObjs(this.smartEditModeEnabled);
-            } finally {
-                filterModel.resumeUpdates();
-            }
+        if (!filterModel.manyChanges) {
+            hideNearbyAddableObjs(this.smartEditModeEnabled);
         }
         final Collection<ImageCheckBoxButton> nonAddable;
         synchronized (this.buttons) {
@@ -454,21 +454,23 @@ public final class TrafficSignFilter extends JPanel
                 .collect(Collectors.toList());
         }
         this.updateShownButtons();
-        filterModel.pauseUpdates();
-        List<Future<?>> futures = nonAddable.stream().map(b -> b.setSelected(this.smartEditModeEnabled))
-            .filter(Objects::nonNull).collect(Collectors.toList());
-        MapillaryUtils.getForkJoinPool().execute(() -> {
-            for (Future<?> future : futures) {
-                try {
-                    future.get();
-                } catch (ExecutionException e) {
-                    Logging.error(e);
-                } catch (InterruptedException e) {
-                    Logging.error(e);
-                    Thread.currentThread().interrupt();
+        MainApplication.worker.execute(() -> {
+            synchronized (filterModel) {
+                filterModel.pauseUpdates();
+                List<Future<?>> futures = nonAddable.stream().map(b -> b.setSelected(this.smartEditModeEnabled))
+                    .filter(Objects::nonNull).collect(Collectors.toList());
+                for (Future<?> future : futures) {
+                    try {
+                        future.get();
+                    } catch (ExecutionException e) {
+                        Logging.error(e);
+                    } catch (InterruptedException e) {
+                        Logging.error(e);
+                        Thread.currentThread().interrupt();
+                    }
                 }
+                filterModel.resumeUpdates();
             }
-            filterModel.resumeUpdates();
         });
     }
 

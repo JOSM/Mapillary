@@ -32,7 +32,7 @@ import org.openstreetmap.josm.tools.Logging;
 public class MapillaryFilterTableModel extends AbstractTableModel implements SortableTableModel<Filter> {
     private static final long serialVersionUID = -5965135291510758363L;
 
-    private boolean manyChanges;
+    boolean manyChanges;
 
     /**
      * The filter enabled column

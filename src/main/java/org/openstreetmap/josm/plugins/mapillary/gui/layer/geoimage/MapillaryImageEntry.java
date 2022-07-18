@@ -541,6 +541,10 @@ public class MapillaryImageEntry
     private void updateImageEntry() {
         // Clone this entry. Needed to ensure that the image display refreshes.
         final MapillaryImageEntry temporaryImageEntry = new MapillaryImageEntry(this);
+        // Ensure that detections are repainted
+        if (this.layeredImage != null) {
+            this.layeredImage.clear();
+        }
         if (this.equals(ImageViewerDialog.getCurrentImage())) {
             GuiHelper.runInEDT(() -> {
                 ImageViewerDialog.getInstance().displayImage(temporaryImageEntry);

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.LongStream;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -74,18 +73,8 @@ public final class MapillaryUtils {
      * @return {@code true} if the detection is filtered
      */
     public static boolean checkIfDetectionIsFilteredBasic(List<PointObjectLayer> detectionLayers, ImageDetection<?> d) {
-        if ((Boolean.FALSE.equals(MapillaryProperties.SHOW_DETECTION_OUTLINES.get()) && !d.isTrafficSign())
-            || (Boolean.FALSE.equals(MapillaryProperties.SHOW_DETECTED_SIGNS.get()) && d.isTrafficSign()))
-            return true;
-        if (Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get())) {
-            final long imageId = d.getImageKey();
-            IPrimitive prim = detectionLayers.parallelStream().map(PointObjectLayer::getData)
-                .flatMap(data -> data.getSelected().parallelStream())
-                .filter(p -> LongStream.of(MapillaryMapFeatureUtils.getImageIds(p)).anyMatch(im -> im == imageId))
-                .findAny().orElse(null);
-            return prim != null && prim.isDisabled();
-        }
-        return false;
+        return (Boolean.FALSE.equals(MapillaryProperties.SHOW_DETECTION_OUTLINES.get()) && !d.isTrafficSign())
+            || (Boolean.FALSE.equals(MapillaryProperties.SHOW_DETECTED_SIGNS.get()) && d.isTrafficSign());
     }
 
     /**

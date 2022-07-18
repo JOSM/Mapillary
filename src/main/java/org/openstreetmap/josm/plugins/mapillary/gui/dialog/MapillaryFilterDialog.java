@@ -47,6 +47,7 @@ import org.openstreetmap.josm.actions.ExpertToggleAction.ExpertModeChangeListene
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
+import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
@@ -72,6 +73,7 @@ import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ListenerList;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
+import org.openstreetmap.josm.tools.Utils;
 
 /**
  * ToggleDialog that lets you filter the images that are being shown.
@@ -437,7 +439,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
                 final Lock readLock = MapillaryLayer.getInstance().getData().getReadLock();
                 try {
                     readLock.lockInterruptibly();
-                    this.updateFilteredImages(MapillaryLayer.getInstance().getData().getNodes().parallelStream());
+                    this.updateFilteredImages(MapillaryLayer.getInstance().getData().getNodes());
                 } catch (InterruptedException exception) {
                     Logging.error(exception);
                     Thread.currentThread().interrupt();
@@ -451,14 +453,19 @@ public final class MapillaryFilterDialog extends ToggleDialog
     /**
      * Update filtered images
      *
-     * @param nodeStream The nodes to update
+     * @param nodeIterable The nodes to update
      * @param <N> The node type
      */
-    private <N extends INode> void updateFilteredImages(Stream<N> nodeStream) {
-        this.shouldHidePredicate.updateLayerVisible();
-        this.shouldHidePredicate.smartAdd = Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get());
-        Predicate<INode> shouldHide = this.getShouldHidePredicate();
-        nodeStream.filter(MapillaryImageUtils::isImage).forEach(img -> img.setVisible(!shouldHide.test(img)));
+    private <N extends INode> void updateFilteredImages(Iterable<N> nodeIterable) {
+        final ImageFilterPredicate shouldHide = this.shouldHidePredicate;
+        shouldHide.updateLayerVisible();
+        shouldHide.smartAdd = Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get());
+        Collection<IPrimitive> currentSelection = shouldHide.getCurrentSelection();
+        for (N img : nodeIterable) {
+            if (MapillaryImageUtils.isImage(img)) {
+                img.setVisible(!shouldHide.test(img, currentSelection));
+            }
+        }
         GuiHelper.runInEDT(MapillaryLayer::invalidateInstance);
     }
 
@@ -473,8 +480,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
 
     @Override
     public void finishedLoading(MVTTile tile) {
-        updateFilteredImages(
-            tile.getData().getAllPrimitives().parallelStream().filter(INode.class::isInstance).map(INode.class::cast));
+        updateFilteredImages(Utils.filteredCollection(tile.getData().getAllPrimitives(), VectorNode.class));
     }
 
     private static class ImageFilterPredicate implements Predicate<INode> {
@@ -499,19 +505,38 @@ public final class MapillaryFilterDialog extends ToggleDialog
             if (!layerVisible) {
                 return true;
             }
+            return test(img, getCurrentSelection());
+        }
+
+        Collection<IPrimitive> getCurrentSelection() {
+            MainLayerManager layerManager = MainApplication.getLayerManager();
+            return Stream
+                .concat(layerManager.getLayersOfType(OsmDataLayer.class).stream().map(OsmDataLayer::getDataSet),
+                    layerManager.getLayersOfType(PointObjectLayer.class).stream().map(PointObjectLayer::getData))
+                .flatMap(ds -> ds.getAllSelected().stream()).collect(Collectors.toSet());
+        }
+
+        /**
+         * Same as {@link #test(INode)}, but allows reuse of a selection collection (performance)
+         *
+         * @param img the image to test
+         * @param currentSelection The currently selected detection(s)
+         * @return {@code true} if the {@code img} should be filtered out
+         */
+        public boolean test(INode img, Collection<IPrimitive> currentSelection) {
+            if (!layerVisible) {
+                return true;
+            }
             MainLayerManager layerManager = MainApplication.getLayerManager();
             if (this.smartAdd && MapillaryImageUtils.getKey(img) != 0
                 && !layerManager.getLayersOfType(AbstractOsmDataLayer.class).isEmpty()) {
-                Collection<IPrimitive> currentSelection = Stream
-                    .concat(layerManager.getLayersOfType(OsmDataLayer.class).stream().map(OsmDataLayer::getDataSet),
-                        layerManager.getLayersOfType(PointObjectLayer.class).stream().map(PointObjectLayer::getData))
-                    .flatMap(ds -> ds.getAllSelected().stream()).collect(Collectors.toSet());
                 Collection<Long> keys = currentSelection.stream().map(MapillaryUtils::getImagesFromDetections)
                     .flatMapToLong(LongStream::of).boxed().collect(Collectors.toSet());
                 if (!keys.contains(MapillaryImageUtils.getKey(img))) {
                     return true;
                 }
             }
+            // Filter on time
             if ((this.timeFilter && checkValidTime(img)) || checkEndDate(img) || checkStartDate(img)
                 || (this.imageTypes == ImageTypes.PANORAMIC && !MapillaryImageUtils.IS_PANORAMIC.test(img))
                 || (this.imageTypes == ImageTypes.NON_PANORAMIC && MapillaryImageUtils.IS_PANORAMIC.test(img))
@@ -522,10 +547,12 @@ public final class MapillaryFilterDialog extends ToggleDialog
                 return true;
             }
             if (MapillaryImageUtils.getKey(img) > 0) {
+                // Filter on detections
                 if (this.onlySignsIsSelected && (ImageDetection.getDetections(MapillaryImageUtils.getKey(img)).isEmpty()
                     || !checkSigns(ImageDetection.getDetections(MapillaryImageUtils.getKey(img))))) {
                     return true;
                 }
+                // Filter on organizations
                 return !OrganizationRecord.NULL_RECORD.equals(this.organization)
                     && MapillaryImageUtils.getSequenceKey(img) != null
                     && this.organization.getId() != MapillaryImageUtils.getOrganization(img).getId();
