@@ -28,6 +28,18 @@ setting::show_accuracy_circles {
     default: false;
 }
 
+setting::show_detection_value {
+    type: boolean;
+    label: tr("Show detection values for detections with no known specific image");
+    default: true;
+}
+
+setting::hide_detections_with_no_known_image {
+    type: boolean;
+    label: tr("Hide detections with no known image");
+    default: true;
+}
+
 node|z20-[setting("show_accuracy_circles")][accuracy > 10]::mapillary_object_layer {
     symbol-shape: circle;
     symbol-size: 2 * tag("accuracy") * prop(pixel_per_metre, "default" );
@@ -49,14 +61,62 @@ node|z20-[setting("show_accuracy_circles")][accuracy <= 5]::mapillary_object_lay
     symbol-fill-color: green;
     symbol-stroke-color: green;
 }
-node[layer=traffic_sign] {
+node[layer=traffic_sign][value!~/^(object--traffic-(sign|light)--(|direction-|general-upright-|pedestrians-)(front|back|side))$/] {
     imagepath: "package_signs";
 }
 node[layer=point] {
     imagepath: "package_objects";
 }
-node|z18-[value][is_prop_set(imagepath)] {
+
+/* Avoid trying to show images for detections when the image does not exist */
+node[value=general--traffic-sign--g1],
+node[value=complementary--texts-three-lines--g1],
+node[value=complementary--texts-two-lines--g1],
+node[value=information--general-directions--g1],
+node[value=marking--discrete--symbol--wheelchair],
+node[value=marking--discrete--text--other],
+node[value=marking--discrete--text--stop],
+node[value=object--sign--back],
+node[value=object--sign--other],
+node[value=object--traffic-light--cyclists-front],
+node[value=object--traffic-light--general-horizontal-back],
+node[value=object--traffic-light--general-horizontal-front],
+node[value=object--traffic-light--general-single-front],
+node[value=object--traffic-light--general-upright-back],
+node[value=object--traffic-light--general-upright-front],
+node[value=object--traffic-light--general-upright-side],
+node[value=object--traffic-light--pedestrians-back],
+node[value=object--traffic-light--pedestrians-front],
+node[value=object--traffic-light--pedestrians-side],
+node[value=object--traffic-sign--back],
+node[value=object--traffic-sign--back],
+node[value=object--traffic-sign--direction-back],
+node[value=object--traffic-sign--direction-front],
+node[value=object--traffic-sign--front],
+node[value=object--traffic-sign--information-parking],
+node[value=object--traffic-sign--temporary-back],
+node[value=object--traffic-sign--temporary-front],
+node[value=regulatory--texts-four-lines--g1],
+node[value=regulatory--texts-one-line--g1],
+node[value=regulatory--texts-three-lines--g1],
+node[value=regulatory--texts-two-lines--g1]
+{
+    noimage: true;
+}
+
+node|z18-[value][is_prop_set(imagepath)][!is_prop_set(noimage)] {
     icon-image: concat("mapillary_sprite_source/", prop(imagepath), "/", tag("value"));
+}
+
+node|z18-[value][is_prop_set(noimage)] {
+    symbol-shape: square;
+    symbol-fill-color: white;
+    symbol-size: 16;
+}
+
+node|z20-[value][is_prop_set(noimage)][setting("show_detection_value")],
+node|z24-[value][setting("show_detection_value")] {
+    text: value;
 }
 
 node[layer=~/trafficsigns|points/]:selected::selected_layer {
