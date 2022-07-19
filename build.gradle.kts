@@ -160,14 +160,15 @@ spotless {
     endWithNewline()
   }
   java {
+    eclipse().configFile("config/format/code_format.xml")
+    endWithNewline()
+    importOrder("java", "javax", "")
+    indentWithSpaces(4)
+    licenseHeader("// License: GPL. For details, see LICENSE file.")
     // Avoid large formatting commits.
     ratchetFrom("origin/master")
-    trimTrailingWhitespace()
-    indentWithSpaces(4)
-    endWithNewline()
     removeUnusedImports()
-    importOrder("java", "javax", "")
-    eclipse().configFile("config/format/code_format.xml")
+    trimTrailingWhitespace()
   }
 }
 
