@@ -1,0 +1,173 @@
+[
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "animal--bird"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "animal--ground-animal"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "human--person"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "human--person--individual"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "human--rider--bicyclist"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "human--rider--motorcyclist"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "human--rider--other-rider"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "nature--beach"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "nature--desert"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "nature--mountain"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "nature--sand"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "nature--sky"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "line",
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "nature--snow"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "nature--terrain"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "line",
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "nature--vegetation"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "line",
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "nature--water"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "void--car-mount"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "void--dynamic"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "void--ego-vehicle"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "void--ground"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "void--static"
+  }
+]

@@ -1,0 +1,84 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://josm.openstreetmap.de/plugins/mapillary/schema.json",
+    "title": "Mapillary Object Detections",
+    "description": "Mapillary Object Detections",
+    "type": "array",
+    "items": {
+        "title": "Detection object",
+        "type": "object",
+        "properties": {
+            "type": {
+                "description": "The detection type",
+                "type": "string",
+                "pattern": "^([a-z\\d-])+$"
+            },
+            "osm_key": {
+                "description": "The OSM key(s)",
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "pattern": "^.*=.*$"
+                },
+                "uniqueItems": true
+            },
+            "tagging_preset_type": {
+                "description": "The tagging preset types",
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "enum": [
+                        "node",
+                        "way",
+                        "relation",
+                        "closedway",
+                        "multipolygon"
+                    ]
+                },
+                "uniqueItems": true
+            },
+            "additional_commands": {
+                "description": "Additional commands to run",
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "enum": [
+                        "SnapToRoad",
+                        "AddSecondaryTagsToRoad"
+                    ]
+                }
+            },
+            "detection_type": {
+                "description": "The detection types",
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "enum": [
+                        "traffic_sign",
+                        "point",
+                        "line",
+                        "segmentation"
+                    ]
+                },
+                "uniqueItems": true
+            },
+            "data_type": {
+                "description": "The state of the data type",
+                "type": "string",
+                "enum": [
+                    "testing",
+                    "preview",
+                    "production"
+                ],
+                "default": "production"
+            },
+            "has_image": {
+                "type": "boolean",
+                "default": true
+            }
+        },
+        "required": [
+            "type"
+        ]
+    }
+}

@@ -29,7 +29,7 @@ class ImageDetectionTest {
     void testBasics() {
         ImageDetection<Path2D.Double> id = new ImageDetection<>(new Path2D.Double(), 1, 2, "value");
         ImageDetection<Path2D.Double> trafficsign = new ImageDetection<>(new Path2D.Double(), 3, 4,
-            ObjectDetections.REGULATORY__MAXIMUM_SPEED_LIMIT_45__G3.toString());
+            ObjectDetections.valueOfMapillaryValue("regulatory--maximum-speed-limit-45--g3").toString());
 
         assertEquals(1, id.getImageKey());
         assertEquals(3, trafficsign.getImageKey());
@@ -41,7 +41,8 @@ class ImageDetectionTest {
         assertTrue(trafficsign.isTrafficSign());
 
         assertEquals("value", id.getUnknownValue());
-        assertEquals(ObjectDetections.REGULATORY__MAXIMUM_SPEED_LIMIT_45__G3.toString(), trafficsign.getUnknownValue());
+        assertEquals(ObjectDetections.valueOfMapillaryValue("regulatory--maximum-speed-limit-45--g3").toString(),
+            trafficsign.getUnknownValue());
     }
 
     static Stream<Arguments> getDetectionsArguments() {

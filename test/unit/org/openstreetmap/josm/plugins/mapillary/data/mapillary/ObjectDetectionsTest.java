@@ -1,13 +1,13 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.data.mapillary;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.lang.reflect.Field;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -16,8 +16,6 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import org.openstreetmap.josm.TestUtils;
 import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.DeveloperToggleAction;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.ObjectDetectionsAnnotation;
@@ -54,7 +52,8 @@ class ObjectDetectionsTest {
         assertFalse(DeveloperToggleAction.isDeveloper());
         return Stream.of(ObjectDetections.values()).filter(d -> {
             try {
-                return osmKey.get(d) != null;
+                Object map = osmKey.get(d);
+                return map instanceof Map && !((Map<?, ?>) map).isEmpty();
             } catch (ReflectiveOperationException e) {
                 return false;
             }
@@ -67,7 +66,7 @@ class ObjectDetectionsTest {
     @MethodSource("org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetectionsTest#provideObjectDetections")
     void testGetTaggingPreset(ObjectDetections detection) {
         assertNotEquals(0, ObjectDetections.getTaggingPresetsFor(detection.getKey()).length);
-        assertEquals(detection.name().toLowerCase(Locale.ROOT).replace('_', '-'), detection.toString());
+        assertEquals(detection.getKey().toLowerCase(Locale.ROOT).replace('_', '-'), detection.toString());
     }
 
     /**
@@ -75,14 +74,8 @@ class ObjectDetectionsTest {
      */
     @Test
     void testFireHydrant() {
-        ObjectDetections fireHydrant = ObjectDetections.OBJECT__FIRE_HYDRANT;
+        ObjectDetections fireHydrant = ObjectDetections.valueOfMapillaryValue("object--fire-hydrant");
         assertEquals("object--fire-hydrant", fireHydrant.getKey());
         assertNotEquals(0, ObjectDetections.getTaggingPresetsFor(fireHydrant.getKey()).length);
     }
-
-    @Test
-    void superficialEnumCoverageTest() {
-        assertDoesNotThrow(() -> TestUtils.superficialEnumCodeCoverage(ObjectDetections.class));
-    }
-
 }

@@ -64,6 +64,14 @@ assemble with java 17:
   allow_failure: true
   interruptible: true
 
+check schemas:
+  stage: build
+  image: python:latest
+  cache: []
+  script:
+    - pip install jsonschema
+    - for json in src/main/resources/detections/*.json; do jsonschema --instance "${json}" src/main/resources/detections/detections.schema; done
+
 code_navigation:
   stage: build
   script:

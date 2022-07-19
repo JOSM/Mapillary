@@ -1,0 +1,1550 @@
+[
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "has_image": false,
+    "type": "general--traffic-sign--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--airport--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--airport--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--bicycle-lane--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--bicycles-both-ways--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--bicycles-crossing--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--bicycles-crossing--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--bicycles-crossing--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--bike-route--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--bike-route--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--built-up-area--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--built-up-area--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--bus-lane-straight--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--bus-stop--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--bus-stop--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--camera--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--camera--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--camera--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--camp--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--camp--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--car-pool-lane--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--caravan-parking--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--caravan-trailer-parking--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--cargo-loading-zone--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--central-lane--g1"
+  },
+  {
+    "data_type": "production",
+    "has_image": false,
+    "type": "information--central-lane--g1--other"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--charging-station--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--children--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--children--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--children-crossing--g5"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--cycling-two-abreast-permitted--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--dead-end--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--dead-end--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--dead-end--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--dead-end--g4"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--dead-end-except-bicycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--dead-end-except-bicycles-and-pedestrians--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--dead-end-except-bicycles-and-pedestrians--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--dead-end-left--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--dead-end-left--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--dead-end-right--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--dead-end-right--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--dead-end-right--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--directions--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--disabled-persons--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--disabled-persons--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--disabled-persons--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--emergency-facility--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-advisory-maximum-speed-limit-20--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-advisory-maximum-speed-limit-40--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-advisory-maximum-speed-limit-60--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-advisory-maximum-speed-limit-70--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-advisory-maximum-speed-limit-80--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-advisory-maximum-speed-limit-90--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-bicycle-lane--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-built-up-area--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-built-up-area--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-built-up-area--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-built-up-area--g4"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-car-pool-lane--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-limited-access-road--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-living-street--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-living-street--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-minimum-speed-10--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-minimum-speed-100--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-minimum-speed-110--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-minimum-speed-120--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-minimum-speed-130--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-minimum-speed-20--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-minimum-speed-25--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-minimum-speed-30--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-minimum-speed-35--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-minimum-speed-40--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-minimum-speed-50--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-minimum-speed-60--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-minimum-speed-70--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-minimum-speed-75--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-minimum-speed-80--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-minimum-speed-90--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-motorway--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-overtaking-permitted-heavy-good-vehicles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-road-works--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-tunnel--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-tunnel--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--end-of-two-way-traffic--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--equestrians-permitted--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--exit-ahead--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--exit-ahead--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--exit-ahead--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--flight-port--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--food--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--food--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--gas-station--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--gas-station--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--gas-station--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "has_image": false,
+    "type": "information--general-directions--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--general-speed-limit-at-city-border--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--go-left--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--go-right--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--go-straight--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--go-straight-or-left--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--go-straight-or-right--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--go-straight-or-turn-left--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--go-straight-or-turn-right--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--hazardous-goods-vehicles-lane--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--height-limit--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--height-limit--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--highway-exit--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--highway-interchange--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--highway-interstate-route--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--highway-interstate-route--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--highway-preferential-lane--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--highway-preferential-lane--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--highway-reference-location--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--highway-reference-location--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--hiking--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--hospital--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--hurricane-evacuation-route--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--interstate-route--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--limited-access-road--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--litter-container--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--living-street--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--living-street--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--living-street--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--lodging--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--lodging--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--minimum-speed-10--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--minimum-speed-100--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--minimum-speed-110--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--minimum-speed-120--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--minimum-speed-130--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--minimum-speed-20--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--minimum-speed-25--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--minimum-speed-30--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--minimum-speed-35--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--minimum-speed-40--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--minimum-speed-50--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--minimum-speed-60--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--minimum-speed-70--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--minimum-speed-75--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--minimum-speed-80--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--minimum-speed-90--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--motorway--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--motorway-exit-ahead--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--motorway-exit-ahead--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--motorway-exit-ahead--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--overtaking-allowed-heavy-good-vehicles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--parallel-parking--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--park-and-ride--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--park-and-ride--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--parking--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--parking--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--parking--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--parking--g4"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--parking--g5"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--parking--g6"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--parking-area--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--parking-with-restrictions--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--pass-on-either-side--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--passenger-loading-zone--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--pedestrians-crossing--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--pedestrians-crossing--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--pedestrians-crossing--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--pedestrians-permitted--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--perpendicular-parking--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--picnic-site--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--playground--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--recreational-vehicle-sanitary-station--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--recycle-collection-center--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--road-bump--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--road-skating--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--safety-zone--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--safety-zone--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--safety-zone--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--shared-path-vehicles-and-motorcycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--stairs--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--stairs--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--stairs--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--stairs--g4"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--stop-line--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--stop-permitted--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--street-name-one-line--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--street-name-three-lines--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--street-name-two-lines--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--subway--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--telephone--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--telephone--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--telephone-device-for-the-deaf--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--toll-station--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--tourism-information--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--tourist-attraction--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--traffic-merges-left--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--traffic-merges-right--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--trail-crossing--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--trail-crossing--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--trail-crossing--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--trailer-camping--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--train-or-light-rail-station--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--tram-bus-stop--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--tram-bus-stop--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--trams-crossing--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--truck-lane-left--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--truck-parking--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--truck-trailer-lane-right--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--truck-trailer-lane-straight--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--trucks-both-ways--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--trucks-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "has_image": false,
+    "type": "information--tsunami-evacuation-route--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--tunnel--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--tunnel--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--tunnel--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--tunnel-ahead--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--turn-left--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--turn-left-ahead--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--turn-right-ahead--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--urban-area--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--vehicles-on-rails--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--water-protection-zone--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--weight-and-height-limit--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--weight-limit--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "information--wireless-internet--g1"
+  }
+]

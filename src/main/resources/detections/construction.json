@@ -1,0 +1,207 @@
+[
+  {
+    "data_type": "production",
+    "detection_type": [
+      "line",
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "construction--barrier--concrete-block"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "line",
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "construction--barrier--curb"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "line",
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "construction--barrier--fence"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "line",
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "construction--barrier--guard-rail"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "line",
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "construction--barrier--other-barrier"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "line",
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "construction--barrier--separator"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "type": "construction--barrier--temporary"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "construction--barrier--wall"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "line",
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "construction--flat--bike-lane"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "type": "construction--flat--crosswalk-plain"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "line",
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "construction--flat--curb-cut"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "type": "construction--flat--driveway"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "line",
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "construction--flat--parking"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "construction--flat--pedestrian-area"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "line",
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "construction--flat--rail-track"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "line",
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "construction--flat--road"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "line",
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "construction--flat--road-shoulder"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "line",
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "construction--flat--service-lane"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "line",
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "construction--flat--sidewalk"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "line",
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "construction--flat--traffic-island"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "construction--structure--bridge"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "construction--structure--building"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "construction--structure--garage"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "construction--structure--tunnel"
+  }
+]

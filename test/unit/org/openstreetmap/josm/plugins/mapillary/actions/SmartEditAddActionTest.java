@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.actions;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -71,9 +72,9 @@ class SmartEditAddActionTest {
      * @return Arguments.of(ObjectDetection, boolean willBeAdded)
      */
     static Stream<Arguments> detectionsAreAdded() {
-        return Stream.of(Arguments.of(ObjectDetections.OBJECT__FIRE_HYDRANT, true),
-            Arguments.of(ObjectDetections.REGULATORY__STOP__G1, true),
-            Arguments.of(ObjectDetections.HUMAN__RIDER__BICYCLIST, false));
+        return Stream.of(Arguments.of(ObjectDetections.valueOfMapillaryValue("object--fire-hydrant"), true),
+            Arguments.of(ObjectDetections.valueOfMapillaryValue("regulatory--stop--g1"), true),
+            Arguments.of(ObjectDetections.valueOfMapillaryValue("human--rider--bicyclist"), false));
     }
 
     @BeforeEach

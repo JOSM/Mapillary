@@ -1,0 +1,646 @@
+[
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "type": "object--banner"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "osm_key": [
+      "amenity=bench"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--bench"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "osm_key": [
+      "amenity=bicycle_parking"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--bike-rack"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--billboard"
+  },
+  {
+    "data_type": "testing",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "osm_key": [
+      "man_made=manhole;;manhole=drain"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--catch-basin"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "type": "object--cctv-camera"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "osm_key": [
+      "emergency=fire_hydrant"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--fire-hydrant"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "type": "object--junction-box"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "type": "object--mailbox"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "type": "object--manhole"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "type": "object--parking-meter"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "type": "object--phone-booth"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--pothole"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--ramp"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "type": "object--sign--advertisement"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "has_image": false,
+    "type": "object--sign--back"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "type": "object--sign--information"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "has_image": false,
+    "type": "object--sign--other"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "type": "object--sign--store"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "osm_key": [
+      "highway=street_lamp"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--street-light"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "type": "object--support--pole"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "type": "object--support--traffic-sign-frame"
+  },
+  {
+    "data_type": "preview",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "osm_key": [
+      "man_made=utility_pole"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--support--utility-pole"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "type": "object--traffic-cone"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "type": "object--traffic-light--cyclists"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "has_image": false,
+    "osm_key": [
+      "highway=traffic_signals"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--traffic-light--cyclists-front"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "osm_key": [
+      "highway=traffic_signals"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--traffic-light--general-horizontal"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "osm_key": [
+      "highway=traffic_signals"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--traffic-light--general-horizontal-back"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "osm_key": [
+      "highway=traffic_signals"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--traffic-light--general-horizontal-front"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "osm_key": [
+      "highway=traffic_signals"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--traffic-light--general-horizontal-side"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "osm_key": [
+      "highway=traffic_signals"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--traffic-light--general-single"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "osm_key": [
+      "highway=traffic_signals"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--traffic-light--general-single-front"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "osm_key": [
+      "highway=traffic_signals"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--traffic-light--general-upright"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "osm_key": [
+      "highway=traffic_signals"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--traffic-light--general-upright-back"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "osm_key": [
+      "highway=traffic_signals"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--traffic-light--general-upright-front"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "osm_key": [
+      "highway=traffic_signals"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--traffic-light--general-upright-side"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "osm_key": [
+      "highway=traffic_signals"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--traffic-light--other"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "osm_key": [
+      "highway=traffic_signals"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--traffic-light--other-traffic-light"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "osm_key": [
+      "highway=traffic_signals"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--traffic-light--pedestrians"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "has_image": false,
+    "osm_key": [
+      "highway=traffic_signals"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--traffic-light--pedestrians-back"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "has_image": false,
+    "osm_key": [
+      "highway=traffic_signals"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--traffic-light--pedestrians-front"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "has_image": false,
+    "osm_key": [
+      "highway=traffic_signals"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "object--traffic-light--pedestrians-side"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--traffic-light--temporary"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--traffic-sign--back"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--traffic-sign--direction-back"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--traffic-sign--direction-front"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--traffic-sign--front"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--traffic-sign--information-parking"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--traffic-sign--temporary-back"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--traffic-sign--temporary-front"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "type": "object--trash-can"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--vehicle--bicycle"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--vehicle--boat"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--vehicle--bus"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--vehicle--car"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--vehicle--caravan"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--vehicle--motorcycle"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--vehicle--on-rails"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--vehicle--other-vehicle"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--vehicle--trailer"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--vehicle--truck"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--vehicle--wheeled-slow"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "type": "object--water-valve"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "object--wire-group"
+  }
+]

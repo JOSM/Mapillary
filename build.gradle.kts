@@ -18,6 +18,7 @@ plugins {
   id("net.ltgt.errorprone") version "2.0.2"
   id("org.openstreetmap.josm") version "0.8.0"
   id("org.sonarqube") version "3.3"
+  //id("org.checkerframework") version "0.6.14"
 
   eclipse
   jacoco

@@ -1,0 +1,143 @@
+[
+  {
+    "data_type": "production",
+    "detection_type": [
+      "line",
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "marking--continuous--dashed"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "line",
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "marking--continuous--solid"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "type": "marking--discrete--arrow--left"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "type": "marking--discrete--arrow--right"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "type": "marking--discrete--arrow--split-left-or-straight"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "type": "marking--discrete--arrow--split-right-or-straight"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "type": "marking--discrete--arrow--straight"
+  },
+  {
+    "additional_commands": [
+      "SnapToRoad"
+    ],
+    "data_type": "preview",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "osm_key": [
+      "highway=crossing"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "marking--discrete--crosswalk-zebra"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "type": "marking--discrete--give-way-row"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "type": "marking--discrete--give-way-single"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "type": "marking--discrete--other-marking"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "type": "marking--discrete--stop-line"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "type": "marking--discrete--symbol--bicycle"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point"
+    ],
+    "has_image": false,
+    "type": "marking--discrete--symbol--wheelchair"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "type": "marking--discrete--text"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "marking--discrete--text--other"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "point",
+      "segmentation"
+    ],
+    "has_image": false,
+    "type": "marking--discrete--text--stop"
+  }
+]

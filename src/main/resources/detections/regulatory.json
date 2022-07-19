@@ -1,0 +1,4893 @@
+[
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--advisory-maximum-speed-limit--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--all-directions-permitted--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--all-way--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--atvs-permitted--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--axle-limit--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--axle-limit--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--bicycle-lane-left--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--bicycle-parking--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--bicycles-and-buses-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--bicycles-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--bicycles-only--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--bicycles-only--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--bicycles-only--g4"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--bicycles-push-button--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--bicycles-push-button--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--bicycles-stop-on-red--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--bicycles-wrong-way--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--bicycles-yield-or-use-signal--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--bike-route--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--building-direction--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--bus-priority-lane--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--buses-and-taxi-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--buses-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--buses-only--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--circular-intersection--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--circular-intersection--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--circular-intersection--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--circular-intersection--g4"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--cross-only-on-green--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--cross-only-on-pedestrian-signal--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--crosswalk-stop-on-red--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--cycling-restriction--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--cyclists-dismount-and-walk--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--detour-left--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--detour-right--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--divided-highway-crossing--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--divided-highway-ends--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--divided-highway-starts--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--do-not-block-intersection--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=overtaking",
+      "overtaking=no"
+    ],
+    "type": "regulatory--do-not-pass--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--do-not-stop-on-tracks--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--dual-lanes-all-directions-on-left--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--dual-lanes-all-directions-on-right--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "has_image": false,
+    "type": "regulatory--dual-lanes-cyclists-and-pedestrians--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--dual-lanes-go-left-or-right--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--dual-lanes-go-straight-on-left--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--dual-lanes-go-straight-on-right--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--dual-lanes-turn-left--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--dual-lanes-turn-left-no-u-turn--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--dual-lanes-turn-left-or-straight--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--dual-lanes-turn-right-or-straight--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--dual-path-bicycles-and-pedestrians--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--dual-path-bicycles-and-pedestrians--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--dual-path-bicycles-and-pedestrians--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--dual-path-equestrians-and-pedestrians--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--dual-path-equestrians-and-pedestrians-bicycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--dual-path-pedestrians-and-bicycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--dual-path-pedestrians-and-bicycles--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--dual-path-pedestrians-and-equestrians--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--dual-path-pedestrians-bicycles-and-equestrians--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--dual-speed-limits--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--dual-speed-limits--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-bicycles-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-bicycles-only--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-bus-and-taxi-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-buses-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-buses-only--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-cycling-restriction--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-dual-path-bicycles-and-pedestrians--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-dual-path-pedestrians-and-bicycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-equestrians-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-low-beam-headlights--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-10--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-10--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-100--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-100--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-110--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-110--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-120--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-120--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-130--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-130--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-20--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-20--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-25--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-25--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-30--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-30--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-35--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-35--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-40--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-40--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-50--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-50--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-60--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-60--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-65--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-65--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-70--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-70--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-75--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-75--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-80--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-80--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-90--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=implicit"
+    ],
+    "type": "regulatory--end-of-maximum-speed-limit-90--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-mopeds-and-bicycles-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-no-heavy-goods-vehicles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-no-horn--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=overtaking",
+      "overtaking=yes"
+    ],
+    "type": "regulatory--end-of-no-overtaking--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=overtaking",
+      "overtaking=yes"
+    ],
+    "type": "regulatory--end-of-no-overtaking--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=overtaking",
+      "overtaking=yes"
+    ],
+    "type": "regulatory--end-of-no-overtaking--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=overtaking",
+      "overtaking=yes"
+    ],
+    "type": "regulatory--end-of-no-overtaking--g4"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=overtaking",
+      "overtaking=yes"
+    ],
+    "type": "regulatory--end-of-no-overtaking--g5"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=overtaking",
+      "overtaking:hgv=yes"
+    ],
+    "type": "regulatory--end-of-no-overtaking-by-heavy-goods-vehicles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=overtaking",
+      "overtaking:hgv=yes"
+    ],
+    "type": "regulatory--end-of-no-overtaking-by-heavy-goods-vehicles--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-no-overtaking-by-motorcycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-no-parking--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-no-parking--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-no-parking-or-stopping--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-one-way-straight--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-parking-zone--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-parking-zone--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-pedestrians-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-pedestrians-only--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-pedestrians-only--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-pedestrians-only--g4"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-priority-road--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-prohibition--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-school-zone--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-shared-path-bicycles-and-pedestrians--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-shared-path-pedestrians-and-bicycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-snow-chains--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-snow-chains--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-snowmobiles-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-speed-limit-zone--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-speed-limit-zone--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-speed-limit-zone--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-tractors-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-trams-and-buses-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-trams-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-trucks-and-buses-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-trucks-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--end-of-trucks-only--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--equestrians-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--except-railroad-crossing--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--fine-for-littering--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--give-way-to-bicycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--give-way-to-oncoming-traffic--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--give-way-to-oncoming-traffic--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--go-left-bicycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--go-right-bicycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--go-straight--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--go-straight--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--go-straight-bicycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--go-straight-or-turn-left--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--go-straight-or-turn-left--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--go-straight-or-turn-left--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--go-straight-or-turn-right--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--go-straight-or-turn-right--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--go-straight-or-turn-right--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--heavy-goods-vehicles-permitted--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxheight"
+    ],
+    "type": "regulatory--height-limit--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--high-beam-headlights--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--horn--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--in-street-pedestrian-crossing--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--keep-left--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--keep-left--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--keep-left--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--keep-left--g4"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--keep-left--g5"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--keep-left--g6"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--keep-left--g7"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--keep-right--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--keep-right--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--keep-right--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--keep-right--g4"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--keep-right--g5"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--keep-right--g6"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--keep-right--g7"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--keep-right--g8"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--keep-right--g9"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--lane-control--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--left-turn-yield-on-green--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxlength"
+    ],
+    "type": "regulatory--length-limit--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxlength"
+    ],
+    "type": "regulatory--length-limit--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--light-rail-divided-highway--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--light-rail-do-not-pass--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--light-rail-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--look--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--low-beam-headlights--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--low-beam-headlights--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--low-beam-headlights--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--low-speed-vehicle-permitted--g1"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=10"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--maximum-speed-limit-10--g1"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=10 mph"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--maximum-speed-limit-10--g3"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=100"
+    ],
+    "type": "regulatory--maximum-speed-limit-100--g1"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=100 mph"
+    ],
+    "type": "regulatory--maximum-speed-limit-100--g3"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=110"
+    ],
+    "type": "regulatory--maximum-speed-limit-110--g1"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=110 mph"
+    ],
+    "type": "regulatory--maximum-speed-limit-110--g3"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=120"
+    ],
+    "type": "regulatory--maximum-speed-limit-120--g1"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=120 mph"
+    ],
+    "type": "regulatory--maximum-speed-limit-120--g3"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=130"
+    ],
+    "type": "regulatory--maximum-speed-limit-130--g1"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=130 mph"
+    ],
+    "type": "regulatory--maximum-speed-limit-130--g3"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=15"
+    ],
+    "type": "regulatory--maximum-speed-limit-15--g1"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=15 mph"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--maximum-speed-limit-15--g3"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=20"
+    ],
+    "type": "regulatory--maximum-speed-limit-20--g1"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=20 mph"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--maximum-speed-limit-20--g3"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=25"
+    ],
+    "type": "regulatory--maximum-speed-limit-25--g1"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=25 mph"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--maximum-speed-limit-25--g2"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=30"
+    ],
+    "type": "regulatory--maximum-speed-limit-30--g1"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=30 mph"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--maximum-speed-limit-30--g3"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=35"
+    ],
+    "type": "regulatory--maximum-speed-limit-35--g1"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=35 mph"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--maximum-speed-limit-35--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=40"
+    ],
+    "type": "regulatory--maximum-speed-limit-40--g1"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=40 mph"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--maximum-speed-limit-40--g3"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=45"
+    ],
+    "type": "regulatory--maximum-speed-limit-45--g1"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=45 mph"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--maximum-speed-limit-45--g3"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=5"
+    ],
+    "type": "regulatory--maximum-speed-limit-5--g1"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=5 mph"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--maximum-speed-limit-5--g3"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=50"
+    ],
+    "type": "regulatory--maximum-speed-limit-50--g1"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=50 mph"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--maximum-speed-limit-50--g3"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=55 mph"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--maximum-speed-limit-55--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=60"
+    ],
+    "type": "regulatory--maximum-speed-limit-60--g1"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=60 mph"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--maximum-speed-limit-60--g3"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=65"
+    ],
+    "type": "regulatory--maximum-speed-limit-65--g1"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=65 mph"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--maximum-speed-limit-65--g2"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=70"
+    ],
+    "type": "regulatory--maximum-speed-limit-70--g1"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=70 mph"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--maximum-speed-limit-70--g3"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=75 mph"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--maximum-speed-limit-75--g2"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=80"
+    ],
+    "type": "regulatory--maximum-speed-limit-80--g1"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=80 mph"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--maximum-speed-limit-80--g3"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=85 mph"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--maximum-speed-limit-85--g2"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=90"
+    ],
+    "type": "regulatory--maximum-speed-limit-90--g1"
+  },
+  {
+    "additional_commands": [
+      "AddSecondaryTagsToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxspeed",
+      "maxspeed=90 mph"
+    ],
+    "type": "regulatory--maximum-speed-limit-90--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-10--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-10--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-10--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-100--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-110--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-120--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-130--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-15--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-15--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-20--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-20--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-20--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-25--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-25--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-25--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-30--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-30--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-30--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-35--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-35--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-35--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-40--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-40--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-40--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-45--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-45--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-5--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-5--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-50--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-50--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-50--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-55--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-55--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-60--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-60--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-60--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-65--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-65--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-70--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-70--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-70--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-75--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-75--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-75--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-80--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-80--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-80--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-85--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-85--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--maximum-speed-limit-led-90--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--minimum-safe-distance--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--minimum-safe-distance--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--mopeds-and-bicycles-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--motorcycles-and-bicycles-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--motorcycles-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--motorcycles-only--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--night-speed-limit-10--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--night-speed-limit-15--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--night-speed-limit-20--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--night-speed-limit-25--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--night-speed-limit-30--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--night-speed-limit-35--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--night-speed-limit-40--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--night-speed-limit-45--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--night-speed-limit-5--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--night-speed-limit-50--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--night-speed-limit-55--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--night-speed-limit-60--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--night-speed-limit-65--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--night-speed-limit-70--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--night-speed-limit-75--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--night-speed-limit-80--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--night-speed-limit-85--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-abnormal-vehicles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-atvs--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-bicycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-bicycles--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-bicycles--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-bicycles-carts-or-hand-carts--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-bicycles-mopeds-or-motorcycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-bicycles-mopeds-or-motorcycles--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-bicycles-or-hand-carts--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-bicycles-or-motorcycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-bicycles-tractors-or-carts--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-buses--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-buses--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-buses--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-caravan-trailers--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-caravans--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-caravans-or-caravan-trailers--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-cargo-loading--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-carts--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-carts--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-carts--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-carts-or-tractors--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-construction-vehicles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-entry--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-equestrians--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-go-straight-or-turn-left--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-go-straight-or-turn-right--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-good-trailers--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-goods-vehicle-trailers--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-hand-carts--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-hand-carts--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-hand-carts-or-bicycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-hawkers--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-heavy-goods-vehicles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-heavy-goods-vehicles--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-heavy-goods-vehicles--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-heavy-goods-vehicles--g4"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-heavy-goods-vehicles--g5"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-heavy-goods-vehicles-motorcycles-or-bicycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-heavy-goods-vehicles-motorcycles-or-bicycles--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-heavy-goods-vehicles-or-buses--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-heavy-goods-vehicles-or-tractors--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-heavy-goods-vehicles-or-trailers--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-horizontal-turn--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-horn--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-horn--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-lane-change-to-left--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-lane-change-to-right--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-learner-drivers--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-left-or-u-turn--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-left-turn--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-left-turn--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-left-turn--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-left-turn--g4"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-left-turn--g5"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-low-speed-vehicles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-mopeds-or-bicycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-motor-vehicle-trailers--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-motor-vehicles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-motor-vehicles--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-motor-vehicles--g4"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-motor-vehicles--g5"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-motor-vehicles--g6"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-motor-vehicles--g7"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-motor-vehicles-except-motorcycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-motor-vehicles-except-motorcycles--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-motor-vehicles-except-motorcycles--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-motor-vehicles-or-bicycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-motor-vehicles-or-buses--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-motor-vehicles-or-carts--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-motorcycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-motorcycles--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-overtaking--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-overtaking--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-overtaking--g4"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-overtaking--g5"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-overtaking--g6"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-overtaking--g7"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-overtaking-atvs--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-overtaking-by-heavy-goods-vehicles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-parking--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-parking--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-parking--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-parking--g4"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-parking--g5"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-parking--g6"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-parking--g7"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-parking--g8"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-parking--g9"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-parking-bicycles-or-motorcycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-parking-bus-stop--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-parking-or-no-stopping--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-parking-or-no-stopping--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-parking-or-no-stopping--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-parking-or-no-stopping--g4"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-parking-or-no-stopping--g5"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-passenger-loading--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-pedestrians--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-pedestrians--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-pedestrians--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-pedestrians--g4"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-pedestrians--g5"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-pedestrians--g6"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-pedestrians-bicycles-animals-or-hand-carts--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-pedestrians-or-bicycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-pedestrians-or-bicycles--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-pedestrians-or-bicycles--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-rickshaws--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-rickshaws--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-rickshaws--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-right-turn--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-right-turn--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-right-turn--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-right-turn-on-red--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-skiing--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-snowmobiles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-snowmobiles--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-snowmobiles-or-atvs--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-stopping--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-stopping--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-stopping--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-stopping--g5"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-stopping--g6"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-stopping--g7"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-stopping-on-pavement--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-straight-through--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-straight-through--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-studded-snow-chains--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-through-trucks--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-tour-buses--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-tractors--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-tractors-mopeds-or-bicycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-tractors-or-carts--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-trailers--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-tricycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-tricycles-or-hand-carts--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-turn-on-red--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-turn-on-red--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-turn-on-red--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-turns--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-turns--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-two-stage-right-turn-for-mopeds--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-u-turn--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-u-turn--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-u-turn--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-vehicles-carrying-dangerous-goods--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-vehicles-carrying-dangerous-goods--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-vehicles-carrying-dangerous-goods--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-vehicles-carrying-dangerous-goods--g4"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-vehicles-carrying-dangerous-water-pollutants--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-vehicles-carrying-dangerous-water-pollutants--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-vehicles-carrying-explosives--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--no-vehicles-carrying-explosives-or-dangerous-water-pollutants--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--one-way-left--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--one-way-left--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--one-way-left--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--one-way-right--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--one-way-right--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--one-way-right--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--one-way-straight--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--one-way-straight--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--parking-fee-station--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--parking-restrictions--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--parking-restrictions--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--parking-restrictions--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--pass-on-either-side--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--pass-on-either-side--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--pass-on-either-side--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--pass-with-care--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--passing-lane-ahead--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--pedestrians-bicycles-permitted--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--pedestrians-keep-left--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--pedestrians-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--pedestrians-only--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--pedestrians-only--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--pedestrians-priority-zone--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--pedestrians-push-button--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--pedestrians-push-button--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--priority-over-oncoming-vehicles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--priority-over-oncoming-vehicles--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--priority-road--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--priority-road--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--radar-enforced--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--reserved-parking--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--reversible-lanes--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--reversible-lanes--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--road-closed--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--road-closed--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--road-closed-to-vehicles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--road-closed-to-vehicles--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--roundabout--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--roundabout--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--roundabout--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--shared-path-bicycles-and-pedestrians--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--shared-path-pedestrians-and-bicycles--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--sidewalk-closed--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--slanted-parking--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--snow-chains--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--snow-chains--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--snow-chains--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--snowmobiles-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--snowmobiles-permitted--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--speed-limit-zone--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--speeding-fines-increased--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--stay-in-lane--g1"
+  },
+  {
+    "additional_commands": [
+      "SnapToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "highway=stop"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--stop--g1"
+  },
+  {
+    "additional_commands": [
+      "SnapToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "highway=stop"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--stop--g10"
+  },
+  {
+    "additional_commands": [
+      "SnapToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "highway=stop"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--stop--g2"
+  },
+  {
+    "additional_commands": [
+      "SnapToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "highway=stop"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--stop--g3"
+  },
+  {
+    "additional_commands": [
+      "SnapToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "highway=stop"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--stop--g4"
+  },
+  {
+    "additional_commands": [
+      "SnapToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "highway=stop"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--stop--g5"
+  },
+  {
+    "additional_commands": [
+      "SnapToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "highway=stop"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--stop--g6"
+  },
+  {
+    "additional_commands": [
+      "SnapToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "highway=stop"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--stop--g7"
+  },
+  {
+    "additional_commands": [
+      "SnapToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "highway=stop"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--stop--g8"
+  },
+  {
+    "additional_commands": [
+      "SnapToRoad"
+    ],
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "highway=stop"
+    ],
+    "tagging_preset_type": [
+      "node"
+    ],
+    "type": "regulatory--stop--g9"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--stop-here-on-red-or-flashing-light--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--stop-here-on-red-or-flashing-light--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--stop-signals--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--stop-signals--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--tanks-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--taxi-only--g1"
+  },
+  {
+    "data_type": "production",
+    "has_image": false,
+    "type": "regulatory--text--g1"
+  },
+  {
+    "data_type": "production",
+    "has_image": false,
+    "type": "regulatory--text--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "has_image": false,
+    "type": "regulatory--texts--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "has_image": false,
+    "type": "regulatory--texts--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "has_image": false,
+    "type": "regulatory--texts-one-line--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "has_image": false,
+    "type": "regulatory--texts-three-lines--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "has_image": false,
+    "type": "regulatory--texts-two-lines--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--toll-pass-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--tractors-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--traffic-signal-photo-enforced--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--trams-and-buses-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--trams-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--triple-lanes--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--triple-lanes-go-straight-center-lane--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--triple-lanes-turn-left-center-lane--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--triple-lanes-turn-right-center-lane--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--truck-route--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--truck-speed-limit-10--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--truck-speed-limit-15--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--truck-speed-limit-20--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--truck-speed-limit-25--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--truck-speed-limit-30--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--truck-speed-limit-35--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--truck-speed-limit-40--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--truck-speed-limit-45--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--truck-speed-limit-5--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--truck-speed-limit-50--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--truck-speed-limit-55--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--truck-speed-limit-60--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--truck-speed-limit-65--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--truck-speed-limit-70--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--truck-speed-limit-75--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--truck-speed-limit-80--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--truck-speed-limit-85--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--trucks-and-buses-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--trucks-on-right--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--trucks-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--turn-left--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--turn-left--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--turn-left--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--turn-left-ahead--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--turn-left-ahead--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--turn-left-or-right--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--turn-left-or-right--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--turn-left-or-right--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--turn-left-or-u-turn--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--turn-right--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--turn-right--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--turn-right--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--turn-right-ahead--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--turn-right-ahead--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--turning-vehicles-yield-to-pedestrians--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--two-stage-right-turn-for-mopeds--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--two-way--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--u-turn--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--u-turn--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--u-turn--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--use-crosswalk--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--vehicles-carrying-dangerous-goods-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--vehicles-carrying-dangerous-goods-permitted--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--vehicles-carrying-explosives-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--vehicles-carrying-hazardous-goods-permitted--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--vehicles-only--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--wear-seat-belt--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--wear-seat-belt--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--wear-seat-belt--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--weight-limit--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--weight-limit--g2"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--weight-limit--g3"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--weight-limit--g4"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--weight-limit--g5"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--weight-limit--g6"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--weight-limit--g7"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--weight-limit-per-axle--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--weight-limit-per-tandem-axle--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--weight-limit-with-trucks--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=maxwidth"
+    ],
+    "type": "regulatory--width-limit--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--wrong-way--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "osm_key": [
+      "traffic_sign=give_way"
+    ],
+    "type": "regulatory--yield--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--yield-or-stop-for-pedestrians--g1"
+  },
+  {
+    "data_type": "production",
+    "detection_type": [
+      "traffic_sign"
+    ],
+    "type": "regulatory--your-speed--g1"
+  }
+]
