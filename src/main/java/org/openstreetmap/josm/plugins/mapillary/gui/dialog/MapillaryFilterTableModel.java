@@ -6,6 +6,7 @@ import static org.openstreetmap.josm.tools.I18n.trc;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 import javax.swing.ListSelectionModel;
@@ -31,8 +32,6 @@ import org.openstreetmap.josm.tools.Logging;
  */
 public class MapillaryFilterTableModel extends AbstractTableModel implements SortableTableModel<Filter> {
     private static final long serialVersionUID = -5965135291510758363L;
-
-    boolean manyChanges;
 
     /**
      * The filter enabled column
@@ -61,6 +60,8 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
      */
     final ListSelectionModel selectionModel;
 
+    final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+
     /**
      * Constructs a new {@code FilterTableModel}.
      *
@@ -69,6 +70,15 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
     public MapillaryFilterTableModel(ListSelectionModel listSelectionModel) {
         this.selectionModel = listSelectionModel;
         loadPrefs();
+    }
+
+    /**
+     * Check if we are not doing many changes
+     *
+     * @return {@code true} if we are not doing many changes
+     */
+    public boolean notManyChanges() {
+        return !readWriteLock.isWriteLocked();
     }
 
     private void updateFilters() {
@@ -148,12 +158,17 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
      * @param filter The new filter
      */
     public void addFilter(Filter filter) {
-        synchronized (model) {
-            if (model.addFilter(filter) && !manyChanges) {
+        try {
+            this.readWriteLock.writeLock().lock();
+            if (model.addFilter(filter) && this.notManyChanges()) {
                 savePrefs();
                 updateFilters();
                 int size = model.getFiltersCount();
                 fireTableRowsInserted(size - 1, size - 1);
+            }
+        } finally {
+            if (this.readWriteLock.isWriteLockedByCurrentThread()) {
+                this.readWriteLock.writeLock().unlock();
             }
         }
     }
@@ -167,7 +182,7 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
     public boolean move(int delta, int... selectedRows) {
         if (!SortableTableModel.super.move(delta, selectedRows))
             return false;
-        if (!manyChanges) {
+        if (this.notManyChanges()) {
             savePrefs();
             updateFilters();
             int rowIndex = selectedRows[0];
@@ -188,7 +203,7 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
     public void removeFilter(int rowIndex) {
         synchronized (model) {
             if (rowIndex >= 0 && model.getFiltersCount() > rowIndex && model.removeFilter(rowIndex) != null
-                && !manyChanges) {
+                && this.notManyChanges()) {
                 savePrefs();
                 updateFilters();
                 GuiHelper.runInEDT(() -> fireTableRowsDeleted(rowIndex, rowIndex));
@@ -199,7 +214,7 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
     @Override
     public Filter setValue(int rowIndex, Filter filter) {
         Filter result = model.setValue(rowIndex, filter);
-        if (!manyChanges) {
+        if (this.notManyChanges()) {
             savePrefs();
             updateFilters();
             fireTableRowsUpdated(rowIndex, rowIndex);
@@ -342,14 +357,14 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
      * Pause updates
      */
     public void pauseUpdates() {
-        manyChanges = true;
+        this.readWriteLock.writeLock().lock();
     }
 
     /**
      * Resume updates
      */
     public void resumeUpdates() {
-        manyChanges = false;
+        this.readWriteLock.writeLock().unlock();
         savePrefs();
         updateFilters();
         SwingUtilities.invokeLater(this::fireTableDataChanged);

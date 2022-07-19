@@ -88,6 +88,9 @@ public final class TrafficSignFilter extends JPanel
 
     private final List<ResetListener> resetObjects = new ArrayList<>();
 
+    /**
+     * Create a new {@link TrafficSignFilter}
+     */
     public TrafficSignFilter() {
         setLayout(new GridBagLayout());
 
@@ -338,29 +341,26 @@ public final class TrafficSignFilter extends JPanel
 
     private static void hideNearbyAddableObjs(boolean hideObjects) {
         MapillaryFilterTableModel model = MapillaryExpertFilterDialog.getInstance().getFilterModel();
-        synchronized (model) {
-            Filter filter = model.getFilters().stream().filter(f -> NEARBY_KEY.equals(f.text)).findAny()
-                .orElseGet(() -> {
-                    Filter nfilter = new Filter();
-                    nfilter.hiding = true;
-                    nfilter.text = NEARBY_KEY;
-                    return nfilter;
-                });
+        Filter filter = model.getFilters().stream().filter(f -> NEARBY_KEY.equals(f.text)).findAny().orElseGet(() -> {
+            Filter nfilter = new Filter();
+            nfilter.hiding = true;
+            nfilter.text = NEARBY_KEY;
+            return nfilter;
+        });
 
-            int index = model.getFilters().indexOf(filter);
+        int index = model.getFilters().indexOf(filter);
 
-            if (hideObjects) {
-                MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class)
-                    .forEach(TrafficSignFilter::updateNearbyOsmKey);
-                filter.enable = true;
-                if (index < 0) {
-                    model.addFilter(filter);
-                }
-            } else {
-                filter.enable = false;
-                if (index >= 0) {
-                    model.removeFilter(index);
-                }
+        if (hideObjects) {
+            MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class)
+                .forEach(TrafficSignFilter::updateNearbyOsmKey);
+            filter.enable = true;
+            if (index < 0) {
+                model.addFilter(filter);
+            }
+        } else {
+            filter.enable = false;
+            if (index >= 0) {
+                model.removeFilter(index);
             }
         }
     }
@@ -439,7 +439,7 @@ public final class TrafficSignFilter extends JPanel
         MapillaryFilterTableModel filterModel = MapillaryExpertFilterDialog.getInstance().getFilterModel();
         filterModel.selectionModel.clearSelection();
         filterModel.model.clearFilters();
-        if (!filterModel.manyChanges) {
+        if (filterModel.notManyChanges()) {
             hideNearbyAddableObjs(this.smartEditModeEnabled);
         }
         final Collection<ImageCheckBoxButton> nonAddable;
@@ -455,22 +455,20 @@ public final class TrafficSignFilter extends JPanel
         }
         this.updateShownButtons();
         MainApplication.worker.execute(() -> {
-            synchronized (filterModel) {
-                filterModel.pauseUpdates();
-                List<Future<?>> futures = nonAddable.stream().map(b -> b.setSelected(this.smartEditModeEnabled))
-                    .filter(Objects::nonNull).collect(Collectors.toList());
-                for (Future<?> future : futures) {
-                    try {
-                        future.get();
-                    } catch (ExecutionException e) {
-                        Logging.error(e);
-                    } catch (InterruptedException e) {
-                        Logging.error(e);
-                        Thread.currentThread().interrupt();
-                    }
+            filterModel.pauseUpdates();
+            List<Future<?>> futures = nonAddable.stream().map(b -> b.setSelected(this.smartEditModeEnabled))
+                .filter(Objects::nonNull).collect(Collectors.toList());
+            for (Future<?> future : futures) {
+                try {
+                    future.get();
+                } catch (ExecutionException e) {
+                    Logging.error(e);
+                } catch (InterruptedException e) {
+                    Logging.error(e);
+                    Thread.currentThread().interrupt();
                 }
-                filterModel.resumeUpdates();
             }
+            filterModel.resumeUpdates();
         });
     }
 
