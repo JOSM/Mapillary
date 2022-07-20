@@ -12,12 +12,14 @@ import javax.annotation.Nullable;
 import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.swing.JOptionPane;
+import javax.swing.text.AbstractDocument;
 
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.data.vector.VectorPrimitive;
 import org.openstreetmap.josm.gui.ConditionalOptionPaneUtil;
 import org.openstreetmap.josm.gui.ExtendedDialog;
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.tagging.ac.MaxLengthDocumentFilter;
 import org.openstreetmap.josm.gui.widgets.JosmTextField;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
@@ -62,6 +64,9 @@ public class SmartEditRemoveAction extends JosmAction {
         JsonObjectBuilder builder = Json.createObjectBuilder();
         if (problem == Problem.COMMENT) {
             JosmTextField textField = new JosmTextField(null, null, 64);
+            final MaxLengthDocumentFilter maxLengthFilter = new MaxLengthDocumentFilter();
+            maxLengthFilter.setMaxLength(255);
+            ((AbstractDocument) textField.getDocument()).setDocumentFilter(maxLengthFilter);
             if (!ConditionalOptionPaneUtil.showConfirmationDialog("mapillary.feedback.comment",
                 MainApplication.getMainFrame(), textField, tr("Comment to send to Mapillary"),
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_OPTION)) {
