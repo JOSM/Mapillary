@@ -28,9 +28,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -65,6 +67,7 @@ import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecor
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
+import org.openstreetmap.josm.plugins.mapillary.model.KeyIndexedObject;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
@@ -355,9 +358,8 @@ public class MapillaryImageEntry
         graphics.setStroke(new BasicStroke(2));
         for (ImageDetection<?> imageDetection : this.imageDetections) {
             if (MapillaryUtils.checkIfDetectionIsFilteredBasic(detectionLayers, imageDetection)
-                || (ImageMode.getMode() == ImageMode.SMART_EDIT && detectionLayers.stream()
-                    .map(PointObjectLayer::getData).map(VectorDataSet::getSelected).flatMap(Collection::stream)
-                    .map(IPrimitive::getId).anyMatch(imageDetection.getKey()::equals))) {
+                && (ImageMode.getMode() != ImageMode.SMART_EDIT
+                    || !checkIfDetectionInImageAndSelected(detectionLayers, imageDetection))) {
                 continue;
             }
             final Color color = imageDetection.getColor();
@@ -365,7 +367,7 @@ public class MapillaryImageEntry
             final Shape transformedShape = unit2CompTransform.createTransformedShape(imageDetection.getShape());
             graphics.draw(transformedShape);
             ImageIcon icon = imageDetection.getValue().getIcon();
-            if (imageDetection.isTrafficSign() && icon != null && !icon.equals(ObjectDetections.NO_ICON)) {
+            if (imageDetection.isTrafficSign() && !icon.equals(ObjectDetections.NO_ICON)) {
                 final Rectangle bounds = transformedShape.getBounds();
                 // graphics.drawImage(icon.getImage(), bounds.x, bounds.y, bounds.width, bounds.height, null);
                 // graphics.drawImage(icon.getImage().getScaledInstance(-1, bounds.height, Image.SCALE_DEFAULT),
@@ -373,6 +375,22 @@ public class MapillaryImageEntry
                 graphics.drawImage(icon.getImage(), bounds.x, bounds.y, null);
             }
         }
+    }
+
+    /**
+     * Check if a detection is selected
+     *
+     * @param detectionLayers The layers to look at
+     * @param detection The detection to check
+     * @return {@code true} if the detection is selected
+     */
+    private boolean checkIfDetectionInImageAndSelected(List<PointObjectLayer> detectionLayers,
+        ImageDetection<?> detection) {
+        Set<ImageDetection<?>> selectedDetections = detectionLayers.stream().map(PointObjectLayer::getData)
+            .map(VectorDataSet::getSelected).flatMap(Collection::stream).mapToLong(IPrimitive::getId)
+            .mapToObj(l -> ImageDetection.getDetections(l, ImageDetection.Options.WAIT)).flatMap(Collection::stream)
+            .collect(Collectors.toSet());
+        return selectedDetections.stream().mapToLong(KeyIndexedObject::getKey).anyMatch(l -> l == detection.getKey());
     }
 
     @Override
