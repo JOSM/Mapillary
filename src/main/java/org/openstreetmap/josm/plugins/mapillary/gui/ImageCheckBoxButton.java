@@ -6,8 +6,6 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Collection;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
 import javax.swing.ImageIcon;
@@ -166,15 +164,12 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
      * @param selected Set the checkbox state to the selected boolean
      * @return A future to indicate if the call finished
      */
-    public Future<Void> setSelected(boolean selected) {
-        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+    public void setSelected(boolean selected) {
         GuiHelper.runInEDT(() -> {
             jcheckbox.setSelected(selected);
             updateTooltips(this.detection, this.image, this.jcheckbox);
-            updateFilters(jcheckbox, filter);
-            completableFuture.complete(null);
         });
-        return completableFuture;
+        updateFilters(jcheckbox, filter);
     }
 
     /**

@@ -6,7 +6,6 @@ import static org.openstreetmap.josm.tools.I18n.trc;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 import javax.swing.ListSelectionModel;
@@ -53,14 +52,14 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
     /**
      * The filter model
      */
-    final MapillaryFilterModel model = new MapillaryFilterModel();
+    private final MapillaryFilterModel model = new MapillaryFilterModel();
 
     /**
      * The selection model
      */
     final ListSelectionModel selectionModel;
 
-    final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    private boolean manyUpdates;
 
     /**
      * Constructs a new {@code FilterTableModel}.
@@ -78,7 +77,7 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
      * @return {@code true} if we are not doing many changes
      */
     public boolean notManyChanges() {
-        return !readWriteLock.isWriteLocked();
+        return !this.manyUpdates;
     }
 
     private void updateFilters() {
@@ -109,7 +108,7 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
      *        filters
      * @since 14206
      */
-    public void executeFilters(boolean force) {
+    public synchronized void executeFilters(boolean force) {
         if (force || model.hasFilters()) {
             model.executeFilters();
         }
@@ -143,7 +142,7 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
         model.savePrefs("mapillary.filters.entries");
     }
 
-    private void cleanup() {
+    private synchronized void cleanup() {
         List<Filter> originalFilters = getFilters();
         List<Integer> toRemove = getFilters().parallelStream().filter(f -> f.text.isEmpty())
             .map(originalFilters::indexOf).sorted(Collections.reverseOrder()).collect(Collectors.toList());
@@ -157,19 +156,12 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
      *
      * @param filter The new filter
      */
-    public void addFilter(Filter filter) {
-        try {
-            this.readWriteLock.writeLock().lock();
-            if (model.addFilter(filter) && this.notManyChanges()) {
-                savePrefs();
-                updateFilters();
-                int size = model.getFiltersCount();
-                fireTableRowsInserted(size - 1, size - 1);
-            }
-        } finally {
-            if (this.readWriteLock.isWriteLockedByCurrentThread()) {
-                this.readWriteLock.writeLock().unlock();
-            }
+    public synchronized void addFilter(Filter filter) {
+        if (model.addFilter(filter) && this.notManyChanges()) {
+            savePrefs();
+            updateFilters();
+            int size = model.getFiltersCount();
+            fireTableRowsInserted(size - 1, size - 1);
         }
     }
 
@@ -200,15 +192,20 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
      *
      * @param rowIndex The index of the filter to remove
      */
-    public void removeFilter(int rowIndex) {
-        synchronized (model) {
-            if (rowIndex >= 0 && model.getFiltersCount() > rowIndex && model.removeFilter(rowIndex) != null
-                && this.notManyChanges()) {
-                savePrefs();
-                updateFilters();
-                GuiHelper.runInEDT(() -> fireTableRowsDeleted(rowIndex, rowIndex));
-            }
+    public synchronized void removeFilter(int rowIndex) {
+        if (rowIndex >= 0 && model.getFiltersCount() > rowIndex && model.removeFilter(rowIndex) != null
+            && this.notManyChanges()) {
+            savePrefs();
+            updateFilters();
+            GuiHelper.runInEDT(() -> fireTableRowsDeleted(rowIndex, rowIndex));
         }
+    }
+
+    /**
+     * See {@link MapillaryFilterModel#clearFilters()}
+     */
+    public synchronized void clearFilters() {
+        this.model.clearFilters();
     }
 
     @Override
@@ -353,18 +350,10 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
         fireTableDataChanged();
     }
 
-    /**
-     * Pause updates
-     */
-    public void pauseUpdates() {
-        this.readWriteLock.writeLock().lock();
-    }
-
-    /**
-     * Resume updates
-     */
-    public void resumeUpdates() {
-        this.readWriteLock.writeLock().unlock();
+    public synchronized void doManyUpdates(Runnable runnable) {
+        this.manyUpdates = true;
+        runnable.run();
+        this.manyUpdates = false;
         savePrefs();
         updateFilters();
         SwingUtilities.invokeLater(this::fireTableDataChanged);

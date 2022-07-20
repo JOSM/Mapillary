@@ -18,8 +18,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -63,7 +61,6 @@ import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
-import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Pair;
 import org.openstreetmap.josm.tools.Utils;
 
@@ -438,7 +435,7 @@ public final class TrafficSignFilter extends JPanel
     private void updateSmartEditFilters() {
         MapillaryFilterTableModel filterModel = MapillaryExpertFilterDialog.getInstance().getFilterModel();
         filterModel.selectionModel.clearSelection();
-        filterModel.model.clearFilters();
+        filterModel.clearFilters();
         if (filterModel.notManyChanges()) {
             hideNearbyAddableObjs(this.smartEditModeEnabled);
         }
@@ -454,22 +451,7 @@ public final class TrafficSignFilter extends JPanel
                 .collect(Collectors.toList());
         }
         this.updateShownButtons();
-        MainApplication.worker.execute(() -> {
-            filterModel.pauseUpdates();
-            List<Future<?>> futures = nonAddable.stream().map(b -> b.setSelected(this.smartEditModeEnabled))
-                .filter(Objects::nonNull).collect(Collectors.toList());
-            for (Future<?> future : futures) {
-                try {
-                    future.get();
-                } catch (ExecutionException e) {
-                    Logging.error(e);
-                } catch (InterruptedException e) {
-                    Logging.error(e);
-                    Thread.currentThread().interrupt();
-                }
-            }
-            filterModel.resumeUpdates();
-        });
+        filterModel.doManyUpdates(() -> nonAddable.forEach(b -> b.setSelected(this.smartEditModeEnabled)));
     }
 
     private void updateShownButtons() {
@@ -478,28 +460,11 @@ public final class TrafficSignFilter extends JPanel
     }
 
     private void toggleVisible(boolean check) {
-        if (SwingUtilities.isEventDispatchThread()) {
-            MainApplication.worker.execute(() -> toggleVisible(check));
-            return;
-        }
-        MapillaryExpertFilterDialog.getInstance().getFilterModel().pauseUpdates();
-        final List<Future<?>> futures;
-        synchronized (this.buttons) {
-            futures = this.buttons.stream().filter(ImageCheckBoxButton::isVisible).map(b -> b.setSelected(check))
-                .filter(Objects::nonNull).collect(Collectors.toList());
-        }
-
-        for (Future<?> future : futures) {
-            try {
-                future.get();
-            } catch (InterruptedException e) {
-                Logging.error(e);
-                Thread.currentThread().interrupt();
-            } catch (ExecutionException e) {
-                Logging.error(e);
+        MapillaryExpertFilterDialog.getInstance().getFilterModel().doManyUpdates(() -> {
+            synchronized (this.buttons) {
+                this.buttons.stream().filter(ImageCheckBoxButton::isVisible).forEach(b -> b.setSelected(check));
             }
-        }
-        MapillaryExpertFilterDialog.getInstance().getFilterModel().resumeUpdates();
+        });
     }
 
     private void addButtons() {
@@ -567,32 +532,14 @@ public final class TrafficSignFilter extends JPanel
      */
     public void reset() {
         this.resetObjects.forEach(ResetListener::reset);
-        MapillaryExpertFilterDialog.getInstance().getFilterModel().pauseUpdates();
-        final List<Future<?>> futures;
-        synchronized (this.buttons) {
-            futures = this.buttons.stream().map(b -> b.setSelected(false)).filter(Objects::nonNull)
-                .collect(Collectors.toList());
-        }
-        futures.add(MainApplication.worker.submit(() -> {
-            while (!MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().isEmpty()) {
-                MapillaryExpertFilterDialog.getInstance().getFilterModel().removeFilter(0);
+        final MapillaryFilterTableModel filterModel = MapillaryExpertFilterDialog.getInstance().getFilterModel();
+        filterModel.doManyUpdates(() -> {
+            synchronized (this.buttons) {
+                this.buttons.forEach(b -> b.setSelected(false));
             }
-        }));
-        Stream.of(getComponents()).forEach(this::resetSubPanels);
-        MainApplication.worker.execute(() -> {
-            for (Future<?> future : futures) {
-                try {
-                    future.get();
-                } catch (InterruptedException e) {
-                    Logging.error(e);
-                    Thread.currentThread().interrupt();
-                } catch (ExecutionException e) {
-                    Logging.error(e);
-                    Logging.error(e.getCause());
-                }
-            }
-            MapillaryExpertFilterDialog.getInstance().getFilterModel().resumeUpdates();
+            filterModel.clearFilters();
         });
+        Stream.of(getComponents()).forEach(this::resetSubPanels);
 
         // Remove the NEARBY_KEY tag
         MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).forEach(layer -> {
