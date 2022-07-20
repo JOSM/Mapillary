@@ -581,6 +581,7 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
 
             if (!inDetections && (selectedImage == null || !selectedImage.equals(toSelect))) {
                 mapillaryData.setSelected(toSelect);
+                this.getData().setSelected(selection);
             }
         }
         if (ImageViewerDialog.getInstance().hasImage()) {
