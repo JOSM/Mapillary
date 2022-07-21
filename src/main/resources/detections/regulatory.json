@@ -273,7 +273,7 @@
     "type": "regulatory--do-not-block-intersection--g1"
   },
   {
-    "data_type": "production",
+    "data_type": "preview",
     "detection_type": [
       "traffic_sign"
     ],
@@ -915,7 +915,7 @@
     "type": "regulatory--end-of-no-horn--g1"
   },
   {
-    "data_type": "production",
+    "data_type": "preview",
     "detection_type": [
       "traffic_sign"
     ],
@@ -926,7 +926,7 @@
     "type": "regulatory--end-of-no-overtaking--g1"
   },
   {
-    "data_type": "production",
+    "data_type": "preview",
     "detection_type": [
       "traffic_sign"
     ],
@@ -937,7 +937,7 @@
     "type": "regulatory--end-of-no-overtaking--g2"
   },
   {
-    "data_type": "production",
+    "data_type": "preview",
     "detection_type": [
       "traffic_sign"
     ],
@@ -948,7 +948,7 @@
     "type": "regulatory--end-of-no-overtaking--g3"
   },
   {
-    "data_type": "production",
+    "data_type": "preview",
     "detection_type": [
       "traffic_sign"
     ],
@@ -959,7 +959,7 @@
     "type": "regulatory--end-of-no-overtaking--g4"
   },
   {
-    "data_type": "production",
+    "data_type": "preview",
     "detection_type": [
       "traffic_sign"
     ],
@@ -970,7 +970,7 @@
     "type": "regulatory--end-of-no-overtaking--g5"
   },
   {
-    "data_type": "production",
+    "data_type": "preview",
     "detection_type": [
       "traffic_sign"
     ],
@@ -981,7 +981,7 @@
     "type": "regulatory--end-of-no-overtaking-by-heavy-goods-vehicles--g1"
   },
   {
-    "data_type": "production",
+    "data_type": "preview",
     "detection_type": [
       "traffic_sign"
     ],
@@ -1314,7 +1314,7 @@
     "type": "regulatory--heavy-goods-vehicles-permitted--g1"
   },
   {
-    "data_type": "production",
+    "data_type": "preview",
     "detection_type": [
       "traffic_sign"
     ],
@@ -1471,7 +1471,7 @@
     "type": "regulatory--left-turn-yield-on-green--g1"
   },
   {
-    "data_type": "production",
+    "data_type": "preview",
     "detection_type": [
       "traffic_sign"
     ],
@@ -1481,7 +1481,7 @@
     "type": "regulatory--length-limit--g1"
   },
   {
-    "data_type": "production",
+    "data_type": "preview",
     "detection_type": [
       "traffic_sign"
     ],
@@ -4850,7 +4850,7 @@
     "type": "regulatory--weight-limit-with-trucks--g1"
   },
   {
-    "data_type": "production",
+    "data_type": "preview",
     "detection_type": [
       "traffic_sign"
     ],
@@ -4867,7 +4867,7 @@
     "type": "regulatory--wrong-way--g1"
   },
   {
-    "data_type": "production",
+    "data_type": "preview",
     "detection_type": [
       "traffic_sign"
     ],
