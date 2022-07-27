@@ -105,7 +105,7 @@ node[value=regulatory--texts-two-lines--g1]
 }
 
 node|z18-[value][is_prop_set(imagepath)][!is_prop_set(noimage)] {
-    icon-image: concat("mapillary_sprite_source/", prop(imagepath), "/", tag("value"));
+    icon-image: concat("https://raw.githubusercontent.com/mapillary/mapillary_sprite_source/master/", prop(imagepath), "/", tag("value"), ".svg");
 }
 
 node|z18-[value][is_prop_set(noimage)] {

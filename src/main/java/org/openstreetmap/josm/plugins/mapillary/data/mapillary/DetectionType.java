@@ -22,7 +22,8 @@ public enum DetectionType {
      * @param imageLocationString {@code "mapillary_sprite_source/package_" + imageLocationString}
      */
     DetectionType(String imageLocationString) {
-        this.imageLocationString = "mapillary_sprite_source/package_" + imageLocationString;
+        this.imageLocationString = "https://raw.githubusercontent.com/mapillary/mapillary_sprite_source/master/package_"
+            + imageLocationString;
     }
 
     /**
