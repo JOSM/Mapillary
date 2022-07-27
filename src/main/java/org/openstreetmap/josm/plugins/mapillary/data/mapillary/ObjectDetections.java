@@ -39,9 +39,9 @@ import org.openstreetmap.josm.tools.ResourceProvider;
  * All current object detections. TODO some kind of warning when a detection does not exist here?
  */
 public final class ObjectDetections {
+    public static final ImageIcon NO_ICON = ImageProvider.createBlankIcon(ImageProvider.ImageSizes.MAP);
     public static final ObjectDetections UNKNOWN = new ObjectDetections("unknown", null, null, null, null,
         DataType.PRODUCTION, false);
-    public static final ImageIcon NO_ICON = ImageProvider.createBlankIcon(ImageProvider.ImageSizes.MAP);
 
     private static final List<ObjectDetections> VALUES = loadObjectDetections(1647, "complementary", "construction",
         "information", "marking", "object", "regulatory", "warning");
@@ -85,12 +85,11 @@ public final class ObjectDetections {
         @Nullable DetectionType[] detectionTypes, @Nonnull DataType dataType, boolean hasImage) {
         this.key = key;
         this.detectionTypes = detectionTypes != null ? detectionTypes : Constants.NO_DETECTION_TYPE;
-        // Use two ;; to avoid cases where a delimited list is needed
         this.osmKey = tagMap != null ? tagMap : Collections.emptyMap();
         this.taggingPresetType = taggingPresetType != null ? Arrays.asList(taggingPresetType) : Collections.emptyList();
         this.additionalCommands = additionalCommands;
         this.dataType = dataType;
-        ImageIcon foundIcon = null;
+        ImageIcon foundIcon = NO_ICON;
         if (hasImage || Logging.isTraceEnabled()) {
             if (!hasImage) {
                 Logging.trace("Checking if an icon for {0} exists", this.key);
@@ -98,18 +97,18 @@ public final class ObjectDetections {
             for (DetectionType type : this.getDetectionTypes()) {
                 if (type.getImageLocationString() == null)
                     continue;
-                ImageIcon tIcon = ImageProvider.getIfAvailable(type.getImageLocationString(), this.getKey());
+                ImageIcon tIcon = ImageProvider.getIfAvailable(type.getImageLocationString() + '/' + this.getKey() + ".svg");
                 if (tIcon != null) {
                     foundIcon = tIcon;
                 }
             }
         }
-        if (hasImage && foundIcon == null) {
+        if (hasImage && NO_ICON.equals(foundIcon)) {
             throw new IllegalStateException("No icon found for " + key);
-        } else if (!hasImage && foundIcon != null) {
+        } else if (!hasImage && !NO_ICON.equals(foundIcon)) {
             throw new IllegalStateException("Icon found for " + key);
         }
-        this.icon = NO_ICON;
+        this.icon = foundIcon;
         this.updateMappingPresets();
     }
 
