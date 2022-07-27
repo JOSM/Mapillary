@@ -3,12 +3,14 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Collection;
 import java.util.stream.Stream;
 
-import javax.swing.ImageIcon;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
@@ -22,6 +24,7 @@ import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.GBC;
+import org.openstreetmap.josm.tools.ImageProvider;
 
 /**
  * Buttons for filtering detections
@@ -36,15 +39,17 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
     private final String detection;
     private final String[] splitName;
     private final ObjectDetections[] detections;
+    private final ImageProvider icon;
 
-    public ImageCheckBoxButton(ImageIcon icon, String detection, ObjectDetections... detections) {
+    public ImageCheckBoxButton(@Nullable ImageProvider icon, @Nonnull String detection,
+        @Nonnull ObjectDetections... detections) {
         super(new GridBagLayout());
         this.detection = detection;
         this.detections = detections.clone();
         MapillaryExpertFilterDialog.getInstance().getFilterModel().addTableModelListener(this);
         splitName = detection.split("--", -1);
         image = new JButton();
-        image.setIcon(icon);
+        this.icon = icon;
         add(image, GBC.std().anchor(GridBagConstraints.WEST));
         String name = splitName[splitName.length - 1].replace(".svg", "");
         if (name.matches("g\\d+")) {
@@ -71,6 +76,18 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
         updateTooltips(detection, image, jcheckbox);
 
         tableChanged(null);
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        if (this.image.getIcon() == null) {
+            if (this.icon == null) {
+                this.image.setIcon(ObjectDetections.NO_ICON);
+            } else {
+                this.icon.getAsync(i -> GuiHelper.runInEDT(() -> this.image.setIcon(i)));
+            }
+        }
+        super.paint(g);
     }
 
     private static void updateTooltips(String detection, JButton image, JCheckBox jcheckbox) {

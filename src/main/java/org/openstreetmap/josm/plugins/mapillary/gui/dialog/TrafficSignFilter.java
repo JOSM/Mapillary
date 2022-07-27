@@ -504,8 +504,8 @@ public final class TrafficSignFilter extends JPanel
             .filter(v -> v != ObjectDetections.UNKNOWN).collect(Collectors.groupingBy(ObjectDetections::getBaseKey));
         collected = new TreeMap<>(collected); // Create a sorted map
         for (Map.Entry<String, List<ObjectDetections>> entry : collected.entrySet()) {
-            final ImageIcon icon = entry.getValue().stream().map(ObjectDetections::getIcon).findFirst()
-                .orElseGet(() -> ImageProvider.createBlankIcon(ImageProvider.ImageSizes.MAP));
+            final ImageProvider icon = entry.getValue().stream().map(ObjectDetections::getImageProvider)
+                .filter(Objects::nonNull).findFirst().orElse(null);
             GuiHelper.runInEDT(() -> {
                 ImageCheckBoxButton button = new ImageCheckBoxButton(icon, entry.getKey(),
                     entry.getValue().toArray(new ObjectDetections[0]));

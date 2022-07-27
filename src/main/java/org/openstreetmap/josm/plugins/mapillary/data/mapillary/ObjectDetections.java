@@ -34,6 +34,7 @@ import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Pair;
 import org.openstreetmap.josm.tools.ResourceProvider;
+import org.openstreetmap.josm.tools.bugreport.BugReport;
 
 /**
  * All current object detections. TODO some kind of warning when a detection does not exist here?
@@ -63,8 +64,8 @@ public final class ObjectDetections {
     private final SerializableSupplier<AdditionalInstructions> additionalCommands;
     @Nonnull
     private final DataType dataType;
-    @Nonnull
-    private final ImageIcon icon;
+    @Nullable
+    private final ImageProvider icon;
     // Not final just in case a preset change listener needs to be implemented
     @Nonnull
     private TaggingPreset[] presets = new TaggingPreset[0];
@@ -89,26 +90,33 @@ public final class ObjectDetections {
         this.taggingPresetType = taggingPresetType != null ? Arrays.asList(taggingPresetType) : Collections.emptyList();
         this.additionalCommands = additionalCommands;
         this.dataType = dataType;
-        ImageIcon foundIcon = NO_ICON;
-        if (hasImage || Logging.isTraceEnabled()) {
+        ImageProvider foundIcon = null;
+        final boolean trace = Logging.isTraceEnabled();
+        if (hasImage || trace) {
             if (!hasImage) {
                 Logging.trace("Checking if an icon for {0} exists", this.key);
             }
             for (DetectionType type : this.getDetectionTypes()) {
                 if (type.getImageLocationString() == null)
                     continue;
-                ImageIcon tIcon = ImageProvider.getIfAvailable(type.getImageLocationString() + '/' + this.getKey() + ".svg");
-                if (tIcon != null) {
-                    foundIcon = tIcon;
-                }
+                foundIcon = new ImageProvider(type.getImageLocationString() + '/' + this.getKey() + ".svg");
+                foundIcon.setOptional(!hasImage);
             }
         }
-        if (hasImage && NO_ICON.equals(foundIcon)) {
-            throw new IllegalStateException("No icon found for " + key);
-        } else if (!hasImage && !NO_ICON.equals(foundIcon)) {
-            throw new IllegalStateException("Icon found for " + key);
+        if (trace && foundIcon != null) {
+            foundIcon.getAsync(imageIcon -> {
+                if (hasImage && imageIcon == null) {
+                    BugReport.intercept(new IllegalStateException("No icon found for " + key)).warn();
+                } else if (!hasImage && imageIcon != null) {
+                    BugReport.intercept(new IllegalStateException("Icon found for " + key)).warn();
+                }
+            });
         }
-        this.icon = foundIcon;
+        if (!hasImage) {
+            this.icon = null;
+        } else {
+            this.icon = foundIcon;
+        }
         this.updateMappingPresets();
     }
 
@@ -361,6 +369,23 @@ public final class ObjectDetections {
      */
     @Nonnull
     public ImageIcon getIcon() {
+        if (this.icon == null) {
+            return NO_ICON;
+        }
+        ImageIcon rImage = this.icon.get();
+        if (rImage == null) {
+            return NO_ICON;
+        }
+        return rImage;
+    }
+
+    /**
+     * Get the image provider for this
+     *
+     * @return The image provider
+     */
+    @Nullable
+    public ImageProvider getImageProvider() {
         return this.icon;
     }
 
