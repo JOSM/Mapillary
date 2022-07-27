@@ -121,6 +121,9 @@ public class PointObjectLayer extends MVTLayer
      * @return The loaded style
      */
     public static synchronized MapCSSStyleSource getMapCSSStyle() {
+        if (mapcss != null) {
+            return mapcss;
+        }
         List<MapCSSStyleSource> styles = MapPaintStyles.getStyles().getStyleSources().stream()
             .filter(MapCSSStyleSource.class::isInstance).map(MapCSSStyleSource.class::cast)
             .filter(s -> PAINT_STYLE_SOURCE.equals(s.url)).collect(Collectors.toList());
@@ -130,7 +133,13 @@ public class PointObjectLayer extends MVTLayer
         oldStyles.forEach(MapPaintStyles::removeStyle);
         mapcss = styles.isEmpty() ? new MapCSSStyleSource(PAINT_STYLE_SOURCE, "Mapillary", "Mapillary Point Objects")
             : styles.get(0);
-        mapcss.loadStyleSource();
+        if (!mapcss.isLoaded()) {
+            if (mapcss.url.contains("zip")) {
+                mapcss.isZip = true;
+                mapcss.zipEntryPath = "Styles_MapillaryDetections-style.mapcss";
+            }
+            mapcss.loadStyleSource();
+        }
         return mapcss;
     }
 
