@@ -26,9 +26,12 @@ import javax.swing.ImageIcon;
 
 import org.openstreetmap.josm.data.osm.Tag;
 import org.openstreetmap.josm.data.osm.TagMap;
+import org.openstreetmap.josm.gui.mappaint.MapPaintStyles;
+import org.openstreetmap.josm.gui.mappaint.mapcss.MapCSSStyleSource;
 import org.openstreetmap.josm.gui.tagging.presets.TaggingPreset;
 import org.openstreetmap.josm.gui.tagging.presets.TaggingPresetType;
 import org.openstreetmap.josm.gui.tagging.presets.TaggingPresets;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
@@ -92,6 +95,7 @@ public final class ObjectDetections {
         this.dataType = dataType;
         ImageProvider foundIcon = null;
         final boolean trace = Logging.isTraceEnabled();
+
         if (hasImage || trace) {
             if (!hasImage) {
                 Logging.trace("Checking if an icon for {0} exists", this.key);
@@ -99,8 +103,13 @@ public final class ObjectDetections {
             for (DetectionType type : this.getDetectionTypes()) {
                 if (type.getImageLocationString() == null)
                     continue;
-                foundIcon = new ImageProvider(type.getImageLocationString() + '/' + this.getKey() + ".svg");
-                foundIcon.setOptional(!hasImage);
+                MapCSSStyleSource source = PointObjectLayer.getMapCSSStyle();
+                MapPaintStyles.IconReference iconReference = new MapPaintStyles.IconReference(
+                    type.getImageLocationString() + '/' + this.getKey(), source);
+                foundIcon = MapPaintStyles.getIconProvider(iconReference, false);
+                if (foundIcon != null) {
+                    foundIcon.setOptional(!hasImage);
+                }
             }
         }
         if (trace && foundIcon != null) {

@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary.gui.layer;
 import static org.openstreetmap.josm.tools.I18n.tr;
 import static org.openstreetmap.josm.tools.I18n.trn;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
@@ -53,8 +54,8 @@ import org.openstreetmap.josm.data.osm.event.DataSetListenerAdapter.Listener;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
 import org.openstreetmap.josm.data.osm.visitor.PrimitiveVisitor;
 import org.openstreetmap.josm.data.osm.visitor.paint.AbstractMapRenderer;
-import org.openstreetmap.josm.data.osm.visitor.paint.MapPaintSettings;
 import org.openstreetmap.josm.data.osm.visitor.paint.MapRendererFactory;
+import org.openstreetmap.josm.data.preferences.NamedColorProperty;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorPrimitive;
@@ -72,6 +73,7 @@ import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
 import org.openstreetmap.josm.gui.layer.imagery.MVTLayer;
 import org.openstreetmap.josm.gui.mappaint.MapPaintStyles;
+import org.openstreetmap.josm.gui.mappaint.StyleSource;
 import org.openstreetmap.josm.gui.mappaint.loader.MapPaintStyleLoader;
 import org.openstreetmap.josm.gui.mappaint.mapcss.MapCSSStyleSource;
 import org.openstreetmap.josm.gui.util.GuiHelper;
@@ -101,22 +103,35 @@ import org.openstreetmap.josm.tools.Pair;
 /**
  * Mapillary Point Object layer
  */
-public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpdateListener,
-    VectorDataSelectionListener, LayerChangeListener, TileAddEventSource<MVTTile> {
+public class PointObjectLayer extends MVTLayer
+    implements Listener, HighlightUpdateListener, VectorDataSelectionListener, LayerChangeListener,
+    TileAddEventSource<MVTTile>, MapPaintStyles.MapPaintStylesUpdateListener {
     private final FilterEventListener tableModelListener;
-    private static final String PAINT_STYLE_SOURCE = "resource://mapcss/Mapillary.mapcss";
+    private static final String OLD_PAINT_STYLE_SOURCE = "resource://mapcss/Mapillary.mapcss";
+    private static final String PAINT_STYLE_SOURCE = "https://josm.openstreetmap.de/josmfile?page=Styles/MapillaryDetections&zip=1";
     private static MapCSSStyleSource mapcss;
     private final Map<IPrimitive, JWindow> displayedWindows = new HashMap<>();
 
     private boolean showingPresetWindow;
     private final ListenerList<TileAddListener<MVTTile>> listeners = ListenerList.create();
 
-    private static synchronized void getMapCSSStyle() {
+    /**
+     * Get the MapCSS style for point objects
+     *
+     * @return The loaded style
+     */
+    public static synchronized MapCSSStyleSource getMapCSSStyle() {
         List<MapCSSStyleSource> styles = MapPaintStyles.getStyles().getStyleSources().stream()
             .filter(MapCSSStyleSource.class::isInstance).map(MapCSSStyleSource.class::cast)
             .filter(s -> PAINT_STYLE_SOURCE.equals(s.url)).collect(Collectors.toList());
+        List<MapCSSStyleSource> oldStyles = MapPaintStyles.getStyles().getStyleSources().stream()
+            .filter(MapCSSStyleSource.class::isInstance).map(MapCSSStyleSource.class::cast)
+            .filter(s -> OLD_PAINT_STYLE_SOURCE.equals(s.url)).collect(Collectors.toList());
+        oldStyles.forEach(MapPaintStyles::removeStyle);
         mapcss = styles.isEmpty() ? new MapCSSStyleSource(PAINT_STYLE_SOURCE, "Mapillary", "Mapillary Point Objects")
             : styles.get(0);
+        mapcss.loadStyleSource();
+        return mapcss;
     }
 
     public PointObjectLayer(ImageryInfo info) {
@@ -131,7 +146,6 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
         tableModelListener = new FilterEventListener(this, this.getData());
         MapillaryExpertFilterDialog.getInstance().getFilterModel().addTableModelListener(tableModelListener);
         tableModelListener.tableChanged(null);
-
         VectorDataSet data = this.getData();
         data.addHighlightUpdateListener(this);
         data.addSelectionListener(this);
@@ -139,6 +153,7 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
             MapillaryLayer.getInstance().getData().addSelectionListener(this);
         }
         MainApplication.getLayerManager().addLayerChangeListener(this);
+        MapPaintStyles.addMapPaintStylesUpdateListener(this);
     }
 
     @Override
@@ -210,7 +225,6 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
             || !OsmDataLayer.PROPERTY_HIDE_LABELS_WHILE_DRAGGING.get();
         painter.enableSlowOperations(slowOperations);
         painter.render(this.getData(), virtual, box);
-        MainApplication.getMap().conflictDialog.paintConflicts(g, mv);
         if (slowOperations) {
             // TODO is the box the same thing?
             List<VectorPrimitive> selectedInView = this.getData().getSelected().stream().filter(p -> {
@@ -226,14 +240,15 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
         }
         // TODO remove when we can set the vector primitives as selected
         if (mv.getDist100Pixel() < 50) {
-            g.setColor(MapPaintSettings.INSTANCE.getSelectedColor());
+            g.setColor(new NamedColorProperty("mapillary.map.object.selected", Color.MAGENTA).get());
             for (INode node : this.getData().getSelectedNodes()) {
                 final Point p = mv.getPoint(node);
                 final ImageSizes size = ImageSizes.MAP;
                 g.drawRect(p.x - size.getAdjustedWidth(), p.y - size.getAdjustedHeight(), 2 * size.getAdjustedWidth(),
                     2 * size.getAdjustedHeight());
             }
-            g.setColor(MapPaintSettings.INSTANCE.getHighlightColor());
+            g.setColor(
+                new NamedColorProperty("mapillary.map.object.highlight", Color.MAGENTA.brighter().brighter()).get());
             for (INode node : this.getData()
                 .getPrimitivesById(this.getData().getHighlighted().toArray(new PrimitiveId[0]))
                 .filter(INode.class::isInstance).map(INode.class::cast).collect(Collectors.toList())) {
@@ -437,6 +452,20 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
             MapillaryLayer.getInstance().getData().removeSelectionListener(this);
         }
         MainApplication.getLayerManager().removeLayerChangeListener(this);
+        MapPaintStyles.removeMapPaintStylesUpdateListener(this);
+    }
+
+    @Override
+    public void mapPaintStylesUpdated() {
+        this.getData().clearMappaintCache();
+    }
+
+    @Override
+    public void mapPaintStyleEntryUpdated(int index) {
+        List<StyleSource> styles = MapPaintStyles.getStyles().getStyleSources();
+        if (index < styles.size() && Objects.equals(mapcss, styles.get(index))) {
+            this.getData().clearMappaintCache();
+        }
     }
 
     private static class DataCountVisitor implements PrimitiveVisitor {
