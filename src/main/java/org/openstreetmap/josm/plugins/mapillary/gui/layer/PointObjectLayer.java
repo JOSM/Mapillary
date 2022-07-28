@@ -89,6 +89,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.geoimage.MapillaryImag
 import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddEventSource;
 import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddListener;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
@@ -108,7 +109,6 @@ public class PointObjectLayer extends MVTLayer
     TileAddEventSource<MVTTile>, MapPaintStyles.MapPaintStylesUpdateListener {
     private final FilterEventListener tableModelListener;
     private static final String OLD_PAINT_STYLE_SOURCE = "resource://mapcss/Mapillary.mapcss";
-    private static final String PAINT_STYLE_SOURCE = "https://josm.openstreetmap.de/josmfile?page=Styles/MapillaryDetections&zip=1";
     private static MapCSSStyleSource mapcss;
     private final Map<IPrimitive, JWindow> displayedWindows = new HashMap<>();
 
@@ -126,12 +126,14 @@ public class PointObjectLayer extends MVTLayer
         }
         List<MapCSSStyleSource> styles = MapPaintStyles.getStyles().getStyleSources().stream()
             .filter(MapCSSStyleSource.class::isInstance).map(MapCSSStyleSource.class::cast)
-            .filter(s -> PAINT_STYLE_SOURCE.equals(s.url)).collect(Collectors.toList());
+            .filter(s -> MapillaryConfig.getUrls().getPaintStyleUrl().equals(s.url)).collect(Collectors.toList());
         List<MapCSSStyleSource> oldStyles = MapPaintStyles.getStyles().getStyleSources().stream()
             .filter(MapCSSStyleSource.class::isInstance).map(MapCSSStyleSource.class::cast)
             .filter(s -> OLD_PAINT_STYLE_SOURCE.equals(s.url)).collect(Collectors.toList());
         oldStyles.forEach(MapPaintStyles::removeStyle);
-        mapcss = styles.isEmpty() ? new MapCSSStyleSource(PAINT_STYLE_SOURCE, "Mapillary", "Mapillary Point Objects")
+        mapcss = styles.isEmpty()
+            ? new MapCSSStyleSource(MapillaryConfig.getUrls().getPaintStyleUrl(), "Mapillary",
+                "Mapillary Point Objects")
             : styles.get(0);
         if (!mapcss.isLoaded()) {
             if (mapcss.url.contains("zip")) {

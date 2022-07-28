@@ -495,26 +495,20 @@ public final class TrafficSignFilter extends JPanel
      *
      * @param panel The panel to add the {@link ImageIcon} to
      */
-    public void getIcons(JComponent panel) {
-        if (SwingUtilities.isEventDispatchThread()) {
-            MainApplication.worker.execute(() -> getIcons(panel));
-            return;
-        }
+    private void getIcons(JComponent panel) {
         Map<String, List<ObjectDetections>> collected = Stream.of(ObjectDetections.values())
             .filter(v -> v != ObjectDetections.UNKNOWN).collect(Collectors.groupingBy(ObjectDetections::getBaseKey));
         collected = new TreeMap<>(collected); // Create a sorted map
         for (Map.Entry<String, List<ObjectDetections>> entry : collected.entrySet()) {
             final ImageProvider icon = entry.getValue().stream().map(ObjectDetections::getImageProvider)
                 .filter(Objects::nonNull).findFirst().orElse(null);
-            GuiHelper.runInEDT(() -> {
-                ImageCheckBoxButton button = new ImageCheckBoxButton(icon, entry.getKey(),
-                    entry.getValue().toArray(new ObjectDetections[0]));
-                buttons.add(button);
-                panel.add(button, GBC.eol().fill(GridBagConstraints.HORIZONTAL).anchor(GridBagConstraints.WEST));
-            });
+            ImageCheckBoxButton button = new ImageCheckBoxButton(icon, entry.getKey(),
+                entry.getValue().toArray(new ObjectDetections[0]));
+            buttons.add(button);
+            panel.add(button, GBC.eol().fill(GridBagConstraints.HORIZONTAL).anchor(GridBagConstraints.WEST));
         }
         Stream.of(showMaxNumberModel.getListeners(ChangeListener.class))
-            .forEach(i -> SwingUtilities.invokeLater(() -> i.stateChanged(new ChangeEvent(this))));
+            .forEach(i -> i.stateChanged(new ChangeEvent(this)));
     }
 
     @Override

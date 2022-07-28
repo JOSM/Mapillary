@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.spi.preferences;
 
 /**
@@ -19,4 +20,11 @@ public interface IMapillaryUrls {
      * @return The base tile url
      */
     String getBaseTileUrl();
+
+    /**
+     * Get the paint style URL
+     *
+     * @return The paint style url
+     */
+    String getPaintStyleUrl();
 }

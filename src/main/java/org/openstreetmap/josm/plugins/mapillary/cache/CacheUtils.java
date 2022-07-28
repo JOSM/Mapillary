@@ -8,7 +8,7 @@ import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.data.osm.INode;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillaryNodeDownloader;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -42,11 +42,11 @@ public final class CacheUtils {
      */
     public static void downloadPicture(INode img, MapillaryCache.Type type) {
         if (img.getNumKeys() <= MAPILLARY_DEFAULT_KEY_LENGTH) {
-            MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(img));
-            if (img.getNumKeys() <= MAPILLARY_DEFAULT_KEY_LENGTH) {
-                return;
-            }
-            downloadPicture(img, type);
+            new MapillaryNodeDownloader(img, n -> {
+                if (n != null && n.getNumKeys() > MAPILLARY_DEFAULT_KEY_LENGTH) {
+                    downloadPicture(n, type);
+                }
+            }).execute();
             return;
         }
         if (new MapillaryCache(img, type).get() == null) {

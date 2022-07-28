@@ -84,7 +84,8 @@ import org.openstreetmap.josm.plugins.mapillary.data.mapillary.visitor.paint.Map
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.OldVersionDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.geoimage.MapillaryImageEntry;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillaryNodeDownloader;
+import org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillarySequenceDownloader;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapViewGeometryUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
@@ -695,6 +696,9 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
 
     public void setCurrentImage(final MapillaryNode image) {
         this.setImageViewed(image);
+        if (image != null && image.isReferredByWays(0)) {
+            new MapillarySequenceDownloader(image, this::updateSequence).execute();
+        }
         this.image = image;
         this.invalidate();
         if (ReflectionUtils.hasImageViewerDialog()) {
@@ -734,7 +738,8 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
                     return;
                 }
             }
-            MapillaryUtils.getForkJoinPool().execute(() -> this.downloadSequence(this.downloadNode(node)));
+
+            new MapillaryNodeDownloader(node, MapillaryLayer.getInstance()::setCurrentImage).execute();
         }
         MapillaryMapRenderer.selectionOrHighlightChanged();
     }
@@ -745,39 +750,13 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     }
 
     /**
-     * Download a singular node. This is faster than downloading large sequences.
-     *
-     * @param node The node to download
-     * @return The downloaded node
-     */
-    private MapillaryNode downloadNode(VectorNode node) {
-        final MapillaryNode tImage = MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(node)).values()
-            .stream().flatMap(Collection::stream).filter(n -> MapillaryImageUtils.equals(n, node)).findFirst()
-            .orElse(null);
-        this.setCurrentImage(tImage);
-        return tImage;
-    }
-
-    /**
-     * Download the rest of the sequence
-     *
-     * @param node The node to download
-     */
-    private void downloadSequence(MapillaryNode node) {
-        final Collection<MapillarySequence> sequences = MapillaryDownloader.downloadSequences(node,
-            nodes -> this.updateSequence(node, nodes), MapillaryImageUtils.getSequenceKey(node));
-        this.updateSequence(node, sequences);
-    }
-
-    /**
      * Update the current sequence
      *
-     * @param node The currently selected node
-     * @param sequences The sequences that have been updated
+     * @param sequence The sequences that have been updated
      */
-    private void updateSequence(MapillaryNode node, Collection<MapillarySequence> sequences) {
-        final List<MapillaryNode> downloadedNodes = sequences.stream().flatMap(seq -> seq.getNodes().stream())
-            .collect(Collectors.toList());
+    private void updateSequence(MapillarySequence sequence) {
+        MapillaryNode node = this.image;
+        final List<MapillaryNode> downloadedNodes = sequence.getNodes();
         final MapillaryNode tImage = downloadedNodes.stream().filter(n -> MapillaryImageUtils.equals(n, node))
             .findFirst()
             .orElseGet(() -> downloadedNodes.stream().map(n -> new Pair<>(n, n.getCoor().distanceSq(node.getCoor())))

@@ -9,6 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import junit.framework.AssertionFailedError;
@@ -24,7 +27,7 @@ import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillaryNodeDownloader;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.AwaitThreadFinish;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryCaches;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
@@ -45,9 +48,12 @@ class MapillaryCacheTest {
     static JOSMTestRules rules = new JOSMTestRules().main().projection();
 
     @Test
-    void test() {
+    void test() throws ExecutionException, InterruptedException, TimeoutException {
         // Use 135511895288847 since that is an image we have real information for
-        MapillaryNode image = MapillaryDownloader.downloadImage(135511895288847L);
+        MapillaryNodeDownloader downloader = new MapillaryNodeDownloader(135511895288847L, s -> {
+            /* Do nothing */});
+        downloader.execute();
+        MapillaryNode image = downloader.get(10, TimeUnit.SECONDS);
         MapillaryCache cache = new MapillaryCache(image, MapillaryCache.Type.ORIGINAL);
         assertNotNull(cache.getUrl());
         assertNotNull(cache.getCacheKey());

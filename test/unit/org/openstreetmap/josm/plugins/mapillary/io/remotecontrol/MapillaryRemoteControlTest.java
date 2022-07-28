@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.remotecontrol;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -12,6 +13,8 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.net.UnknownHostException;
 import java.util.stream.Stream;
 
+import org.awaitility.Awaitility;
+import org.awaitility.Durations;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -115,6 +118,8 @@ class MapillaryRemoteControlTest {
         mapillaryRemoteControl.setUrl(RemoteControl.getInet4Address() + "/photo?" + request);
         mapillaryRemoteControl.validateRequest();
         mapillaryRemoteControl.handleRequest();
+
+        Awaitility.await().atMost(Durations.FIVE_SECONDS).until(() -> MapillaryLayer.getInstance().getImage() != null);
 
         final String id = request.replaceAll(".*=Mapillary/", "");
         if (request.startsWith("photo")) {

@@ -127,7 +127,8 @@ public class MapillaryImageEntry
         final long id = MapillaryImageUtils.getKey(image);
         if (id > 0) {
             MapillaryImageEntry entry = CACHE.get(id, () -> new MapillaryImageEntry(image));
-            if (entry.image.getNumKeys() <= image.getNumKeys()) {
+            if (entry.image.getNumKeys() <= image.getNumKeys()
+                || image != entry.image /* Object reference equality */) {
                 CACHE.remove(id);
                 entry = CACHE.get(id, () -> new MapillaryImageEntry(image));
             }

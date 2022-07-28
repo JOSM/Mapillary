@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.testutils.annotations;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -180,6 +181,7 @@ public @interface MapillaryURLWireMock {
             server
                 .stubFor(WireMock.get("/api/v4/coverageTiles/mly1_computed_public/2/{z}/{x}/{y}?access_token=test_key")
                     .willReturn(WireMock.serverError()));
+            server.stubFor(WireMock.get("/paintstyle").willReturn(WireMock.forbidden()));
 
             // Stubs for images (default to returning a "blank" image at low priority)
             try (ByteArrayOutputStream imageOut = new ByteArrayOutputStream()) {
@@ -213,6 +215,11 @@ public @interface MapillaryURLWireMock {
                     @Override
                     public String getBaseTileUrl() {
                         return server.baseUrl() + "/api/v4/coverageTiles/";
+                    }
+
+                    @Override
+                    public String getPaintStyleUrl() {
+                        return server.baseUrl() + "/paintstyle";
                     }
                 });
             }

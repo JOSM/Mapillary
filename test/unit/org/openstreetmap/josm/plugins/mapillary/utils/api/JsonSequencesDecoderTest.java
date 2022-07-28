@@ -14,7 +14,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.json.Json;
@@ -27,14 +26,10 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.openstreetmap.josm.data.osm.IPrimitive;
-import org.openstreetmap.josm.data.osm.IWay;
-import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryCaches;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMockErrors;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
@@ -81,10 +76,7 @@ class JsonSequencesDecoderTest {
     void testDecodeSequence() throws IOException {
         final JsonObject json = OAuthUtils
             .getWithHeader(new URL(MapillaryURL.APIv4.getImagesBySequences("7nfcwfvjdtphz7yj6zat6a")));
-        final Collection<MapillarySequence> exampleSequences = JsonDecoder.decodeData(json,
-            JsonSequencesDecoder::decodeSequence);
-        assertEquals(1, exampleSequences.size());
-        final IWay<?> exampleSequence = exampleSequences.iterator().next();
+        final Collection<Long> exampleSequences = JsonDecoder.decodeData(json, JsonSequencesDecoder::decodeSequence);
         // Since the sequence key isn't returned in the API response, we have to rely upon the sequence key
         // being present in the vector tiles. Therefore, we cannot test that the expected sequence id is in the
         // vector way. We also cannot check anything _except_ that the sequence now has data.
@@ -92,8 +84,7 @@ class JsonSequencesDecoderTest {
         // Check that the nodes/ids were correctly decoded
         final long[] expectedArray = { 148137757289079L, 311799370533334L, 338231874314914L, 4235112816526838L,
             464249047982277L, 308609047601518L, 135511895288847L, 311681117131457L };
-        final long[] actualArray = exampleSequence.getNodes().stream().mapToLong(MapillaryImageUtils::getKey).toArray();
-        assertEquals(8, exampleSequence.getNodesCount());
+        final long[] actualArray = exampleSequences.stream().mapToLong(Long::longValue).toArray();
         assertArrayEquals(expectedArray, actualArray);
     }
 
@@ -122,9 +113,9 @@ class JsonSequencesDecoderTest {
     @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.SERVER_ERROR)
     void testDecodeSequenceInvalid(final String toCheck) {
         final JsonValue json = toCheck != null ? stringToJsonValue(toCheck) : null;
-        final List<MapillarySequence> seq = JsonSequencesDecoder.decodeSequence(json);
-        assertTrue(seq.isEmpty(), seq.stream().map(IWay::getNodes).flatMap(Collection::stream)
-            .mapToLong(IPrimitive::getUniqueId).mapToObj(Long::toString).collect(Collectors.joining(",")));
+        final Collection<Long> seq = JsonSequencesDecoder.decodeSequence(json);
+        assertTrue(seq.isEmpty(),
+            seq.stream().mapToLong(Long::longValue).mapToObj(Long::toString).collect(Collectors.joining(",")));
     }
 
     @Test

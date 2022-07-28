@@ -32,7 +32,8 @@ import org.openstreetmap.josm.gui.dialogs.properties.PropertiesDialog;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillaryNodesDownloader;
+import org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillarySequenceDownloader;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
 import org.openstreetmap.josm.tools.Destroyable;
@@ -139,8 +140,12 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
                     .filter(i -> !map.containsKey(i)).toArray();
                 map.clear(); // deallocate map
                 if (missingImages.length != 0) {
-                    MapillaryDownloader.downloadSequences(
-                        MapillaryDownloader.downloadImages(missingImages).keySet().toArray(new String[0]));
+                    new MapillaryNodesDownloader(
+                        downloaded -> downloaded.stream().map(MapillaryImageUtils::getSequenceKey).distinct()
+                            .map(seq -> new MapillarySequenceDownloader(seq, s -> {
+                                /* Do nothing */}))
+                            .forEach(MapillarySequenceDownloader::execute),
+                        missingImages).execute();
                 }
                 newMap = data.getNodes().stream().filter(image -> MapillaryImageUtils.getKey(image) != 0)
                     .collect(Collectors.toMap(MapillaryImageUtils::getKey, i -> i));
@@ -191,8 +196,10 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
                 lock.unlock();
             }
             if (missingImages.length != 0) {
-                MapillaryDownloader.downloadSequences(
-                    MapillaryDownloader.downloadImages(missingImages).keySet().toArray(new String[0]));
+                new MapillaryNodesDownloader(downloaded -> downloaded.stream().map(MapillaryImageUtils::getSequenceKey)
+                    .distinct().map(seq -> new MapillarySequenceDownloader(seq, s -> {
+                        /* Do nothing */}))
+                    .forEach(MapillarySequenceDownloader::execute), missingImages).execute();
             }
             Map<OsmData<?, ?, ?, ?>, List<IPrimitive>> selections = detections.stream()
                 .collect(Collectors.groupingBy(IPrimitive::getDataSet));

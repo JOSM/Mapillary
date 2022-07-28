@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.testutils.annotations;
 
 import java.lang.annotation.Documented;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openstreetmap.josm.gui.tagging.presets.TaggingPresets;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
+import org.openstreetmap.josm.testutils.annotations.HTTP;
 
 /**
  * Annotation for ObjectDetections (ensures they have the appropriate presets)
@@ -20,6 +22,7 @@ import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
  * @author Taylor Smock
  */
 @Documented
+@HTTP
 @ExtendWith(ObjectDetectionsAnnotation.ObjectDetectionsExtension.class)
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

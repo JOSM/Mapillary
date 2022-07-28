@@ -1,19 +1,12 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 
 import org.apache.commons.jcs3.access.CacheAccess;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
@@ -21,13 +14,6 @@ import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IWay;
-import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
-import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillarySequence;
-import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
-import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoder;
-import org.openstreetmap.josm.tools.Logging;
-import org.openstreetmap.josm.tools.Utils;
 
 public class MapillarySequenceUtils {
     /**
@@ -160,61 +146,6 @@ public class MapillarySequenceUtils {
      */
     public static boolean hasKey(IWay<?> sequence) {
         return !"".equals(getKey(sequence));
-    }
-
-    /**
-     * Get the sequence for a key
-     *
-     * @param key The sequence key
-     * @return The sequence (full)
-     */
-    public static IWay<?> getSequence(String key) {
-        if (key == null || Utils.isStripEmpty(key)) {
-            return null;
-        }
-        // There should be a method to get a sequence in v4
-        IWay<?> sequence = SEQUENCE_CACHE.get(key);
-        if (sequence == null) {
-            sequence = downloadSequence(key);
-            // Ensure that we don't cache a null sequence -- this will throw an InvalidArgumentException if the
-            // sequence
-            // is null which is why we cannot use {@link CacheAccess#get(Object, Supplier)}
-            if (sequence != null) {
-                SEQUENCE_CACHE.put(key, sequence);
-            }
-        } else if (sequence.getKeys().isEmpty()) {
-            downloadSequence(key);
-        }
-        return sequence;
-    }
-
-    /**
-     * Download a specific sequence
-     * Note: This is synchronized to avoid a CME (JOSM #20948).
-     *
-     * @param key The key to download
-     * @return The downloaded sequence
-     */
-    private static synchronized IWay<?> downloadSequence(final String key) {
-        final String sequenceUrl = MapillaryURL.APIv4.getImagesBySequences(key);
-        final String data = Caches.META_DATA_CACHE.get(sequenceUrl, () -> {
-            try {
-                return OAuthUtils.getWithHeader(new URL(sequenceUrl)).toString();
-            } catch (IOException e) {
-                Logging.error(e);
-                return null;
-            }
-        });
-        if (data == null) {
-            return null;
-        }
-
-        try (JsonReader jsonReader = Json
-            .createReader(new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8)))) {
-            JsonObject json = jsonReader.readObject();
-            Collection<MapillarySequence> seq = JsonDecoder.decodeData(json, JsonSequencesDecoder::decodeSequence);
-            return seq.stream().findFirst().orElse(null);
-        }
     }
 
     private MapillarySequenceUtils() {

@@ -1,17 +1,14 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import java.time.Instant;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntry;
@@ -22,7 +19,7 @@ import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillaryNodeDownloader;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.UncheckedParseException;
 import org.openstreetmap.josm.tools.date.DateUtils;
@@ -130,9 +127,12 @@ public final class MapillaryImageUtils {
      */
     @Nonnull
     public static CompletableFuture<BufferedImageCacheEntry> getImage(@Nonnull INode image,
-        @Nullable MapillaryCache.Type type) {
-        if (type == null) {
+        @Nullable MapillaryCache.Type cacheType) {
+        final MapillaryCache.Type type;
+        if (cacheType == null) {
             type = MapillaryCache.Type.getTypeForMemory(image);
+        } else {
+            type = cacheType;
         }
         if (MapillaryImageUtils.IS_DOWNLOADABLE.test(image)) {
             CompletableFuture<BufferedImageCacheEntry> completableFuture = new CompletableFuture<>();
@@ -140,18 +140,15 @@ public final class MapillaryImageUtils {
                 (entry, attributes, result) -> cacheImageFuture(image, completableFuture, entry));
             return completableFuture;
         } else if (getKey(image) > 0) {
-            try {
-                MapillaryUtils.getForkJoinPool().submit(() -> MapillaryDownloader.downloadImages(getKey(image))).get(10,
-                    SwingUtilities.isEventDispatchThread() ? TimeUnit.SECONDS : TimeUnit.MINUTES);
-                if (MapillaryImageUtils.IS_DOWNLOADABLE.test(image)) {
-                    return getImage(image, type);
+            CompletableFuture<BufferedImageCacheEntry> completableFuture = new CompletableFuture<>();
+            new MapillaryNodeDownloader(image, i -> {
+                if (MapillaryImageUtils.IS_DOWNLOADABLE.test(i)) {
+                    getImage(image, type).thenAccept(completableFuture::complete);
+                } else {
+                    completableFuture.complete(null);
                 }
-            } catch (ExecutionException | TimeoutException e) {
-                Logging.error(e);
-            } catch (InterruptedException e) {
-                Logging.error(e);
-                Thread.currentThread().interrupt();
-            }
+            }).execute();
+            return completableFuture;
         }
         return CompletableFuture.completedFuture(null);
     }

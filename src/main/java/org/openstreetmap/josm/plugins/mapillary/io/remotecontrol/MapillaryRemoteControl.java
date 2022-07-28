@@ -5,12 +5,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,9 +13,9 @@ import org.openstreetmap.josm.actions.AutoScaleAction;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.io.remotecontrol.PermissionPrefWithDefault;
 import org.openstreetmap.josm.io.remotecontrol.handler.RequestHandler;
-import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillaryNodesDownloader;
+import org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillarySequenceDownloader;
 
 /**
  * Remote Control handler for Mapillary
@@ -88,37 +83,41 @@ public class MapillaryRemoteControl extends RequestHandler.RawURLParseRequestHan
             throw new RequestHandlerBadRequestException(tr("No known image provider used"));
         }
         // This will create a mapillary layer if one does not already exist
-        Collection<MapillaryNode> nodes = new HashSet<>();
-        if (mapillaryImages.length > 0) {
-            Map<String, Collection<MapillaryNode>> images = GuiHelper
-                .runInEDTAndWaitAndReturn(() -> MapillaryDownloader.downloadImages(mapillaryImages));
-            mapillarySequences.addAll(images.keySet());
-            images.values().forEach(nodes::addAll);
-            List<MapillaryNode> addedImages = images.entrySet().stream().flatMap(entry -> entry.getValue().stream())
-                .collect(Collectors.toList());
-            if (addedImages.size() == 1) {
-                GuiHelper
-                    .runInEDTAndWait(() -> MapillaryLayer.getInstance().setCurrentImage(addedImages.iterator().next()));
-                // TODO zoom to selected image?
-            }
-        }
+        downloadImages(mapillaryImages);
         mapillarySequences.removeIf(string -> string.trim().isEmpty());
-        if (!mapillarySequences.isEmpty()) {
-            List<MapillaryNode> tNodes = Optional
-                .ofNullable(GuiHelper.runInEDTAndWaitAndReturn(
-                    () -> MapillaryDownloader.downloadSequences(mapillarySequences.toArray(new String[0])).stream()
-                        .flatMap(seq -> seq.getNodes().stream()).collect(Collectors.toList())))
-                .orElseGet(Collections::emptyList);
-            if (nodes.isEmpty()) {
-                nodes.addAll(tNodes);
-                if (!tNodes.isEmpty()) {
-                    GuiHelper.runInEDTAndWait(() -> MapillaryLayer.getInstance().setCurrentImage(tNodes.get(0)));
+        downloadSequences(mapillarySequences);
+    }
+
+    /**
+     * Download images
+     *
+     * @param mapillaryImages The images to download
+     */
+    private static void downloadImages(long[] mapillaryImages) {
+        if (mapillaryImages.length > 0) {
+            MapillaryNodesDownloader downloader = new MapillaryNodesDownloader(downloadedImages -> {
+                if (downloadedImages.size() == 1) {
+                    GuiHelper
+                        .runInEDTAndWait(() -> MapillaryLayer.getInstance().setCurrentImage(downloadedImages.get(0)));
+                    GuiHelper.runInEDT(() -> AutoScaleAction.zoomTo(downloadedImages));
                 }
-            }
+            }, mapillaryImages);
+            downloader.execute();
         }
-        nodes.removeIf(Objects::isNull);
-        if (!nodes.isEmpty()) {
-            GuiHelper.runInEDT(() -> AutoScaleAction.zoomTo(nodes));
+    }
+
+    /**
+     * Download sequences
+     *
+     * @param mapillarySequences The sequences to download
+     */
+    private static void downloadSequences(Collection<String> mapillarySequences) {
+        if (!mapillarySequences.isEmpty()) {
+            mapillarySequences.stream().map(seq -> new MapillarySequenceDownloader(seq, s -> {
+                if (!s.isEmpty()) {
+                    GuiHelper.runInEDTAndWait(() -> MapillaryLayer.getInstance().setCurrentImage(s.getNode(0)));
+                }
+            })).forEach(MapillarySequenceDownloader::execute);
         }
     }
 

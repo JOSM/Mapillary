@@ -194,6 +194,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
      *
      * @param image
      *        The image.
+     * @param type The image size
      */
     public MapillaryCache(@Nonnull final INode image, @Nonnull final Type type) {
         super(Caches.FULL_IMAGE_CACHE.getICacheAccess(),
