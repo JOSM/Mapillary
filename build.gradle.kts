@@ -12,12 +12,12 @@ import kotlin.reflect.full.starProjectedType
 
 plugins {
   id("application")
-  id("com.diffplug.spotless") version "6.7.0"
+  id("com.diffplug.spotless") version "6.9.0"
   id("com.github.ben-manes.versions") version "0.42.0"
-  id("com.github.spotbugs") version "5.0.7"
+  id("com.github.spotbugs") version "5.0.9"
   id("net.ltgt.errorprone") version "2.0.2"
   id("org.openstreetmap.josm") version "0.8.0"
-  id("org.sonarqube") version "3.3"
+  id("org.sonarqube") version "3.4.0.2513"
   //id("org.checkerframework") version "0.6.14"
 
   eclipse
@@ -61,9 +61,9 @@ val versions = mapOf(
   "errorprone" to if (JavaVersion.current() >= JavaVersion.VERSION_11) "2.14.0" else "2.10.0",
   "jdatepicker" to "1.3.4",
   "jmockit" to "1.49",
-  "junit" to "5.8.2",
+  "junit" to "5.9.0",
   "pmd" to "6.42.0",
-  "spotbugs" to "4.7.0",
+  "spotbugs" to "4.7.1",
   "wiremock" to "2.33.2"
 )
 
