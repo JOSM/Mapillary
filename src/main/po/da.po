@@ -4,15 +4,15 @@
 # FIRST AUTHOR, YEAR.
 #
 # Translators:
-# Simon Legner, 2020
 # Florian Schäfer, 2020
 # Jurbo Lator, 2021
+# Simon Legner, 2022
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.1-2-g20963ab\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.14-19-g22312a2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-26 15:07+0000\n"
+"POT-Creation-Date: 2022-07-27 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Danish (https://www.transifex.com/josm/teams/2544/da/)\n"
 "MIME-Version: 1.0\n"
@@ -21,6 +21,7 @@ msgstr ""
 "Language: da\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#. filter mode: add
 msgctxt "filter"
 msgid "A"
 msgstr "A"
@@ -33,15 +34,28 @@ msgstr ""
 msgid "Add"
 msgstr "Tilføj"
 
+msgid "Add Map Feature to OSM"
+msgstr ""
+
 msgid "Add Mapillary tag"
 msgstr "Tilføj Mapillary tag"
 
 msgid "Add filter."
 msgstr "Tilføj filter."
 
+msgid "All"
+msgstr "Alle"
+
+msgid "At least one of the optional arguments must be used ({0})"
+msgstr ""
+
+msgid "Bad Imagery"
+msgstr ""
+
 msgid "Cancel"
 msgstr "Annuller"
 
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr ""
@@ -57,18 +71,50 @@ msgstr "Ryd"
 msgid "Color"
 msgstr "Farve"
 
+msgctxt "Checkbox label in JOSM settings"
+msgid "Color images by capture date"
+msgstr ""
+
+msgid "Comment"
+msgstr "Kommentar"
+
+msgid "Comment to send to Mapillary"
+msgstr ""
+
+msgid "Copied URL to clipboard …"
+msgstr ""
+
+msgid "Copied color to clipboard"
+msgstr ""
+
+msgid "Copied key to clipboard …"
+msgstr ""
+
+msgid "Copy URL"
+msgstr ""
+
+msgid "Copy color"
+msgstr ""
+
 msgid "Copy key"
 msgstr "Kopier nøgle"
 
-msgid "Could not import a geotagged image to the Mapillary layer!"
-msgstr "Kunne ikke importere et geotagget billede til Mapillary laget!"
+msgid "Could not load image: {0}"
+msgstr ""
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "Kunne ikke åbne URL {0} i en browser"
 
+msgid "Could not refresh Mapillary token. HTTP Status Code {0}."
+msgstr ""
+
+#. filter mode: remove
 msgctxt "filter"
 msgid "D"
 msgstr "D"
+
+msgid "Dataset is currently being updated"
+msgstr ""
 
 msgid "Days"
 msgstr "Dage"
@@ -76,14 +122,26 @@ msgstr "Dage"
 msgid "Delete"
 msgstr "Slet"
 
+msgid "Delete Mapillary object"
+msgstr ""
+
 msgid "Delete filter."
 msgstr "Slet filter."
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Vis hvornår billedet blev taget"
 
 msgid "Displays detail information on the currently selected Mapillary image"
 msgstr "Viser detaljerede oplysninger om det aktuelt valgte Mapillary billede"
+
+msgid ""
+"Displays the layer displaying the map point objects detected by Mapillary"
+msgstr ""
+
+msgid ""
+"Displays the layer displaying the traffic sign objects detected by Mapillary"
+msgstr ""
 
 msgid ""
 "Do you really want to replace the current value <i>{0}</i> with the new "
@@ -95,9 +153,14 @@ msgstr ""
 msgid "Down"
 msgstr "Ned"
 
-msgid "Downloaded images"
-msgstr "Downloadede billeder"
+msgid "Downloading…"
+msgstr ""
 
+msgid "Duplicate"
+msgstr "Dupliker"
+
+#. translators notes must be in front
+#. column header: enable filter
 msgctxt "filter"
 msgid "E"
 msgstr "Ø"
@@ -108,11 +171,24 @@ msgstr "Rediger"
 msgid "Edit filter."
 msgstr "Rediger filter."
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "Aktiver eksperimentelle beta-funktioner (muligvis ustabil)"
 
 msgid "Enable filter"
 msgstr "Slå filter til"
+
+msgid "Enable/disable developer mode"
+msgstr ""
+
+msgid "End"
+msgstr ""
+
+msgid "End: {0}"
+msgstr ""
+
+msgid "Erroneous Data"
+msgstr ""
 
 msgid "Explore"
 msgstr "Filstyringsprogram"
@@ -132,28 +208,36 @@ msgstr "Eksporter valgte rækkefølge"
 msgid "Exporting Mapillary Images…"
 msgstr "Eksporter Mapillary billeder..."
 
+#. filter mode: in selection
 msgctxt "filter"
 msgid "F"
 msgstr "F"
 
+msgid "False Positive"
+msgstr ""
+
 msgid "Filter"
 msgstr "Filter"
 
-msgid "Filter Hidden:{0} Disabled:{1}"
-msgstr "Filter Skjult:{0} Deaktiveret:{1}"
+msgid "Filter Mapillary Detections"
+msgstr ""
+
+msgid "Filter mapillary objects and hide/disable them."
+msgstr ""
 
 msgid "Filter mode"
 msgstr "Filtertilstand"
 
-msgid "Follow selected image"
-msgstr "Følg valgt billede"
+msgid "First Seen End"
+msgstr ""
+
+msgid "First Seen Start"
+msgstr ""
 
 msgid "Give way"
 msgstr "Ubetinget vigepligt"
 
-msgid "Go forward"
-msgstr "Gå frem"
-
+#. column header: hide filter
 msgctxt "filter"
 msgid "H"
 msgstr "H"
@@ -164,9 +248,13 @@ msgstr "Skjul filter"
 msgid "Hiding filter"
 msgstr "Skjuler filter"
 
+#. column header: inverted filter
 msgctxt "filter"
 msgid "I"
 msgstr "I"
+
+msgid "Image Quality"
+msgstr ""
 
 msgid "Image actions"
 msgstr "Billedhandlinger"
@@ -177,17 +265,29 @@ msgstr "Billedetektioner"
 msgid "Image info"
 msgstr "Billedinformation"
 
+msgid "Image info dialog"
+msgstr ""
+
 msgid "Image key"
 msgstr "Billednøgle"
 
-msgid "Import"
-msgstr "Importer"
+msgid "Image: "
+msgstr ""
 
 msgid "Intersection danger"
 msgstr "Farligt vejkryds"
 
 msgid "Inverse filter"
 msgstr "Omvend filter"
+
+msgid "Just remove it"
+msgstr ""
+
+msgid "Last Seen End"
+msgstr ""
+
+msgid "Last Seen Start"
+msgstr ""
 
 msgid "Layer"
 msgstr "Lag"
@@ -201,6 +301,7 @@ msgstr "Login lykkes, vend tilbage til JOSM."
 msgid "Logout"
 msgstr "Log ud"
 
+#. column header: filter mode
 msgctxt "filter"
 msgid "M"
 msgstr "M"
@@ -211,14 +312,36 @@ msgstr "Påbudt kørselsretning (enhver)"
 msgid "Mapillary"
 msgstr "Mapillary"
 
+msgid "Mapillary Expert Filter"
+msgstr ""
+
+msgid "Mapillary Filters"
+msgstr ""
+
+#. ImageInfos
 msgid "Mapillary Images"
 msgstr "Mapillary billeder"
+
+msgid "Mapillary Point Objects"
+msgstr ""
+
+msgid "Mapillary Smart Edit: Add objects"
+msgstr ""
+
+msgid "Mapillary Traffic Signs"
+msgstr ""
 
 msgid "Mapillary filter"
 msgstr "Mapillary filter"
 
 msgid "Mapillary image"
 msgstr "Mapillary billede"
+
+msgid "Mapillary image read should never occur on UI thread"
+msgstr ""
+
+msgid "Mapillary images Filter"
+msgstr ""
 
 msgid "Mapillary layer"
 msgstr "Mapillary lag"
@@ -229,8 +352,20 @@ msgstr "Mapillary login"
 msgid "Mapillary point features layer"
 msgstr "Mapillary punkt funktioner lag"
 
+msgid "Mapillary style sheet"
+msgstr ""
+
 msgid "Mapillary traffic signs layer"
 msgstr "Mapillary trafikskilte lag"
+
+msgid "Mapillary: Could not refresh login, logging out"
+msgstr ""
+
+msgid "Maximum distance to consider for changeset source calculations"
+msgstr ""
+
+msgid "Month"
+msgstr ""
 
 msgid "Months"
 msgstr "Måneder"
@@ -244,11 +379,17 @@ msgstr "Flyt filter op."
 msgid "Multikey: {0}"
 msgstr "Flertast: {0}"
 
+msgid "No color selected"
+msgstr ""
+
 msgid "No entry"
 msgstr "Indkørsel forbudt"
 
 msgid "No images found"
 msgstr "Ingen billeder fundet"
+
+msgid "No known image provider used"
+msgstr ""
 
 msgid "No overtaking"
 msgstr "Overhaling forbudt"
@@ -259,14 +400,37 @@ msgstr "Parking forbudt"
 msgid "No turn"
 msgstr "Sving forbudt"
 
+msgid "Non-panoramic"
+msgstr ""
+
 msgid "Not older than: "
 msgstr "Ikke ældre end: "
 
+#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "Antal billeder der skal hentes (frem og tilbage)"
 
+msgid "Number of images to draw in the map view (affects performance)"
+msgstr ""
+
+msgid "Object Detection Filters"
+msgstr ""
+
+msgid ""
+"Only Mapillary images are supported at this time, use "
+"photo=Mapillary/<image_id>"
+msgstr ""
+
+msgid ""
+"Only Mapillary sequences are supported at this time, use "
+"sequence=Mapillary/<sequence_id>"
+msgstr ""
+
 msgid "Only images with signs"
 msgstr "Kun billeder med skilte"
+
+msgid "Only show objects on detection layers (\"Relevant objects\")"
+msgstr ""
 
 msgid "Open Mapillary filter dialog"
 msgstr "Åbn Mapillary dialog filter"
@@ -274,12 +438,47 @@ msgstr "Åbn Mapillary dialog filter"
 msgid "Open Mapillary layer"
 msgstr "Åben Mapillary lag"
 
+msgid "Org"
+msgstr ""
+
+msgid "Organization"
+msgstr ""
+
+msgid "Organization: {0}"
+msgstr ""
+
+msgid "Organizations"
+msgstr ""
+
+msgid "Panoramic"
+msgstr ""
+
 msgid "Pedestrian crossing"
 msgstr "Fodgængerfelt"
 
+msgid "Picture Filters"
+msgstr ""
+
+msgid "Point Objects"
+msgstr ""
+
+#. translators notes must be in front
+#. filter mode: replace
 msgctxt "filter"
 msgid "R"
 msgstr "R"
+
+msgid "Remote Control has been asked to load:"
+msgstr ""
+
+msgid "Remote Control has been asked to set Mapillary filters:"
+msgstr ""
+
+msgid "Remove"
+msgstr "Fjern"
+
+msgid "Requires JOSM restart"
+msgstr ""
 
 msgid "Reset"
 msgstr "Nulstil"
@@ -287,23 +486,80 @@ msgstr "Nulstil"
 msgid "Reverse"
 msgstr "Vend"
 
+msgid "Reverse the filters order."
+msgstr ""
+
 msgid "Roundabout"
 msgstr "Rundkørsel"
+
+msgid "Select Mapillary Detection ({0})"
+msgstr ""
+
+msgid "Select Mapillary Image ({0})"
+msgstr ""
+
+msgid "Select Visible"
+msgstr ""
 
 msgid "Select a directory"
 msgstr "Vælg en mappe"
 
+msgid "Select the Mapillary Detection {0}"
+msgstr ""
+
+msgid "Select the Mapillary Image {0} on the {1} layer (downloads if needed)"
+msgstr ""
+
+msgid "Select/Deselect all object detections on the current page"
+msgstr ""
+
 msgid "Sequence key"
 msgstr "Sekvensnøgle"
+
+msgid "Sequence offset"
+msgstr ""
+
+msgid "Sequence: "
+msgstr ""
+
+msgid "Show Image types: "
+msgstr ""
+
+msgid "Show Relevant"
+msgstr ""
 
 msgid "Show detections on top of image"
 msgstr "Vis detekteringer oven på billedet"
 
+msgid "Show the next page of items"
+msgstr ""
+
+msgid "Show the previous page of items"
+msgstr ""
+
+msgid "Show this number of items on each page"
+msgstr ""
+
+msgid "Smart Edit Mode"
+msgstr ""
+
+msgid "Snap to highway"
+msgstr ""
+
 msgid "Sort"
 msgstr "Sorter"
 
+msgid "Sort filters."
+msgstr ""
+
 msgid "Speed limit"
 msgstr "Hastighedsbegrænsning"
+
+msgid "Start"
+msgstr ""
+
+msgid "Start: {0}"
+msgstr ""
 
 msgctxt "name of the traffic sign"
 msgid "Stop"
@@ -312,9 +568,22 @@ msgstr "Stop"
 msgid "Tag conflict"
 msgstr "Tag konflikt"
 
+#. column header: filter text
 msgctxt "filter"
 msgid "Text"
 msgstr "Tekst"
+
+msgid ""
+"There is a newer version of JOSM and/or the Mapillary plugin. Please update."
+msgstr ""
+
+msgid ""
+"This currently removes the detection from the current layer, but may report "
+"back to Mapillary in the future"
+msgstr ""
+
+msgid "Today"
+msgstr ""
 
 msgid "Toggle: {0}"
 msgstr "Slå til/fra: {0}"
@@ -322,8 +591,18 @@ msgstr "Slå til/fra: {0}"
 msgid "Total Mapillary images: {0}"
 msgstr "Total antal Mapillary billeder: {0}"
 
+msgid "Traffic Signs"
+msgstr ""
+
 msgid "Uneven road"
 msgstr "Ujævn vej"
+
+msgid ""
+"Unknown Mapillary exception.\n"
+"This message may contain potentially sensitive information!\n"
+"{0}\n"
+"{1}"
+msgstr ""
 
 msgid "Up"
 msgstr "Op"
@@ -331,12 +610,27 @@ msgstr "Op"
 msgid "Update"
 msgstr "Opdater"
 
+msgctxt "Checkbox label in JOSM settings"
+msgid "Use computed location information"
+msgstr ""
+
+msgctxt "Checkbox label in JOSM settings"
+msgid "Use the custom Mapillary renderer"
+msgstr ""
+
 msgid "View in browser"
 msgstr "Vis i browser"
 
-msgid "Wait for full quality pictures"
-msgstr "Vent på fuld kvalitets billeder"
+msgid "We cannot export {0}"
+msgstr ""
 
+msgid ""
+"We have reached the Mapillary API limit. Disabling Mapillary networking until JOSM restart. Sorry.\n"
+"Logging in after the rate limit subsides may help prevent this in the future.\n"
+"{0}"
+msgstr ""
+
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
@@ -344,8 +638,11 @@ msgstr ""
 "Ved åbning af Mapillary billede i webbrowser, vis sløringseditoren i stedet "
 "for billedviseren"
 
-msgid "Which image layers do you want to import into the Mapillary layer?"
-msgstr "Hvilke billedlag vil du importere til Mapillary laget?"
+msgid "Why are you removing the object? (Note: not yet sent to Mapillary)"
+msgstr ""
+
+msgid "Year"
+msgstr ""
 
 msgid "Years"
 msgstr "År"
@@ -356,11 +653,20 @@ msgstr "Du er i øjeblikket ikke logget ind."
 msgid "You are logged in as ''{0}''."
 msgstr "Du er logget ind som ''{0}''."
 
+msgid "You are logged in."
+msgstr ""
+
 msgid "Zoom to selected image"
 msgstr "Zoom til valgt billede"
 
 msgid "Zoom to the currently selected Mapillary image"
 msgstr "Zoom til det aktuelt valgt Mapillary billede"
+
+msgid "downloads street level images (currently supports {0})"
+msgstr ""
+
+msgid "hidden"
+msgstr ""
 
 msgid "image has no key"
 msgstr "Billedet har ingen nøgle"
@@ -368,17 +674,50 @@ msgstr "Billedet har ingen nøgle"
 msgid "sequence has no key"
 msgstr "sekvens har ingen nøgle"
 
+msgid "shown"
+msgstr ""
+
+msgid "unknown organization"
+msgstr ""
+
 msgid "{0} consists of:"
 msgstr "{0} består af:"
 
 msgid "{0} detections"
 msgstr "{0} detekteringer"
 
+msgid "{0} image in total"
+msgid_plural "{0} images in total"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "{0} images in {1} sequences"
 msgstr "{0} billeder i {1} sekvenser"
+
+msgid "{0} node"
+msgid_plural "{0} nodes"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{0} relation"
+msgid_plural "{0} relations"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{0} sequence, containing between {1} and {2} images (ø {3})"
+msgid_plural ""
+"{0} sequences, each containing between {1} and {2} images (ø {3})"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{0} way"
+msgid_plural "{0} ways"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
+#. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr "Tillader brugeren at arbejde med billeder gemt på mapillary.com"

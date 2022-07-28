@@ -8,15 +8,15 @@
 # Balázs Meskó, 2018
 # misibacsi, 2019
 # Buggi, 2020
-# Simon Legner, 2020
 # Florian Schäfer, 2020
 # Gábor Babos, 2021
+# Simon Legner, 2022
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.1-2-g20963ab\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.14-19-g22312a2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-26 15:07+0000\n"
+"POT-Creation-Date: 2022-07-27 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Hungarian (https://www.transifex.com/josm/teams/2544/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -25,6 +25,7 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#. filter mode: add
 msgctxt "filter"
 msgid "A"
 msgstr "Ö"
@@ -37,15 +38,28 @@ msgstr ""
 msgid "Add"
 msgstr "Hozzáadás"
 
+msgid "Add Map Feature to OSM"
+msgstr ""
+
 msgid "Add Mapillary tag"
 msgstr "Mapillary címke hozzáadása"
 
 msgid "Add filter."
 msgstr "Új szűrő készítése"
 
+msgid "All"
+msgstr "Összes"
+
+msgid "At least one of the optional arguments must be used ({0})"
+msgstr ""
+
+msgid "Bad Imagery"
+msgstr ""
+
 msgid "Cancel"
 msgstr "Mégse"
 
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr "Új képre való váltáskor az új kép középre igazítása"
@@ -58,6 +72,16 @@ msgstr "Törlés"
 
 msgid "Color"
 msgstr "Szín"
+
+msgctxt "Checkbox label in JOSM settings"
+msgid "Color images by capture date"
+msgstr ""
+
+msgid "Comment"
+msgstr "Hozzászólás"
+
+msgid "Comment to send to Mapillary"
+msgstr ""
 
 msgid "Copied URL to clipboard …"
 msgstr "URL a vágólapra másolva ..."
@@ -77,15 +101,22 @@ msgstr "Szín másolása"
 msgid "Copy key"
 msgstr "Kulcs másolása"
 
-msgid "Could not import a geotagged image to the Mapillary layer!"
-msgstr "Nem sikerült a geokódolt kép importlása a Mapillary rétegre!"
+msgid "Could not load image: {0}"
+msgstr ""
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "A(z) {0} URL nem nyitható meg böngészőben"
 
+msgid "Could not refresh Mapillary token. HTTP Status Code {0}."
+msgstr ""
+
+#. filter mode: remove
 msgctxt "filter"
 msgid "D"
 msgstr "T"
+
+msgid "Dataset is currently being updated"
+msgstr ""
 
 msgid "Days"
 msgstr "Nap"
@@ -99,6 +130,7 @@ msgstr "Mapillary-objektum törlése"
 msgid "Delete filter."
 msgstr "Szűrő törlése"
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Kép készítési idejének megjelenítése"
 
@@ -128,12 +160,14 @@ msgstr ""
 msgid "Down"
 msgstr "Le"
 
-msgid "Downloaded images"
-msgstr "Letöltött képek"
-
 msgid "Downloading…"
 msgstr "Letöltés…"
 
+msgid "Duplicate"
+msgstr "Kettőzés"
+
+#. translators notes must be in front
+#. column header: enable filter
 msgctxt "filter"
 msgid "E"
 msgstr "K"
@@ -144,6 +178,7 @@ msgstr "Szerkesztés"
 msgid "Edit filter."
 msgstr "Szűrő szerkesztése"
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "Kísérleti béta funkciók engedélyezése (lehet hogy nem stabilak)"
 
@@ -155,6 +190,12 @@ msgstr "Fejlesztői mód be-/kikapcsolása"
 
 msgid "End"
 msgstr "Vége"
+
+msgid "End: {0}"
+msgstr ""
+
+msgid "Erroneous Data"
+msgstr ""
 
 msgid "Explore"
 msgstr "Böngészés"
@@ -174,31 +215,36 @@ msgstr "Kijelölt sorozat exportálása"
 msgid "Exporting Mapillary Images…"
 msgstr "Mapillary képek exportálása…"
 
+#. filter mode: in selection
 msgctxt "filter"
 msgid "F"
 msgstr "K"
 
+msgid "False Positive"
+msgstr ""
+
 msgid "Filter"
 msgstr "Szűrő"
-
-msgid "Filter Hidden:{0} Disabled:{1}"
-msgstr "Szűrő rejtett:{0} letiltott:{1}"
 
 msgid "Filter Mapillary Detections"
 msgstr "Mapillary észlelések szűrlése"
 
+msgid "Filter mapillary objects and hide/disable them."
+msgstr ""
+
 msgid "Filter mode"
 msgstr "Szűrő mód"
 
-msgid "Follow selected image"
-msgstr "Kijelölt kép követése"
+msgid "First Seen End"
+msgstr ""
+
+msgid "First Seen Start"
+msgstr ""
 
 msgid "Give way"
 msgstr "Elsőbbségadás kötelező"
 
-msgid "Go forward"
-msgstr "Előre"
-
+#. column header: hide filter
 msgctxt "filter"
 msgid "H"
 msgstr "R"
@@ -209,9 +255,13 @@ msgstr "Szűrő elrejt"
 msgid "Hiding filter"
 msgstr "Elrejtő szűrő"
 
+#. column header: inverted filter
 msgctxt "filter"
 msgid "I"
 msgstr "I"
+
+msgid "Image Quality"
+msgstr ""
 
 msgid "Image actions"
 msgstr "Képműveletek"
@@ -222,17 +272,29 @@ msgstr "Képészlelések"
 msgid "Image info"
 msgstr "Képinformációk"
 
+msgid "Image info dialog"
+msgstr ""
+
 msgid "Image key"
 msgstr "Képkulcs"
 
-msgid "Import"
-msgstr "Importálás"
+msgid "Image: "
+msgstr ""
 
 msgid "Intersection danger"
 msgstr "Veszélyes útkereszteződés"
 
 msgid "Inverse filter"
 msgstr "Inverz szűrő"
+
+msgid "Just remove it"
+msgstr ""
+
+msgid "Last Seen End"
+msgstr ""
+
+msgid "Last Seen Start"
+msgstr ""
 
 msgid "Layer"
 msgstr "Réteg"
@@ -246,6 +308,7 @@ msgstr "Bejelentkezés sikeres, vissza a JOSM-hez."
 msgid "Logout"
 msgstr "Kijelentkezés"
 
+#. column header: filter mode
 msgctxt "filter"
 msgid "M"
 msgstr "M"
@@ -256,8 +319,24 @@ msgstr "Kötelező haladási irány"
 msgid "Mapillary"
 msgstr "Mapillary"
 
+msgid "Mapillary Expert Filter"
+msgstr ""
+
+msgid "Mapillary Filters"
+msgstr ""
+
+#. ImageInfos
 msgid "Mapillary Images"
 msgstr "Mapillary képek"
+
+msgid "Mapillary Point Objects"
+msgstr ""
+
+msgid "Mapillary Smart Edit: Add objects"
+msgstr ""
+
+msgid "Mapillary Traffic Signs"
+msgstr ""
 
 msgid "Mapillary filter"
 msgstr "Mapillary szűrő"
@@ -265,11 +344,35 @@ msgstr "Mapillary szűrő"
 msgid "Mapillary image"
 msgstr "Mapillary kép"
 
+msgid "Mapillary image read should never occur on UI thread"
+msgstr ""
+
+msgid "Mapillary images Filter"
+msgstr ""
+
 msgid "Mapillary layer"
 msgstr "Mapillary réteg"
 
 msgid "Mapillary login"
 msgstr "Mapillary bejelentkezés"
+
+msgid "Mapillary point features layer"
+msgstr ""
+
+msgid "Mapillary style sheet"
+msgstr ""
+
+msgid "Mapillary traffic signs layer"
+msgstr ""
+
+msgid "Mapillary: Could not refresh login, logging out"
+msgstr ""
+
+msgid "Maximum distance to consider for changeset source calculations"
+msgstr ""
+
+msgid "Month"
+msgstr ""
 
 msgid "Months"
 msgstr "Hónap"
@@ -283,11 +386,17 @@ msgstr "Szűrő mozgatása feljebb"
 msgid "Multikey: {0}"
 msgstr "Multikulcs: {0}"
 
+msgid "No color selected"
+msgstr ""
+
 msgid "No entry"
 msgstr "Behajtani tilos"
 
 msgid "No images found"
 msgstr "Nem található kép"
+
+msgid "No known image provider used"
+msgstr ""
 
 msgid "No overtaking"
 msgstr "Előzni tilos"
@@ -298,14 +407,37 @@ msgstr "Várakozni tilos"
 msgid "No turn"
 msgstr "Bekanyarodni tilos"
 
+msgid "Non-panoramic"
+msgstr ""
+
 msgid "Not older than: "
 msgstr "Nem régebbi mint: "
 
+#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "Előtöltendő képek száma (előre és hátra)"
 
+msgid "Number of images to draw in the map view (affects performance)"
+msgstr ""
+
+msgid "Object Detection Filters"
+msgstr ""
+
+msgid ""
+"Only Mapillary images are supported at this time, use "
+"photo=Mapillary/<image_id>"
+msgstr ""
+
+msgid ""
+"Only Mapillary sequences are supported at this time, use "
+"sequence=Mapillary/<sequence_id>"
+msgstr ""
+
 msgid "Only images with signs"
 msgstr "Csak jelzőtáblás képek"
+
+msgid "Only show objects on detection layers (\"Relevant objects\")"
+msgstr ""
 
 msgid "Open Mapillary filter dialog"
 msgstr "Mapillary szűrő párbeszédablak megnyitása"
@@ -313,12 +445,47 @@ msgstr "Mapillary szűrő párbeszédablak megnyitása"
 msgid "Open Mapillary layer"
 msgstr "Mapillary réteg megnyitása"
 
+msgid "Org"
+msgstr ""
+
+msgid "Organization"
+msgstr ""
+
+msgid "Organization: {0}"
+msgstr ""
+
+msgid "Organizations"
+msgstr ""
+
+msgid "Panoramic"
+msgstr ""
+
 msgid "Pedestrian crossing"
 msgstr "Gyalogosátkelő"
 
+msgid "Picture Filters"
+msgstr ""
+
+msgid "Point Objects"
+msgstr ""
+
+#. translators notes must be in front
+#. filter mode: replace
 msgctxt "filter"
 msgid "R"
 msgstr "Cs"
+
+msgid "Remote Control has been asked to load:"
+msgstr ""
+
+msgid "Remote Control has been asked to set Mapillary filters:"
+msgstr ""
+
+msgid "Remove"
+msgstr "Eltávolítás"
+
+msgid "Requires JOSM restart"
+msgstr ""
 
 msgid "Reset"
 msgstr "Alaphelyzet"
@@ -326,8 +493,17 @@ msgstr "Alaphelyzet"
 msgid "Reverse"
 msgstr "Fordított"
 
+msgid "Reverse the filters order."
+msgstr ""
+
 msgid "Roundabout"
 msgstr "Körforgalom"
+
+msgid "Select Mapillary Detection ({0})"
+msgstr ""
+
+msgid "Select Mapillary Image ({0})"
+msgstr ""
 
 msgid "Select Visible"
 msgstr "Láthatók kiválasztása"
@@ -335,17 +511,62 @@ msgstr "Láthatók kiválasztása"
 msgid "Select a directory"
 msgstr "Könyvtár kijelölése"
 
+msgid "Select the Mapillary Detection {0}"
+msgstr ""
+
+msgid "Select the Mapillary Image {0} on the {1} layer (downloads if needed)"
+msgstr ""
+
+msgid "Select/Deselect all object detections on the current page"
+msgstr ""
+
 msgid "Sequence key"
 msgstr "Sorozat kulcs"
+
+msgid "Sequence offset"
+msgstr ""
+
+msgid "Sequence: "
+msgstr ""
+
+msgid "Show Image types: "
+msgstr ""
+
+msgid "Show Relevant"
+msgstr ""
 
 msgid "Show detections on top of image"
 msgstr "Észlelések megjelenítése a kép tetején"
 
+msgid "Show the next page of items"
+msgstr ""
+
+msgid "Show the previous page of items"
+msgstr ""
+
+msgid "Show this number of items on each page"
+msgstr ""
+
+msgid "Smart Edit Mode"
+msgstr ""
+
+msgid "Snap to highway"
+msgstr ""
+
 msgid "Sort"
 msgstr "Rendezés"
 
+msgid "Sort filters."
+msgstr ""
+
 msgid "Speed limit"
 msgstr "Sebességkorlátozás"
+
+msgid "Start"
+msgstr ""
+
+msgid "Start: {0}"
+msgstr ""
 
 msgctxt "name of the traffic sign"
 msgid "Stop"
@@ -354,9 +575,22 @@ msgstr "Stoptábla"
 msgid "Tag conflict"
 msgstr "Címkeütközés"
 
+#. column header: filter text
 msgctxt "filter"
 msgid "Text"
 msgstr "Szöveg"
+
+msgid ""
+"There is a newer version of JOSM and/or the Mapillary plugin. Please update."
+msgstr ""
+
+msgid ""
+"This currently removes the detection from the current layer, but may report "
+"back to Mapillary in the future"
+msgstr ""
+
+msgid "Today"
+msgstr ""
 
 msgid "Toggle: {0}"
 msgstr "Átkapcsol: {0}"
@@ -370,18 +604,40 @@ msgstr "Közlekedési táblák"
 msgid "Uneven road"
 msgstr "Egyenetlen úttest"
 
+msgid ""
+"Unknown Mapillary exception.\n"
+"This message may contain potentially sensitive information!\n"
+"{0}\n"
+"{1}"
+msgstr ""
+
 msgid "Up"
 msgstr "Fel"
 
 msgid "Update"
 msgstr "Frissítés"
 
+msgctxt "Checkbox label in JOSM settings"
+msgid "Use computed location information"
+msgstr ""
+
+msgctxt "Checkbox label in JOSM settings"
+msgid "Use the custom Mapillary renderer"
+msgstr ""
+
 msgid "View in browser"
 msgstr "Megtekintés böngészőben"
 
-msgid "Wait for full quality pictures"
-msgstr "Várj a teljes minőségű képekre"
+msgid "We cannot export {0}"
+msgstr ""
 
+msgid ""
+"We have reached the Mapillary API limit. Disabling Mapillary networking until JOSM restart. Sorry.\n"
+"Logging in after the rate limit subsides may help prevent this in the future.\n"
+"{0}"
+msgstr ""
+
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
@@ -389,8 +645,11 @@ msgstr ""
 "Mapillary képet böngészőben megnyitva mutassa rögtön a kitakarás szerkesztőt"
 " a képnézegető helyett"
 
-msgid "Which image layers do you want to import into the Mapillary layer?"
-msgstr "Melyik képréteget akarod beimportálni a Mapillary rétegre?"
+msgid "Why are you removing the object? (Note: not yet sent to Mapillary)"
+msgstr ""
+
+msgid "Year"
+msgstr ""
 
 msgid "Years"
 msgstr "Év"
@@ -401,11 +660,20 @@ msgstr "Jelenleg nem vagy bejelentkezve."
 msgid "You are logged in as ''{0}''."
 msgstr "Be vagy jelentkezve „{0}” néven."
 
+msgid "You are logged in."
+msgstr ""
+
 msgid "Zoom to selected image"
 msgstr "Nagyítás a kijelölt képre"
 
 msgid "Zoom to the currently selected Mapillary image"
 msgstr "Nagyítás a jelenleg kijelölt Mapillary képre"
+
+msgid "downloads street level images (currently supports {0})"
+msgstr ""
+
+msgid "hidden"
+msgstr ""
 
 msgid "image has no key"
 msgstr "a képnek nincs kulcsa"
@@ -416,10 +684,8 @@ msgstr "a sorozatnak nincs kulcsa"
 msgid "shown"
 msgstr "megjelenítve"
 
-msgid "{0} ({1} image)"
-msgid_plural "{0} ({1} images)"
-msgstr[0] "{0} ({1} kép)"
-msgstr[1] "{0} ({1} kép)"
+msgid "unknown organization"
+msgstr ""
 
 msgid "{0} consists of:"
 msgstr "{0} ebből áll:"
@@ -459,5 +725,6 @@ msgstr[1] "{0} vonal"
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
+#. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr "Lehetővé teszi a mapillary.com fotóinak használatát"

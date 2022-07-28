@@ -5,18 +5,18 @@
 #
 # Translators:
 # Fundación OpenStreetMap Chile, 2018
+# kaze kaze, 2018
 # Rodrigo, 2018
 # Juan Carlos, 2020
 # Florian Schäfer, 2020
+# Jorge Sanz, 2021
 # Simon Legner, 2022
-# kaze kaze, 2022
-# Jorge Sanz, 2022
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.11\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.14-19-g22312a2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-29 15:04+0000\n"
+"POT-Creation-Date: 2022-07-27 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Spanish (https://www.transifex.com/josm/teams/2544/es/)\n"
 "MIME-Version: 1.0\n"
@@ -25,6 +25,7 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
+#. filter mode: add
 msgctxt "filter"
 msgid "A"
 msgstr "A"
@@ -38,6 +39,9 @@ msgstr ""
 msgid "Add"
 msgstr "Añadir"
 
+msgid "Add Map Feature to OSM"
+msgstr ""
+
 msgid "Add Mapillary tag"
 msgstr "Añadir etiqueta mapillary"
 
@@ -47,9 +51,16 @@ msgstr "Añadir filtro."
 msgid "All"
 msgstr "Todo"
 
+msgid "At least one of the optional arguments must be used ({0})"
+msgstr ""
+
+msgid "Bad Imagery"
+msgstr ""
+
 msgid "Cancel"
 msgstr "Cancelar"
 
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr ""
@@ -69,6 +80,12 @@ msgctxt "Checkbox label in JOSM settings"
 msgid "Color images by capture date"
 msgstr "Color de imágenes por fecha de captura"
 
+msgid "Comment"
+msgstr "Comentario"
+
+msgid "Comment to send to Mapillary"
+msgstr ""
+
 msgid "Copied URL to clipboard …"
 msgstr "URL copiada al portapapeles..."
 
@@ -87,15 +104,22 @@ msgstr "Copiar color"
 msgid "Copy key"
 msgstr "Copiar clave"
 
-msgid "Could not import a geotagged image to the Mapillary layer!"
-msgstr "¡No se pudo importar una imagen geoetiquetada a la capa Mapillary!"
+msgid "Could not load image: {0}"
+msgstr ""
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "No se pudo abrir la URL {0} en un navegador"
 
+msgid "Could not refresh Mapillary token. HTTP Status Code {0}."
+msgstr ""
+
+#. filter mode: remove
 msgctxt "filter"
 msgid "D"
 msgstr "D"
+
+msgid "Dataset is currently being updated"
+msgstr ""
 
 msgid "Days"
 msgstr "Días"
@@ -109,6 +133,7 @@ msgstr "Eliminar objeto Mapillary"
 msgid "Delete filter."
 msgstr "Borrar filtro."
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Mostrar la hora de cuando la fotografía fue tomada."
 
@@ -140,6 +165,11 @@ msgstr "Bajar"
 msgid "Downloading…"
 msgstr "Descargando... "
 
+msgid "Duplicate"
+msgstr "Duplicar"
+
+#. translators notes must be in front
+#. column header: enable filter
 msgctxt "filter"
 msgid "E"
 msgstr "E"
@@ -150,6 +180,7 @@ msgstr "Editar"
 msgid "Edit filter."
 msgstr "Editar filtro."
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr ""
 "Permitir características beta experimentales (podría comportarse de forma "
@@ -163,6 +194,12 @@ msgstr "Activar/desactivar modo desarrollador"
 
 msgid "End"
 msgstr "Final"
+
+msgid "End: {0}"
+msgstr ""
+
+msgid "Erroneous Data"
+msgstr ""
 
 msgid "Explore"
 msgstr "Explorar"
@@ -182,15 +219,16 @@ msgstr "Exportar la secuencia seleccionada"
 msgid "Exporting Mapillary Images…"
 msgstr "Exportando imágenes de Mapillary..."
 
+#. filter mode: in selection
 msgctxt "filter"
 msgid "F"
 msgstr "F"
 
+msgid "False Positive"
+msgstr ""
+
 msgid "Filter"
 msgstr "Filtrar"
-
-msgid "Filter Hidden:{0} Disabled:{1}"
-msgstr "Filtrar Ocultos:{0} Desactivados:{1}"
 
 msgid "Filter Mapillary Detections"
 msgstr "Filtrar Detecciones Mapillary"
@@ -207,15 +245,10 @@ msgstr "Primer fin visto"
 msgid "First Seen Start"
 msgstr "Primer inicio visto"
 
-msgid "Follow selected image"
-msgstr "Seguir la imágen seleccionada"
-
 msgid "Give way"
 msgstr "Ceda el paso"
 
-msgid "Go forward"
-msgstr "Avanzar"
-
+#. column header: hide filter
 msgctxt "filter"
 msgid "H"
 msgstr "H"
@@ -226,6 +259,7 @@ msgstr "Ocultar filtro"
 msgid "Hiding filter"
 msgstr "Ocultar filtro"
 
+#. column header: inverted filter
 msgctxt "filter"
 msgid "I"
 msgstr "I"
@@ -251,14 +285,14 @@ msgstr "clave de imagen"
 msgid "Image: "
 msgstr "Imagen:"
 
-msgid "Import"
-msgstr "Importar"
-
 msgid "Intersection danger"
 msgstr "Peligro por intersección"
 
 msgid "Inverse filter"
 msgstr "Invertir filtro"
+
+msgid "Just remove it"
+msgstr ""
 
 msgid "Last Seen End"
 msgstr "Último final visto"
@@ -278,6 +312,7 @@ msgstr "Acceso correcto, volver a JOSM."
 msgid "Logout"
 msgstr "Cerrar sesión"
 
+#. column header: filter mode
 msgctxt "filter"
 msgid "M"
 msgstr "M"
@@ -291,17 +326,30 @@ msgstr "Mapillary"
 msgid "Mapillary Expert Filter"
 msgstr "Filtro experto Mapillary"
 
+msgid "Mapillary Filters"
+msgstr ""
+
+#. ImageInfos
 msgid "Mapillary Images"
 msgstr "Imágenes de Mapillary"
 
 msgid "Mapillary Point Objects"
 msgstr "Objetos de punto Mapillary"
 
+msgid "Mapillary Smart Edit: Add objects"
+msgstr ""
+
+msgid "Mapillary Traffic Signs"
+msgstr ""
+
 msgid "Mapillary filter"
 msgstr "Filtro de Mapillary"
 
 msgid "Mapillary image"
 msgstr "Imagen Mapillary"
+
+msgid "Mapillary image read should never occur on UI thread"
+msgstr ""
 
 msgid "Mapillary images Filter"
 msgstr "Filtro de imágenes Mapillary"
@@ -314,6 +362,9 @@ msgstr "Acceso a Mapillary"
 
 msgid "Mapillary point features layer"
 msgstr "Capa de entidades de puntos mapillary"
+
+msgid "Mapillary style sheet"
+msgstr ""
 
 msgid "Mapillary traffic signs layer"
 msgstr "Capa de señales de tráfico Mapillary"
@@ -363,9 +414,13 @@ msgstr "No estacionarse"
 msgid "No turn"
 msgstr "No gire"
 
+msgid "Non-panoramic"
+msgstr ""
+
 msgid "Not older than: "
 msgstr "No más antiguas que: "
 
+#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "Número de imágenes a ser pre-cargadas (adelante y hacia atrás)"
 
@@ -375,6 +430,16 @@ msgstr ""
 
 msgid "Object Detection Filters"
 msgstr "Filtros de detección de objetos"
+
+msgid ""
+"Only Mapillary images are supported at this time, use "
+"photo=Mapillary/<image_id>"
+msgstr ""
+
+msgid ""
+"Only Mapillary sequences are supported at this time, use "
+"sequence=Mapillary/<sequence_id>"
+msgstr ""
 
 msgid "Only images with signs"
 msgstr "Solo imágenes con señales"
@@ -394,8 +459,14 @@ msgstr "Org"
 msgid "Organization"
 msgstr "Organización"
 
+msgid "Organization: {0}"
+msgstr ""
+
 msgid "Organizations"
 msgstr "Organizaciones"
+
+msgid "Panoramic"
+msgstr ""
 
 msgid "Pedestrian crossing"
 msgstr "Cruce de peatones"
@@ -406,12 +477,20 @@ msgstr "Filtros de imagen"
 msgid "Point Objects"
 msgstr "Objetos puntuales"
 
+#. translators notes must be in front
+#. filter mode: replace
 msgctxt "filter"
 msgid "R"
 msgstr "R"
 
 msgid "Remote Control has been asked to load:"
 msgstr "Se ha solicitado al control remoto que cargue:"
+
+msgid "Remote Control has been asked to set Mapillary filters:"
+msgstr ""
+
+msgid "Remove"
+msgstr "Eliminar"
 
 msgid "Requires JOSM restart"
 msgstr "Requiere reiniciar JOSM"
@@ -456,8 +535,14 @@ msgstr ""
 msgid "Sequence key"
 msgstr "clave de secuencia"
 
+msgid "Sequence offset"
+msgstr ""
+
 msgid "Sequence: "
 msgstr "Secuencia:"
+
+msgid "Show Image types: "
+msgstr ""
 
 msgid "Show Relevant"
 msgstr "Mostrar relevante"
@@ -492,6 +577,9 @@ msgstr "Límite de velocidad"
 msgid "Start"
 msgstr "Inicio"
 
+msgid "Start: {0}"
+msgstr ""
+
 msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Stop"
@@ -499,6 +587,7 @@ msgstr "Stop"
 msgid "Tag conflict"
 msgstr "Conflicto de etiquetas"
 
+#. column header: filter text
 msgctxt "filter"
 msgid "Text"
 msgstr "Texto"
@@ -508,6 +597,11 @@ msgid ""
 msgstr ""
 "Hay una versión más reciente de JOSM y/o el complemento Mapillary. Por favor"
 " actualice."
+
+msgid ""
+"This currently removes the detection from the current layer, but may report "
+"back to Mapillary in the future"
+msgstr ""
 
 msgid "Today"
 msgstr "Hoy"
@@ -524,6 +618,13 @@ msgstr "Señales de tráfico"
 msgid "Uneven road"
 msgstr "Camino irregular"
 
+msgid ""
+"Unknown Mapillary exception.\n"
+"This message may contain potentially sensitive information!\n"
+"{0}\n"
+"{1}"
+msgstr ""
+
 msgid "Up"
 msgstr "Subir"
 
@@ -534,11 +635,12 @@ msgctxt "Checkbox label in JOSM settings"
 msgid "Use computed location information"
 msgstr "Usar información de ubicación calculada"
 
+msgctxt "Checkbox label in JOSM settings"
+msgid "Use the custom Mapillary renderer"
+msgstr ""
+
 msgid "View in browser"
 msgstr "Ver en el navegador"
-
-msgid "Wait for full quality pictures"
-msgstr "Esperar por imágenes de máxima calidad"
 
 msgid "We cannot export {0}"
 msgstr "No podemos exportar {0}"
@@ -552,6 +654,7 @@ msgstr ""
 "Iniciar sesión después de que disminuya el límite de tarifa puede ayudar a prevenir esto en el futuro.\n"
 "{0}"
 
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
@@ -559,8 +662,8 @@ msgstr ""
 "Al abrir la imagen Mapillary en un navegador web, muestra el editor de "
 "difuminación en lugar del visor de imagen"
 
-msgid "Which image layers do you want to import into the Mapillary layer?"
-msgstr "¿Qué capas de imágenes desea importar a la capa de Mapillary?"
+msgid "Why are you removing the object? (Note: not yet sent to Mapillary)"
+msgstr ""
 
 msgid "Year"
 msgstr "Año"
@@ -600,12 +703,6 @@ msgstr "mostrado"
 
 msgid "unknown organization"
 msgstr "organización desconocida"
-
-msgid "{0} ({1} image)"
-msgid_plural "{0} ({1} images)"
-msgstr[0] "{0} ({1} imagen)"
-msgstr[1] "{0} ({1} imagenes)"
-msgstr[2] "{0} ({1} imagenes)"
 
 msgid "{0} consists of:"
 msgstr "{0} consta de:"
@@ -650,5 +747,6 @@ msgstr[2] "{0} vías"
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
+#. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr "Permite al usuario trabajar con fotos hospedadas en mapillary.com"

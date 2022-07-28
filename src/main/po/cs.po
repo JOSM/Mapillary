@@ -4,14 +4,14 @@
 # FIRST AUTHOR, YEAR.
 #
 # Translators:
-# Simon Legner, 2020
 # Florian Schäfer, 2020
+# Simon Legner, 2022
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.1-2-g20963ab\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.14-19-g22312a2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-26 15:07+0000\n"
+"POT-Creation-Date: 2022-07-27 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Czech (https://www.transifex.com/josm/teams/2544/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -20,6 +20,7 @@ msgstr ""
 "Language: cs\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
+#. filter mode: add
 msgctxt "filter"
 msgid "A"
 msgstr "A"
@@ -31,14 +32,31 @@ msgstr "Značka s klíčem <i>{0}</i> je již na vybraném objektu OSM přítomn
 msgid "Add"
 msgstr "Přidat"
 
+msgid "Add Map Feature to OSM"
+msgstr ""
+
 msgid "Add Mapillary tag"
 msgstr "Přidat značku Mapillary"
 
 msgid "Add filter."
 msgstr "Přidat filtr."
 
+msgid "All"
+msgstr "Všechny"
+
+msgid "At least one of the optional arguments must be used ({0})"
+msgstr ""
+
+msgid "Bad Imagery"
+msgstr ""
+
 msgid "Cancel"
 msgstr "Zrušit"
+
+#. i18n: Checkbox label in JOSM settings
+msgid ""
+"Center view on new image when using the buttons to jump to another image"
+msgstr ""
 
 msgid "Choose signs"
 msgstr "Zvolit značky"
@@ -49,19 +67,50 @@ msgstr "Vymazat"
 msgid "Color"
 msgstr "Barva"
 
+msgctxt "Checkbox label in JOSM settings"
+msgid "Color images by capture date"
+msgstr ""
+
+msgid "Comment"
+msgstr "Komentář"
+
+msgid "Comment to send to Mapillary"
+msgstr ""
+
+msgid "Copied URL to clipboard …"
+msgstr ""
+
+msgid "Copied color to clipboard"
+msgstr ""
+
+msgid "Copied key to clipboard …"
+msgstr ""
+
+msgid "Copy URL"
+msgstr ""
+
+msgid "Copy color"
+msgstr ""
+
 msgid "Copy key"
 msgstr "Kopírovat klíč"
 
-msgid "Could not import a geotagged image to the Mapillary layer!"
+msgid "Could not load image: {0}"
 msgstr ""
-"Nepodařilo se importovat obrázek se zem. souřadnicemi do vrstvy Mapillary!"
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "Nemohu otevřít URL {0} v prohlížeči"
 
+msgid "Could not refresh Mapillary token. HTTP Status Code {0}."
+msgstr ""
+
+#. filter mode: remove
 msgctxt "filter"
 msgid "D"
 msgstr "D"
+
+msgid "Dataset is currently being updated"
+msgstr ""
 
 msgid "Days"
 msgstr "Dnů"
@@ -69,14 +118,26 @@ msgstr "Dnů"
 msgid "Delete"
 msgstr "Smazat"
 
+msgid "Delete Mapillary object"
+msgstr ""
+
 msgid "Delete filter."
 msgstr "Smazat filtr."
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Zobrazit hodinu, kdy byl obrázek pořízen"
 
 msgid "Displays detail information on the currently selected Mapillary image"
 msgstr "Zobrazí podrobné informace o aktuálně zvoleném obrázku Mapillary."
+
+msgid ""
+"Displays the layer displaying the map point objects detected by Mapillary"
+msgstr ""
+
+msgid ""
+"Displays the layer displaying the traffic sign objects detected by Mapillary"
+msgstr ""
 
 msgid ""
 "Do you really want to replace the current value <i>{0}</i> with the new "
@@ -88,9 +149,14 @@ msgstr ""
 msgid "Down"
 msgstr "Dolů"
 
-msgid "Downloaded images"
-msgstr "Stažené obrázky"
+msgid "Downloading…"
+msgstr ""
 
+msgid "Duplicate"
+msgstr "Duplikovat"
+
+#. translators notes must be in front
+#. column header: enable filter
 msgctxt "filter"
 msgid "E"
 msgstr "V"
@@ -101,11 +167,24 @@ msgstr "Upravit"
 msgid "Edit filter."
 msgstr "Upravit filtr."
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "Povolit experimentální beta-funkce (může být nestabilní)"
 
 msgid "Enable filter"
 msgstr "Aktivovat filtr"
+
+msgid "Enable/disable developer mode"
+msgstr ""
+
+msgid "End"
+msgstr ""
+
+msgid "End: {0}"
+msgstr ""
+
+msgid "Erroneous Data"
+msgstr ""
 
 msgid "Explore"
 msgstr "Prozkoumat"
@@ -122,28 +201,39 @@ msgstr "Exportovat zvolené obrázky"
 msgid "Export selected sequence"
 msgstr "Exportovat vybranou sekvenci"
 
+msgid "Exporting Mapillary Images…"
+msgstr ""
+
+#. filter mode: in selection
 msgctxt "filter"
 msgid "F"
 msgstr "F"
 
+msgid "False Positive"
+msgstr ""
+
 msgid "Filter"
 msgstr "Filtr"
 
-msgid "Filter Hidden:{0} Disabled:{1}"
-msgstr "Filtr - skrytých:{0} nepřístupných:{1}"
+msgid "Filter Mapillary Detections"
+msgstr ""
+
+msgid "Filter mapillary objects and hide/disable them."
+msgstr ""
 
 msgid "Filter mode"
 msgstr "Způsob filtrování"
 
-msgid "Follow selected image"
-msgstr "Následovat vybraný obrázek"
+msgid "First Seen End"
+msgstr ""
+
+msgid "First Seen Start"
+msgstr ""
 
 msgid "Give way"
 msgstr "Dej přednost"
 
-msgid "Go forward"
-msgstr "Vpřed"
-
+#. column header: hide filter
 msgctxt "filter"
 msgid "H"
 msgstr "H"
@@ -154,9 +244,13 @@ msgstr "Skrýt objekty"
 msgid "Hiding filter"
 msgstr "Skrýt objekty"
 
+#. column header: inverted filter
 msgctxt "filter"
 msgid "I"
 msgstr "I"
+
+msgid "Image Quality"
+msgstr ""
 
 msgid "Image actions"
 msgstr "Akce s obrázkem"
@@ -167,17 +261,29 @@ msgstr "Detekce obrázků"
 msgid "Image info"
 msgstr "Informace o obrázku"
 
+msgid "Image info dialog"
+msgstr ""
+
 msgid "Image key"
 msgstr "Klíč obrázku"
 
-msgid "Import"
-msgstr "Import"
+msgid "Image: "
+msgstr ""
 
 msgid "Intersection danger"
 msgstr "Upozornění na křižovatku"
 
 msgid "Inverse filter"
 msgstr "Obrácený filtr"
+
+msgid "Just remove it"
+msgstr ""
+
+msgid "Last Seen End"
+msgstr ""
+
+msgid "Last Seen Start"
+msgstr ""
 
 msgid "Layer"
 msgstr "Vrstva"
@@ -191,6 +297,7 @@ msgstr "Přihlášení úspěšné, návrat do JOSM."
 msgid "Logout"
 msgstr "Odhlásit se"
 
+#. column header: filter mode
 msgctxt "filter"
 msgid "M"
 msgstr "M"
@@ -201,8 +308,24 @@ msgstr "Přikázaný směr jízdy (jakýkoliv)"
 msgid "Mapillary"
 msgstr "Mapillary"
 
+msgid "Mapillary Expert Filter"
+msgstr ""
+
+msgid "Mapillary Filters"
+msgstr ""
+
+#. ImageInfos
 msgid "Mapillary Images"
 msgstr "Obrázky Mapillary"
+
+msgid "Mapillary Point Objects"
+msgstr ""
+
+msgid "Mapillary Smart Edit: Add objects"
+msgstr ""
+
+msgid "Mapillary Traffic Signs"
+msgstr ""
 
 msgid "Mapillary filter"
 msgstr "Filtr Mapillary"
@@ -210,11 +333,35 @@ msgstr "Filtr Mapillary"
 msgid "Mapillary image"
 msgstr "Obrázek Mapillary"
 
+msgid "Mapillary image read should never occur on UI thread"
+msgstr ""
+
+msgid "Mapillary images Filter"
+msgstr ""
+
 msgid "Mapillary layer"
 msgstr "Vrstva Mapillary"
 
 msgid "Mapillary login"
 msgstr "Přihlášení Mapillary"
+
+msgid "Mapillary point features layer"
+msgstr ""
+
+msgid "Mapillary style sheet"
+msgstr ""
+
+msgid "Mapillary traffic signs layer"
+msgstr ""
+
+msgid "Mapillary: Could not refresh login, logging out"
+msgstr ""
+
+msgid "Maximum distance to consider for changeset source calculations"
+msgstr ""
+
+msgid "Month"
+msgstr ""
 
 msgid "Months"
 msgstr "Měsíců"
@@ -228,11 +375,17 @@ msgstr "Přesunout filtr nahoru."
 msgid "Multikey: {0}"
 msgstr "Kombinace kláves: {0}"
 
+msgid "No color selected"
+msgstr ""
+
 msgid "No entry"
 msgstr "Zákaz vjezdu"
 
 msgid "No images found"
 msgstr "Nebyly nalezeny žádné obrázky"
+
+msgid "No known image provider used"
+msgstr ""
 
 msgid "No overtaking"
 msgstr "Zákaz předjíždění"
@@ -243,14 +396,37 @@ msgstr "Zákaz parkování"
 msgid "No turn"
 msgstr "Zákaz odbočení"
 
+msgid "Non-panoramic"
+msgstr ""
+
 msgid "Not older than: "
 msgstr "Ne starší než: "
 
+#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "Počet snímků, která se mají načíst dopředu (vpřed a vzad)"
 
+msgid "Number of images to draw in the map view (affects performance)"
+msgstr ""
+
+msgid "Object Detection Filters"
+msgstr ""
+
+msgid ""
+"Only Mapillary images are supported at this time, use "
+"photo=Mapillary/<image_id>"
+msgstr ""
+
+msgid ""
+"Only Mapillary sequences are supported at this time, use "
+"sequence=Mapillary/<sequence_id>"
+msgstr ""
+
 msgid "Only images with signs"
 msgstr "Pouze obrázky se značkami"
+
+msgid "Only show objects on detection layers (\"Relevant objects\")"
+msgstr ""
 
 msgid "Open Mapillary filter dialog"
 msgstr "Otevřít okno filtru Mapillary"
@@ -258,12 +434,47 @@ msgstr "Otevřít okno filtru Mapillary"
 msgid "Open Mapillary layer"
 msgstr "Otevřená vrstva Mapillary"
 
+msgid "Org"
+msgstr ""
+
+msgid "Organization"
+msgstr ""
+
+msgid "Organization: {0}"
+msgstr ""
+
+msgid "Organizations"
+msgstr ""
+
+msgid "Panoramic"
+msgstr ""
+
 msgid "Pedestrian crossing"
 msgstr "Přechod pro chodce"
 
+msgid "Picture Filters"
+msgstr ""
+
+msgid "Point Objects"
+msgstr ""
+
+#. translators notes must be in front
+#. filter mode: replace
 msgctxt "filter"
 msgid "R"
 msgstr "R"
+
+msgid "Remote Control has been asked to load:"
+msgstr ""
+
+msgid "Remote Control has been asked to set Mapillary filters:"
+msgstr ""
+
+msgid "Remove"
+msgstr "Odstranit"
+
+msgid "Requires JOSM restart"
+msgstr ""
 
 msgid "Reset"
 msgstr "Reset"
@@ -271,23 +482,80 @@ msgstr "Reset"
 msgid "Reverse"
 msgstr "Obrátit"
 
+msgid "Reverse the filters order."
+msgstr ""
+
 msgid "Roundabout"
 msgstr "Kruhový objezd"
+
+msgid "Select Mapillary Detection ({0})"
+msgstr ""
+
+msgid "Select Mapillary Image ({0})"
+msgstr ""
+
+msgid "Select Visible"
+msgstr ""
 
 msgid "Select a directory"
 msgstr "Zvolte adresář"
 
+msgid "Select the Mapillary Detection {0}"
+msgstr ""
+
+msgid "Select the Mapillary Image {0} on the {1} layer (downloads if needed)"
+msgstr ""
+
+msgid "Select/Deselect all object detections on the current page"
+msgstr ""
+
 msgid "Sequence key"
 msgstr "Klíč sekvence"
+
+msgid "Sequence offset"
+msgstr ""
+
+msgid "Sequence: "
+msgstr ""
+
+msgid "Show Image types: "
+msgstr ""
+
+msgid "Show Relevant"
+msgstr ""
 
 msgid "Show detections on top of image"
 msgstr "Zobrazit detekce na vrcholu snímku"
 
+msgid "Show the next page of items"
+msgstr ""
+
+msgid "Show the previous page of items"
+msgstr ""
+
+msgid "Show this number of items on each page"
+msgstr ""
+
+msgid "Smart Edit Mode"
+msgstr ""
+
+msgid "Snap to highway"
+msgstr ""
+
 msgid "Sort"
 msgstr "Seřadit"
 
+msgid "Sort filters."
+msgstr ""
+
 msgid "Speed limit"
 msgstr "Omezení rychlosti"
+
+msgid "Start"
+msgstr ""
+
+msgid "Start: {0}"
+msgstr ""
 
 msgctxt "name of the traffic sign"
 msgid "Stop"
@@ -296,9 +564,22 @@ msgstr "Stop"
 msgid "Tag conflict"
 msgstr "Konflikt značek"
 
+#. column header: filter text
 msgctxt "filter"
 msgid "Text"
 msgstr "Text"
+
+msgid ""
+"There is a newer version of JOSM and/or the Mapillary plugin. Please update."
+msgstr ""
+
+msgid ""
+"This currently removes the detection from the current layer, but may report "
+"back to Mapillary in the future"
+msgstr ""
+
+msgid "Today"
+msgstr ""
 
 msgid "Toggle: {0}"
 msgstr "Přepnout: {0}"
@@ -306,8 +587,18 @@ msgstr "Přepnout: {0}"
 msgid "Total Mapillary images: {0}"
 msgstr "Celkem obrázků z Mapillary: {0}"
 
+msgid "Traffic Signs"
+msgstr ""
+
 msgid "Uneven road"
 msgstr "Nerovnost vozovky"
+
+msgid ""
+"Unknown Mapillary exception.\n"
+"This message may contain potentially sensitive information!\n"
+"{0}\n"
+"{1}"
+msgstr ""
 
 msgid "Up"
 msgstr "Nahoru"
@@ -315,12 +606,27 @@ msgstr "Nahoru"
 msgid "Update"
 msgstr "Aktualizovat"
 
+msgctxt "Checkbox label in JOSM settings"
+msgid "Use computed location information"
+msgstr ""
+
+msgctxt "Checkbox label in JOSM settings"
+msgid "Use the custom Mapillary renderer"
+msgstr ""
+
 msgid "View in browser"
 msgstr "Zobrazit v prohlížeči"
 
-msgid "Wait for full quality pictures"
-msgstr "Počkat na obrázek v maximální kvalitě"
+msgid "We cannot export {0}"
+msgstr ""
 
+msgid ""
+"We have reached the Mapillary API limit. Disabling Mapillary networking until JOSM restart. Sorry.\n"
+"Logging in after the rate limit subsides may help prevent this in the future.\n"
+"{0}"
+msgstr ""
+
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
@@ -328,8 +634,11 @@ msgstr ""
 "Při otevírání obrázku Mapillary v internetovém prohlížeči zobrazit namísto "
 "prohlížeče obrázků editor rozmazání."
 
-msgid "Which image layers do you want to import into the Mapillary layer?"
-msgstr "Které vrstvy obrázků chcete importovat do vrstvy Mapillary?"
+msgid "Why are you removing the object? (Note: not yet sent to Mapillary)"
+msgstr ""
+
+msgid "Year"
+msgstr ""
 
 msgid "Years"
 msgstr "Let"
@@ -340,11 +649,20 @@ msgstr "Momentálně nejste přihlášen."
 msgid "You are logged in as ''{0}''."
 msgstr "Jste přihlášen jako ''{0}''."
 
+msgid "You are logged in."
+msgstr ""
+
 msgid "Zoom to selected image"
 msgstr "Zvětšit na zvolený obrázek"
 
 msgid "Zoom to the currently selected Mapillary image"
 msgstr "Zvětšit na aktuálně zvolený obrázek Mapillary"
+
+msgid "downloads street level images (currently supports {0})"
+msgstr ""
+
+msgid "hidden"
+msgstr ""
 
 msgid "image has no key"
 msgstr "obrázek nemá žádný klíč"
@@ -352,17 +670,60 @@ msgstr "obrázek nemá žádný klíč"
 msgid "sequence has no key"
 msgstr "sekvence nemá žádný klíč"
 
+msgid "shown"
+msgstr ""
+
+msgid "unknown organization"
+msgstr ""
+
 msgid "{0} consists of:"
 msgstr "{0} obsahuje:"
 
 msgid "{0} detections"
 msgstr "{0} detekcí"
 
+msgid "{0} image in total"
+msgid_plural "{0} images in total"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
 msgid "{0} images in {1} sequences"
 msgstr "{0} obrázků ve {1} sekvencích"
+
+msgid "{0} node"
+msgid_plural "{0} nodes"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+msgid "{0} relation"
+msgid_plural "{0} relations"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+msgid "{0} sequence, containing between {1} and {2} images (ø {3})"
+msgid_plural ""
+"{0} sequences, each containing between {1} and {2} images (ø {3})"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+msgid "{0} way"
+msgid_plural "{0} ways"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
+#. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr "Dovoluje uživateli pracovat s obrázky uloženými na mapillary.com"

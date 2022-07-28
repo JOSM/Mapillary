@@ -5,14 +5,14 @@
 #
 # Translators:
 # Florian Schäfer, 2020
-# Simon Legner, 2022
 # Supaplex, 2022
+# Simon Legner, 2022
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.11\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.14-19-g22312a2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-29 15:04+0000\n"
+"POT-Creation-Date: 2022-07-27 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Chinese (Taiwan) (https://www.transifex.com/josm/teams/2544/zh_TW/)\n"
 "MIME-Version: 1.0\n"
@@ -21,6 +21,7 @@ msgstr ""
 "Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+#. filter mode: add
 msgctxt "filter"
 msgid "A"
 msgstr "A"
@@ -47,9 +48,13 @@ msgstr "全部"
 msgid "At least one of the optional arguments must be used ({0})"
 msgstr "必須使用其中一個選填參數 ({0})"
 
+msgid "Bad Imagery"
+msgstr ""
+
 msgid "Cancel"
 msgstr "取消"
 
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr "使用按鈕跳到其他影像時，置中新的影像"
@@ -66,6 +71,12 @@ msgstr "顏色"
 msgctxt "Checkbox label in JOSM settings"
 msgid "Color images by capture date"
 msgstr "依據拍攝日期為照片上色"
+
+msgid "Comment"
+msgstr "評論"
+
+msgid "Comment to send to Mapillary"
+msgstr ""
 
 msgid "Copied URL to clipboard …"
 msgstr "複製網址到剪貼薄..."
@@ -85,9 +96,6 @@ msgstr "複製顏色"
 msgid "Copy key"
 msgstr "複製鍵值"
 
-msgid "Could not import a geotagged image to the Mapillary layer!"
-msgstr "無法匯入有地理標記圖片到 Mapillary 圖層！"
-
 msgid "Could not load image: {0}"
 msgstr "無法讀取影像： {0}"
 
@@ -97,6 +105,7 @@ msgstr "無法用瀏覽器打開網址 {0}"
 msgid "Could not refresh Mapillary token. HTTP Status Code {0}."
 msgstr "無法更新 Mapillary token，HTTP 狀態碼 {0}。"
 
+#. filter mode: remove
 msgctxt "filter"
 msgid "D"
 msgstr "D"
@@ -116,6 +125,7 @@ msgstr "刪除 Mapillary 物件"
 msgid "Delete filter."
 msgstr "刪除過濾條件。"
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "顯示圖片拍攝時的小時時間"
 
@@ -141,6 +151,11 @@ msgstr "下"
 msgid "Downloading…"
 msgstr "正在下載..."
 
+msgid "Duplicate"
+msgstr "重製"
+
+#. translators notes must be in front
+#. column header: enable filter
 msgctxt "filter"
 msgid "E"
 msgstr "東"
@@ -151,6 +166,7 @@ msgstr "編輯"
 msgid "Edit filter."
 msgstr "編輯過濾條件。"
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "啟用實驗性質的 beta 功能 (可能不穩定)"
 
@@ -162,6 +178,12 @@ msgstr "啟用 / 停用開發者模式"
 
 msgid "End"
 msgstr "結束"
+
+msgid "End: {0}"
+msgstr ""
+
+msgid "Erroneous Data"
+msgstr ""
 
 msgid "Explore"
 msgstr "瀏覽"
@@ -181,15 +203,16 @@ msgstr "匯出選取片段"
 msgid "Exporting Mapillary Images…"
 msgstr "匯出 Mapillary 圖片..."
 
+#. filter mode: in selection
 msgctxt "filter"
 msgid "F"
 msgstr "F"
 
+msgid "False Positive"
+msgstr ""
+
 msgid "Filter"
 msgstr "過濾條件"
-
-msgid "Filter Hidden:{0} Disabled:{1}"
-msgstr "過濾隱藏：{0} 停用：{1}"
 
 msgid "Filter Mapillary Detections"
 msgstr "過濾 Mapillary 方向"
@@ -206,15 +229,10 @@ msgstr "第一個看來結束"
 msgid "First Seen Start"
 msgstr "第一個看來開始"
 
-msgid "Follow selected image"
-msgstr "跟隨選取圖片"
-
 msgid "Give way"
 msgstr "禮讓路口"
 
-msgid "Go forward"
-msgstr "往前。"
-
+#. column header: hide filter
 msgctxt "filter"
 msgid "H"
 msgstr "H"
@@ -225,6 +243,7 @@ msgstr "隱藏過濾條件"
 msgid "Hiding filter"
 msgstr "正在隱藏過濾條件"
 
+#. column header: inverted filter
 msgctxt "filter"
 msgid "I"
 msgstr "I"
@@ -250,14 +269,14 @@ msgstr "圖片鍵值"
 msgid "Image: "
 msgstr "圖片："
 
-msgid "Import"
-msgstr "匯入"
-
 msgid "Intersection danger"
 msgstr "路口危險"
 
 msgid "Inverse filter"
 msgstr "反轉過濾條件"
+
+msgid "Just remove it"
+msgstr ""
 
 msgid "Last Seen End"
 msgstr "最後看到結束"
@@ -277,6 +296,7 @@ msgstr "登入成功，回去 JOSM。"
 msgid "Logout"
 msgstr "登出"
 
+#. column header: filter mode
 msgctxt "filter"
 msgid "M"
 msgstr "M"
@@ -290,6 +310,10 @@ msgstr "Mapillary"
 msgid "Mapillary Expert Filter"
 msgstr "Mapillary 輸出過濾器"
 
+msgid "Mapillary Filters"
+msgstr ""
+
+#. ImageInfos
 msgid "Mapillary Images"
 msgstr "Mapillary影像"
 
@@ -377,6 +401,7 @@ msgstr "非全景影像"
 msgid "Not older than: "
 msgstr "不早於： "
 
+#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "要預載的圖片數目 (向前和向後)"
 
@@ -414,6 +439,9 @@ msgstr "Org"
 msgid "Organization"
 msgstr "組織"
 
+msgid "Organization: {0}"
+msgstr ""
+
 msgid "Organizations"
 msgstr "組織"
 
@@ -429,12 +457,20 @@ msgstr "圖片篩選器"
 msgid "Point Objects"
 msgstr "點物件"
 
+#. translators notes must be in front
+#. filter mode: replace
 msgctxt "filter"
 msgid "R"
 msgstr "R"
 
 msgid "Remote Control has been asked to load:"
 msgstr "遠端存取已經請求載入："
+
+msgid "Remote Control has been asked to set Mapillary filters:"
+msgstr ""
+
+msgid "Remove"
+msgstr "移除"
 
 msgid "Requires JOSM restart"
 msgstr "需要重新啟動 JOSM"
@@ -517,6 +553,9 @@ msgstr "速限"
 msgid "Start"
 msgstr "開始"
 
+msgid "Start: {0}"
+msgstr ""
+
 msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "禁止通行"
@@ -524,6 +563,7 @@ msgstr "禁止通行"
 msgid "Tag conflict"
 msgstr "標籤衝突"
 
+#. column header: filter text
 msgctxt "filter"
 msgid "Text"
 msgstr "文字"
@@ -531,6 +571,11 @@ msgstr "文字"
 msgid ""
 "There is a newer version of JOSM and/or the Mapillary plugin. Please update."
 msgstr "已經有新版本的 JOSM Mapillary 插件，請更新"
+
+msgid ""
+"This currently removes the detection from the current layer, but may report "
+"back to Mapillary in the future"
+msgstr ""
 
 msgid "Today"
 msgstr "今日"
@@ -571,9 +616,6 @@ msgstr "使用客製化的 Mapillary 渲染器"
 msgid "View in browser"
 msgstr "在瀏覽器中觀看"
 
-msgid "Wait for full quality pictures"
-msgstr "等待全品質的圖片"
-
 msgid "We cannot export {0}"
 msgstr "我們無法匯出 {0}"
 
@@ -586,13 +628,14 @@ msgstr ""
 "在速度限制消除之後，未來也許能夠防範再次發生類型事情。\n"
 "{0}"
 
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
 msgstr "當你在網頁瀏覽器開啟 Mapillary 圖片時，顯示模糊化編輯器而不是圖片檢視器"
 
-msgid "Which image layers do you want to import into the Mapillary layer?"
-msgstr "你要匯入那個圖片圖層到 Mapillary 圖層？"
+msgid "Why are you removing the object? (Note: not yet sent to Mapillary)"
+msgstr ""
 
 msgid "Year"
 msgstr "年"
@@ -633,10 +676,6 @@ msgstr "顯示"
 msgid "unknown organization"
 msgstr "未知的組織"
 
-msgid "{0} ({1} image)"
-msgid_plural "{0} ({1} images)"
-msgstr[0] "{0} ({1} 圖片)"
-
 msgid "{0} consists of:"
 msgstr "{0} 組成："
 
@@ -670,5 +709,6 @@ msgstr[0] "{0} 路徑"
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
+#. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr "Mapillary外掛"

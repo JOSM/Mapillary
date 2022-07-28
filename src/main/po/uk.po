@@ -6,15 +6,15 @@
 # Translators:
 # fayçal fatihi, 2018
 # Ігор Варварчук, 2020
-# Simon Legner, 2020
 # Florian Schäfer, 2020
 # Andrey Golovin, 2021
+# Simon Legner, 2022
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.1-2-g20963ab\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.14-19-g22312a2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-26 15:07+0000\n"
+"POT-Creation-Date: 2022-07-27 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Ukrainian (https://www.transifex.com/josm/teams/2544/uk/)\n"
 "MIME-Version: 1.0\n"
@@ -23,6 +23,7 @@ msgstr ""
 "Language: uk\n"
 "Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
 
+#. filter mode: add
 msgctxt "filter"
 msgid "A"
 msgstr "A"
@@ -34,15 +35,28 @@ msgstr "Теґ з ключем <i>{0}</i> вже присутній у виді�
 msgid "Add"
 msgstr "Додати"
 
+msgid "Add Map Feature to OSM"
+msgstr ""
+
 msgid "Add Mapillary tag"
 msgstr "Додати теґ Mapillary"
 
 msgid "Add filter."
 msgstr "Додати фільтр."
 
+msgid "All"
+msgstr "Всі"
+
+msgid "At least one of the optional arguments must be used ({0})"
+msgstr ""
+
+msgid "Bad Imagery"
+msgstr ""
+
 msgid "Cancel"
 msgstr "Скасувати"
 
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr ""
@@ -58,8 +72,21 @@ msgstr "Очистити"
 msgid "Color"
 msgstr "Колір"
 
+msgctxt "Checkbox label in JOSM settings"
+msgid "Color images by capture date"
+msgstr ""
+
+msgid "Comment"
+msgstr "Коментар"
+
+msgid "Comment to send to Mapillary"
+msgstr ""
+
 msgid "Copied URL to clipboard …"
 msgstr "URL скопійовано до буфера обміну…"
+
+msgid "Copied color to clipboard"
+msgstr ""
 
 msgid "Copied key to clipboard …"
 msgstr "Ключ скопійовано до буфера обміну…"
@@ -67,18 +94,28 @@ msgstr "Ключ скопійовано до буфера обміну…"
 msgid "Copy URL"
 msgstr "Копіювати URL"
 
+msgid "Copy color"
+msgstr ""
+
 msgid "Copy key"
 msgstr "Копіювати ключ"
 
-msgid "Could not import a geotagged image to the Mapillary layer!"
-msgstr "Неможливо імпортувати геотеговані знімки до шару Mapillary’!"
+msgid "Could not load image: {0}"
+msgstr ""
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "Неможливо відкрити URL {0} в оглядачі"
 
+msgid "Could not refresh Mapillary token. HTTP Status Code {0}."
+msgstr ""
+
+#. filter mode: remove
 msgctxt "filter"
 msgid "D"
 msgstr "Вилуч."
+
+msgid "Dataset is currently being updated"
+msgstr ""
 
 msgid "Days"
 msgstr "Дні"
@@ -86,9 +123,13 @@ msgstr "Дні"
 msgid "Delete"
 msgstr "Вилучити"
 
+msgid "Delete Mapillary object"
+msgstr ""
+
 msgid "Delete filter."
 msgstr "Вилучити фільтр."
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Показувати час, коли було зроблено знімок"
 
@@ -111,12 +152,14 @@ msgstr "Ви дійсно бажаєте замінити поточне зна�
 msgid "Down"
 msgstr "Вниз"
 
-msgid "Downloaded images"
-msgstr "Завантажені знімки"
-
 msgid "Downloading…"
 msgstr "Завантаження…"
 
+msgid "Duplicate"
+msgstr "Дублювати"
+
+#. translators notes must be in front
+#. column header: enable filter
 msgctxt "filter"
 msgid "E"
 msgstr "Вкл."
@@ -127,14 +170,24 @@ msgstr "Правити"
 msgid "Edit filter."
 msgstr "Змінити фільтр."
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "Увімкнути експериментальні бета-функції (можуть бути нестабільними)"
 
 msgid "Enable filter"
 msgstr "Увімкнути фільтр"
 
+msgid "Enable/disable developer mode"
+msgstr ""
+
 msgid "End"
 msgstr "Кінець"
+
+msgid "End: {0}"
+msgstr ""
+
+msgid "Erroneous Data"
+msgstr ""
 
 msgid "Explore"
 msgstr "Обрати"
@@ -154,15 +207,16 @@ msgstr "Експортувати обрану послідовність"
 msgid "Exporting Mapillary Images…"
 msgstr "Експорт знімків Mapillary…"
 
+#. filter mode: in selection
 msgctxt "filter"
 msgid "F"
 msgstr "Ф"
 
+msgid "False Positive"
+msgstr ""
+
 msgid "Filter"
 msgstr "Фільтр"
-
-msgid "Filter Hidden:{0} Disabled:{1}"
-msgstr "Фільтр Приховано:{0} Відключено:{1}"
 
 msgid "Filter Mapillary Detections"
 msgstr "Фільтр виявлених об’єктів Mapillary"
@@ -179,15 +233,10 @@ msgstr "Перший помічений кінець"
 msgid "First Seen Start"
 msgstr "Перший помічений початок"
 
-msgid "Follow selected image"
-msgstr "Рухати мапу за поточним знімком"
-
 msgid "Give way"
 msgstr "Дати дорогу"
 
-msgid "Go forward"
-msgstr "Вперед"
-
+#. column header: hide filter
 msgctxt "filter"
 msgid "H"
 msgstr "Схов."
@@ -198,9 +247,13 @@ msgstr "Сховати фільтр"
 msgid "Hiding filter"
 msgstr "Приховування фільтру"
 
+#. column header: inverted filter
 msgctxt "filter"
 msgid "I"
 msgstr "I"
+
+msgid "Image Quality"
+msgstr ""
 
 msgid "Image actions"
 msgstr "Дії"
@@ -220,14 +273,14 @@ msgstr "Ключ знімка"
 msgid "Image: "
 msgstr "Знімок:"
 
-msgid "Import"
-msgstr "Імпортувати"
-
 msgid "Intersection danger"
 msgstr "Перехрещення з другорядною дорогою"
 
 msgid "Inverse filter"
 msgstr "Інвертувати фільтр"
+
+msgid "Just remove it"
+msgstr ""
 
 msgid "Last Seen End"
 msgstr "Останній помічений кінець"
@@ -247,6 +300,7 @@ msgstr "Вдалий вхід, можете повернутись в JOSM."
 msgid "Logout"
 msgstr "Вихід"
 
+#. column header: filter mode
 msgctxt "filter"
 msgid "M"
 msgstr "Р"
@@ -260,17 +314,30 @@ msgstr "Mapillary"
 msgid "Mapillary Expert Filter"
 msgstr "Фільтр Mapillary експерт"
 
+msgid "Mapillary Filters"
+msgstr ""
+
+#. ImageInfos
 msgid "Mapillary Images"
 msgstr "Знімки Mapillary"
 
 msgid "Mapillary Point Objects"
 msgstr "Точкові об’єкти Mapillary"
 
+msgid "Mapillary Smart Edit: Add objects"
+msgstr ""
+
+msgid "Mapillary Traffic Signs"
+msgstr ""
+
 msgid "Mapillary filter"
 msgstr "Фільтр Mapillary"
 
 msgid "Mapillary image"
 msgstr "Знімок Mapillary"
+
+msgid "Mapillary image read should never occur on UI thread"
+msgstr ""
 
 msgid "Mapillary images Filter"
 msgstr "Фільтр знімків Mapillary"
@@ -284,8 +351,17 @@ msgstr "Вхід в Mapillary"
 msgid "Mapillary point features layer"
 msgstr "Точкові об’єкти Mapillary"
 
+msgid "Mapillary style sheet"
+msgstr ""
+
 msgid "Mapillary traffic signs layer"
 msgstr "Дорожні знаки Mapillary"
+
+msgid "Mapillary: Could not refresh login, logging out"
+msgstr ""
+
+msgid "Maximum distance to consider for changeset source calculations"
+msgstr ""
 
 msgid "Month"
 msgstr "Місяць"
@@ -301,6 +377,9 @@ msgstr "Перемістити фільтр вгору."
 
 msgid "Multikey: {0}"
 msgstr "Мультиключ: {0}"
+
+msgid "No color selected"
+msgstr ""
 
 msgid "No entry"
 msgstr "В’їзд заборонено"
@@ -320,14 +399,37 @@ msgstr "Стоянка заборонена"
 msgid "No turn"
 msgstr "Поворот заборонений"
 
+msgid "Non-panoramic"
+msgstr ""
+
 msgid "Not older than: "
 msgstr "Не старіше ніж: "
 
+#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "Кількість знімків для попереднього завантаження (вперед та назад)"
 
+msgid "Number of images to draw in the map view (affects performance)"
+msgstr ""
+
+msgid "Object Detection Filters"
+msgstr ""
+
+msgid ""
+"Only Mapillary images are supported at this time, use "
+"photo=Mapillary/<image_id>"
+msgstr ""
+
+msgid ""
+"Only Mapillary sequences are supported at this time, use "
+"sequence=Mapillary/<sequence_id>"
+msgstr ""
+
 msgid "Only images with signs"
 msgstr "Тільки знімки зі знаками"
+
+msgid "Only show objects on detection layers (\"Relevant objects\")"
+msgstr ""
 
 msgid "Open Mapillary filter dialog"
 msgstr "Відкрити діалог фільтра Mapillary"
@@ -338,24 +440,44 @@ msgstr "Відкрити шар Mapillary"
 msgid "Org"
 msgstr "Орг"
 
+msgid "Organization"
+msgstr ""
+
+msgid "Organization: {0}"
+msgstr ""
+
 msgid "Organizations"
 msgstr "Організації"
 
-msgid "Panorama only"
-msgstr "Тільки панорами"
+msgid "Panoramic"
+msgstr ""
 
 msgid "Pedestrian crossing"
 msgstr "Пішохідний перехід"
 
+msgid "Picture Filters"
+msgstr ""
+
 msgid "Point Objects"
 msgstr "Точкові об’єкти"
 
+#. translators notes must be in front
+#. filter mode: replace
 msgctxt "filter"
 msgid "R"
 msgstr "Замін."
 
 msgid "Remote Control has been asked to load:"
 msgstr "Дистанційне керування отримало запит на завантаження:"
+
+msgid "Remote Control has been asked to set Mapillary filters:"
+msgstr ""
+
+msgid "Remove"
+msgstr "Вилучити"
+
+msgid "Requires JOSM restart"
+msgstr ""
 
 msgid "Reset"
 msgstr "Скинути"
@@ -369,6 +491,9 @@ msgstr "Змінює послідовність фільтрів."
 msgid "Roundabout"
 msgstr "Круг"
 
+msgid "Select Mapillary Detection ({0})"
+msgstr ""
+
 msgid "Select Mapillary Image ({0})"
 msgstr "Виділити знімок Mapillary ({0})"
 
@@ -378,20 +503,47 @@ msgstr "Виділити видиме"
 msgid "Select a directory"
 msgstr "Виберіть теку"
 
+msgid "Select the Mapillary Detection {0}"
+msgstr ""
+
 msgid "Select the Mapillary Image {0} on the {1} layer (downloads if needed)"
 msgstr "Виділити зображення Mapillary {0} в шарі {1} (завантажте за потреби)"
+
+msgid "Select/Deselect all object detections on the current page"
+msgstr ""
 
 msgid "Sequence key"
 msgstr "Ключ послідовності"
 
+msgid "Sequence offset"
+msgstr ""
+
 msgid "Sequence: "
 msgstr "Послідовність:"
+
+msgid "Show Image types: "
+msgstr ""
 
 msgid "Show Relevant"
 msgstr "Показати відповідне"
 
 msgid "Show detections on top of image"
 msgstr "Показувати виявлені на знімку об’єкти"
+
+msgid "Show the next page of items"
+msgstr ""
+
+msgid "Show the previous page of items"
+msgstr ""
+
+msgid "Show this number of items on each page"
+msgstr ""
+
+msgid "Smart Edit Mode"
+msgstr ""
+
+msgid "Snap to highway"
+msgstr ""
 
 msgid "Sort"
 msgstr "Впорядкувати"
@@ -405,6 +557,9 @@ msgstr "Обмеження швидкості"
 msgid "Start"
 msgstr "Початок"
 
+msgid "Start: {0}"
+msgstr ""
+
 msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Стоп"
@@ -412,9 +567,19 @@ msgstr "Стоп"
 msgid "Tag conflict"
 msgstr "Конфлікт теґів"
 
+#. column header: filter text
 msgctxt "filter"
 msgid "Text"
 msgstr "Текст"
+
+msgid ""
+"There is a newer version of JOSM and/or the Mapillary plugin. Please update."
+msgstr ""
+
+msgid ""
+"This currently removes the detection from the current layer, but may report "
+"back to Mapillary in the future"
+msgstr ""
 
 msgid "Today"
 msgstr "Сьогодні"
@@ -431,18 +596,40 @@ msgstr "Дорожні знаки"
 msgid "Uneven road"
 msgstr "Нерівна дорога"
 
+msgid ""
+"Unknown Mapillary exception.\n"
+"This message may contain potentially sensitive information!\n"
+"{0}\n"
+"{1}"
+msgstr ""
+
 msgid "Up"
 msgstr "Вгору"
 
 msgid "Update"
 msgstr "Оновити"
 
+msgctxt "Checkbox label in JOSM settings"
+msgid "Use computed location information"
+msgstr ""
+
+msgctxt "Checkbox label in JOSM settings"
+msgid "Use the custom Mapillary renderer"
+msgstr ""
+
 msgid "View in browser"
 msgstr "Подивитись в оглядачі"
 
-msgid "Wait for full quality pictures"
-msgstr "Очікувати завантаження HD знімків"
+msgid "We cannot export {0}"
+msgstr ""
 
+msgid ""
+"We have reached the Mapillary API limit. Disabling Mapillary networking until JOSM restart. Sorry.\n"
+"Logging in after the rate limit subsides may help prevent this in the future.\n"
+"{0}"
+msgstr ""
+
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
@@ -450,8 +637,8 @@ msgstr ""
 "Під час відкривання знімка Mapillary в оглядачі, показувати редактор "
 "розмивання замість перегляду знімка"
 
-msgid "Which image layers do you want to import into the Mapillary layer?"
-msgstr "Які шари зі знімками ви бажаєте імпортувати до шару Mapillary?"
+msgid "Why are you removing the object? (Note: not yet sent to Mapillary)"
+msgstr ""
 
 msgid "Year"
 msgstr "Рік"
@@ -465,6 +652,9 @@ msgstr "Ви ще не увійшли."
 msgid "You are logged in as ''{0}''."
 msgstr "Ви увійшли як  ''{0}''."
 
+msgid "You are logged in."
+msgstr ""
+
 msgid "Zoom to selected image"
 msgstr "Масштабувати до виділеного знімка"
 
@@ -474,18 +664,20 @@ msgstr "Масштабувати до поточного виділеного з
 msgid "downloads street level images (currently supports {0})"
 msgstr "завантажує знімки вулиць (наразі підтримується {0})"
 
+msgid "hidden"
+msgstr ""
+
 msgid "image has no key"
 msgstr "знімок не має ключа"
 
 msgid "sequence has no key"
 msgstr "послідовність не має ключа"
 
-msgid "{0} ({1} image)"
-msgid_plural "{0} ({1} images)"
-msgstr[0] "{0} ({1} знімок)"
-msgstr[1] "{0} ({1} знімки)"
-msgstr[2] "{0} ({1} знімків)"
-msgstr[3] "{0} ({1} знімків)"
+msgid "shown"
+msgstr ""
+
+msgid "unknown organization"
+msgstr ""
 
 msgid "{0} consists of:"
 msgstr "{0} складається з:"
@@ -535,5 +727,6 @@ msgstr[3] "{0} ліній"
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
+#. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr "Дозволяє користувачам використовувати знімки з mapillary.com"

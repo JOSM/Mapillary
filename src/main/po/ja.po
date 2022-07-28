@@ -6,14 +6,14 @@
 # Translators:
 # Hiroshi Miura, 2019
 # jun meguro, 2019
-# Simon Legner, 2020
 # Florian Schäfer, 2020
+# Simon Legner, 2022
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.1-2-g20963ab\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.14-19-g22312a2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-26 15:07+0000\n"
+"POT-Creation-Date: 2022-07-27 15:04+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Japanese (https://www.transifex.com/josm/teams/2544/ja/)\n"
 "MIME-Version: 1.0\n"
@@ -22,6 +22,7 @@ msgstr ""
 "Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+#. filter mode: add
 msgctxt "filter"
 msgid "A"
 msgstr "A"
@@ -33,15 +34,28 @@ msgstr "キー<i>{0}</i>が付いたタグが、選択したOSMオブジェク�
 msgid "Add"
 msgstr "追加"
 
+msgid "Add Map Feature to OSM"
+msgstr ""
+
 msgid "Add Mapillary tag"
 msgstr "Mapillary タグを追加"
 
 msgid "Add filter."
 msgstr "フィルターを追加。"
 
+msgid "All"
+msgstr "全て"
+
+msgid "At least one of the optional arguments must be used ({0})"
+msgstr ""
+
+msgid "Bad Imagery"
+msgstr ""
+
 msgid "Cancel"
 msgstr "キャンセル"
 
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr "他の画像へボタンでジャンプしたときに、新しい画像は中央表示する。"
@@ -55,18 +69,50 @@ msgstr "クリア"
 msgid "Color"
 msgstr "色"
 
+msgctxt "Checkbox label in JOSM settings"
+msgid "Color images by capture date"
+msgstr ""
+
+msgid "Comment"
+msgstr "コメント"
+
+msgid "Comment to send to Mapillary"
+msgstr ""
+
+msgid "Copied URL to clipboard …"
+msgstr ""
+
+msgid "Copied color to clipboard"
+msgstr ""
+
+msgid "Copied key to clipboard …"
+msgstr ""
+
+msgid "Copy URL"
+msgstr ""
+
+msgid "Copy color"
+msgstr ""
+
 msgid "Copy key"
 msgstr "キーをコピー"
 
-msgid "Could not import a geotagged image to the Mapillary layer!"
-msgstr "Mapillaryレイヤに、ジオタグされた画像のインポートができませんでした!"
+msgid "Could not load image: {0}"
+msgstr ""
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "URL {0} をブラウザで開けませんでした。"
 
+msgid "Could not refresh Mapillary token. HTTP Status Code {0}."
+msgstr ""
+
+#. filter mode: remove
 msgctxt "filter"
 msgid "D"
 msgstr "D"
+
+msgid "Dataset is currently being updated"
+msgstr ""
 
 msgid "Days"
 msgstr "日"
@@ -74,14 +120,26 @@ msgstr "日"
 msgid "Delete"
 msgstr "削除"
 
+msgid "Delete Mapillary object"
+msgstr ""
+
 msgid "Delete filter."
 msgstr "フィルターを削除。"
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "写真のとられた時刻を表示"
 
 msgid "Displays detail information on the currently selected Mapillary image"
 msgstr "現在選択されているMapillary画像の詳細情報を表示"
+
+msgid ""
+"Displays the layer displaying the map point objects detected by Mapillary"
+msgstr ""
+
+msgid ""
+"Displays the layer displaying the traffic sign objects detected by Mapillary"
+msgstr ""
 
 msgid ""
 "Do you really want to replace the current value <i>{0}</i> with the new "
@@ -91,12 +149,14 @@ msgstr "本当に現在の値 <i>{0}</i>を新しい<i>{1}</i>に変更します
 msgid "Down"
 msgstr "下"
 
-msgid "Downloaded images"
-msgstr "ダウンロードした画像"
-
 msgid "Downloading…"
 msgstr "ダウンロード中..."
 
+msgid "Duplicate"
+msgstr "複製"
+
+#. translators notes must be in front
+#. column header: enable filter
 msgctxt "filter"
 msgid "E"
 msgstr "E"
@@ -107,11 +167,24 @@ msgstr "編集"
 msgid "Edit filter."
 msgstr "フィルターを編集。"
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "実験的ベータ機能を有効化(不安定です)"
 
 msgid "Enable filter"
 msgstr "フィルターを有効化"
+
+msgid "Enable/disable developer mode"
+msgstr ""
+
+msgid "End"
+msgstr ""
+
+msgid "End: {0}"
+msgstr ""
+
+msgid "Erroneous Data"
+msgstr ""
 
 msgid "Explore"
 msgstr "参照"
@@ -131,28 +204,36 @@ msgstr "選択したシーケンスをエクスポート"
 msgid "Exporting Mapillary Images…"
 msgstr "Mapillary画像のエクスポート中..."
 
+#. filter mode: in selection
 msgctxt "filter"
 msgid "F"
 msgstr "F"
 
+msgid "False Positive"
+msgstr ""
+
 msgid "Filter"
 msgstr "フィルター"
 
-msgid "Filter Hidden:{0} Disabled:{1}"
-msgstr "フィルタ 非表示:{0} 無効化:{1}"
+msgid "Filter Mapillary Detections"
+msgstr ""
+
+msgid "Filter mapillary objects and hide/disable them."
+msgstr ""
 
 msgid "Filter mode"
 msgstr "フィルターモード"
 
-msgid "Follow selected image"
-msgstr "選択した画像をフォロー"
+msgid "First Seen End"
+msgstr ""
+
+msgid "First Seen Start"
+msgstr ""
 
 msgid "Give way"
 msgstr "徐行"
 
-msgid "Go forward"
-msgstr "次にすすむ"
-
+#. column header: hide filter
 msgctxt "filter"
 msgid "H"
 msgstr "H"
@@ -163,9 +244,13 @@ msgstr "フィルターを非表示にする"
 msgid "Hiding filter"
 msgstr "フィルタを隠す"
 
+#. column header: inverted filter
 msgctxt "filter"
 msgid "I"
 msgstr "I"
+
+msgid "Image Quality"
+msgstr ""
 
 msgid "Image actions"
 msgstr "画像の操作"
@@ -176,17 +261,29 @@ msgstr "画像検出物"
 msgid "Image info"
 msgstr "画像情報"
 
+msgid "Image info dialog"
+msgstr ""
+
 msgid "Image key"
 msgstr "画像キー"
 
-msgid "Import"
-msgstr "インポート"
+msgid "Image: "
+msgstr ""
 
 msgid "Intersection danger"
 msgstr "危険交差点"
 
 msgid "Inverse filter"
 msgstr "反転フィルター"
+
+msgid "Just remove it"
+msgstr ""
+
+msgid "Last Seen End"
+msgstr ""
+
+msgid "Last Seen Start"
+msgstr ""
 
 msgid "Layer"
 msgstr "レイヤー"
@@ -200,6 +297,7 @@ msgstr "ログインに成功しました。JOSMにもどります。"
 msgid "Logout"
 msgstr "ログアウト"
 
+#. column header: filter mode
 msgctxt "filter"
 msgid "M"
 msgstr "M"
@@ -210,8 +308,24 @@ msgstr "一方通行(各種)"
 msgid "Mapillary"
 msgstr "Mapillary"
 
+msgid "Mapillary Expert Filter"
+msgstr ""
+
+msgid "Mapillary Filters"
+msgstr ""
+
+#. ImageInfos
 msgid "Mapillary Images"
 msgstr "Mapillary 画像"
+
+msgid "Mapillary Point Objects"
+msgstr ""
+
+msgid "Mapillary Smart Edit: Add objects"
+msgstr ""
+
+msgid "Mapillary Traffic Signs"
+msgstr ""
 
 msgid "Mapillary filter"
 msgstr "Mapillaryフィルタ"
@@ -219,11 +333,35 @@ msgstr "Mapillaryフィルタ"
 msgid "Mapillary image"
 msgstr "Mapillary画像"
 
+msgid "Mapillary image read should never occur on UI thread"
+msgstr ""
+
+msgid "Mapillary images Filter"
+msgstr ""
+
 msgid "Mapillary layer"
 msgstr "Mapillary レイヤ"
 
 msgid "Mapillary login"
 msgstr "Mapillaryログイン"
+
+msgid "Mapillary point features layer"
+msgstr ""
+
+msgid "Mapillary style sheet"
+msgstr ""
+
+msgid "Mapillary traffic signs layer"
+msgstr ""
+
+msgid "Mapillary: Could not refresh login, logging out"
+msgstr ""
+
+msgid "Maximum distance to consider for changeset source calculations"
+msgstr ""
+
+msgid "Month"
+msgstr ""
 
 msgid "Months"
 msgstr "ヶ月"
@@ -237,11 +375,17 @@ msgstr "フィルターを上に移動。"
 msgid "Multikey: {0}"
 msgstr "マルチキー: {0}"
 
+msgid "No color selected"
+msgstr ""
+
 msgid "No entry"
 msgstr "エントリー無し"
 
 msgid "No images found"
 msgstr "画像がみつかりません"
+
+msgid "No known image provider used"
+msgstr ""
 
 msgid "No overtaking"
 msgstr "追い越し禁止"
@@ -252,14 +396,37 @@ msgstr "駐車禁止"
 msgid "No turn"
 msgstr "転回禁止"
 
+msgid "Non-panoramic"
+msgstr ""
+
 msgid "Not older than: "
 msgstr "アップロード期間"
 
+#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "先行して取得する画像数(前向きと後ろ向き)"
 
+msgid "Number of images to draw in the map view (affects performance)"
+msgstr ""
+
+msgid "Object Detection Filters"
+msgstr ""
+
+msgid ""
+"Only Mapillary images are supported at this time, use "
+"photo=Mapillary/<image_id>"
+msgstr ""
+
+msgid ""
+"Only Mapillary sequences are supported at this time, use "
+"sequence=Mapillary/<sequence_id>"
+msgstr ""
+
 msgid "Only images with signs"
 msgstr "標識のある画像のみ"
+
+msgid "Only show objects on detection layers (\"Relevant objects\")"
+msgstr ""
 
 msgid "Open Mapillary filter dialog"
 msgstr "Mapillaryフィルタダイアログを開く"
@@ -267,12 +434,47 @@ msgstr "Mapillaryフィルタダイアログを開く"
 msgid "Open Mapillary layer"
 msgstr "Mapillaryレイヤを開く"
 
+msgid "Org"
+msgstr ""
+
+msgid "Organization"
+msgstr ""
+
+msgid "Organization: {0}"
+msgstr ""
+
+msgid "Organizations"
+msgstr ""
+
+msgid "Panoramic"
+msgstr ""
+
 msgid "Pedestrian crossing"
 msgstr "横断歩道"
 
+msgid "Picture Filters"
+msgstr ""
+
+msgid "Point Objects"
+msgstr ""
+
+#. translators notes must be in front
+#. filter mode: replace
 msgctxt "filter"
 msgid "R"
 msgstr "R"
+
+msgid "Remote Control has been asked to load:"
+msgstr ""
+
+msgid "Remote Control has been asked to set Mapillary filters:"
+msgstr ""
+
+msgid "Remove"
+msgstr "削除"
+
+msgid "Requires JOSM restart"
+msgstr ""
 
 msgid "Reset"
 msgstr "リセット"
@@ -280,23 +482,80 @@ msgstr "リセット"
 msgid "Reverse"
 msgstr "逆順"
 
+msgid "Reverse the filters order."
+msgstr ""
+
 msgid "Roundabout"
 msgstr "環状交差点"
+
+msgid "Select Mapillary Detection ({0})"
+msgstr ""
+
+msgid "Select Mapillary Image ({0})"
+msgstr ""
+
+msgid "Select Visible"
+msgstr ""
 
 msgid "Select a directory"
 msgstr "ディレクトリを選択"
 
+msgid "Select the Mapillary Detection {0}"
+msgstr ""
+
+msgid "Select the Mapillary Image {0} on the {1} layer (downloads if needed)"
+msgstr ""
+
+msgid "Select/Deselect all object detections on the current page"
+msgstr ""
+
 msgid "Sequence key"
 msgstr "シーケンスキー"
+
+msgid "Sequence offset"
+msgstr ""
+
+msgid "Sequence: "
+msgstr ""
+
+msgid "Show Image types: "
+msgstr ""
+
+msgid "Show Relevant"
+msgstr ""
 
 msgid "Show detections on top of image"
 msgstr "イメージ上に検出物を表示"
 
+msgid "Show the next page of items"
+msgstr ""
+
+msgid "Show the previous page of items"
+msgstr ""
+
+msgid "Show this number of items on each page"
+msgstr ""
+
+msgid "Smart Edit Mode"
+msgstr ""
+
+msgid "Snap to highway"
+msgstr ""
+
 msgid "Sort"
 msgstr "並べ替え"
 
+msgid "Sort filters."
+msgstr ""
+
 msgid "Speed limit"
 msgstr "最高速度"
+
+msgid "Start"
+msgstr ""
+
+msgid "Start: {0}"
+msgstr ""
 
 msgctxt "name of the traffic sign"
 msgid "Stop"
@@ -305,9 +564,22 @@ msgstr "停止"
 msgid "Tag conflict"
 msgstr "タグの衝突"
 
+#. column header: filter text
 msgctxt "filter"
 msgid "Text"
 msgstr "テキスト"
+
+msgid ""
+"There is a newer version of JOSM and/or the Mapillary plugin. Please update."
+msgstr ""
+
+msgid ""
+"This currently removes the detection from the current layer, but may report "
+"back to Mapillary in the future"
+msgstr ""
+
+msgid "Today"
+msgstr ""
 
 msgid "Toggle: {0}"
 msgstr "{0}の表示/非表示"
@@ -315,8 +587,18 @@ msgstr "{0}の表示/非表示"
 msgid "Total Mapillary images: {0}"
 msgstr "総Mapillaryイメージ数: {0}"
 
+msgid "Traffic Signs"
+msgstr ""
+
 msgid "Uneven road"
 msgstr "未舗装道路"
+
+msgid ""
+"Unknown Mapillary exception.\n"
+"This message may contain potentially sensitive information!\n"
+"{0}\n"
+"{1}"
+msgstr ""
 
 msgid "Up"
 msgstr "上"
@@ -324,19 +606,37 @@ msgstr "上"
 msgid "Update"
 msgstr "アップデート"
 
+msgctxt "Checkbox label in JOSM settings"
+msgid "Use computed location information"
+msgstr ""
+
+msgctxt "Checkbox label in JOSM settings"
+msgid "Use the custom Mapillary renderer"
+msgstr ""
+
 msgid "View in browser"
 msgstr "ブラウザで表示"
 
-msgid "Wait for full quality pictures"
-msgstr "フル品質の写真を待つ"
+msgid "We cannot export {0}"
+msgstr ""
 
+msgid ""
+"We have reached the Mapillary API limit. Disabling Mapillary networking until JOSM restart. Sorry.\n"
+"Logging in after the rate limit subsides may help prevent this in the future.\n"
+"{0}"
+msgstr ""
+
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
 msgstr "Mapillary画像をWebブラウザで開くときに、画像ビューアの代わりにブラー編集画面を開きます。"
 
-msgid "Which image layers do you want to import into the Mapillary layer?"
-msgstr "どの画像レイヤをMapillaryレイヤにインポートしますか？"
+msgid "Why are you removing the object? (Note: not yet sent to Mapillary)"
+msgstr ""
+
+msgid "Year"
+msgstr ""
 
 msgid "Years"
 msgstr "年"
@@ -347,11 +647,20 @@ msgstr "ログインしていません"
 msgid "You are logged in as ''{0}''."
 msgstr "''{0}'' としてログイン中です。"
 
+msgid "You are logged in."
+msgstr ""
+
 msgid "Zoom to selected image"
 msgstr "選択した画像へズーム"
 
 msgid "Zoom to the currently selected Mapillary image"
 msgstr "現在選択しているMapillary画像へズームします。"
+
+msgid "downloads street level images (currently supports {0})"
+msgstr ""
+
+msgid "hidden"
+msgstr ""
 
 msgid "image has no key"
 msgstr "画像にはキーがない"
@@ -359,9 +668,11 @@ msgstr "画像にはキーがない"
 msgid "sequence has no key"
 msgstr "シーケンスにキーがない"
 
-msgid "{0} ({1} image)"
-msgid_plural "{0} ({1} images)"
-msgstr[0] "{0} ({1} 画像)"
+msgid "shown"
+msgstr ""
+
+msgid "unknown organization"
+msgstr ""
 
 msgid "{0} consists of:"
 msgstr "{0} の構成は次の通りです。"
@@ -376,13 +687,26 @@ msgstr[0] "全 {0} 画像"
 msgid "{0} images in {1} sequences"
 msgstr "{1}シーケンス中に画像が{0}こ"
 
+msgid "{0} node"
+msgid_plural "{0} nodes"
+msgstr[0] ""
+
+msgid "{0} relation"
+msgid_plural "{0} relations"
+msgstr[0] ""
+
 msgid "{0} sequence, containing between {1} and {2} images (ø {3})"
 msgid_plural ""
 "{0} sequences, each containing between {1} and {2} images (ø {3})"
 msgstr[0] " {1} から {2} までの画像 (ø {3})を含むシーケンス数 {0} "
 
+msgid "{0} way"
+msgid_plural "{0} ways"
+msgstr[0] ""
+
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
+#. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr "ユーザがmapillary.comで保持している写真で作業できるようにする"
