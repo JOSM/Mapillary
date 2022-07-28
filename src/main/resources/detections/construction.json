@@ -1,4 +1,12 @@
 [
+    {"type":"construction--barrier--road-side",
+    "data_type": "production",
+    "detection_type": [
+      "line",
+      "segmentation"
+    ],
+    "has_image": false
+    },
   {
     "data_type": "production",
     "detection_type": [

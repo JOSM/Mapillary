@@ -47,7 +47,7 @@ public final class ObjectDetections {
     public static final ObjectDetections UNKNOWN = new ObjectDetections("unknown", null, null, null, null,
         DataType.PRODUCTION, false);
 
-    private static final List<ObjectDetections> VALUES = loadObjectDetections(1647, "complementary", "construction",
+    private static final List<ObjectDetections> VALUES = loadObjectDetections(1649, "complementary", "construction",
         "information", "marking", "object", "regulatory", "warning");
     public static final List<ObjectDetections> IGNORE_DETECTIONS = Collections
         .unmodifiableList(loadObjectDetections(21, "ignorable"));
