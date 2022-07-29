@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.oauth;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -143,7 +144,7 @@ class OAuthUtilsTest {
         assertEquals(EnumSet.allOf(MapillaryURLWireMockErrors.Type.class), testedTypes, "Please test all error types");
     }
 
-    static Stream<Arguments> testUpdateAuthorization() {
+    static Stream<Arguments> updateAuthorizationArgs() {
         return Stream.of(Arguments.of(Duration.ofMinutes(1), "test_token", "bearer"),
             Arguments.of(Duration.ofMinutes(30), "test_token_30_min", "bearer"),
             Arguments.of(Duration.ofHours(2), "test_token_2_hour", "bearer"),
@@ -157,7 +158,7 @@ class OAuthUtilsTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("updateAuthorizationArgs")
     void testUpdateAuthorization(Duration duration, String accessToken, String tokenType) {
         MapillaryUser.reset();
         assertAll("User should be reset", NOT_LOGGED_IN_CHECKS);
@@ -202,7 +203,7 @@ class OAuthUtilsTest {
     }
 
     @ParameterizedTest
-    @MethodSource("testUpdateAuthorization")
+    @MethodSource("updateAuthorizationArgs")
     void testUpdateAuthorizationBadResponse(Duration duration, String accessToken, String tokenType) {
         final NotificationMocker notificationMocker = new NotificationMocker();
 
