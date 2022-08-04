@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="Mapillary" default="dist" basedir="." xmlns:if="ant:if" xmlns:unless="ant:unless">
+<project xmlns:if="ant:if" xmlns:unless="ant:unless" name="Mapillary" default="dist" basedir=".">
   <property name="plugin.src.dir" value="src/main/java"/>
   <property name="plugin.resources.dir" value="src/main/resources"/>
-
   <!-- edit the properties of this plugin in the file `gradle.properties` -->
   <property file="${basedir}/gradle.properties"/>
-
   <property name="josm" location="../../core/dist/josm-custom.jar"/>
   <property name="plugin.dist.dir" value="../../dist"/>
-
   <!-- ** include targets that all plugins have in common ** -->
   <import file="../build-common.xml"/>
-
-  <target name="pre-compile" depends="fetch_dependencies">
+  <target name="pre-compile" depends="fetch_dependencies,mapillary_secrets">
     <!-- include fetch_dependencies task -->
   </target>
-
   <!-- Override the `setup-dist-default` task from build-common.xml -->
   <target name="setup-dist-default">
     <copy todir="${plugin.build.dir}" failonerror="no" includeemptydirs="no">
@@ -28,27 +23,35 @@
       </fileset>
     </copy>
   </target>
-
   <fileset id="plugin.requires.jars" dir="${plugin.dist.dir}">
     <include name="apache-commons.jar"/>
     <include name="apache-http.jar"/>
   </fileset>
-  <condition property="mapillary_secrets">
-    <and>
-        <isset property="MAPILLARY_CLIENT_ID"/>
-        <isset property="MAPILLARY_CLIENT_SECRET"/>
-        <isset property="MAPILLARY_CLIENT_TOKEN"/>
-    </and>
-  </condition>
-  <echo file="src/main/resources/mapillary_api_keys.json" if:true="${mapillary_secrets}">
-    {
-      "MAPILLARY_CLIENT_ID": "${MAPILLARY_CLIENT_ID}",
-      "MAPILLARY_CLIENT_TOKEN": "${MAPILLARY_CLIENT_TOKEN}",
-      "MAPILLARY_CLIENT_SECRET": "${MAPILLARY_CLIENT_SECRET}"
-    }
-  </echo>
-  <echo unless:true="${mapillary_secrets}">
-      Missing at least one of MAPILLARY_CLIENT_ID, MAPILLARY_CLIENT_TOKEN, and MAPILLARY_CLIENT_SECRET
-      Please provide with -DMAPILLARY_CLIENT_ID="id" -DMAPILLARY_CLIENT_TOKEN="token" -DMAPILLARY_CLIENT_SECRET="secret"
-  </echo>
+  <target name="mapillary_secrets">
+    <property environment="env"/>
+    <property name="real_MAPILLARY_CLIENT_ID" value="${MAPILLARY_CLIENT_ID}" if:set="MAPILLARY_CLIENT_ID"/>
+    <property name="real_MAPILLARY_CLIENT_ID" value="${env.MAPILLARY_CLIENT_ID}" if:set="env.MAPILLARY_CLIENT_ID"/>
+    <property name="real_MAPILLARY_CLIENT_SECRET" value="${MAPILLARY_CLIENT_SECRET}" if:set="MAPILLARY_CLIENT_SECRET"/>
+    <property name="real_MAPILLARY_CLIENT_SECRET" value="${env.MAPILLARY_CLIENT_SECRET}" if:set="env.MAPILLARY_CLIENT_SECRET"/>
+    <property name="real_MAPILLARY_CLIENT_TOKEN" value="${MAPILLARY_CLIENT_TOKEN}" if:set="MAPILLARY_CLIENT_TOKEN"/>
+    <property name="real_MAPILLARY_CLIENT_TOKEN" value="${env.MAPILLARY_CLIENT_TOKEN}" if:set="env.MAPILLARY_CLIENT_TOKEN"/>
+    <condition property="mapillary_secrets">
+      <and>
+        <isset property="real_MAPILLARY_CLIENT_ID"/>
+        <isset property="real_MAPILLARY_CLIENT_SECRET"/>
+        <isset property="real_MAPILLARY_CLIENT_TOKEN"/>
+      </and>
+    </condition>
+    <echo file="${plugin.build.dir}/mapillary_api_keys.json" if:true="${mapillary_secrets}">
+        {
+          "MAPILLARY_CLIENT_ID": "${real_MAPILLARY_CLIENT_ID}",
+          "MAPILLARY_CLIENT_TOKEN": "${real_MAPILLARY_CLIENT_TOKEN}",
+          "MAPILLARY_CLIENT_SECRET": "${real_MAPILLARY_CLIENT_SECRET}"
+        }
+      </echo>
+    <echo unless:true="${mapillary_secrets}">
+          Missing at least one of MAPILLARY_CLIENT_ID, MAPILLARY_CLIENT_TOKEN, and MAPILLARY_CLIENT_SECRET
+          Please provide with -DMAPILLARY_CLIENT_ID="id" -DMAPILLARY_CLIENT_TOKEN="token" -DMAPILLARY_CLIENT_SECRET="secret"
+      </echo>
+  </target>
 </project>
