@@ -756,13 +756,17 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
      */
     private void updateSequence(MapillarySequence sequence) {
         MapillaryNode node = this.image;
-        final List<MapillaryNode> downloadedNodes = sequence.getNodes();
-        final MapillaryNode tImage = downloadedNodes.stream().filter(n -> MapillaryImageUtils.equals(n, node))
-            .findFirst()
-            .orElseGet(() -> downloadedNodes.stream().map(n -> new Pair<>(n, n.getCoor().distanceSq(node.getCoor())))
-                .max(Comparator.comparingDouble(pair -> pair.b)).map(pair -> pair.a).orElse(null));
-        if (Objects.equals(this.image, tImage)) {
-            this.setCurrentImage(tImage);
+        if (node != null) {
+            final List<MapillaryNode> downloadedNodes = sequence.getNodes();
+            final MapillaryNode tImage = downloadedNodes.stream().filter(n -> MapillaryImageUtils.equals(n, node))
+                .findFirst().orElseGet(
+                    () -> downloadedNodes.stream().map(n -> new Pair<>(n, n.getCoor().distanceSq(node.getCoor())))
+                        .max(Comparator.comparingDouble(pair -> pair.b)).map(pair -> pair.a).orElse(null));
+            // Use this.image instead of node to avoid changing sequences if the user selected a different
+            // image while this method was running.
+            if (tImage != null && Objects.equals(this.image, tImage)) {
+                this.setCurrentImage(tImage);
+            }
         }
     }
 
