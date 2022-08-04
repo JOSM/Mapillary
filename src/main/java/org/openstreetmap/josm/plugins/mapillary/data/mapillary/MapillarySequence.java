@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.data.mapillary;
 
 import java.util.Arrays;
@@ -15,11 +16,21 @@ import org.openstreetmap.josm.data.osm.UniqueIdGenerator;
 import org.openstreetmap.josm.data.osm.visitor.PrimitiveVisitor;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 
+/**
+ * A mapillary sequence of images
+ *
+ * @author Taylor Smock
+ */
 public class MapillarySequence extends MapillaryPrimitive implements IWay<MapillaryNode> {
     private static final UniqueIdGenerator MAPILLARY_SEQUENCE_GENERATOR = new UniqueIdGenerator();
     private static final MapillaryNode[] EMPTY_NODES = new MapillaryNode[0];
     private MapillaryNode[] nodes = EMPTY_NODES;
 
+    /**
+     * Create an empty sequence
+     *
+     * @param key The sequence key (or id)
+     */
     public MapillarySequence(final String key) {
         this.setKeys(Collections.singletonMap(MapillarySequenceUtils.KEY, key));
     }
@@ -79,7 +90,6 @@ public class MapillarySequence extends MapillaryPrimitive implements IWay<Mapill
 
         this.nodes = nodes.toArray(EMPTY_NODES);
         nodes.forEach(node -> node.setReferrer(this));
-
     }
 
     @Override
