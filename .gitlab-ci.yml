@@ -123,7 +123,7 @@ test:
   dependencies:
     - assemble
   interruptible: true
-  coverage: '/.*Instruction Coverage.*?([0-9.]{1,8}) ?%/'
+  coverage: '/Instruction coverage: (\d+\.?\d+) %/'
 
 coverage:
   stage: deploy
