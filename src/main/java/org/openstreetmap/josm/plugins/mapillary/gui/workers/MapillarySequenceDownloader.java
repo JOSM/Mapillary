@@ -26,9 +26,9 @@ import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoder;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
@@ -205,7 +205,7 @@ public class MapillarySequenceDownloader extends MapillaryDownloader<MapillarySe
                 return way.getNodeIds().stream().mapToLong(Long::longValue).toArray();
             }
         }
-        final String url = MapillaryURL.APIv4.getImagesBySequences(sequence);
+        final String url = MapillaryConfig.getUrls().getImagesBySequences(sequence);
         final String response = Caches.META_DATA_CACHE.get(url, () -> {
             final JsonObject urlResponse = getUrlResponse(url);
             return urlResponse == null ? null : urlResponse.toString();

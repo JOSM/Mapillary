@@ -12,41 +12,47 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.junit.jupiter.api.Test;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.IMapillaryUrls;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
+import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.IntegrationTest;
+import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 
+@MapillaryURLWireMock(MapillaryURLWireMock.Type.INTEGRATION)
+@IntegrationTest
 class MapillaryURLTest {
 
-    private static final String CLIENT_ID_QUERY_PART = "client_id=" + MapillaryURL.APIv4.CLIENT_ID;
+    private static final String CLIENT_ID_QUERY_PART = "client_id=" + MapillaryConfig.getUrls().getClientId();
 
     // TODO Test APIv4 when actually available
 
     @Test
     void testBrowseImageURL() throws MalformedURLException {
         assertEquals(new URL("https://www.mapillary.com/app/?pKey=1234567890123456789012"),
-            MapillaryURL.MainWebsite.browseImage("1234567890123456789012"));
+            MapillaryConfig.getUrls().browseImage("1234567890123456789012"));
     }
 
     @Test
     void testIllegalBrowseImageURL() {
-        assertThrows(IllegalArgumentException.class, () -> MapillaryURL.MainWebsite.browseImage(null));
+        assertThrows(IllegalArgumentException.class, () -> MapillaryConfig.getUrls().browseImage(null));
     }
 
     @Test
     void testConnectURL() {
-        assertUrlEquals(MapillaryURL.MainWebsite.connect("http://redirect-host/ä"), "https://www.mapillary.com/connect",
-            CLIENT_ID_QUERY_PART, "scope=read", "response_type=code",
+        assertUrlEquals(MapillaryConfig.getUrls().connect("http://redirect-host/ä"),
+            "https://www.mapillary.com/connect", CLIENT_ID_QUERY_PART, "scope=read", "response_type=code",
             "redirect_uri=http%3A%2F%2Fredirect-host%2F%C3%A4");
 
-        assertUrlEquals(MapillaryURL.MainWebsite.connect(null), "https://www.mapillary.com/connect",
+        assertUrlEquals(MapillaryConfig.getUrls().connect(null), "https://www.mapillary.com/connect",
             CLIENT_ID_QUERY_PART, "scope=read", "response_type=code");
 
-        assertUrlEquals(MapillaryURL.MainWebsite.connect(""), "https://www.mapillary.com/connect", CLIENT_ID_QUERY_PART,
-            "scope=read", "response_type=code");
+        assertUrlEquals(MapillaryConfig.getUrls().connect(""), "https://www.mapillary.com/connect",
+            CLIENT_ID_QUERY_PART, "scope=read", "response_type=code");
     }
 
     @Test
     void testString2MalformedURL() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
         NoSuchMethodException, SecurityException {
-        Method method = MapillaryURL.class.getDeclaredMethod("string2URL", String[].class);
+        Method method = IMapillaryUrls.class.getDeclaredMethod("string2URL", String[].class);
         method.setAccessible(true);
         assertNull(method.invoke(null, new Object[] { new String[] { "malformed URL" } })); // this simply invokes
                                                                                             // string2URL("malformed
@@ -56,9 +62,7 @@ class MapillaryURLTest {
 
     @Test
     void testUtilityClass() {
-        TestUtil.testUtilityClass(MapillaryURL.class);
-        TestUtil.testUtilityClass(MapillaryURL.APIv4.class);
-        TestUtil.testUtilityClass(MapillaryURL.MainWebsite.class);
+        TestUtil.testUtilityClass(MapillaryConfig.class);
     }
 
     protected static void assertUrlEquals(URL actualUrl, String expectedBaseUrl, String... expectedParams) {

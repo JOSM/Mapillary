@@ -25,8 +25,8 @@ import javax.json.JsonValue;
 
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoder;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
@@ -68,7 +68,7 @@ public class MapillaryNodesDownloader extends MapillaryDownloader<List<Mapillary
             return Collections.emptyMap();
         }
         final Caches.MapillaryCacheAccess<String> metaDataCache = Caches.META_DATA_CACHE;
-        String url = MapillaryURL.APIv4.getImageInformation(images);
+        String url = MapillaryConfig.getUrls().getImageInformation(images);
         String stringJson = metaDataCache.get(url, () -> {
             final JsonObject jsonObject = getUrlResponse(url);
             return jsonObject != null ? jsonObject.toString() : null;
@@ -117,7 +117,7 @@ public class MapillaryNodesDownloader extends MapillaryDownloader<List<Mapillary
                 } else {
                     throw new IllegalArgumentException("id value not understood: " + jsonObject);
                 }
-                final String entryUrl = MapillaryURL.APIv4.getImageInformation(id);
+                final String entryUrl = MapillaryConfig.getUrls().getImageInformation(id);
                 Caches.META_DATA_CACHE.getICacheAccess().put(entryUrl, entry.toString());
             }
         }

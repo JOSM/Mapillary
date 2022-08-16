@@ -1,12 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.json.JsonArray;
-import javax.json.JsonNumber;
-import javax.json.JsonObject;
-import javax.json.JsonValue;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,6 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.json.JsonArray;
+import javax.json.JsonNumber;
+import javax.json.JsonObject;
+import javax.json.JsonValue;
+
 import org.openstreetmap.gui.jmapviewer.interfaces.MapObject;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.INode;
@@ -22,10 +23,10 @@ import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.vector.DataLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 
 /**
- * Decodes the JSON returned by {@link MapillaryURL.APIv4} into Java objects.
+ * Decodes the JSON returned by {@link org.openstreetmap.josm.plugins.mapillary.spi.preferences.IMapillaryUrls} into
+ * Java objects.
  * Takes a {@link JsonObject} and {@link #decodeMapFeatureObject(JsonValue, IPrimitive)} tries to convert it to a
  * {@link MapObject}.
  */

@@ -45,10 +45,10 @@ import org.junit.platform.commons.support.AnnotationSupport;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.gui.widgets.JMultilineLabel;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMockErrors;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 import org.openstreetmap.josm.testutils.annotations.BasicWiremock;
 import org.openstreetmap.josm.testutils.annotations.HTTP;
@@ -250,7 +250,7 @@ class OAuthUtilsTest {
     @Test
     @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.APPLICATION_REQUEST_LIMIT_REACHED)
     void testApplicationRequestLimitReached() throws IOException {
-        final URL url = new URL(MapillaryURL.APIv4.getImageInformation(IMAGE_ID));
+        final URL url = new URL(MapillaryConfig.getUrls().getImageInformation(IMAGE_ID));
         assertDoesNotThrow(() -> OAuthUtils.getWithHeader(url), "Responses may be parsed, which may fail.");
         assertAll("Application request limit should not log out the user", LOGGED_IN_CHECKS);
         this.testAuthenticationRefresh(url);
@@ -259,7 +259,7 @@ class OAuthUtilsTest {
     @Test
     @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.BAD_REQUEST)
     void testBadRequest() throws IOException {
-        final URL url = new URL(MapillaryURL.APIv4.getImageInformation(IMAGE_ID));
+        final URL url = new URL(MapillaryConfig.getUrls().getImageInformation(IMAGE_ID));
         verifyCorrectResponseCode(url, HttpURLConnection.HTTP_BAD_REQUEST);
         assertThrows(IOException.class, () -> OAuthUtils.getWithHeader(url),
             "Responses may be parsed, which will likely fail.");
@@ -269,7 +269,7 @@ class OAuthUtilsTest {
     @Test
     @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.FORBIDDEN)
     void testForbiddenRequest() throws IOException {
-        final URL url = new URL(MapillaryURL.APIv4.getImageInformation(IMAGE_ID));
+        final URL url = new URL(MapillaryConfig.getUrls().getImageInformation(IMAGE_ID));
         verifyCorrectResponseCode(url, HttpURLConnection.HTTP_FORBIDDEN);
         assertThrows(IOException.class, () -> OAuthUtils.getWithHeader(url),
             "Responses may be parsed, which will likely fail.");
@@ -279,7 +279,7 @@ class OAuthUtilsTest {
     @Test
     @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.NOT_FOUND)
     void testNotFoundResponse() throws IOException {
-        final URL url = new URL(MapillaryURL.APIv4.getImageInformation(IMAGE_ID));
+        final URL url = new URL(MapillaryConfig.getUrls().getImageInformation(IMAGE_ID));
         verifyCorrectResponseCode(url, HttpURLConnection.HTTP_NOT_FOUND);
         assertThrows(IOException.class, () -> OAuthUtils.getWithHeader(url),
             "Responses may be parsed, which will likely fail.");
@@ -289,7 +289,7 @@ class OAuthUtilsTest {
     @Test
     @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.NO_CONTENT)
     void testNoContentResponse() throws IOException {
-        final URL url = new URL(MapillaryURL.APIv4.getImageInformation(IMAGE_ID));
+        final URL url = new URL(MapillaryConfig.getUrls().getImageInformation(IMAGE_ID));
         verifyCorrectResponseCode(url, HttpURLConnection.HTTP_NO_CONTENT);
         assertThrows(IOException.class, () -> OAuthUtils.getWithHeader(url),
             "Responses may be parsed, which will likely fail.");
@@ -299,7 +299,7 @@ class OAuthUtilsTest {
     @Test
     @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.SERVER_ERROR)
     void testServerErrorResponse() throws IOException {
-        final URL url = new URL(MapillaryURL.APIv4.getImageInformation(IMAGE_ID));
+        final URL url = new URL(MapillaryConfig.getUrls().getImageInformation(IMAGE_ID));
         verifyCorrectResponseCode(url, HttpURLConnection.HTTP_INTERNAL_ERROR);
         assertDoesNotThrow(() -> OAuthUtils.getWithHeader(url), "Responses may be parsed, which may fail.");
         assertAll("Server errors should not log out the user", LOGGED_IN_CHECKS);
@@ -309,7 +309,7 @@ class OAuthUtilsTest {
     @Test
     @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.UNAUTHORIZED)
     void testUnauthorizedResponse() throws IOException {
-        final URL url = new URL(MapillaryURL.APIv4.getImageInformation(IMAGE_ID));
+        final URL url = new URL(MapillaryConfig.getUrls().getImageInformation(IMAGE_ID));
         verifyCorrectResponseCode(url, HttpURLConnection.HTTP_UNAUTHORIZED);
         assertThrows(IOException.class, () -> OAuthUtils.getWithHeader(url),
             "Responses may be parsed, which will likely fail.");
@@ -319,7 +319,7 @@ class OAuthUtilsTest {
     @Test
     @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.UNAUTHORIZED_APPLICATION)
     void testUnauthorizedApplicationResponse() throws IOException {
-        final URL url = new URL(MapillaryURL.APIv4.getImageInformation(IMAGE_ID));
+        final URL url = new URL(MapillaryConfig.getUrls().getImageInformation(IMAGE_ID));
         verifyCorrectResponseCode(url, HttpURLConnection.HTTP_UNAUTHORIZED);
         assertDoesNotThrow(() -> OAuthUtils.getWithHeader(url), "Responses may be parsed, which may fail.");
         assertAll("An unauthorized application response should log out the user", NOT_LOGGED_IN_CHECKS);

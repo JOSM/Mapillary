@@ -89,7 +89,7 @@ public @interface MapillaryURLWireMock {
         public void afterAll(final ExtensionContext context) {
             final ExtensionContext.Namespace namespace = ExtensionContext.Namespace.create(MapillaryURLWireMock.class);
             final WireMockServer server = context.getStore(namespace).get(WireMockServer.class, WireMockServer.class);
-            MapillaryConfig.setUrlsProvider(null);
+            MapillaryConfig.setUrlsProvider(new NullMapillaryUrl());
             server.stop();
         }
 
@@ -159,7 +159,7 @@ public @interface MapillaryURLWireMock {
             server.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/coverageTiles/.*"))
                 .withQueryParams(potentialParameters)
                 .willReturn(WireMock.aResponse().withBodyFile(
-                    "api/v4/responses/coverageTiles/{{request.path.[3]}}/{{request.path.[4]}}/{{request.path.[5]}}/{{request.path.[6]}}/{{request.path.[7]}}/{{request.path.[8]}}.mvt")
+                    "api/v4/responses/coverageTiles/{{request.path.[3]}}/{{request.path.[4]}}/{{request.path.[5]}}/{{request.path.[6]}}/{{request.path.[7]}}.mvt")
                     .withHeader("Content-Type", "application/vnd.mapbox-vector-tile", "application/vnd.google.protobuf",
                         "application/x-protobuf", "application/protobuf")
                     .withTransformers("response-template"))
@@ -206,22 +206,7 @@ public @interface MapillaryURLWireMock {
                 && context.getTags().contains(IntegrationTest.TAG)) {
                 MapillaryConfig.setUrlsProvider(new MapillaryUrls());
             } else {
-                MapillaryConfig.setUrlsProvider(new IMapillaryUrls() {
-                    @Override
-                    public String getBaseMetaDataUrl() {
-                        return server.baseUrl() + "/api/v4/graph/";
-                    }
-
-                    @Override
-                    public String getBaseTileUrl() {
-                        return server.baseUrl() + "/api/v4/coverageTiles/";
-                    }
-
-                    @Override
-                    public String getPaintStyleUrl() {
-                        return server.baseUrl() + "/paintstyle";
-                    }
-                });
+                MapillaryConfig.setUrlsProvider(new WireMockServerMapillaryUrl(server));
             }
         }
 
@@ -277,7 +262,7 @@ public @interface MapillaryURLWireMock {
                     fail("Always pass the access token: " + request.getUrl());
                 }
                 // Don't try to modify the vector tiles
-                if (request.contentTypeHeader().containsValue("application/vnd.mapbox-vector-tile")) {
+                if (response.getHeaders().getContentTypeHeader().containsValue("application/vnd.mapbox-vector-tile")) {
                     return response;
                 }
                 final String origBody = response.getBodyAsString();
@@ -378,6 +363,92 @@ public @interface MapillaryURLWireMock {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * A wiremocked implementation of {@link IMapillaryUrls}
+     */
+    class WireMockServerMapillaryUrl implements IMapillaryUrls {
+        final WireMockServer server;
+
+        WireMockServerMapillaryUrl(WireMockServer server) {
+            this.server = server;
+        }
+
+        @Override
+        public String getBaseMetaDataUrl() {
+            return server.baseUrl() + "/api/v4/graph/";
+        }
+
+        @Override
+        public String getBaseTileUrl() {
+            return server.baseUrl() + "/api/v4/coverageTiles/";
+        }
+
+        @Override
+        public String getPaintStyleUrl() {
+            return server.baseUrl() + "/paintstyle";
+        }
+
+        @Override
+        public String getAccessId() {
+            return "test-id";
+        }
+
+        @Override
+        public long getClientId() {
+            return 1234;
+        }
+
+        @Override
+        public String getClientSecret() {
+            return "test-secret";
+        }
+
+        @Override
+        public String getBaseUrl() {
+            return server.baseUrl() + "/baseUrl";
+        }
+    }
+
+    /**
+     * This exists only to ensure that the appropriate annotations are used throughout tests
+     */
+    class NullMapillaryUrl implements IMapillaryUrls {
+        @Override
+        public String getBaseMetaDataUrl() {
+            return null;
+        }
+
+        @Override
+        public String getBaseTileUrl() {
+            return null;
+        }
+
+        @Override
+        public String getPaintStyleUrl() {
+            return null;
+        }
+
+        @Override
+        public String getAccessId() {
+            return null;
+        }
+
+        @Override
+        public long getClientId() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getClientSecret() {
+            return null;
+        }
+
+        @Override
+        public String getBaseUrl() {
+            return null;
         }
     }
 }

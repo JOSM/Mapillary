@@ -68,10 +68,10 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.KeyIndexedObject;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.OffsetUtils;
 import org.openstreetmap.josm.tools.ExifReader;
@@ -407,14 +407,14 @@ public class MapillaryImageEntry
     @Override
     @Nullable
     public File getFile() {
-        return new File(MapillaryURL.MainWebsite.browseImage(Long.toString(MapillaryImageUtils.getKey(this.image)))
+        return new File(MapillaryConfig.getUrls().browseImage(Long.toString(MapillaryImageUtils.getKey(this.image)))
             .toExternalForm());
     }
 
     // @Override -- added in JOSM r18427
     public URI getImageURI() {
         try {
-            return new URI(MapillaryURL.MainWebsite.browseImage(Long.toString(MapillaryImageUtils.getKey(this.image)))
+            return new URI(MapillaryConfig.getUrls().browseImage(Long.toString(MapillaryImageUtils.getKey(this.image)))
                 .toExternalForm());
         } catch (URISyntaxException e) {
             // This should never happen.

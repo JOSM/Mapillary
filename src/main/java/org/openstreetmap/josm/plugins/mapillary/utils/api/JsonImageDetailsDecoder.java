@@ -28,12 +28,12 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.geoimage.MapillaryImag
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv4;
 import org.openstreetmap.josm.tools.Pair;
 import org.openstreetmap.josm.tools.Utils;
 
 /**
- * Decodes the JSON returned by {@link APIv4} into Java objects. Takes a
+ * Decodes the JSON returned by {@link org.openstreetmap.josm.plugins.mapillary.spi.preferences.IMapillaryUrls} into
+ * Java objects. Takes a
  * {@link JsonValue} and {@link VectorDataSet}
  * tries to add the timestamps.
  */

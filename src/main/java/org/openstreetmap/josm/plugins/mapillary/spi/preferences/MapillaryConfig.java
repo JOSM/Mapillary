@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.spi.preferences;
 
 import org.openstreetmap.josm.tools.ListenerList;

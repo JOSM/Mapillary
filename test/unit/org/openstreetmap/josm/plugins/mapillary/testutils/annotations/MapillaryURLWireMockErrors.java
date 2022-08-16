@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.testutils.annotations;
 
 import static org.junit.jupiter.api.Assertions.fail;
@@ -14,7 +15,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.testutils.annotations.AnnotationUtils;
 
 /**
@@ -85,8 +86,8 @@ public @interface MapillaryURLWireMockErrors {
                 server.stubFor(WireMock.any(WireMock.anyUrl())
                     .willReturn(WireMock.unauthorized()
                         .withBody("{\"error\":{\"message\":\"Error validating access token: "
-                            + "The user has not authorized application " + MapillaryURL.APIv4.CLIENT_ID + ".\","
-                            + "\"type\":\"OAuthException\",\"code\":190,\"fbtrace_id\":\"fbtrace_id_hash\"}}")
+                            + "The user has not authorized application " + MapillaryConfig.getUrls().getClientId()
+                            + ".\"," + "\"type\":\"OAuthException\",\"code\":190,\"fbtrace_id\":\"fbtrace_id_hash\"}}")
                         .withHeader("Content-Type", "application/json")));
             } else if (type == Type.UNAUTHORIZED) {
                 server.stubFor(WireMock.any(WireMock.anyUrl()).willReturn(WireMock.unauthorized()));

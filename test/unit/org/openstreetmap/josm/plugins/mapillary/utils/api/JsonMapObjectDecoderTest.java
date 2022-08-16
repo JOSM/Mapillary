@@ -33,11 +33,11 @@ import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorPrimitive;
 import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryLayerAnnotation;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMockErrors;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 import org.openstreetmap.josm.testutils.annotations.HTTP;
@@ -50,7 +50,7 @@ class JsonMapObjectDecoderTest {
 
     @Test
     void testDecodeMapObject() throws IOException {
-        final JsonObject jsonObject = OAuthUtils.getWithHeader(new URL(MapillaryURL.APIv4
+        final JsonObject jsonObject = OAuthUtils.getWithHeader(new URL(MapillaryConfig.getUrls()
             .getMapFeatureInformation(496980935069177L, MapillaryMapFeatureUtils.MapFeatureProperties.values())));
         final VectorNode node1 = new VectorNode("test");
         Collection<VectorPrimitive> exampleMapObjects = JsonDecoder.decodeData(jsonObject,
@@ -77,7 +77,7 @@ class JsonMapObjectDecoderTest {
 
     @Test
     void testNoOverwriteFromInitialVector() throws IOException {
-        final JsonObject jsonObject = OAuthUtils.getWithHeader(new URL(MapillaryURL.APIv4
+        final JsonObject jsonObject = OAuthUtils.getWithHeader(new URL(MapillaryConfig.getUrls()
             .getMapFeatureInformation(496980935069177L, MapillaryMapFeatureUtils.MapFeatureProperties.values())));
         final VectorNode node1 = new VectorNode("test");
         node1.setCoor(new LatLon(12, 2));

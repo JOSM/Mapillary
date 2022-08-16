@@ -12,8 +12,8 @@ import javax.json.JsonString;
 import javax.json.JsonValue;
 
 import org.openstreetmap.josm.data.preferences.AbstractProperty;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.ListenerList;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -64,7 +64,7 @@ public final class MapillaryUser {
         }
         if (userInformation == null) {
             try {
-                userInformation = OAuthUtils.getWithHeader(MapillaryURL.APIv4.getUserInformation()).entrySet()
+                userInformation = OAuthUtils.getWithHeader(MapillaryConfig.getUrls().getUserInformation()).entrySet()
                     .parallelStream().filter(e -> JsonValue.ValueType.STRING.equals(e.getValue().getValueType()))
                     .collect(Collectors.toMap(Map.Entry::getKey, e -> ((JsonString) e.getValue()).getString()));
             } catch (IOException e) {

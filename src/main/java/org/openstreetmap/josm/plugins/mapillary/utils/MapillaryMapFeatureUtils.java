@@ -20,6 +20,7 @@ import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.vector.VectorPrimitive;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonMapObjectDecoder;
 import org.openstreetmap.josm.tools.Logging;
@@ -192,8 +193,8 @@ public final class MapillaryMapFeatureUtils {
      * @param primitive The primitive to update
      */
     private static void updateMapFeature(@Nonnull final IPrimitive primitive) {
-        final String url = MapillaryURL.APIv4.getMapFeatureInformation(primitive.getId(), MapFeatureProperties.GEOMETRY,
-            MapFeatureProperties.IMAGES, MapFeatureProperties.ALIGNED_DIRECTION);
+        final String url = MapillaryConfig.getUrls().getMapFeatureInformation(primitive.getId(),
+            MapFeatureProperties.GEOMETRY, MapFeatureProperties.IMAGES, MapFeatureProperties.ALIGNED_DIRECTION);
         final String json = Caches.META_DATA_CACHE.get(url, () -> {
             try {
                 return OAuthUtils.getWithHeader(new URL(url)).toString();

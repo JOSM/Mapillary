@@ -24,12 +24,12 @@ import org.openstreetmap.josm.data.imagery.vectortile.mapbox.Layer;
 import org.openstreetmap.josm.data.protobuf.ProtobufParser;
 import org.openstreetmap.josm.data.protobuf.ProtobufRecord;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv4;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
- * Decodes the JSON returned by {@link APIv4} into Java objects.
+ * Decodes the JSON returned by {@link org.openstreetmap.josm.plugins.mapillary.spi.preferences.IMapillaryUrls} into
+ * Java objects.
  * Takes a {@link JsonValue} and {@link #decodeImageDetection(JsonValue, Long)} tries to convert it to a
  * {@link ImageDetection}.
  */

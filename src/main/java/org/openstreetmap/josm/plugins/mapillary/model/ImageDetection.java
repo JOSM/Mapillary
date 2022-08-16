@@ -37,10 +37,10 @@ import org.openstreetmap.josm.plugins.mapillary.data.mapillary.DetectionType;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.plugins.mapillary.utils.DetectionVerification;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetectionDecoder;
@@ -330,7 +330,7 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
             if (key <= 0) {
                 return Collections.emptyList();
             }
-            final String urlString = MapillaryURL.APIv4.getDetectionInformation(key);
+            final String urlString = MapillaryConfig.getUrls().getDetectionInformation(key);
             final String jsonString = Caches.META_DATA_CACHE.get(urlString, () -> {
                 try {
                     final JsonObject jsonObject = OAuthUtils.getWithHeader(new URL(urlString));

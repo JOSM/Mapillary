@@ -13,11 +13,10 @@ import javax.json.JsonString;
 import javax.json.JsonValue;
 
 import org.openstreetmap.josm.data.osm.IWay;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
- * Decodes the JSON returned by {@link MapillaryURL.APIv4} into Java objects.
+ * Decodes the JSON returned by {@link IMapillaryUrls} into Java objects.
  * Takes a {@link JsonObject} and {@link #decodeSequence(JsonValue)} tries to convert it to a
  * {@link IWay}.
  */

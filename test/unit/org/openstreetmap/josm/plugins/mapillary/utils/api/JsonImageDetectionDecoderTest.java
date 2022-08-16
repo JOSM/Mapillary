@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -11,8 +12,10 @@ import javax.json.JsonReader;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryCaches;
+import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 
 @MapillaryCaches
+@MapillaryURLWireMock
 class JsonImageDetectionDecoderTest {
 
     /**

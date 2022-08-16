@@ -19,7 +19,7 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.stream.JsonParsingException;
 
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.Logging;
@@ -77,9 +77,9 @@ public class OAuthPortListener extends Thread {
             MapillaryUser.reset();
 
             final HttpClient client = HttpClient.create(new URL("https://graph.mapillary.com/token"), "POST");
-            client.setHeader("Authorization", "OAuth " + MapillaryURL.APIv4.CLIENT_SECRET);
-            client.setRequestBody(("grant_type=authorization_code&client_id=" + MapillaryURL.APIv4.CLIENT_ID + "&code="
-                + authorizationCode).getBytes(StandardCharsets.UTF_8));
+            client.setHeader("Authorization", "OAuth " + MapillaryConfig.getUrls().getClientSecret());
+            client.setRequestBody(("grant_type=authorization_code&client_id=" + MapillaryConfig.getUrls().getClientId()
+                + "&code=" + authorizationCode).getBytes(StandardCharsets.UTF_8));
 
             final HttpClient.Response response = client.connect();
             try (JsonReader jsonReader = Json.createReader(response.getContentReader())) {

@@ -1,12 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.data.mapillary;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
-import javax.imageio.ImageIO;
-import javax.json.JsonObject;
-import javax.swing.ImageIcon;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.Serializable;
@@ -17,13 +11,20 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
+import javax.imageio.ImageIO;
+import javax.json.JsonObject;
+import javax.swing.ImageIcon;
+
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
@@ -124,7 +125,7 @@ public final class OrganizationRecord implements Serializable {
      */
     private static OrganizationRecord getNewOrganization(long id) {
         // TODO check for API in v4 (preferably one that doesn't need user auth)
-        final String url = MapillaryURL.APIv4.getOrganizationInformation(id);
+        final String url = MapillaryConfig.getUrls().getOrganizationInformation(id);
         try {
             final JsonObject data = OAuthUtils.getWithHeader(new URL(url));
             final OrganizationRecord organizationRecord = decodeNewOrganization(data);

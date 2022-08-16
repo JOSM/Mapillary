@@ -34,10 +34,10 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryLoginListener;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -244,7 +244,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
                 MainApplication.getLayerManager().removeLayer(MapillaryLayer.getInstance());
             }
             MapillaryLayer.getInstance().destroy();
-            MapillaryKeys.MAPILLARY_IMAGES.setUrl(MapillaryURL.APIv4.getImages());
+            MapillaryKeys.MAPILLARY_IMAGES.setUrl(MapillaryConfig.getUrls().getImages());
         }
         return false;
     }
@@ -274,7 +274,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
             portListener.start();
             try {
                 OpenBrowser.displayUrl(
-                    MapillaryURL.MainWebsite.connect("http://localhost:" + OAuthPortListener.PORT + '/').toURI());
+                    MapillaryConfig.getUrls().connect("http://localhost:" + OAuthPortListener.PORT + '/').toURI());
             } catch (URISyntaxException e) {
                 Logging.error(e);
             }

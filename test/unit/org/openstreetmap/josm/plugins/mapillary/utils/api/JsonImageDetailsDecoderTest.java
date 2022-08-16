@@ -35,13 +35,13 @@ import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMockErrors;
 import org.openstreetmap.josm.plugins.mapillary.utils.JsonUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 import org.openstreetmap.josm.testutils.annotations.HTTP;
@@ -65,7 +65,7 @@ public class JsonImageDetailsDecoderTest {
         List<MapillaryNode> downloadedImages = new ArrayList<>();
         for (long image : images) {
             final URL url = new URL(
-                MapillaryURL.APIv4.getImageInformation(image, MapillaryImageUtils.ImageProperties.values()));
+                MapillaryConfig.getUrls().getImageInformation(image, MapillaryImageUtils.ImageProperties.values()));
             downloadedImages.addAll(
                 JsonDecoder.decodeData(OAuthUtils.getWithHeader(url), JsonImageDetailsDecoder::decodeImageInfos));
         }
@@ -132,7 +132,7 @@ public class JsonImageDetailsDecoderTest {
 
         for (long image : images) {
             final URL url = new URL(
-                MapillaryURL.APIv4.getImageInformation(image, MapillaryImageUtils.ImageProperties.values()));
+                MapillaryConfig.getUrls().getImageInformation(image, MapillaryImageUtils.ImageProperties.values()));
             assertDoesNotThrow(
                 () -> JsonDecoder.decodeData(OAuthUtils.getWithHeader(url), JsonImageDetailsDecoder::decodeImageInfos));
         }

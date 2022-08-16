@@ -45,9 +45,9 @@ import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.widget.DisableShortcutsOnFocusGainedJSpinner;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.OffsetUtils;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.Logging;
@@ -244,8 +244,8 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
         final String newImageKey = newImage != null ? Long.toString(newImage.getId()) : null;
         if (newImageKey != null) {
             final URL newImageUrl = MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.get()
-                ? MapillaryURL.MainWebsite.blurEditImage(newImageKey)
-                : MapillaryURL.MainWebsite.browseImage(newImageKey);
+                ? MapillaryConfig.getUrls().blurEditImage(newImageKey)
+                : MapillaryConfig.getUrls().browseImage(newImageKey);
 
             offsetModel.setValue(OffsetUtils.getOffset(newImage));
             imageLinkChangeListener = b -> imgLinkAction.setURL(newImageUrl);

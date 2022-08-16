@@ -28,8 +28,9 @@ import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.io.CachedFile;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.IMapillaryUrls;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
@@ -195,7 +196,7 @@ public final class OAuthUtils {
                 }
             }
         }
-        return BEARER + MapillaryURL.APIv4.ACCESS_ID;
+        return BEARER + MapillaryConfig.getUrls().getAccessId();
     }
 
     /**
@@ -206,11 +207,13 @@ public final class OAuthUtils {
     private static void refreshAuthorization(final String authorizationCode) throws OAuthUtilsException {
         HttpClient.Response response = null;
         String content = null;
+        IMapillaryUrls urls = MapillaryConfig.getUrls();
         try {
-            final HttpClient client = HttpClient.create(new URL(MapillaryURL.APIv4.getTokenUrl()), "POST");
-            client.setHeader(AUTHORIZATION, BEARER + MapillaryURL.APIv4.CLIENT_SECRET);
-            client.setRequestBody(("grant_type=refresh_token&client_id=" + MapillaryURL.APIv4.CLIENT_ID
-                + "&refresh_token=" + authorizationCode).getBytes(StandardCharsets.UTF_8));
+            final HttpClient client = HttpClient.create(new URL(urls.getTokenUrl()), "POST");
+            client.setHeader(AUTHORIZATION, BEARER + urls.getClientSecret());
+            client.setRequestBody(
+                ("grant_type=refresh_token&client_id=" + urls.getClientId() + "&refresh_token=" + authorizationCode)
+                    .getBytes(StandardCharsets.UTF_8));
 
             response = client.connect();
             content = response.fetchContent();

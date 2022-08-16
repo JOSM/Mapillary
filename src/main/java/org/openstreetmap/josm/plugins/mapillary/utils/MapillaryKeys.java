@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
@@ -28,11 +29,11 @@ public final class MapillaryKeys {
 
     // ImageInfos
     public static final ImageryInfo MAPILLARY_IMAGES = new ImageryInfo(tr("Mapillary Images"),
-        MapillaryURL.APIv4.getImages());
+        MapillaryConfig.getUrls().getImages());
     public static final ImageryInfo MAPILLARY_TRAFFIC_SIGNS = new ImageryInfo(tr("Mapillary Traffic Signs"),
-        MapillaryURL.APIv4.getTrafficSigns());
+        MapillaryConfig.getUrls().getTrafficSigns());
     public static final ImageryInfo MAPILLARY_POINT_OBJECTS = new ImageryInfo(tr("Mapillary Point Objects"),
-        MapillaryURL.APIv4.getObjectDetections());
+        MapillaryConfig.getUrls().getObjectDetections());
 
     private static void updateExtendedUrl(final IMapillaryUrls urlProvider, final ImageryInfo info,
         final Supplier<String> supplier) {
@@ -46,11 +47,11 @@ public final class MapillaryKeys {
     static {
         // Add URL change listeners
         MapillaryConfig.addUrlChangeListener(
-            (oldUrls, newUrls) -> updateExtendedUrl(newUrls, MAPILLARY_IMAGES, MapillaryURL.APIv4::getImages));
+            (oldUrls, newUrls) -> updateExtendedUrl(newUrls, MAPILLARY_IMAGES, MapillaryConfig.getUrls()::getImages));
         MapillaryConfig.addUrlChangeListener((oldUrls, newUrls) -> updateExtendedUrl(newUrls, MAPILLARY_TRAFFIC_SIGNS,
-            MapillaryURL.APIv4::getTrafficSigns));
+            MapillaryConfig.getUrls()::getTrafficSigns));
         MapillaryConfig.addUrlChangeListener((oldUrls, newUrls) -> updateExtendedUrl(newUrls, MAPILLARY_POINT_OBJECTS,
-            MapillaryURL.APIv4::getObjectDetections));
+            MapillaryConfig.getUrls()::getObjectDetections));
 
         // Set types to MVT
         MAPILLARY_IMAGES.setSourceType(ImageryInfo.ImageryType.MVT);

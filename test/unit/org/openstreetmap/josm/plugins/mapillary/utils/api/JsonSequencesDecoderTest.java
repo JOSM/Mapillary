@@ -27,10 +27,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryCaches;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMockErrors;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
@@ -75,7 +75,7 @@ class JsonSequencesDecoderTest {
     @Test
     void testDecodeSequence() throws IOException {
         final JsonObject json = OAuthUtils
-            .getWithHeader(new URL(MapillaryURL.APIv4.getImagesBySequences("7nfcwfvjdtphz7yj6zat6a")));
+            .getWithHeader(new URL(MapillaryConfig.getUrls().getImagesBySequences("7nfcwfvjdtphz7yj6zat6a")));
         final Collection<Long> exampleSequences = JsonDecoder.decodeData(json, JsonSequencesDecoder::decodeSequence);
         // Since the sequence key isn't returned in the API response, we have to rely upon the sequence key
         // being present in the vector tiles. Therefore, we cannot test that the expected sequence id is in the
