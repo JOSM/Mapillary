@@ -12,7 +12,7 @@ import kotlin.reflect.full.starProjectedType
 
 plugins {
   id("application")
-  id("com.diffplug.spotless") version "6.9.0"
+  id("com.diffplug.spotless") version "6.9.1"
   id("com.github.ben-manes.versions") version "0.42.0"
   id("com.github.spotbugs") version "5.0.9"
   id("net.ltgt.errorprone") version "2.0.2"
@@ -58,7 +58,7 @@ java.targetCompatibility = JavaVersion.VERSION_1_8
 val versions = mapOf(
   "awaitility" to "4.2.0",
   // Errorprone 2.11 requires Java 11+
-  "errorprone" to if (JavaVersion.current() >= JavaVersion.VERSION_11) "2.14.0" else "2.10.0",
+  "errorprone" to if (JavaVersion.current() >= JavaVersion.VERSION_11) "2.15.0" else "2.10.0",
   "jdatepicker" to "1.3.4",
   "jmockit" to "1.49",
   "junit" to "5.9.0",
