@@ -133,9 +133,9 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
             final Map<Long, VectorNode> newMap;
             try {
                 lock.lockInterruptibly();
-                Map<Long, VectorNode> map = data.getNodes().stream()
+                Map<Long, List<VectorNode>> map = data.getNodes().stream()
                     .filter(image -> MapillaryImageUtils.getKey(image) != 0)
-                    .collect(Collectors.toMap(MapillaryImageUtils::getKey, i -> i));
+                    .collect(Collectors.groupingBy(MapillaryImageUtils::getKey));
                 long[] missingImages = Stream.of(this.imageKey.split(";", 0)).mapToLong(Long::parseLong)
                     .filter(i -> !map.containsKey(i)).toArray();
                 map.clear(); // deallocate map
