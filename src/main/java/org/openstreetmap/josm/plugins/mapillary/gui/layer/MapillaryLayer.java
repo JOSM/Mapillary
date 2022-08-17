@@ -675,8 +675,8 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
 
     @Override
     public void finishedLoading(final MVTTile tile) {
-        tile.getData().getAllPrimitives().stream().filter(MapillaryImageUtils::isImage)
-            .forEach(primitive -> MapillaryImageUtils.getKey(primitive, true));
+        tile.getData().getAllPrimitives().stream().filter(p -> !"sequence".equals(p.getLayer()))
+            .filter(MapillaryImageUtils::isImage).forEach(primitive -> MapillaryImageUtils.getKey(primitive, true));
         // We need to ensure that the primitives are reset
         final Set<VectorPrimitive> primitives = new HashSet<>(tile.getData().getAllPrimitives());
         tile.getData().getPrimitivesMap().clear();
