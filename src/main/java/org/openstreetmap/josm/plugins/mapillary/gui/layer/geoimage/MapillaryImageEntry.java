@@ -355,7 +355,16 @@ public class MapillaryImageEntry
         unit2CompTransform.concatenate(AffineTransform.getScaleInstance(width, height));
 
         final Graphics2D graphics = bufferedLayeredImage.createGraphics();
+        // Draw the original image first
         graphics.drawImage(originalCacheEntry.getImage(), 0, 0, null);
+        // Then get the affine transform for the exif orientation
+        int currentExifOrientation = getExifOrientation();
+        if (ExifReader.orientationNeedsCorrection(currentExifOrientation)) {
+            AffineTransform transform = ExifReader.getRestoreOrientationTransform(currentExifOrientation,
+                bufferedLayeredImage.getWidth(), bufferedLayeredImage.getHeight());
+            graphics.setTransform(transform);
+        }
+        // Then draw the detections
         graphics.setStroke(new BasicStroke(2));
         for (ImageDetection<?> imageDetection : this.imageDetections) {
             if (MapillaryUtils.checkIfDetectionIsFilteredBasic(detectionLayers, imageDetection)
@@ -376,6 +385,7 @@ public class MapillaryImageEntry
                 graphics.drawImage(icon.getImage(), bounds.x, bounds.y, null);
             }
         }
+        graphics.dispose();
     }
 
     /**
