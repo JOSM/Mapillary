@@ -56,7 +56,7 @@ public class MapillarySequenceDownloader extends MapillaryDownloader<MapillarySe
      *
      * @param mapillarySequenceDownloader The new sequence downloader
      */
-    private static synchronized void updateCurrentSequenceDownload(
+    protected static synchronized void updateCurrentSequenceDownload(
         MapillarySequenceDownloader mapillarySequenceDownloader) {
         if (currentSequence != null) {
             currentSequence.cancel(true);

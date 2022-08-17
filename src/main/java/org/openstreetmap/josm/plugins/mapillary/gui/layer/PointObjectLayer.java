@@ -94,6 +94,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.plugins.mapillary.utils.ReflectionUtils;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
@@ -624,13 +625,15 @@ public class PointObjectLayer extends MVTLayer
                 this.getData().setSelected(selection);
             }
         }
-        if (ImageViewerDialog.getInstance().hasImage()) {
-            IImageEntry<?> entry = ImageViewerDialog.getCurrentImage();
-            if (entry instanceof MapillaryImageEntry) {
-                ((MapillaryImageEntry) entry).reload();
+        if (ReflectionUtils.hasImageViewerDialog()) {
+            if (ImageViewerDialog.getInstance().hasImage()) {
+                IImageEntry<?> entry = ImageViewerDialog.getCurrentImage();
+                if (entry instanceof MapillaryImageEntry) {
+                    ((MapillaryImageEntry) entry).reload();
+                }
             }
+            ImageViewerDialog.getInstance().repaint();
         }
-        ImageViewerDialog.getInstance().repaint();
         GuiHelper.runInEDT(() -> MapillaryFilterDialog.getInstance().updateFilteredImages());
     }
 

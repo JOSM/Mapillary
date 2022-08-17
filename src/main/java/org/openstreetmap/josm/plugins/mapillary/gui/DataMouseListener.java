@@ -39,6 +39,9 @@ import org.openstreetmap.josm.tools.SubclassFilteredCollection;
  * A basic class to listen for mouse events in the map
  */
 public class DataMouseListener extends MouseInputAdapter implements Destroyable {
+    /**
+     * Create a new listener for the mouse location
+     */
     public DataMouseListener() {
         MainApplication.getMap().mapView.addMouseListener(this);
         MainApplication.getMap().mapView.addMouseMotionListener(this);
@@ -80,8 +83,6 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
         if (!nodes.isEmpty()) {
             // This is needed since Mapillary ids are only unique within a tile.
             layer.getData().setSelected(nodes);
-            nodes.stream().filter(AbstractPrimitive.class::isInstance).map(AbstractPrimitive.class::cast)
-                .forEach(IPrimitive::isSelected);
         } else if (layer instanceof MapillaryLayer) {
             if (e.getClickCount() >= MapillaryProperties.DESELECT_CLICK_COUNT.get()) {
                 layer.getData().clearSelection();
@@ -91,7 +92,13 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
             Collection<VectorWay> ways = layer.getData().searchWays(searchBBox);
             ways.removeIf(way -> way.getUniqueId() <= 0);
             if (!ways.isEmpty()) {
-                layer.getData().setSelected(ways);
+                List<IPrimitive> primitives = layer.getData().getSelectedNodes().stream()
+                    .filter(n -> ways.stream().anyMatch(w -> w.getNodes().contains(n)))
+                    .collect(Collectors.toCollection(ArrayList::new));
+                primitives.addAll(ways);
+                layer.getData().setSelected(primitives);
+            } else {
+                layer.getData().clearSelection();
             }
         }
     }

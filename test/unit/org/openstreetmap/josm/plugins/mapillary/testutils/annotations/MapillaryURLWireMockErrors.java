@@ -8,13 +8,18 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Optional;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.platform.commons.util.ReflectionUtils;
+import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.testutils.annotations.AnnotationUtils;
 
@@ -51,7 +56,17 @@ public @interface MapillaryURLWireMockErrors {
 
     Type value() default Type.APPLICATION_REQUEST_LIMIT_REACHED;
 
-    class WireMockExtension implements BeforeEachCallback {
+    class WireMockExtension implements AfterEachCallback, BeforeEachCallback {
+        @Override
+        public void afterEach(ExtensionContext context) throws Exception {
+            Field rateLimited = Caches.MapillaryCacheAccess.class.getDeclaredField("rateLimited");
+            ReflectionUtils.makeAccessible(rateLimited);
+            for (Caches.MapillaryCacheAccess<?> cache : Arrays.asList(Caches.META_DATA_CACHE, Caches.FULL_IMAGE_CACHE,
+                Caches.USER_PROFILE_CACHE, Caches.META_IMAGES)) {
+                rateLimited.setBoolean(cache, false);
+            }
+        }
+
         @Override
         public void beforeEach(ExtensionContext context) {
             final ExtensionContext.Namespace namespace = ExtensionContext.Namespace.create(MapillaryURLWireMock.class);

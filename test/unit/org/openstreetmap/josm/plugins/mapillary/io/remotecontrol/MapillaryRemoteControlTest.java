@@ -119,7 +119,7 @@ class MapillaryRemoteControlTest {
         mapillaryRemoteControl.validateRequest();
         mapillaryRemoteControl.handleRequest();
 
-        Awaitility.await().atMost(Durations.FIVE_SECONDS).until(() -> MapillaryLayer.getInstance().getImage() != null);
+        Awaitility.await().atMost(Durations.TEN_SECONDS).until(() -> MapillaryLayer.getInstance().getImage() != null);
 
         final String id = request.replaceAll(".*=Mapillary/", "");
         if (request.startsWith("photo")) {
