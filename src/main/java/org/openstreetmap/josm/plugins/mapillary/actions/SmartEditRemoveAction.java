@@ -21,10 +21,10 @@ import org.openstreetmap.josm.gui.ExtendedDialog;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.tagging.ac.MaxLengthDocumentFilter;
 import org.openstreetmap.josm.gui.widgets.JosmTextField;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.smartedit.IgnoredObjects;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
 import org.openstreetmap.josm.tools.ImageProvider;
-import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Remove an object from Mapillary. This may send data to Mapillary.
@@ -85,8 +85,7 @@ public class SmartEditRemoveAction extends JosmAction {
         builder.add("object_id", this.mapillaryObject.getId());
         builder.add("data_source", this.pointObjectLayer.getInfo().getSourceName());
         builder.add("feedback_type", problem.name().toLowerCase(Locale.ROOT));
-        Logging.error("Mapillary feedback not yet implemented");
-        Logging.error(builder.build().toString());
+        IgnoredObjects.addIgnoredObject(builder.build());
     }
 
     public String getToolTip() {

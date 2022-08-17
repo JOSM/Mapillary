@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.spi.preferences;
 
+import org.openstreetmap.josm.spi.preferences.IBaseDirectories;
 import org.openstreetmap.josm.tools.ListenerList;
 
 /**
@@ -16,6 +17,7 @@ public final class MapillaryConfig {
     private static final ListenerList<IMapillaryUrlChange> MAPILLARY_URL_CHANGE_LISTENER_LIST = ListenerList.create();
 
     private static IMapillaryUrls urls;
+    private static IBaseDirectories pluginDirs;
 
     /**
      * Add a listener for URL changes
@@ -46,5 +48,23 @@ public final class MapillaryConfig {
      */
     public static IMapillaryUrls getUrls() {
         return urls;
+    }
+
+    /**
+     * Set the plugin directory provider
+     *
+     * @param pluginDirs The plugin directory provider
+     */
+    public static void setDirectoriesProvider(IBaseDirectories pluginDirs) {
+        MapillaryConfig.pluginDirs = pluginDirs;
+    }
+
+    /**
+     * Get the base directories for the plugin
+     *
+     * @return The base directories
+     */
+    public static IBaseDirectories getPluginDirs() {
+        return pluginDirs;
     }
 }

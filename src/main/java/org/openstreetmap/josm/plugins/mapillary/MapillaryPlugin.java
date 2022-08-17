@@ -29,6 +29,7 @@ import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryExportAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryZoomAction;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.smartedit.IgnoredObjects;
 import org.openstreetmap.josm.plugins.mapillary.gui.DataMouseListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
@@ -73,6 +74,9 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
     public MapillaryPlugin(PluginInformation info) {
         super(info);
         MapillaryConfig.setUrlsProvider(new MapillaryUrls());
+        MapillaryConfig.setDirectoriesProvider(this.getPluginDirs());
+        // Load ignored objects
+        IgnoredObjects.isIgnoredObject(0);
 
         if (MapillaryProperties.ACCESS_TOKEN.get() == null) {
             MapillaryUser.setTokenValid(false);

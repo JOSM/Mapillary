@@ -82,6 +82,7 @@ import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.SmartEditAddAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.SmartEditRemoveAction;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.smartedit.IgnoredObjects;
 import org.openstreetmap.josm.plugins.mapillary.data.osm.event.FilterEventListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
@@ -180,6 +181,9 @@ public class PointObjectLayer extends MVTLayer
         tile.getData().getAllPrimitives().forEach(PointObjectLayer::setId);
         // We need to ensure that the primitives are reset
         final Set<VectorPrimitive> primitives = new HashSet<>(tile.getData().getAllPrimitives());
+        // Also, filter out ignored objects
+        primitives.stream().filter(p -> IgnoredObjects.isIgnoredObject(p.getUniqueId()))
+            .forEach(p -> p.setDeleted(true));
         tile.getData().getPrimitivesMap().clear();
         primitives.forEach(primitive -> tile.getData().getPrimitivesMap().put(primitive.getPrimitiveId(), primitive));
         super.finishedLoading(tile);
