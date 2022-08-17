@@ -279,10 +279,14 @@ public class MapillaryImageEntry
                 Thread.currentThread().interrupt();
                 throw new IOException(exception);
             }
+            if (bufferedImageCacheEntry == null) {
+                // This should never be hit
+                return null;
+            }
         }
         if (tFullImage && this.imageDetections.isEmpty() && !this.image.getReferrers().isEmpty()) {
             this.updateDetections(5_000);
-            return bufferedImageCacheEntry.getImage();
+            return this.applyRotation(bufferedImageCacheEntry.getImage());
         }
         BufferedImage bufferedLayeredImage = Optional.ofNullable(this.layeredImage).map(SoftReference::get)
             .orElse(null);
@@ -395,7 +399,7 @@ public class MapillaryImageEntry
      * @param detection The detection to check
      * @return {@code true} if the detection is selected
      */
-    private boolean checkIfDetectionInImageAndSelected(List<PointObjectLayer> detectionLayers,
+    private static boolean checkIfDetectionInImageAndSelected(List<PointObjectLayer> detectionLayers,
         ImageDetection<?> detection) {
         Set<ImageDetection<?>> selectedDetections = detectionLayers.stream().map(PointObjectLayer::getData)
             .map(VectorDataSet::getSelected).flatMap(Collection::stream).mapToLong(IPrimitive::getId)
