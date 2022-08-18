@@ -76,8 +76,7 @@ public class SmartEditRemoveAction extends JosmAction {
             builder.add("comment", textField.getText());
         }
         this.mapillaryObject.setDeleted(true);
-        this.pointObjectLayer.hideAdditionalActionsWindow(() -> {
-            /* Do nothing for now */ });
+        this.pointObjectLayer.hideWindow(this.mapillaryObject);
         if (problem == Problem.DONT_REPORT) {
             // This must come after the deletion of the object
             return;
