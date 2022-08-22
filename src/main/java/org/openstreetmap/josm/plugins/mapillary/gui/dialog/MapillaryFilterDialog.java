@@ -42,8 +42,6 @@ import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-import org.openstreetmap.josm.actions.ExpertToggleAction;
-import org.openstreetmap.josm.actions.ExpertToggleAction.ExpertModeChangeListener;
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
@@ -131,7 +129,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
         panel.add(imageLine, GBC.eol().anchor(GridBagConstraints.LINE_START));
         this.addTimeFilters(panel);
         this.addUserGroupFilters(panel);
-        this.addImageQualityFilters(panel);
         final JPanel signs = new JPanel();
         signs.add(onlySigns, GBC.std().anchor(GridBagConstraints.LINE_START));
         signs.add(signChooserPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
@@ -171,41 +168,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
         };
         this.resetObjects.addListener(setFields);
         setFields.reset();
-    }
-
-    /**
-     * Add image quality filters
-     *
-     * @param panel The panel to add the filters to
-     */
-    private void addImageQualityFilters(JPanel panel) {
-        final JCheckBox qualityCheck = new JCheckBox(tr("Image Quality"));
-        final SpinnerNumberModel spinnerQualityModel = new SpinnerNumberModel(0.6, 0, 1, 0.1);
-        final JSpinner spinnerQuality = new DisableShortcutsOnFocusGainedJSpinner(spinnerQualityModel);
-        qualityCheck.addItemListener(l -> spinnerQuality.setEnabled(l.getStateChange() == ItemEvent.SELECTED));
-        spinnerQuality.setEnabled(qualityCheck.isSelected());
-        panel.add(qualityCheck, GBC.std().anchor(GridBagConstraints.LINE_START));
-        panel.add(spinnerQuality, GBC.eol());
-
-        spinnerQualityModel.addChangeListener(
-            l -> this.shouldHidePredicate.qualityScore = spinnerQualityModel.getNumber().floatValue());
-        this.resetObjects.addListener(() -> spinnerQualityModel.setValue(3));
-        this.resetObjects.addListener(() -> qualityCheck.setSelected(false));
-        this.resetObjects.addListener(() -> spinnerQuality.setEnabled(false));
-        ResetListener setFields = () -> this.shouldHidePredicate.qualityScore = Float.MIN_VALUE;
-        this.resetObjects.addListener(setFields);
-        setFields.reset();
-
-        ExpertToggleAction.addVisibilitySwitcher(qualityCheck);
-        ExpertToggleAction.addVisibilitySwitcher(spinnerQuality);
-        ExpertModeChangeListener expertModeChangeListener = l -> setFields.reset();
-        ExpertToggleAction.addExpertModeChangeListener(expertModeChangeListener);
-        this.destroyable.addListener(() -> ExpertToggleAction.removeExpertModeChangeListener(expertModeChangeListener));
-        this.destroyable.addListener(() -> {
-            ExpertToggleAction.removeVisibilitySwitcher(qualityCheck);
-            ExpertToggleAction.removeVisibilitySwitcher(spinnerQuality);
-        });
-
     }
 
     /**
