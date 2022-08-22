@@ -8,6 +8,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ItemEvent;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -304,13 +305,15 @@ public final class TrafficSignFilter extends JPanel
             .filter(p -> p.text.contains(position + "_seen_at")).findFirst().orElseGet(Filter::new);
         StringBuilder filterText = new StringBuilder();
         if (!Instant.MIN.equals(start)) {
-            filterText.append(position).append("_seen_at > ").append(DateTimeFormatter.ISO_LOCAL_DATE.format(start));
+            filterText.append(position).append("_seen_at > ")
+                .append(DateTimeFormatter.ISO_LOCAL_DATE.withZone(ZoneId.of("UTC")).format(start));
         }
         if (knownStartEnd) {
             filterText.append(" && ");
         }
         if (!Instant.MIN.equals(end)) {
-            filterText.append(position).append("_seen_at < ").append(DateTimeFormatter.ISO_LOCAL_DATE.format(end));
+            filterText.append(position).append("_seen_at < ")
+                .append(DateTimeFormatter.ISO_LOCAL_DATE.withZone(ZoneId.of("UTC")).format(end));
         }
         dateFilter.text = filterText.toString();
         dateFilter.inverted = true;
