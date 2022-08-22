@@ -431,15 +431,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
         GuiHelper.runInEDT(MapillaryLayer::invalidateInstance);
     }
 
-    /**
-     * Get the current predicate for filtering images
-     *
-     * @return The image filtering predicate
-     */
-    public Predicate<INode> getShouldHidePredicate() {
-        return this.shouldHidePredicate;
-    }
-
     @Override
     public void finishedLoading(MVTTile tile) {
         updateFilteredImages(Utils.filteredCollection(tile.getData().getAllPrimitives(), VectorNode.class));
