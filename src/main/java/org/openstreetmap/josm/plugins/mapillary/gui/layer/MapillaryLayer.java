@@ -49,7 +49,6 @@ import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.HighlightUpdateListener;
 import org.openstreetmap.josm.data.osm.INode;
-import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
@@ -64,6 +63,7 @@ import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
 import org.openstreetmap.josm.gui.dialogs.LayerListPopup;
+import org.openstreetmap.josm.gui.draw.MapViewPath;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.gui.layer.LayerManager.LayerAddEvent;
 import org.openstreetmap.josm.gui.layer.LayerManager.LayerChangeListener;
@@ -88,7 +88,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.dialog.OldVersionDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.geoimage.MapillaryImageEntry;
 import org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillaryNodeDownloader;
 import org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillarySequenceDownloader;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapViewGeometryUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
@@ -390,12 +389,33 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
                 g.setComposite(fadeComposite);
             }
         }
-        int[] x = new int[sequence.getNodesCount()];
-        int[] y = new int[sequence.getNodesCount()];
-        int count = MapViewGeometryUtil.getSequencePath(mv, sequence, x, y);
-        g.drawPolyline(x, y, count);
-        // g.draw(MapViewGeometryUtil.getSequencePath(mv, sequence));
-        g.setComposite(AlphaComposite.SrcOver);
+        List<INode> nodes = new ArrayList<>(sequence.getNodesCount());
+        final int zoom = getZoomLevel();
+        boolean someVisible = false;
+        for (INode n : sequence.getNodes()) {
+            boolean visibleNode = zoom < 14 || sequence.isVisible() || MapillaryImageUtils.isImage(n);
+            someVisible |= visibleNode;
+            if (visibleNode || sequence.isFirstLastNode(n)) {
+                nodes.add(n);
+            }
+        }
+        // All zoom levels 14 and above kind of need the full sequence. We could probably simplify at z14 as well.
+        if (zoom < 14 && nodes.size() > 20) {
+            // SimplifyWayAction.simplifyWays() would be better, but that requires Way objects.
+            List<INode> extraneousNodes = new ArrayList<>(nodes.size());
+            for (int i = 0; i < nodes.size(); i++) {
+                if (i % (15 - zoom) != 0 && i != nodes.size() - 1) {
+                    extraneousNodes.add(nodes.get(i));
+                }
+            }
+            nodes.removeAll(extraneousNodes);
+        }
+        if (someVisible) {
+            MapViewPath path = new MapViewPath(mv);
+            path.append(nodes, false);
+            g.draw(path.computeClippedLine(g.getStroke()));
+            g.setComposite(AlphaComposite.SrcOver);
+        }
     }
 
     private Color getAgedColor(final INode node, final Color defaultColor) {
