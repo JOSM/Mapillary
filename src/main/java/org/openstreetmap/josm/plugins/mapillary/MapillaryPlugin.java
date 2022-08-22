@@ -32,6 +32,7 @@ import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelecti
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.smartedit.IgnoredObjects;
 import org.openstreetmap.josm.plugins.mapillary.gui.DataMouseListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
+import org.openstreetmap.josm.plugins.mapillary.gui.dialog.ImageNavigationDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
@@ -136,10 +137,12 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
             toggleDialog.add(MapillaryExpertFilterDialog.getInstance());
             newFrame.addToggleDialog(ImageInfoPanel.getInstance());
             toggleDialog.add(ImageInfoPanel.getInstance());
+            ImageNavigationDialog imageNavigationDialog = new ImageNavigationDialog();
+            newFrame.addToggleDialog(imageNavigationDialog);
+            toggleDialog.add(imageNavigationDialog);
 
             // This fixes a UI issue -- for whatever reason, the tab pane is occasionally unusable when the expert
-            // filter
-            // dialog is added.
+            // filter dialog is added.
             newFrame.conflictDialog.getToggleAction().actionPerformed(null);
             newFrame.conflictDialog.getToggleAction().actionPerformed(null);
 

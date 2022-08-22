@@ -67,7 +67,7 @@ public class MapillarySequenceUtils {
                 nodes.addAll(0, newNodes);
             }
         }
-        nodes.removeIf(MapillaryImageUtils.IS_DOWNLOADABLE.negate());
+        nodes.removeIf(n -> !MapillaryImageUtils.isDownloadable(n));
         final INode nodeOnCurrentSequence;
         int index = nodes.indexOf(node);
         if (next == NextOrPrevious.NEXT && index + 1 < nodes.size()) {

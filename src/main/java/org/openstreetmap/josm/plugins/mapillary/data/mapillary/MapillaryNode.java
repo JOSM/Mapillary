@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.data.mapillary;
 
 import java.util.Collections;
@@ -13,7 +14,10 @@ import org.openstreetmap.josm.data.osm.UniqueIdGenerator;
 import org.openstreetmap.josm.data.osm.visitor.PrimitiveVisitor;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 
-public class MapillaryNode extends MapillaryPrimitive implements INode, IPrimitive {
+/**
+ * Downloaded mapillary image objects
+ */
+public class MapillaryNode extends MapillaryPrimitive implements INode {
     private static final UniqueIdGenerator MAPILLARY_NODE_GENERATOR = new UniqueIdGenerator();
     private double lat;
     private double lon;

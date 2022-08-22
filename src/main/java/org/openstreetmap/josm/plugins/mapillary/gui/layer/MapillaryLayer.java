@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -48,6 +49,7 @@ import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.HighlightUpdateListener;
 import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
@@ -155,9 +157,10 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
 
     private static AlphaComposite fadeComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
         MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
-    private static Point2D standardImageCentroid = null;
+    private static Point2D standardImageCentroid;
     private final ListenerList<MVTTile.TileListener> tileListeners = ListenerList.create();
-    private MapillaryNode image = null;
+    private final ListenerList<BiConsumer<MapillaryLayer, MapillaryNode>> imageChangeListeners = ListenerList.create();
+    private MapillaryNode image;
     private boolean colorByCaptureDate;
 
     private MapillaryLayer() {
@@ -675,12 +678,15 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
 
     @Override
     public void finishedLoading(final MVTTile tile) {
-        tile.getData().getAllPrimitives().stream().filter(p -> !"sequence".equals(p.getLayer()))
-            .filter(MapillaryImageUtils::isImage).forEach(primitive -> MapillaryImageUtils.getKey(primitive, true));
-        // We need to ensure that the primitives are reset
         final Set<VectorPrimitive> primitives = new HashSet<>(tile.getData().getAllPrimitives());
+        Stream<VectorPrimitive> setKeys = primitives.stream();
+        setKeys.filter(MapillaryImageUtils::isImage).forEach(primitive -> MapillaryImageUtils.getKey(primitive, true));
+        // We need to ensure that the primitives are reset
         tile.getData().getPrimitivesMap().clear();
         primitives.forEach(primitive -> tile.getData().getPrimitivesMap().put(primitive.getPrimitiveId(), primitive));
+        // Set the date for the images
+        primitives.stream().filter(INode.class::isInstance).map(INode.class::cast)
+            .forEach(MapillaryImageUtils::getDate);
         super.finishedLoading(tile);
         this.tileListeners.fireEvent(l -> l.finishedLoading(tile));
     }
@@ -713,10 +719,20 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
                 }
             }
         }
+        MainApplication.worker.execute(() -> this.imageChangeListeners.fireEvent(f -> f.accept(this, image)));
     }
 
     public MapillaryNode getImage() {
         return this.image;
+    }
+
+    /**
+     * Add an image change listener
+     *
+     * @param listener The listener to notify of image changes
+     */
+    public void addImageChangeListener(BiConsumer<MapillaryLayer, MapillaryNode> listener) {
+        this.imageChangeListeners.addWeakListener(listener);
     }
 
     @Override
@@ -747,6 +763,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     @Override
     public void highlightUpdated(HighlightUpdateEvent e) {
         MapillaryMapRenderer.selectionOrHighlightChanged();
+        this.invalidate();
     }
 
     /**

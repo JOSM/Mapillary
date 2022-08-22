@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
@@ -37,9 +38,6 @@ public final class MapillaryImageUtils {
             || (!MapillaryKeys.PANORAMIC_FALSE.equals(node.get(ImageProperties.IS_PANO.toString()))
                 && ("spherical".equals(node.get(ImageProperties.CAMERA_TYPE.toString()))
                     || "equirectangular".equals(node.get(ImageProperties.CAMERA_TYPE.toString())))));
-
-    public static final Predicate<INode> IS_DOWNLOADABLE = node -> node != null
-        && node.getKeys().keySet().stream().anyMatch(key -> BASE_IMAGE_KEY.matcher(key).matches());
 
     /**
      * A pattern to look for strings that are only numbers -- mostly used during switchover from v3 to v4 API
@@ -123,6 +121,7 @@ public final class MapillaryImageUtils {
      * Get a future for an image
      *
      * @param image The node with image information
+     * @param cacheType The type of image to cache. May be {@code null}.
      * @return The future with a potential image (image may be {@code null})
      */
     @Nonnull
@@ -134,7 +133,7 @@ public final class MapillaryImageUtils {
         } else {
             type = cacheType;
         }
-        if (MapillaryImageUtils.IS_DOWNLOADABLE.test(image)) {
+        if (MapillaryImageUtils.isDownloadable(image)) {
             CompletableFuture<BufferedImageCacheEntry> completableFuture = new CompletableFuture<>();
             CacheUtils.submit(image, type,
                 (entry, attributes, result) -> cacheImageFuture(image, completableFuture, entry));
@@ -142,7 +141,7 @@ public final class MapillaryImageUtils {
         } else if (getKey(image) > 0) {
             CompletableFuture<BufferedImageCacheEntry> completableFuture = new CompletableFuture<>();
             new MapillaryNodeDownloader(image, i -> {
-                if (MapillaryImageUtils.IS_DOWNLOADABLE.test(i)) {
+                if (MapillaryImageUtils.isDownloadable(i)) {
                     getImage(image, type).thenAccept(completableFuture::complete);
                 } else {
                     completableFuture.complete(null);
@@ -151,6 +150,25 @@ public final class MapillaryImageUtils {
             return completableFuture;
         }
         return CompletableFuture.completedFuture(null);
+    }
+
+    /**
+     * Check if a node is downloadable
+     *
+     * @param node The node to check
+     * @return {@code true} if the node is downloadable
+     */
+    public static boolean isDownloadable(@Nullable INode node) {
+        if (node != null) {
+            Matcher matcher = BASE_IMAGE_KEY.matcher("");
+            for (String key : node.getKeys().keySet()) {
+                matcher.reset(key);
+                if (matcher.matches()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -288,6 +306,13 @@ public final class MapillaryImageUtils {
         /* No op */
     }
 
+    /**
+     * Check if two images are equal (using their ids/keys)
+     *
+     * @param imageOne The first image
+     * @param imageTwo The second image
+     * @return {@code true} if the two images are equal
+     */
     public static boolean equals(INode imageOne, INode imageTwo) {
         return getKey(imageOne) == getKey(imageTwo);
     }
