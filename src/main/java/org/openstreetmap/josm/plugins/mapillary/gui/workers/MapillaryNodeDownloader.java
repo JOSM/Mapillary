@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
 
 /**
@@ -26,7 +27,7 @@ public class MapillaryNodeDownloader extends MapillaryDownloader<MapillaryNode, 
      * @param onFinish The consumer to call on finish
      */
     public MapillaryNodeDownloader(INode node, Consumer<MapillaryNode> onFinish) {
-        this(node.getOsmId(), onFinish);
+        this(MapillaryImageUtils.getKey(node, true), onFinish);
     }
 
     /**
