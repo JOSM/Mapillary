@@ -23,20 +23,16 @@ import java.util.Collection;
 import java.util.concurrent.locks.Lock;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.swing.AbstractAction;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JSpinner;
@@ -56,12 +52,10 @@ import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord.OrganizationRecordListener;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterChooseSigns;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.widget.DisableShortcutsOnFocusGainedJSpinner;
-import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
@@ -77,7 +71,6 @@ import org.openstreetmap.josm.tools.Utils;
  * ToggleDialog that lets you filter the images that are being shown.
  *
  * @author nokutu
- * @see MapillaryFilterChooseSigns
  */
 public final class MapillaryFilterDialog extends ToggleDialog
     implements OrganizationRecordListener, MVTTile.TileListener {
@@ -114,25 +107,12 @@ public final class MapillaryFilterDialog extends ToggleDialog
                 Shortcut.NONE),
             200, false, MapillaryPreferenceSetting.class);
 
-        final JButton signChooser = new JButton(new SignChooserAction());
-        final JCheckBox onlySigns = new JCheckBox(tr("Only images with signs"));
-        onlySigns.addItemListener(l -> signChooser.setEnabled(l.getStateChange() == ItemEvent.SELECTED));
-
-        signChooser.setEnabled(false);
-        final JPanel signChooserPanel = new JPanel();
-        signChooserPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        signChooserPanel.add(signChooser);
-
         final JPanel panel = new JPanel(new GridBagLayout());
         panel.add(new JLabel(tr("Picture Filters")), GBC.eol().anchor(GridBagConstraints.LINE_START));
         final JPanel imageLine = new JPanel();
         panel.add(imageLine, GBC.eol().anchor(GridBagConstraints.LINE_START));
         this.addTimeFilters(panel);
         this.addUserGroupFilters(panel);
-        final JPanel signs = new JPanel();
-        signs.add(onlySigns, GBC.std().anchor(GridBagConstraints.LINE_START));
-        signs.add(signChooserPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
-        panel.add(signs, GBC.eol().anchor(GridBagConstraints.LINE_START));
         final JComboBox<ImageTypes> imageTypes = new JComboBox<>();
         Stream.of(ImageTypes.values()).forEach(imageTypes::addItem);
         panel.add(new JLabel(tr("Show Image types: ")));
@@ -149,23 +129,14 @@ public final class MapillaryFilterDialog extends ToggleDialog
         // Add listeners for the shouldHidePredicate
         imageTypes
             .addItemListener(l -> this.shouldHidePredicate.imageTypes = (ImageTypes) imageTypes.getSelectedItem());
-        onlySigns.addItemListener(
-            l -> this.shouldHidePredicate.onlySignsIsSelected = l.getStateChange() == ItemEvent.SELECTED);
 
         // Add reset functions
-        this.resetObjects.addListener(() -> onlySigns.setEnabled(true));
-        this.resetObjects.addListener(() -> onlySigns.setSelected(false));
         this.resetObjects.addListener(() -> imageTypes.setSelectedItem(ImageTypes.ALL));
-        this.resetObjects.addListener(() -> signChooser.setEnabled(false));
         this.resetObjects.addListener(objectFilter::reset);
-        this.resetObjects.addListener(MapillaryFilterChooseSigns::reset);
 
         // Set defaults for the shouldHidePredicate
         // This must be added last
-        ResetListener setFields = () -> {
-            this.shouldHidePredicate.imageTypes = (ImageTypes) imageTypes.getSelectedItem();
-            this.shouldHidePredicate.onlySignsIsSelected = onlySigns.isSelected();
-        };
+        ResetListener setFields = () -> this.shouldHidePredicate.imageTypes = (ImageTypes) imageTypes.getSelectedItem();
         this.resetObjects.addListener(setFields);
         setFields.reset();
     }
@@ -442,7 +413,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
         Number dateRange;
         private boolean layerVisible;
         boolean timeFilter;
-        boolean onlySignsIsSelected;
         Instant endDateRefresh;
         Instant startDateRefresh;
         OrganizationRecord organization;
@@ -495,11 +465,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
                 return true;
             }
             if (MapillaryImageUtils.getKey(img) > 0) {
-                // Filter on detections
-                if (this.onlySignsIsSelected && (ImageDetection.getDetections(MapillaryImageUtils.getKey(img)).isEmpty()
-                    || !checkSigns(ImageDetection.getDetections(MapillaryImageUtils.getKey(img))))) {
-                    return true;
-                }
                 // Filter on organizations
                 return !OrganizationRecord.NULL_RECORD.equals(this.organization)
                     && MapillaryImageUtils.getSequenceKey(img) != null
@@ -554,38 +519,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
             final Instant imgDate = MapillaryImageUtils.getDate(img);
             return end.isBefore(imgDate);
         }
-
-        /**
-         * Checks if the image fulfills the sign conditions.
-         *
-         * @param imageDetections The {@code Collection<ImageDetection<?>>} object that is going to be
-         *        checked.
-         * @return {@code true} if it fulfills the conditions; {@code false}
-         *         otherwise.
-         */
-        private static boolean checkSigns(Collection<ImageDetection<?>> imageDetections) {
-            final String[] signTags = MapillaryFilterChooseSigns.getSignTags();
-            for (int i = 0; i < signTags.length; i++) {
-                if (checkSign(imageDetections, MapillaryFilterChooseSigns.getInstance().signCheckboxes[i],
-                    signTags[i])) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private static boolean checkSign(Collection<ImageDetection<?>> detections, JCheckBox signCheckBox,
-            String signTag) {
-            boolean contains = false;
-            final Pattern pattern = Pattern.compile(signTag);
-            for (ImageDetection<?> detection : detections) {
-                if (pattern.matcher(detection.getValue().getKey()).find()) {
-                    contains = true;
-                    break;
-                }
-            }
-            return contains == signCheckBox.isSelected() && contains;
-        }
     }
 
     /**
@@ -621,33 +554,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
         @Override
         public void actionPerformed(ActionEvent arg0) {
             MapillaryFilterDialog.getInstance().reset();
-        }
-    }
-
-    /**
-     * Opens a new window where you can specifically filter signs.
-     *
-     * @author nokutu
-     */
-    private static class SignChooserAction extends AbstractAction {
-
-        private static final long serialVersionUID = 8706299665735930148L;
-
-        SignChooserAction() {
-            putValue(NAME, tr("Choose signs"));
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent arg0) {
-            final JOptionPane pane = new JOptionPane(MapillaryFilterChooseSigns.getInstance(),
-                JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-            JDialog dlg = pane.createDialog(MainApplication.getMainFrame(), tr("Choose signs"));
-            dlg.setVisible(true);
-            Object value = pane.getValue();
-            if (value != null && (int) value == JOptionPane.OK_OPTION) {
-                MapillaryFilterDialog.getInstance().refresh();
-            }
-            dlg.dispose();
         }
     }
 
