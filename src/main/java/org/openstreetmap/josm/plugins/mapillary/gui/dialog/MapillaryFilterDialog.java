@@ -447,7 +447,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
         Instant startDateRefresh;
         OrganizationRecord organization;
         boolean smartAdd;
-        float qualityScore = Float.MIN_VALUE;
 
         public ImageFilterPredicate() {
             this.updateLayerVisible();
@@ -492,11 +491,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
             // Filter on time
             if ((this.timeFilter && checkValidTime(img)) || checkEndDate(img) || checkStartDate(img)
                 || (this.imageTypes == ImageTypes.PANORAMIC && !MapillaryImageUtils.IS_PANORAMIC.test(img))
-                || (this.imageTypes == ImageTypes.NON_PANORAMIC && MapillaryImageUtils.IS_PANORAMIC.test(img))
-                || (this.qualityScore != Float.MIN_VALUE && (MapillaryImageUtils.getQuality(img) < this.qualityScore
-                    // The following line is to ensure that any images that *don't* have a quality score are shown when
-                    // low quality is OK.
-                    || (this.qualityScore < 0.6f && MapillaryImageUtils.getQuality(img) == Float.MIN_VALUE)))) {
+                || (this.imageTypes == ImageTypes.NON_PANORAMIC && MapillaryImageUtils.IS_PANORAMIC.test(img))) {
                 return true;
             }
             if (MapillaryImageUtils.getKey(img) > 0) {
