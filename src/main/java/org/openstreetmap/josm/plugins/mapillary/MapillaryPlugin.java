@@ -213,12 +213,15 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
     }
 
     private void clearMenues(JMenu menu) {
+        final String searchName = this.getClass().getPackage().getName();
         for (Component menuComponent : menu.getMenuComponents()) {
             if (menuComponent instanceof JMenuItem) {
                 JMenuItem jMenu = (JMenuItem) menuComponent;
-                if (jMenu.getAction().getClass().getPackage().getName()
-                    .contains(this.getClass().getPackage().getName())) {
-                    menu.remove(jMenu);
+                if (jMenu.getAction() != null) {
+                    Class<?> clazz = jMenu.getAction().getClass();
+                    if (clazz.getPackage() != null && clazz.getPackage().getName().contains(searchName)) {
+                        menu.remove(jMenu);
+                    }
                 }
             }
         }
