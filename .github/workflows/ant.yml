@@ -1,0 +1,22 @@
+name: Java CI
+
+on:
+  push:
+    branches:
+      - master
+      - $default-branch
+      - $protected-branches
+  pull_request:
+    branches:
+      - master
+      - $default-branch
+  release:
+    types: [created]
+  schedule:
+  - cron: "20 23 * * 3"
+  workflow_dispatch:
+
+jobs:
+  call-workflow:
+    uses: JOSM/JOSMPluginAction/.github/workflows/ant.yml@v1
+
