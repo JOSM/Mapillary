@@ -1,0 +1,13 @@
+name: Release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  call-workflow:
+    uses: JOSM/JOSMPluginAction/.github/workflows/ant.yml@v1
+    with:
+      josm-revision: "r18531"
+
+

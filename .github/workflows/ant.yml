@@ -10,12 +10,15 @@ on:
     branches:
       - master
       - $default-branch
-  release:
-    types: [created]
   schedule:
   - cron: "20 23 * * 3"
   workflow_dispatch:
 
 jobs:
   call-workflow:
+    strategy:
+      matrix:
+        josm-revision: ["", "r18531"]
     uses: JOSM/JOSMPluginAction/.github/workflows/ant.yml@v1
+    with:
+      josm-revision: ${{ matrix.josm-revision }}
