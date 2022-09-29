@@ -81,7 +81,11 @@ public class ImageNavigation {
             travelAngle = Math.toDegrees(seq.getNode(seq.getNodesCount() - 1).bearing(this.node));
         } else {
             int idx = seq.getNodes().indexOf(this.node);
-            travelAngle = Math.toDegrees(seq.getNode(idx - 1).bearing(seq.getNode(idx + 1)));
+            if (seq.getNodes().size() <= 3) {
+                travelAngle = MapillaryImageUtils.getAngle(this.node);
+            } else {
+                travelAngle = Math.toDegrees(seq.getNode(idx - 1).bearing(seq.getNode(idx + 1)));
+            }
         }
         this.originalSort = surroundingNodes.stream().map(n -> sort(isPano, false, angle, travelAngle, n, nodeEn))
             .filter(Objects::nonNull)
