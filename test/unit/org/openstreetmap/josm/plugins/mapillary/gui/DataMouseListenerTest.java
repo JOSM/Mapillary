@@ -13,6 +13,8 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.awaitility.Awaitility;
 import org.awaitility.Durations;
@@ -25,7 +27,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.imagery.ImageryInfo;
-import org.openstreetmap.josm.data.imagery.vectortile.mapbox.Layer;
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MapboxVectorTileSource;
 import org.openstreetmap.josm.data.osm.DataSet;
@@ -37,6 +38,7 @@ import org.openstreetmap.josm.data.vector.VectorDataStore;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
+import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.gui.layer.imagery.MVTLayer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
@@ -85,8 +87,10 @@ class DataMouseListenerTest {
         zoomToMetersPerPixelApproximate(zoom, false);
         simulateMove(0, 0);
         simulateClick(0, 0);
-        assertEquals(1, MainApplication.getLayerManager().getLayers().size());
-        assertSame(osmDataLayer, MainApplication.getLayerManager().getLayers().get(0));
+        List<Layer> layers = MainApplication.getLayerManager().getLayers();
+        assertEquals(1, layers.size(),
+            layers.stream().map(Layer::getClass).map(Class::getName).collect(Collectors.joining(", ")));
+        assertSame(osmDataLayer, layers.get(0));
     }
 
     @ParameterizedTest
@@ -185,7 +189,7 @@ class DataMouseListenerTest {
         }
 
         @Override
-        public Collection<Layer> getLayers() {
+        public Collection<org.openstreetmap.josm.data.imagery.vectortile.mapbox.Layer> getLayers() {
             return Collections.emptyList();
         }
     }
