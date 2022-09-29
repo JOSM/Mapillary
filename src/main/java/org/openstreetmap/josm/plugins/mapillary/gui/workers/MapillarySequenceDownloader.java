@@ -22,6 +22,8 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 
 import org.openstreetmap.josm.data.osm.IWay;
+import org.openstreetmap.josm.data.vector.VectorDataSet;
+import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillarySequence;
@@ -132,11 +134,11 @@ public class MapillarySequenceDownloader extends MapillaryDownloader<MapillarySe
         }
         List<MapillaryNode> nodes = map.get(this.sequenceKey);
         for (int j = i * STEP; j < Math.min((i + 1) * STEP, images.length); j++) {
-            MapillaryNode node = nodes.get(j - i * STEP);
-            if (MapillaryImageUtils.getKey(node) == 0) {
+            MapillaryNode mapillaryNode = nodes.get(j - i * STEP);
+            if (MapillaryImageUtils.getKey(mapillaryNode) == 0) {
                 throw new IllegalArgumentException("There shouldn't be any images with id=0 in a sequence");
             }
-            this.currentNodes[j] = node;
+            this.currentNodes[j] = mapillaryNode;
         }
         publish(this.getCurrentSequence());
     }
@@ -176,6 +178,16 @@ public class MapillarySequenceDownloader extends MapillaryDownloader<MapillarySe
     @Override
     protected void process(List<MapillarySequence> chunks) {
         super.process(chunks);
+        VectorDataSet ds = MapillaryLayer.getInstance().getData();
+        for (MapillarySequence seq : chunks) {
+            for (MapillaryNode oldNode : seq.getNodes()) {
+                VectorNode oldPrimitive = (VectorNode) ds.getPrimitiveById(oldNode);
+                if (oldPrimitive != null) {
+                    oldPrimitive.putAll(oldNode.getKeys());
+                    oldPrimitive.setCoor(oldNode.getCoor());
+                }
+            }
+        }
         // The counter just avoids many resets of the imagery window in short order
         if (!chunks.isEmpty() && counter.getAndAdd(chunks.size()) < 3) {
             this.updater.accept(chunks.get(chunks.size() - 1));
