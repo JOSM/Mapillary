@@ -9,6 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
@@ -292,13 +293,17 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         final Lock lock = this.getData().getReadLock();
         try {
             // This _must_ be set after operations complete (see JOSM #19516 for more information)
-            AffineTransform backup = g.getTransform();
+            AffineTransform oldTransform = g.getTransform();
+            Object oldAARenderingHint = g.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+            Stroke oldStroke = g.getStroke();
             if (lock.tryLock(100, TimeUnit.MILLISECONDS)) {
                 try {
                     this.paintWithLock(g, mv, box);
                 } finally {
                     lock.unlock();
-                    g.setTransform(backup);
+                    g.setTransform(transform);
+                    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, oldAARenderingHint);
+                    g.setStroke(oldStroke);
                 }
             }
         } catch (InterruptedException e) {
