@@ -308,7 +308,7 @@ public class PointObjectLayer extends MVTLayer
             removeButton.setToolTipText(removeAction.getToolTip());
             addButton.setAction(addAction);
             removeButton.setAction(removeAction);
-            displayedPanel = new AdditionalActionPanel(addButton, removeButton);
+            displayedPanel = new AdditionalActionPanel(addButton/*, removeButton*/);
             pTooltip = fixPanelSizeAndLocation(mv, displayedPanel, xl, xr, yt, yb);
             displayedWindow.setAutoRequestFocus(false);
             displayedWindow.add(displayedPanel);
