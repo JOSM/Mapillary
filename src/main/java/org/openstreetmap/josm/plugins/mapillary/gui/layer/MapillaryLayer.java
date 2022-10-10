@@ -301,7 +301,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
                     this.paintWithLock(g, mv, box);
                 } finally {
                     lock.unlock();
-                    g.setTransform(transform);
+                    g.setTransform(oldTransform);
                     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, oldAARenderingHint);
                     g.setStroke(oldStroke);
                 }
