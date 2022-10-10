@@ -46,7 +46,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillaryNodesDownloader;
 import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
-import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryLayerAnnotation;
+import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.GuiWorkersStopper;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
@@ -107,7 +107,7 @@ class DataMouseListenerTest {
     }
 
     @Test
-    @MapillaryLayerAnnotation
+    @GuiWorkersStopper
     void testSelect148137757289079() {
         MapillaryLayer layer = MapillaryLayer.getInstance();
         TestVectorDataStore vds = new TestVectorDataStore();
@@ -128,7 +128,7 @@ class DataMouseListenerTest {
     }
 
     @Test
-    @MapillaryLayerAnnotation
+    @GuiWorkersStopper
     void testSelect496980935069177() {
         PointObjectLayer layer = new PointObjectLayer(MapillaryKeys.MAPILLARY_TRAFFIC_SIGNS);
         MainApplication.getLayerManager().addLayer(layer);
