@@ -457,8 +457,10 @@ public class PointObjectLayer extends MVTLayer
         super.destroy();
         MainApplication.getMap().filterDialog.getFilterModel().removeTableModelListener(tableModelListener);
         List<? extends PointObjectLayer> layers = MainApplication.getLayerManager().getLayersOfType(this.getClass());
-        if (layers.isEmpty() || (layers.size() == 1 && this.equals(layers.get(0))))
+        if ((layers.isEmpty() || (layers.size() == 1 && this.equals(layers.get(0)))) &&
+            MapPaintStyles.getStyles().getStyleSources().contains(mapcss)) {
             MapPaintStyles.removeStyle(mapcss);
+        }
         VectorDataSet data = this.getData();
         data.removeHighlightUpdateListener(this);
         data.removeSelectionListener(this);

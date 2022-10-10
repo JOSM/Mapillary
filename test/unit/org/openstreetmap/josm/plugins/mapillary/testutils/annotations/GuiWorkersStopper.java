@@ -19,25 +19,18 @@ import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @BasicPreferences
-@ExtendWith(GuiWorkersStopper.MapillaryNodeDownloader.class)
-@ExtendWith(GuiWorkersStopper.MapillarySequenceDownloader.class)
+@ExtendWith(GuiWorkersStopper.MapillaryDownloader.class)
 @MapillaryLayerAnnotation
 public @interface GuiWorkersStopper {
-    class MapillaryNodeDownloader implements AfterEachCallback {
+    class MapillaryDownloader implements AfterEachCallback {
         @Override
         public void afterEach(ExtensionContext context) {
             AtomicBoolean done = new AtomicBoolean();
             new org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillaryNodesDownloader(nodes -> done.set(true), 1).execute();
-            Awaitility.await().atMost(Durations.ONE_SECOND).untilTrue(done);
-        }
-    }
-
-    class MapillarySequenceDownloader implements AfterEachCallback {
-        @Override
-        public void afterEach(ExtensionContext context) {
-            AtomicBoolean done = new AtomicBoolean();
+            Awaitility.await().atMost(Durations.FIVE_SECONDS).untilTrue(done);
+            done.set(false);
             new org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillarySequenceDownloader("", chunks -> done.set(true)).execute();
-            Awaitility.await().atMost(Durations.ONE_SECOND).untilTrue(done);
+            Awaitility.await().atMost(Durations.FIVE_SECONDS).untilTrue(done);
         }
     }
 }
