@@ -1,0 +1,13 @@
+name: Publish reports
+
+on:
+  workflow_run:
+    workflows: [Java CI]
+    types: [completed]
+
+permissions:
+  checks: write
+
+jobs:
+  call-workflow:
+    uses: JOSM/JOSMPluginAction/.github/workflows/reports.yaml@v1

@@ -19,4 +19,3 @@ on:
 jobs:
   call-workflow:
     uses: JOSM/JOSMPluginAction/.github/workflows/ant.yml@v1
-
