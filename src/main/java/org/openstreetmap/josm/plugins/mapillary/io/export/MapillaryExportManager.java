@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.gui.PleaseWaitRunnable;
 import org.openstreetmap.josm.gui.progress.swing.PleaseWaitProgressMonitor;
+import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -33,14 +34,14 @@ import org.openstreetmap.josm.tools.Logging;
  */
 public class MapillaryExportManager<T extends INode> extends PleaseWaitRunnable {
 
-    private final ArrayBlockingQueue<BufferedImage> queue = new ArrayBlockingQueue<>(10);
-    private final ArrayBlockingQueue<INode> queueImages = new ArrayBlockingQueue<>(10);
+    private final ArrayBlockingQueue<BufferedImage> queue = new ArrayBlockingQueue<>(MapillaryCache.THREAD_LIMIT.get());
+    private final ArrayBlockingQueue<INode> queueImages = new ArrayBlockingQueue<>(MapillaryCache.THREAD_LIMIT.get());
 
     private final int amount;
     private final Set<T> images;
     private final String path;
 
-    private Thread writer;
+    private MapillaryExportWriterThread writer;
     private ThreadPoolExecutor ex;
 
     /**
@@ -77,25 +78,30 @@ public class MapillaryExportManager<T extends INode> extends PleaseWaitRunnable 
             }
             return;
         }
-        ArrayBlockingQueue<Runnable> executionQueue = new ArrayBlockingQueue<>(10);
-        this.ex = new ThreadPoolExecutor(20, 35, 25, TimeUnit.SECONDS, executionQueue);
+        ArrayBlockingQueue<Runnable> executionQueue = new ArrayBlockingQueue<>(MapillaryCache.THREAD_LIMIT.get());
+        this.ex = new ThreadPoolExecutor(1, 1, 25, TimeUnit.SECONDS, executionQueue);
         for (INode image : this.images) {
             if (MapillaryImageUtils.isImage(image)) {
                 synchronized (this) {
                     while (this.ex.getQueue().remainingCapacity() == 0) {
                         try {
-                            this.wait(1000);
+                            this.wait(10);
                         } catch (InterruptedException e) {
                             Logging.error(e);
                             Thread.currentThread().interrupt();
+                            return;
                         }
                     }
                 }
                 try {
-                    this.ex.execute(new MapillaryExportDownloadThread(image, this.queue, this.queueImages));
+                    this.ex
+                        .execute(new MapillaryExportDownloadThread(this.writer, image, this.queue, this.queueImages));
                 } catch (RejectedExecutionException e) {
                     Logging.error(e);
                 }
+            } else {
+                // We need to ensure that the writer thread gets the number of "images" expected.
+                this.writer.decrementSize();
             }
         }
         try {

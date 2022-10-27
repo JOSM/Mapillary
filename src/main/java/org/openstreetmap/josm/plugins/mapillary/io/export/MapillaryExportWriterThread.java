@@ -41,8 +41,9 @@ public class MapillaryExportWriterThread extends Thread {
     private final String path;
     private final ArrayBlockingQueue<BufferedImage> queue;
     private final ArrayBlockingQueue<INode> queueImages;
-    private final int amount;
     private final ProgressMonitor monitor;
+    private int amount;
+    private int written;
 
     /**
      * Main constructor.
@@ -74,6 +75,19 @@ public class MapillaryExportWriterThread extends Thread {
         INode mimg;
         String finalPath;
         for (int i = 0; i < this.amount; i++) {
+            while (this.queue.peek() == null) {
+                if (this.amount == this.written) {
+                    return;
+                }
+                synchronized (this.queue) {
+                    try {
+                        this.queue.wait(100);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        return;
+                    }
+                }
+            }
             try {
                 img = this.queue.take();
                 mimg = this.queueImages.take();
@@ -138,8 +152,12 @@ public class MapillaryExportWriterThread extends Thread {
                     Logging.info("Unable to set last modified time for {0} to {1}", file,
                         MapillaryImageUtils.getDate(mimg));
                 }
+                this.written++;
             } catch (InterruptedException e) {
-                Logging.info("Mapillary export cancelled");
+                if (this.written != this.amount) {
+                    Logging.info("Mapillary export cancelled");
+                    Logging.trace(e);
+                }
                 Thread.currentThread().interrupt();
                 return;
             } catch (IOException | ImageReadException | ImageWriteException e) {
@@ -149,6 +167,18 @@ public class MapillaryExportWriterThread extends Thread {
             // Increases the progress bar.
             this.monitor.worked(PleaseWaitProgressMonitor.PROGRESS_BAR_MAX / this.amount);
             this.monitor.setCustomText("Downloaded " + (i + 1) + "/" + this.amount);
+        }
+    }
+
+    /**
+     * Called when the size is decreased
+     */
+    public void decrementSize() {
+        this.amount = this.amount - 1;
+        if (this.amount == this.written) {
+            synchronized (this.queue) {
+                this.queue.notifyAll();
+            }
         }
     }
 }

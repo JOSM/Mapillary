@@ -64,10 +64,23 @@ public final class CacheUtils {
      *        The listener that is going to receive the picture.
      */
     public static void submit(INode image, MapillaryCache.Type type, ICachedLoaderListener lis) {
+        submit(image, type, true, lis);
+    }
+
+    /**
+     * Requests the picture with the given key and quality and uses the given
+     * listener.
+     *
+     * @param image
+     *        The picture to be requested.
+     * @param lis
+     *        The listener that is going to receive the picture.
+     */
+    public static void submit(INode image, MapillaryCache.Type type, boolean removeCurrent, ICachedLoaderListener lis) {
         try {
             final MapillaryCache cache = new MapillaryCache(image, type);
             if (cache.getUrl() != null) {
-                cache.submit(lis != null ? lis : IGNORE_DOWNLOAD, false);
+                cache.submit(lis != null ? lis : IGNORE_DOWNLOAD, false, removeCurrent);
             } else {
                 Logging.error("Mapillary: {0} has no url. Maybe API limits have been reached?",
                     MapillaryImageUtils.getKey(image));

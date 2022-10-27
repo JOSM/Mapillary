@@ -243,13 +243,25 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
         return new BufferedImageCacheEntry(content);
     }
 
-    @Override
-    public void submit(ICachedLoaderListener listener, boolean force) throws IOException {
+    /**
+     * Submit a new task
+     *
+     * @param listener The listener to notify
+     * @param force {@code true} if the load should skip all caches
+     * @param removeCurrent {@code true} if any outstanding tasks should be canceled
+     * @throws IOException If something happens during fetch ore read
+     */
+    public void submit(ICachedLoaderListener listener, boolean force, boolean removeCurrent) throws IOException {
         // Clear the queue for larger images
-        if (this.type == Type.ORIGINAL || this.type == Type.THUMB_2048) {
+        if (removeCurrent && (this.type == Type.ORIGINAL || this.type == Type.THUMB_2048)) {
             this.cancelOutstandingTasks();
         }
         super.submit(listener, force);
+    }
+
+    @Override
+    public void submit(ICachedLoaderListener listener, boolean force) throws IOException {
+        this.submit(listener, force, true);
     }
 
     @Override

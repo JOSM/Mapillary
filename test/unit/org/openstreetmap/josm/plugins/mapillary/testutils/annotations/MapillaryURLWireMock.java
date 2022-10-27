@@ -370,25 +370,29 @@ public @interface MapillaryURLWireMock {
      * A wiremocked implementation of {@link IMapillaryUrls}
      */
     class WireMockServerMapillaryUrl implements IMapillaryUrls {
-        final WireMockServer server;
+        final String baseUrl;
 
         WireMockServerMapillaryUrl(WireMockServer server) {
-            this.server = server;
+            this.baseUrl = server.baseUrl();
+        }
+
+        public WireMockServerMapillaryUrl(String baseUrl) {
+            this.baseUrl = baseUrl;
         }
 
         @Override
         public String getBaseMetaDataUrl() {
-            return server.baseUrl() + "/api/v4/graph/";
+            return this.baseUrl + "/api/v4/graph/";
         }
 
         @Override
         public String getBaseTileUrl() {
-            return server.baseUrl() + "/api/v4/coverageTiles/";
+            return this.baseUrl + "/api/v4/coverageTiles/";
         }
 
         @Override
         public String getPaintStyleUrl() {
-            return server.baseUrl() + "/paintstyle";
+            return this.baseUrl + "/paintstyle";
         }
 
         @Override
@@ -408,7 +412,7 @@ public @interface MapillaryURLWireMock {
 
         @Override
         public String getBaseUrl() {
-            return server.baseUrl() + "/baseUrl";
+            return this.baseUrl + "/baseUrl";
         }
     }
 
