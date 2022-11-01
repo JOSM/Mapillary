@@ -6,6 +6,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -19,6 +20,7 @@ import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -76,7 +78,15 @@ public class MapillaryExportDownloadThread implements Runnable, ICachedLoaderLis
                 }
                 THREAD_COUNT.incrementAndGet();
             }
-            CacheUtils.submit(this.image, MapillaryCache.Type.ORIGINAL, false, this);
+            final INode toDownload;
+            if (!MapillaryImageUtils.isDownloadable(this.image)) {
+                toDownload = MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(this.image)).values()
+                    .stream().flatMap(Collection::stream).findFirst().orElseThrow(() -> new IllegalArgumentException(
+                        "Cannot download Mapillary image " + MapillaryImageUtils.getKey(this.image)));
+            } else {
+                toDownload = this.image;
+            }
+            CacheUtils.submit(toDownload, MapillaryCache.Type.ORIGINAL, false, this);
         } else {
             throw new UnsupportedOperationException(tr("We cannot export {0}",
                 image.getInterestingTags().entrySet().stream()

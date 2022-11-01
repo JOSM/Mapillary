@@ -1,14 +1,13 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.workers;
 
-import static org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillaryNodesDownloader.realDownloadImages;
-
 import java.util.Collection;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
@@ -16,7 +15,7 @@ import org.openstreetmap.josm.tools.JosmRuntimeException;
 /**
  * Download a singular node. This is faster than downloading large sequences.
  */
-public class MapillaryNodeDownloader extends MapillaryDownloader<MapillaryNode, Void> {
+public class MapillaryNodeDownloader extends MapillaryUIDownloader<MapillaryNode, Void> {
     private final long node;
     private final Consumer<MapillaryNode> onFinish;
 
@@ -44,8 +43,8 @@ public class MapillaryNodeDownloader extends MapillaryDownloader<MapillaryNode, 
 
     @Override
     protected MapillaryNode doInBackground() {
-        return realDownloadImages(node).values().stream().flatMap(Collection::stream).filter(n -> n.getOsmId() == node)
-            .findFirst().orElse(null);
+        return MapillaryDownloader.downloadImages(node).values().stream().flatMap(Collection::stream)
+            .filter(n -> n.getOsmId() == node).findFirst().orElse(null);
     }
 
     @Override
