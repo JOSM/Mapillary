@@ -63,6 +63,9 @@ public final class MapillaryDownloader {
             final JsonObject jsonObject = getUrlResponse(url);
             return jsonObject != null ? jsonObject.toString() : null;
         });
+        if (stringJson == null) {
+            metaDataCache.getICacheAccess().remove(url);
+        }
         final List<MapillaryNode> nodes;
         if (stringJson != null) {
             try (JsonReader jsonReader = Json
