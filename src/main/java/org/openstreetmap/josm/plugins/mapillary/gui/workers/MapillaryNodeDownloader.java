@@ -1,7 +1,9 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.workers;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -16,6 +18,7 @@ import org.openstreetmap.josm.tools.JosmRuntimeException;
  * Download a singular node. This is faster than downloading large sequences.
  */
 public class MapillaryNodeDownloader extends MapillaryUIDownloader<MapillaryNode, Void> {
+    private static final List<MapillaryNodeDownloader> downloadList = new ArrayList<>();
     private final long node;
     private final Consumer<MapillaryNode> onFinish;
 
@@ -37,6 +40,7 @@ public class MapillaryNodeDownloader extends MapillaryUIDownloader<MapillaryNode
      */
     public MapillaryNodeDownloader(long id, Consumer<MapillaryNode> onFinish) {
         Objects.requireNonNull(onFinish);
+        downloadList.add(this);
         this.node = id;
         this.onFinish = onFinish;
     }
@@ -57,6 +61,15 @@ public class MapillaryNodeDownloader extends MapillaryUIDownloader<MapillaryNode
             throw new JosmRuntimeException(e);
         } catch (ExecutionException e) {
             throw new JosmRuntimeException(e);
+        }
+    }
+
+    /**
+     * Kill all download threads
+     */
+    static void killAll() {
+        for (MapillaryNodeDownloader downloader : downloadList) {
+            downloader.cancel(true);
         }
     }
 }

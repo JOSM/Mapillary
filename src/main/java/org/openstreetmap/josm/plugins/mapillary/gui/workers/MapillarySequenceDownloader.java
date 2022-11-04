@@ -51,6 +51,16 @@ public class MapillarySequenceDownloader extends MapillaryUIDownloader<Mapillary
     }
 
     /**
+     * Kill all sequence downloads
+     */
+    static synchronized void killAll() {
+        if (currentSequence != null) {
+            currentSequence.cancel(true);
+            currentSequence = null;
+        }
+    }
+
+    /**
      * Create a new sequence downloader
      *
      * @param image The image whose sequence should be downloaded

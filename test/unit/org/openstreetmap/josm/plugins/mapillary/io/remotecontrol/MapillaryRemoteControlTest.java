@@ -24,6 +24,7 @@ import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.io.remotecontrol.RemoteControl;
 import org.openstreetmap.josm.io.remotecontrol.handler.RequestHandler;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillaryNodesDownloader;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.AwaitThreadFinish;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryCaches;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryLayerAnnotation;
@@ -119,6 +120,8 @@ class MapillaryRemoteControlTest {
         mapillaryRemoteControl.validateRequest();
         mapillaryRemoteControl.handleRequest();
 
+        Awaitility.await().atMost(Durations.TEN_SECONDS)
+            .until(() -> !MainApplication.getLayerManager().getLayersOfType(MapillaryLayer.class).isEmpty());
         Awaitility.await().atMost(Durations.TEN_SECONDS).until(() -> MapillaryLayer.getInstance().getImage() != null);
 
         final String id = request.replaceAll(".*=Mapillary/", "");
@@ -128,6 +131,7 @@ class MapillaryRemoteControlTest {
             assertEquals(id, MapillaryImageUtils.getSequenceKey(MapillaryLayer.getInstance().getImage()));
         }
         assertEquals(1, MainApplication.getLayerManager().getLayersOfType(MapillaryLayer.class).size());
+        MapillaryNodesDownloader.killAll();
     }
 
     @Test
