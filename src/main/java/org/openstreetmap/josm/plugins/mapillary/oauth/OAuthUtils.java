@@ -24,7 +24,6 @@ import javax.json.JsonReader;
 import javax.json.JsonStructure;
 import javax.swing.JOptionPane;
 
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.io.CachedFile;
@@ -159,18 +158,6 @@ public final class OAuthUtils {
      */
     public static HttpClient addAuthenticationHeader(HttpClient client) {
         return client.setHeader(AUTHORIZATION, getAuthorizationToken());
-    }
-
-    /**
-     * Returns a HttpEntity with an authorization header for use when making user
-     * specific API calls
-     *
-     * @param httpEntity The HttpEntity to add authentication headers to
-     * @return The HttpEntity for easy chaining
-     */
-    public static HttpEntityEnclosingRequestBase addAuthenticationHeader(HttpEntityEnclosingRequestBase httpEntity) {
-        httpEntity.addHeader(AUTHORIZATION, getAuthorizationToken());
-        return httpEntity;
     }
 
     /**

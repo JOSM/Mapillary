@@ -25,7 +25,6 @@
   </target>
   <fileset id="plugin.requires.jars" dir="${plugin.dist.dir}">
     <include name="apache-commons.jar"/>
-    <include name="apache-http.jar"/>
   </fileset>
   <target name="mapillary_secrets">
     <property environment="env"/>
