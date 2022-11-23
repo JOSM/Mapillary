@@ -4,22 +4,27 @@ package org.openstreetmap.josm.plugins.mapillary.io.export;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.ImageWriteException;
 import org.apache.commons.imaging.common.RationalNumber;
 import org.apache.commons.imaging.formats.jpeg.exif.ExifRewriter;
+import org.apache.commons.imaging.formats.jpeg.xmp.JpegXmpRewriter;
 import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.apache.commons.imaging.formats.tiff.write.TiffOutputDirectory;
@@ -73,7 +78,7 @@ public class MapillaryExportWriterThread extends Thread {
         this.monitor.setCustomText("Downloaded 0/" + this.amount);
         BufferedImage img;
         INode mimg;
-        String finalPath;
+        Path file;
         for (int i = 0; i < this.amount; i++) {
             while (this.queue.peek() == null) {
                 if (this.amount == this.written) {
@@ -92,9 +97,7 @@ public class MapillaryExportWriterThread extends Thread {
                 img = this.queue.take();
                 mimg = this.queueImages.take();
                 if (MapillaryImageUtils.getKey(mimg) != 0 && mimg.getUniqueId() > 0) {
-                    finalPath = Paths
-                        .get(this.path, MapillaryImageUtils.getSequenceKey(mimg), Long.toString(mimg.getUniqueId()))
-                        .toString();
+                    file = Paths.get(this.path, MapillaryImageUtils.getSequenceKey(mimg), mimg.getUniqueId() + ".jpg");
                 } else {
                     // Increases the progress bar.
                     this.monitor.worked(PleaseWaitProgressMonitor.PROGRESS_BAR_MAX / this.amount);
@@ -134,24 +137,28 @@ public class MapillaryExportWriterThread extends Thread {
                     .format(DateTimeFormatter.ofPattern("yyyy:MM:dd HH:mm:ss"));
                 exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL, dateTime);
 
+                final String xml = getXmpXml(img, mimg);
+
                 outputSet.setGPSInDegrees(mimg.lon(), mimg.lat());
-                File file = new File(finalPath + ".jpg");
-                File parentFile = file.getParentFile();
-                if (!parentFile.exists() && !parentFile.isDirectory()) {
-                    if (!parentFile.mkdirs()) {
-                        throw new IOException("Directory could not be created: " + parentFile.getPath());
-                    }
-                    if (!parentFile.setLastModified(MapillaryImageUtils.getDate(mimg).toEpochMilli())) {
-                        throw new IOException("Could not set last modified date: " + parentFile.getPath());
-                    }
+                Path parentFile = file.getParent();
+                if (!Files.exists(parentFile) && !Files.isDirectory(parentFile)) {
+                    Files.createDirectories(parentFile);
+                    Files.setLastModifiedTime(parentFile,
+                        FileTime.fromMillis(MapillaryImageUtils.getDate(mimg).toEpochMilli()));
                 }
-                try (OutputStream os = new BufferedOutputStream(Files.newOutputStream(file.toPath()))) {
+                try (OutputStream os = new BufferedOutputStream(Files.newOutputStream(file))) {
                     new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);
                 }
-                if (!file.setLastModified(MapillaryImageUtils.getDate(mimg).toEpochMilli())) {
-                    Logging.info("Unable to set last modified time for {0} to {1}", file,
-                        MapillaryImageUtils.getDate(mimg));
+                if (xml != null) {
+                    Path tFile = Files.createTempFile("mapillary-", "-" + file.getFileName());
+                    try (InputStream is = Files.newInputStream(file);
+                        OutputStream os = new BufferedOutputStream(Files.newOutputStream(tFile))) {
+                        new JpegXmpRewriter().updateXmpXml(is, os, xml);
+                    }
+                    Files.deleteIfExists(file);
+                    Files.move(tFile, file);
                 }
+                Files.setLastModifiedTime(file, FileTime.fromMillis(MapillaryImageUtils.getDate(mimg).toEpochMilli()));
                 this.written++;
             } catch (InterruptedException e) {
                 if (this.written != this.amount) {
@@ -168,6 +175,33 @@ public class MapillaryExportWriterThread extends Thread {
             this.monitor.worked(PleaseWaitProgressMonitor.PROGRESS_BAR_MAX / this.amount);
             this.monitor.setCustomText("Downloaded " + (i + 1) + "/" + this.amount);
         }
+    }
+
+    /**
+     * Get the XMP information for this image
+     *
+     * @param bufferedImage The image data
+     * @param imageNode The originating image node with the appropriate information
+     * @return The XMP data to write to the image
+     */
+    @Nullable
+    private static String getXmpXml(@Nonnull BufferedImage bufferedImage, @Nonnull INode imageNode) {
+        if (MapillaryImageUtils.IS_PANORAMIC.test(imageNode)) {
+            // Assume equirectangular for now
+            return "<x:xmpmeta xmlns:x='adobe:ns:meta/'>"
+                + "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">"
+                + "<rdf:Description rdf:about=\"\" xmlns:GPano=\"http://ns.google.com/photos/1.0/panorama/\">"
+                + "<GPano:ProjectionType>equirectangular</GPano:ProjectionType>" + "<GPano:CroppedAreaImageWidthPixels>"
+                + bufferedImage.getWidth() + "</GPano:CroppedAreaImageWidthPixels>" + "<GPano:FullPanoWidthPixels>"
+                + bufferedImage.getWidth() + "</GPano:FullPanoWidthPixels>" + "<GPano:CroppedAreaImageHeightPixels>"
+                + bufferedImage.getHeight() + "</GPano:CroppedAreaImageHeightPixels>" + "<GPano:FullPanoHeightPixels>"
+                + bufferedImage.getHeight() + "</GPano:FullPanoHeightPixels>"
+                // We don't actually do any cropping, so these are 0.
+                + "<GPano:CroppedAreaLeftPixels>0</GPano:CroppedAreaLeftPixels>"
+                + "<GPano:CroppedAreaTopPixels>0</GPano:CroppedAreaTopPixels>"
+                + "</rdf:Description></rdf:RDF></x:xmpmeta>";
+        }
+        return null;
     }
 
     /**
