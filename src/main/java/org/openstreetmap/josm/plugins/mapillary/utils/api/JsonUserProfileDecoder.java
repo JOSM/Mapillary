@@ -10,6 +10,7 @@ import javax.json.JsonObject;
 import javax.swing.ImageIcon;
 
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.IMapillaryUrls;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -24,6 +25,12 @@ public final class JsonUserProfileDecoder {
         // Private constructor to avoid instantiation
     }
 
+    /**
+     * Decode the user profile
+     *
+     * @param json The user profile json object
+     * @return The decoded profile
+     */
     public static UserProfile decodeUserProfile(JsonObject json) {
         if (json == null) {
             return null;

@@ -62,6 +62,7 @@ public final class CacheUtils {
      *        The picture to be requested.
      * @param lis
      *        The listener that is going to receive the picture.
+     * @param type The image type
      */
     public static void submit(INode image, MapillaryCache.Type type, ICachedLoaderListener lis) {
         submit(image, type, true, lis);
@@ -75,6 +76,8 @@ public final class CacheUtils {
      *        The picture to be requested.
      * @param lis
      *        The listener that is going to receive the picture.
+     * @param type The image type to get
+     * @param removeCurrent {@code true} if any outstanding tasks should be canceled
      */
     public static void submit(INode image, MapillaryCache.Type type, boolean removeCurrent, ICachedLoaderListener lis) {
         try {

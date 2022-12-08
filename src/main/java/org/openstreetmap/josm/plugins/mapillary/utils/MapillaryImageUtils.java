@@ -48,6 +48,7 @@ public final class MapillaryImageUtils {
      * Get the sequence for an image
      *
      * @param image the image to get a sequence for
+     * @param <N> The node type
      * @return The sequence, if it exists
      */
     @Nullable

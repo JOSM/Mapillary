@@ -194,6 +194,7 @@ public final class Caches {
          * This is non-blocking.
          *
          * @param url The URL to get
+         * @param pool The worker pool
          * @return The information
          */
         @Nullable

@@ -13,6 +13,7 @@ import javax.json.JsonString;
 import javax.json.JsonValue;
 
 import org.openstreetmap.josm.data.osm.IWay;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.IMapillaryUrls;
 import org.openstreetmap.josm.tools.Logging;
 
 /**

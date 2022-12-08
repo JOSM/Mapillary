@@ -1,12 +1,13 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.data.mapillary;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
 
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.Filter;
@@ -39,6 +40,7 @@ public class MapillaryFilterModel extends FilterModel {
     /**
      * Runs the filters on a data set
      *
+     * @param <O> The base primitive type of the dataset
      * @param ds The dataset to run filters on
      */
     public <O extends IPrimitive & IFilterablePrimitive> void executeFilters(OsmData<O, ?, ?, ?> ds) {
@@ -62,6 +64,7 @@ public class MapillaryFilterModel extends FilterModel {
      *
      * @param ds The dataset with the primitives
      * @param primitives The primitives
+     * @param <O> The base primitive type for the dataset
      */
     public <O extends IPrimitive & IFilterablePrimitive> void executeFilters(@Nullable OsmData<O, ?, ?, ?> ds,
         @Nullable Collection<? extends O> primitives) {

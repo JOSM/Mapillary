@@ -259,6 +259,7 @@ public final class TrafficSignFilter extends JPanel
      *
      * @param button The button to check
      * @param expr The filter text
+     * @param detections The detections to use to check and see if the button is relevant
      * @return {@code true} if the button should be shown
      */
     private boolean checkRelevant(ImageCheckBoxButton button, String expr, Collection<String> detections) {

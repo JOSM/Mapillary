@@ -2,8 +2,8 @@
 package org.openstreetmap.josm.plugins.mapillary.gui.imageinfo;
 
 import java.awt.event.ActionEvent;
+import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
@@ -15,14 +15,23 @@ import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.OpenBrowser;
 
+/**
+ * An action to open web links
+ */
 public class WebLinkAction extends AbstractAction {
     private static final long serialVersionUID = 2397830510179013823L;
 
-    private URL url;
+    private URI uri;
 
-    public WebLinkAction(final String name, final URL url) {
+    /**
+     * Create a new action
+     *
+     * @param name The name to show users
+     * @param uri The original URI to open
+     */
+    public WebLinkAction(final String name, final URI uri) {
         super(name, ImageProvider.get("link", ImageSizes.SMALLICON));
-        setURL(url);
+        setURI(uri);
     }
 
     /**
@@ -30,8 +39,8 @@ public class WebLinkAction extends AbstractAction {
      *
      * @param url the url to set
      */
-    public final void setURL(URL url) {
-        this.url = url;
+    public final void setURI(URI url) {
+        this.uri = url;
         setEnabled(url != null);
     }
 
@@ -42,13 +51,13 @@ public class WebLinkAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            if (url != null) {
-                OpenBrowser.displayUrl(url.toURI());
+            if (uri != null) {
+                OpenBrowser.displayUrl(uri);
             } else {
                 throw new URISyntaxException("‹null›", "The URL is null");
             }
         } catch (URISyntaxException e1) {
-            String msg = I18n.tr("Could not open the URL {0} in a browser", url == null ? "‹null›" : url);
+            String msg = I18n.tr("Could not open the URL {0} in a browser", "‹null›");
             Logging.log(Logging.LEVEL_WARN, msg, e1);
             new Notification(msg).setIcon(JOptionPane.WARNING_MESSAGE).show();
         }

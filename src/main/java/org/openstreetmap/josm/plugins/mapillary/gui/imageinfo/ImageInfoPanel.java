@@ -11,7 +11,8 @@ import java.awt.Insets;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -50,10 +51,14 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.OffsetUtils;
 import org.openstreetmap.josm.tools.GBC;
+import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
 import org.openstreetmap.josm.tools.Utils;
 
+/**
+ * A panel to show image specific information
+ */
 public final class ImageInfoPanel extends ToggleDialog implements DataSelectionListener, VectorDataSelectionListener {
     private static final long serialVersionUID = 1320443250226377651L;
     private static ImageInfoPanel instance;
@@ -243,12 +248,24 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
         imgKeyValue.setEnabled(newImage != null);
         final String newImageKey = newImage != null ? Long.toString(newImage.getId()) : null;
         if (newImageKey != null) {
-            final URL newImageUrl = MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.get()
-                ? MapillaryConfig.getUrls().blurEditImage(newImageKey)
+            final boolean blur = Boolean.TRUE.equals(MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.get());
+            final URI newImageUrl = blur ? MapillaryConfig.getUrls().blurEditImage(newImageKey)
                 : MapillaryConfig.getUrls().browseImage(newImageKey);
 
             offsetModel.setValue(OffsetUtils.getOffset(newImage));
-            imageLinkChangeListener = b -> imgLinkAction.setURL(newImageUrl);
+            if (blur) {
+                imageLinkChangeListener = b -> imgLinkAction.setURI(newImageUrl);
+            } else {
+                try {
+                    final URI newImageUrlWithLocation = new URI(newImageUrl.getScheme(), newImageUrl.getAuthority(),
+                        newImageUrl.getPath(),
+                        newImageUrl.getQuery() + "&z=18&lat=" + newImage.lat() + "&lng=" + newImage.lon(),
+                        newImageUrl.getFragment());
+                    imageLinkChangeListener = b -> imgLinkAction.setURI(newImageUrlWithLocation);
+                } catch (URISyntaxException e) {
+                    throw new JosmRuntimeException(e);
+                }
+            }
             imageLinkChangeListener.valueChanged(null);
             MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.addListener(imageLinkChangeListener);
             copyImgUrlAction.setContents(new StringSelection(newImageUrl.toString()));
@@ -273,7 +290,7 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
                 imageLinkChangeListener = null;
             }
             this.offsetModel.setValue(OffsetUtils.getOffset(null));
-            imgLinkAction.setURL(null);
+            imgLinkAction.setURI(null);
             copyImgUrlAction.setContents(null);
 
             imgKeyValue.setText('‹' + tr("image has no key") + '›');

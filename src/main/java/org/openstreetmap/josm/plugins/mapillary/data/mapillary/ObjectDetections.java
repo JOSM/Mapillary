@@ -76,6 +76,7 @@ public final class ObjectDetections {
     /**
      * Create an ObjectDetection
      *
+     * @param key The key for the detection
      * @param tagMap The OSM key(s) for the object
      * @param taggingPresetType The valid types for the preset
      * @param additionalCommands Additional commands to run

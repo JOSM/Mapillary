@@ -8,6 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
@@ -70,6 +71,20 @@ public final class OAuthUtils {
     public static JsonObject getWithHeader(URL url) throws IOException {
         HttpClient client = HttpClient.create(url, "GET");
         return getWithHeader(client);
+    }
+
+    /**
+     * Returns a JsonObject containing the result of making a GET request with the
+     * authorization header.
+     *
+     * @param uri
+     *        The {@link URI} where the request must be made.
+     * @return A JsonObject containing the result of the GET request.
+     * @throws IOException
+     *         Errors relating to the connection.
+     */
+    public static JsonObject getWithHeader(URI uri) throws IOException {
+        return getWithHeader(uri.toURL());
     }
 
     /**
@@ -190,6 +205,7 @@ public final class OAuthUtils {
      * Refresh authorization
      *
      * @param authorizationCode The code to use to refresh auth
+     * @throws OAuthUtilsException if there was an {@link IOException} of some type
      */
     private static void refreshAuthorization(final String authorizationCode) throws OAuthUtilsException {
         HttpClient.Response response = null;

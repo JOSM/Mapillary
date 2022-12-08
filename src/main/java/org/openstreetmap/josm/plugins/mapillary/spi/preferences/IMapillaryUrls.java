@@ -3,6 +3,8 @@ package org.openstreetmap.josm.plugins.mapillary.spi.preferences;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -223,6 +225,7 @@ public interface IMapillaryUrls {
      * Get the URL for organization information
      *
      * @param id The organization id
+     * @return The URL to get the organization information from
      */
     default String getOrganizationInformation(long id) {
         // profile_photo_url for profile photos, possibly (currently not public -- errors out) TODO
@@ -236,7 +239,7 @@ public interface IMapillaryUrls {
      *
      * @return The URL to get user information (logged in user only)
      */
-    default URL getUserInformation() {
+    default URI getUserInformation() {
         return string2URL(MapillaryConfig.getUrls().getBaseMetaDataUrl(), "me", queryString(null));
     }
 
@@ -256,7 +259,7 @@ public interface IMapillaryUrls {
      *        When this is <code>null</code>, it's omitted from the query string.
      * @return the URL that the user should visit to start the OAuth authentication
      */
-    default URL connect(String redirectURI) {
+    default URI connect(String redirectURI) {
         // We need to ensure that redirectURI is last
         HashMap<String, String> parts = new LinkedHashMap<>(4);
         parts.put("client_id", Long.toString(getClientId()));
@@ -277,10 +280,10 @@ public interface IMapillaryUrls {
      * Gives you the URL for the online viewer of a specific mapillary image.
      *
      * @param key the key of the image to which you want to link
-     * @return the URL of the online viewer for the image with the given image key
+     * @return the URI of the online viewer for the image with the given image key
      * @throws IllegalArgumentException if the image key is <code>null</code>
      */
-    default URL browseImage(String key) {
+    default URI browseImage(String key) {
         if (key == null) {
             throw new IllegalArgumentException("The image key must not be null!");
         }
@@ -294,7 +297,7 @@ public interface IMapillaryUrls {
      * @return the URL of the blur editor
      * @throws IllegalArgumentException if the image key is <code>null</code>
      */
-    default URL blurEditImage(final String key) {
+    default URI blurEditImage(final String key) {
         if (key == null) {
             throw new IllegalArgumentException("The image key must not be null!");
         }
@@ -309,7 +312,7 @@ public interface IMapillaryUrls {
     }
 
     /**
-     * Ensure all ids are > 0
+     * Ensure all ids are &gt; 0
      *
      * @param ids The ids to check
      */
@@ -327,7 +330,7 @@ public interface IMapillaryUrls {
     }
 
     /**
-     * Ensure the id is > 0
+     * Ensure the id is &gt; 0
      *
      * @param id The id to check
      */
@@ -366,17 +369,19 @@ public interface IMapillaryUrls {
      * @param strings the Strings describing the URL
      * @return the URL that is constructed from the given string
      */
-    static URL string2URL(String... strings) {
+    static URI string2URL(String... strings) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; strings != null && i < strings.length; i++) {
             builder.append(strings[i]);
         }
         try {
-            return new URL(builder.toString());
-        } catch (MalformedURLException e) {
-            Logging.log(Logging.LEVEL_ERROR, String.format("The class '%s' produces malformed URLs like '%s'!",
-                IMapillaryUrls.class.getName(), builder), e);
-            return null;
+            if (builder.length() > 0) {
+                return new URI(builder.toString());
+            }
+        } catch (URISyntaxException e) {
+            Logging.error("Bad url: {0}", builder.toString());
+            Logging.error(e);
         }
+        return null;
     }
 }

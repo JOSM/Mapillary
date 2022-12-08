@@ -6,7 +6,6 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
-import java.net.URISyntaxException;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -41,7 +40,6 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
-import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.OpenBrowser;
 
 /**
@@ -272,12 +270,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
         public void actionPerformed(ActionEvent arg0) {
             OAuthPortListener portListener = new OAuthPortListener(callback);
             portListener.start();
-            try {
-                OpenBrowser.displayUrl(
-                    MapillaryConfig.getUrls().connect("http://localhost:" + OAuthPortListener.PORT + '/').toURI());
-            } catch (URISyntaxException e) {
-                Logging.error(e);
-            }
+            OpenBrowser
+                .displayUrl(MapillaryConfig.getUrls().connect("http://localhost:" + OAuthPortListener.PORT + '/'));
         }
     }
 

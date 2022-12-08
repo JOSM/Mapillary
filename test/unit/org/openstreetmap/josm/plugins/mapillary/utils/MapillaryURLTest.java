@@ -8,8 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 
 import org.junit.jupiter.api.Test;
 import org.openstreetmap.josm.plugins.mapillary.spi.preferences.IMapillaryUrls;
@@ -26,8 +25,8 @@ class MapillaryURLTest {
     // TODO Test APIv4 when actually available
 
     @Test
-    void testBrowseImageURL() throws MalformedURLException {
-        assertEquals(new URL("https://www.mapillary.com/app/?pKey=1234567890123456789012"),
+    void testBrowseImageURL() {
+        assertEquals(URI.create("https://www.mapillary.com/app/?pKey=1234567890123456789012"),
             MapillaryConfig.getUrls().browseImage("1234567890123456789012"));
     }
 
@@ -65,17 +64,19 @@ class MapillaryURLTest {
         TestUtil.testUtilityClass(MapillaryConfig.class);
     }
 
-    protected static void assertUrlEquals(URL actualUrl, String expectedBaseUrl, String... expectedParams) {
+    protected static void assertUrlEquals(URI actualUrl, String expectedBaseUrl, String... expectedParams) {
         final String actualUrlString = actualUrl.toString();
         assertEquals(expectedBaseUrl,
             actualUrlString.contains("?") ? actualUrlString.substring(0, actualUrlString.indexOf('?'))
                 : actualUrlString);
-        String[] actualParams = actualUrl.getQuery() == null ? new String[0] : actualUrl.getQuery().split("&");
+        String[] actualParams = actualUrl.getRawQuery() == null ? new String[0] : actualUrl.getRawQuery().split("&");
         assertEquals(expectedParams.length, actualParams.length);
         for (String expectedParam : expectedParams) {
             boolean parameterIsPresent = false;
-            for (int acIndex = 0; !parameterIsPresent && acIndex < actualParams.length; acIndex++) {
+            for (int acIndex = 0; acIndex < actualParams.length; acIndex++) {
                 parameterIsPresent = actualParams[acIndex].equals(expectedParam);
+                if (parameterIsPresent)
+                    break;
             }
             assertTrue(parameterIsPresent,
                 expectedParam + " was expected in the query string of " + actualUrl + " but wasn't there.");

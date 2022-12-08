@@ -96,6 +96,7 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
      * enabled.
      *
      * @param primitives The primitives
+     * @param <O> The primitive type
      */
     public <O extends IPrimitive & IFilterablePrimitive> void executeFilters(Collection<O> primitives) {
         executeFilters(primitives, false);

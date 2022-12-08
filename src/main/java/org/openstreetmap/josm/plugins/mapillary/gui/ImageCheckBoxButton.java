@@ -179,7 +179,6 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
      * Set the box as selected
      *
      * @param selected Set the checkbox state to the selected boolean
-     * @return A future to indicate if the call finished
      */
     public void setSelected(boolean selected) {
         GuiHelper.runInEDT(() -> {

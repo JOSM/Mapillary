@@ -23,7 +23,7 @@ import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 
 /**
- *
+ * Test class for {@link ObjectDetections}
  */
 @BasicPreferences
 @ObjectDetectionsAnnotation
