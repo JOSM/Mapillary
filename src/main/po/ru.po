@@ -12,9 +12,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.14-19-g22312a2\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.1-5-g72cff86\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-27 15:04+0000\n"
+"POT-Creation-Date: 2022-12-07 15:05+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Russian (https://www.transifex.com/josm/teams/2544/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -50,6 +50,9 @@ msgstr "Все"
 msgid "At least one of the optional arguments must be used ({0})"
 msgstr ""
 
+msgid "Back"
+msgstr "Назад"
+
 msgid "Bad Imagery"
 msgstr ""
 
@@ -62,9 +65,6 @@ msgid ""
 msgstr ""
 "Центрировать вид на новом снимке, когда используются кнопки для перехода к "
 "другому снимку"
-
-msgid "Choose signs"
-msgstr "Выберите знаки"
 
 msgid "Clear"
 msgstr "Очистить"
@@ -235,8 +235,8 @@ msgstr ""
 msgid "First Seen Start"
 msgstr ""
 
-msgid "Give way"
-msgstr "Уступите дорогу"
+msgid "Forward"
+msgstr "Вперёд"
 
 #. column header: hide filter
 msgctxt "filter"
@@ -253,9 +253,6 @@ msgstr "Скрывающий фильтр"
 msgctxt "filter"
 msgid "I"
 msgstr "I"
-
-msgid "Image Quality"
-msgstr "Качество снимка"
 
 msgid "Image actions"
 msgstr "Действия со снимком"
@@ -275,9 +272,6 @@ msgstr "Идентификатор снимка"
 msgid "Image: "
 msgstr "Снимок: "
 
-msgid "Intersection danger"
-msgstr "Пересечение со второстепенной"
-
 msgid "Inverse filter"
 msgstr "Инвертировать фильтр"
 
@@ -293,6 +287,9 @@ msgstr ""
 msgid "Layer"
 msgstr "Уровень"
 
+msgid "Left"
+msgstr ""
+
 msgid "Login"
 msgstr "Войти"
 
@@ -306,9 +303,6 @@ msgstr "Выйти"
 msgctxt "filter"
 msgid "M"
 msgstr "M"
-
-msgid "Mandatory direction (any)"
-msgstr "Предписываемое направление движения (любое)"
 
 msgid "Mapillary"
 msgstr "Mapillary"
@@ -362,6 +356,33 @@ msgstr "Слой дорожных знаков Mapillary"
 msgid "Mapillary: Could not refresh login, logging out"
 msgstr ""
 
+msgid "Mapillary: Image Navigation"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: 360 panoramic"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Back"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Forward"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Left"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Reverse"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Right"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Turn Left"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Turn Right"
+msgstr ""
+
 msgid "Maximum distance to consider for changeset source calculations"
 msgstr ""
 
@@ -380,26 +401,17 @@ msgstr "Переместить фильтр вверх."
 msgid "Multikey: {0}"
 msgstr "Мультиключ: {0}"
 
+msgid "Navigate between different Mapillary images"
+msgstr ""
+
 msgid "No color selected"
 msgstr "Цвет не выбран"
-
-msgid "No entry"
-msgstr "Въезд запрещён"
 
 msgid "No images found"
 msgstr "Изображения не найдены"
 
 msgid "No known image provider used"
 msgstr ""
-
-msgid "No overtaking"
-msgstr "Обгон запрещён"
-
-msgid "No parking"
-msgstr "Остановка запрещена"
-
-msgid "No turn"
-msgstr "Поворот запрещён"
 
 msgid "Non-panoramic"
 msgstr ""
@@ -431,9 +443,6 @@ msgstr ""
 "В настоящее время поддерживаются только последовательности Mapillary, "
 "используйте sequence=Mapillary/<sequence_id>"
 
-msgid "Only images with signs"
-msgstr "Только снимки со знаками"
-
 msgid "Only show objects on detection layers (\"Relevant objects\")"
 msgstr ""
 
@@ -455,11 +464,11 @@ msgstr ""
 msgid "Organizations"
 msgstr "Организации"
 
-msgid "Panoramic"
+msgid "Pano"
 msgstr ""
 
-msgid "Pedestrian crossing"
-msgstr "Пешеходный переход"
+msgid "Panoramic"
+msgstr ""
 
 msgid "Picture Filters"
 msgstr "Фильтры снимков"
@@ -494,8 +503,8 @@ msgstr "В обратном порядке"
 msgid "Reverse the filters order."
 msgstr "Обратный порядок фильтров."
 
-msgid "Roundabout"
-msgstr "Круговое движение"
+msgid "Right"
+msgstr ""
 
 msgid "Select Mapillary Detection ({0})"
 msgstr ""
@@ -557,18 +566,11 @@ msgstr "Сортировать"
 msgid "Sort filters."
 msgstr ""
 
-msgid "Speed limit"
-msgstr "Ограничение скорости"
-
 msgid "Start"
 msgstr ""
 
 msgid "Start: {0}"
 msgstr ""
-
-msgctxt "name of the traffic sign"
-msgid "Stop"
-msgstr "Стоп"
 
 msgid "Tag conflict"
 msgstr "Конфликт тегов"
@@ -601,8 +603,11 @@ msgstr "Всего снимков Mapillary: {0}"
 msgid "Traffic Signs"
 msgstr "Дорожные знаки"
 
-msgid "Uneven road"
-msgstr "Неровная дорога"
+msgid "Turn left"
+msgstr ""
+
+msgid "Turn right"
+msgstr ""
 
 msgid ""
 "Unknown Mapillary exception.\n"

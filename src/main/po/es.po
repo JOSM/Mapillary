@@ -14,9 +14,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.14-19-g22312a2\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.1-5-g72cff86\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-27 15:04+0000\n"
+"POT-Creation-Date: 2022-12-07 15:05+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Spanish (https://www.transifex.com/josm/teams/2544/es/)\n"
 "MIME-Version: 1.0\n"
@@ -54,6 +54,9 @@ msgstr "Todo"
 msgid "At least one of the optional arguments must be used ({0})"
 msgstr ""
 
+msgid "Back"
+msgstr "Retroceder"
+
 msgid "Bad Imagery"
 msgstr ""
 
@@ -66,9 +69,6 @@ msgid ""
 msgstr ""
 "Centre la vista en la nueva imagen cuando usa los botones para saltar a otra"
 " imagen"
-
-msgid "Choose signs"
-msgstr "Elegir señales"
 
 msgid "Clear"
 msgstr "Limpiar"
@@ -245,8 +245,8 @@ msgstr "Primer fin visto"
 msgid "First Seen Start"
 msgstr "Primer inicio visto"
 
-msgid "Give way"
-msgstr "Ceda el paso"
+msgid "Forward"
+msgstr "Avanzar"
 
 #. column header: hide filter
 msgctxt "filter"
@@ -263,9 +263,6 @@ msgstr "Ocultar filtro"
 msgctxt "filter"
 msgid "I"
 msgstr "I"
-
-msgid "Image Quality"
-msgstr "Calidad de la imagen"
 
 msgid "Image actions"
 msgstr "acciones de imagen"
@@ -285,9 +282,6 @@ msgstr "clave de imagen"
 msgid "Image: "
 msgstr "Imagen:"
 
-msgid "Intersection danger"
-msgstr "Peligro por intersección"
-
 msgid "Inverse filter"
 msgstr "Invertir filtro"
 
@@ -303,6 +297,9 @@ msgstr "Último inicio visto"
 msgid "Layer"
 msgstr "Capa"
 
+msgid "Left"
+msgstr ""
+
 msgid "Login"
 msgstr "Acceder"
 
@@ -316,9 +313,6 @@ msgstr "Cerrar sesión"
 msgctxt "filter"
 msgid "M"
 msgstr "M"
-
-msgid "Mandatory direction (any)"
-msgstr "Dirección obligatoria (cualquiera)"
 
 msgid "Mapillary"
 msgstr "Mapillary"
@@ -373,6 +367,33 @@ msgid "Mapillary: Could not refresh login, logging out"
 msgstr ""
 "Mapillary: no se pudo actualizar el inicio de sesión, cerrar la sesión"
 
+msgid "Mapillary: Image Navigation"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: 360 panoramic"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Back"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Forward"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Left"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Reverse"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Right"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Turn Left"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Turn Right"
+msgstr ""
+
 msgid "Maximum distance to consider for changeset source calculations"
 msgstr ""
 "Distancia máxima a considerar para los cálculos de origen del conjunto de "
@@ -393,26 +414,17 @@ msgstr "Subir filtro."
 msgid "Multikey: {0}"
 msgstr "Combinación de teclas: {0}"
 
+msgid "Navigate between different Mapillary images"
+msgstr ""
+
 msgid "No color selected"
 msgstr "Ningún color seleccionado"
-
-msgid "No entry"
-msgstr "Ninguna entrada"
 
 msgid "No images found"
 msgstr "No se encontraron las imágenes"
 
 msgid "No known image provider used"
 msgstr "No se utilizó ningún proveedor de imágenes conocido"
-
-msgid "No overtaking"
-msgstr "No rebasar"
-
-msgid "No parking"
-msgstr "No estacionarse"
-
-msgid "No turn"
-msgstr "No gire"
 
 msgid "Non-panoramic"
 msgstr ""
@@ -441,9 +453,6 @@ msgid ""
 "sequence=Mapillary/<sequence_id>"
 msgstr ""
 
-msgid "Only images with signs"
-msgstr "Solo imágenes con señales"
-
 msgid "Only show objects on detection layers (\"Relevant objects\")"
 msgstr "Mostrar solo objetos en capas de detección (\"Objetos relevantes\")"
 
@@ -465,11 +474,11 @@ msgstr ""
 msgid "Organizations"
 msgstr "Organizaciones"
 
-msgid "Panoramic"
+msgid "Pano"
 msgstr ""
 
-msgid "Pedestrian crossing"
-msgstr "Cruce de peatones"
+msgid "Panoramic"
+msgstr ""
 
 msgid "Picture Filters"
 msgstr "Filtros de imagen"
@@ -504,8 +513,8 @@ msgstr "Invertir"
 msgid "Reverse the filters order."
 msgstr "Invertir el orden de los filtros."
 
-msgid "Roundabout"
-msgstr "Rotonda"
+msgid "Right"
+msgstr ""
 
 msgid "Select Mapillary Detection ({0})"
 msgstr "Seleccionar Detección Mapillary ({0})"
@@ -571,18 +580,11 @@ msgstr "Ordenar"
 msgid "Sort filters."
 msgstr "Ordenar filtros."
 
-msgid "Speed limit"
-msgstr "Límite de velocidad"
-
 msgid "Start"
 msgstr "Inicio"
 
 msgid "Start: {0}"
 msgstr ""
-
-msgctxt "name of the traffic sign"
-msgid "Stop"
-msgstr "Stop"
 
 msgid "Tag conflict"
 msgstr "Conflicto de etiquetas"
@@ -615,8 +617,11 @@ msgstr "Imágenes de Mapillary totales: {0}"
 msgid "Traffic Signs"
 msgstr "Señales de tráfico"
 
-msgid "Uneven road"
-msgstr "Camino irregular"
+msgid "Turn left"
+msgstr ""
+
+msgid "Turn right"
+msgstr ""
 
 msgid ""
 "Unknown Mapillary exception.\n"

@@ -12,9 +12,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.14-19-g22312a2\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.1-5-g72cff86\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-27 15:04+0000\n"
+"POT-Creation-Date: 2022-12-07 15:05+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Ukrainian (https://www.transifex.com/josm/teams/2544/uk/)\n"
 "MIME-Version: 1.0\n"
@@ -50,6 +50,9 @@ msgstr "Всі"
 msgid "At least one of the optional arguments must be used ({0})"
 msgstr ""
 
+msgid "Back"
+msgstr "Назад"
+
 msgid "Bad Imagery"
 msgstr ""
 
@@ -62,9 +65,6 @@ msgid ""
 msgstr ""
 "Центрувати мапу на новому знімку під час використання кнопок для переходу до"
 " іншого"
-
-msgid "Choose signs"
-msgstr "Виберіть знаки"
 
 msgid "Clear"
 msgstr "Очистити"
@@ -233,8 +233,8 @@ msgstr "Перший помічений кінець"
 msgid "First Seen Start"
 msgstr "Перший помічений початок"
 
-msgid "Give way"
-msgstr "Дати дорогу"
+msgid "Forward"
+msgstr "Вперед"
 
 #. column header: hide filter
 msgctxt "filter"
@@ -251,9 +251,6 @@ msgstr "Приховування фільтру"
 msgctxt "filter"
 msgid "I"
 msgstr "I"
-
-msgid "Image Quality"
-msgstr ""
 
 msgid "Image actions"
 msgstr "Дії"
@@ -273,9 +270,6 @@ msgstr "Ключ знімка"
 msgid "Image: "
 msgstr "Знімок:"
 
-msgid "Intersection danger"
-msgstr "Перехрещення з другорядною дорогою"
-
 msgid "Inverse filter"
 msgstr "Інвертувати фільтр"
 
@@ -291,6 +285,9 @@ msgstr "Останній помічений початок"
 msgid "Layer"
 msgstr "Шар"
 
+msgid "Left"
+msgstr ""
+
 msgid "Login"
 msgstr "Увійти"
 
@@ -304,9 +301,6 @@ msgstr "Вихід"
 msgctxt "filter"
 msgid "M"
 msgstr "Р"
-
-msgid "Mandatory direction (any)"
-msgstr "Напрямок руху"
 
 msgid "Mapillary"
 msgstr "Mapillary"
@@ -360,6 +354,33 @@ msgstr "Дорожні знаки Mapillary"
 msgid "Mapillary: Could not refresh login, logging out"
 msgstr ""
 
+msgid "Mapillary: Image Navigation"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: 360 panoramic"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Back"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Forward"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Left"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Reverse"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Right"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Turn Left"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Turn Right"
+msgstr ""
+
 msgid "Maximum distance to consider for changeset source calculations"
 msgstr ""
 
@@ -378,26 +399,17 @@ msgstr "Перемістити фільтр вгору."
 msgid "Multikey: {0}"
 msgstr "Мультиключ: {0}"
 
-msgid "No color selected"
+msgid "Navigate between different Mapillary images"
 msgstr ""
 
-msgid "No entry"
-msgstr "В’їзд заборонено"
+msgid "No color selected"
+msgstr ""
 
 msgid "No images found"
 msgstr "Знімків не знайдено"
 
 msgid "No known image provider used"
 msgstr "Немає жодного постачальника знімків"
-
-msgid "No overtaking"
-msgstr "Обгін заборонений"
-
-msgid "No parking"
-msgstr "Стоянка заборонена"
-
-msgid "No turn"
-msgstr "Поворот заборонений"
 
 msgid "Non-panoramic"
 msgstr ""
@@ -425,9 +437,6 @@ msgid ""
 "sequence=Mapillary/<sequence_id>"
 msgstr ""
 
-msgid "Only images with signs"
-msgstr "Тільки знімки зі знаками"
-
 msgid "Only show objects on detection layers (\"Relevant objects\")"
 msgstr ""
 
@@ -449,11 +458,11 @@ msgstr ""
 msgid "Organizations"
 msgstr "Організації"
 
-msgid "Panoramic"
+msgid "Pano"
 msgstr ""
 
-msgid "Pedestrian crossing"
-msgstr "Пішохідний перехід"
+msgid "Panoramic"
+msgstr ""
 
 msgid "Picture Filters"
 msgstr ""
@@ -488,8 +497,8 @@ msgstr "У зворотному порядку"
 msgid "Reverse the filters order."
 msgstr "Змінює послідовність фільтрів."
 
-msgid "Roundabout"
-msgstr "Круг"
+msgid "Right"
+msgstr ""
 
 msgid "Select Mapillary Detection ({0})"
 msgstr ""
@@ -551,18 +560,11 @@ msgstr "Впорядкувати"
 msgid "Sort filters."
 msgstr "Впорядковує фільтри."
 
-msgid "Speed limit"
-msgstr "Обмеження швидкості"
-
 msgid "Start"
 msgstr "Початок"
 
 msgid "Start: {0}"
 msgstr ""
-
-msgctxt "name of the traffic sign"
-msgid "Stop"
-msgstr "Стоп"
 
 msgid "Tag conflict"
 msgstr "Конфлікт теґів"
@@ -593,8 +595,11 @@ msgstr "Всього знімків Mapillary: {0}"
 msgid "Traffic Signs"
 msgstr "Дорожні знаки"
 
-msgid "Uneven road"
-msgstr "Нерівна дорога"
+msgid "Turn left"
+msgstr ""
+
+msgid "Turn right"
+msgstr ""
 
 msgid ""
 "Unknown Mapillary exception.\n"

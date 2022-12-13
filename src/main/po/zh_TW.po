@@ -10,9 +10,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.14-19-g22312a2\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.1-5-g72cff86\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-27 15:04+0000\n"
+"POT-Creation-Date: 2022-12-07 15:05+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Chinese (Taiwan) (https://www.transifex.com/josm/teams/2544/zh_TW/)\n"
 "MIME-Version: 1.0\n"
@@ -48,6 +48,9 @@ msgstr "全部"
 msgid "At least one of the optional arguments must be used ({0})"
 msgstr "必須使用其中一個選填參數 ({0})"
 
+msgid "Back"
+msgstr "返回"
+
 msgid "Bad Imagery"
 msgstr ""
 
@@ -58,9 +61,6 @@ msgstr "取消"
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr "使用按鈕跳到其他影像時，置中新的影像"
-
-msgid "Choose signs"
-msgstr "選取標誌"
 
 msgid "Clear"
 msgstr "清除"
@@ -229,8 +229,8 @@ msgstr "第一個看來結束"
 msgid "First Seen Start"
 msgstr "第一個看來開始"
 
-msgid "Give way"
-msgstr "禮讓路口"
+msgid "Forward"
+msgstr "快轉"
 
 #. column header: hide filter
 msgctxt "filter"
@@ -247,9 +247,6 @@ msgstr "正在隱藏過濾條件"
 msgctxt "filter"
 msgid "I"
 msgstr "I"
-
-msgid "Image Quality"
-msgstr "影像品質"
 
 msgid "Image actions"
 msgstr "圖片動作"
@@ -269,9 +266,6 @@ msgstr "圖片鍵值"
 msgid "Image: "
 msgstr "圖片："
 
-msgid "Intersection danger"
-msgstr "路口危險"
-
 msgid "Inverse filter"
 msgstr "反轉過濾條件"
 
@@ -287,6 +281,9 @@ msgstr "最後看到開始"
 msgid "Layer"
 msgstr "層級"
 
+msgid "Left"
+msgstr ""
+
 msgid "Login"
 msgstr "登入"
 
@@ -300,9 +297,6 @@ msgstr "登出"
 msgctxt "filter"
 msgid "M"
 msgstr "M"
-
-msgid "Mandatory direction (any)"
-msgstr "強制性方向 (任何方向)"
 
 msgid "Mapillary"
 msgstr "Mapillary"
@@ -356,6 +350,33 @@ msgstr "Mapillary 交通號誌圖層"
 msgid "Mapillary: Could not refresh login, logging out"
 msgstr "Mapillary：無法更新登入，正在登出"
 
+msgid "Mapillary: Image Navigation"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: 360 panoramic"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Back"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Forward"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Left"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Reverse"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Right"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Turn Left"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Turn Right"
+msgstr ""
+
 msgid "Maximum distance to consider for changeset source calculations"
 msgstr "計算變更集來源時需要考慮的最大距離"
 
@@ -374,26 +395,17 @@ msgstr "將過濾條件上移。"
 msgid "Multikey: {0}"
 msgstr "多重設定鍵：{0}"
 
+msgid "Navigate between different Mapillary images"
+msgstr ""
+
 msgid "No color selected"
 msgstr "沒有選取顏色"
-
-msgid "No entry"
-msgstr "沒有輸入"
 
 msgid "No images found"
 msgstr "找不到影像"
 
 msgid "No known image provider used"
 msgstr "沒有使用已知的圖片提供者"
-
-msgid "No overtaking"
-msgstr "禁止超車"
-
-msgid "No parking"
-msgstr "禁止停車"
-
-msgid "No turn"
-msgstr "禁止轉彎"
 
 msgid "Non-panoramic"
 msgstr "非全景影像"
@@ -421,9 +433,6 @@ msgid ""
 "sequence=Mapillary/<sequence_id>"
 msgstr "目前僅支援 Mapillary 片段，請使用 sequence=Mapillary/<sequence_id>"
 
-msgid "Only images with signs"
-msgstr "只有裡面有標誌的圖片"
-
 msgid "Only show objects on detection layers (\"Relevant objects\")"
 msgstr "只在篩選器圖層顯示物件 (\"相關物件\")"
 
@@ -445,11 +454,11 @@ msgstr ""
 msgid "Organizations"
 msgstr "組織"
 
+msgid "Pano"
+msgstr ""
+
 msgid "Panoramic"
 msgstr "全景影像"
-
-msgid "Pedestrian crossing"
-msgstr "行人穿越"
 
 msgid "Picture Filters"
 msgstr "圖片篩選器"
@@ -484,8 +493,8 @@ msgstr "反轉"
 msgid "Reverse the filters order."
 msgstr "反轉過濾器順序。"
 
-msgid "Roundabout"
-msgstr "圓環"
+msgid "Right"
+msgstr ""
 
 msgid "Select Mapillary Detection ({0})"
 msgstr "選擇 Mapillary 偵測 ({0})"
@@ -547,18 +556,11 @@ msgstr "排序"
 msgid "Sort filters."
 msgstr "排序過濾器"
 
-msgid "Speed limit"
-msgstr "速限"
-
 msgid "Start"
 msgstr "開始"
 
 msgid "Start: {0}"
 msgstr ""
-
-msgctxt "name of the traffic sign"
-msgid "Stop"
-msgstr "禁止通行"
 
 msgid "Tag conflict"
 msgstr "標籤衝突"
@@ -589,8 +591,11 @@ msgstr "所有 Mapillary 圖片： {0}"
 msgid "Traffic Signs"
 msgstr "交通號誌"
 
-msgid "Uneven road"
-msgstr "坎坷的道路"
+msgid "Turn left"
+msgstr ""
+
+msgid "Turn right"
+msgstr ""
 
 msgid ""
 "Unknown Mapillary exception.\n"

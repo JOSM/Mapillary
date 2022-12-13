@@ -6,15 +6,15 @@
 # Translators:
 # Florian Schäfer, 2020
 # Marco, 2021
-# demetrio, 2021
 # Livio Avalle, 2022
 # Simon Legner, 2022
+# demetrio, 2022
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.14-19-g22312a2\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.1-5-g72cff86\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-27 15:04+0000\n"
+"POT-Creation-Date: 2022-12-07 15:05+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Italian (https://www.transifex.com/josm/teams/2544/it/)\n"
 "MIME-Version: 1.0\n"
@@ -52,6 +52,9 @@ msgstr "Tutti"
 msgid "At least one of the optional arguments must be used ({0})"
 msgstr ""
 
+msgid "Back"
+msgstr "Indietro"
+
 msgid "Bad Imagery"
 msgstr ""
 
@@ -64,9 +67,6 @@ msgid ""
 msgstr ""
 "Posiziona sulla nuova immagine quando si utilizza i pulsanti di salto ad "
 "altra immagine"
-
-msgid "Choose signs"
-msgstr "Scegli i segnali stradali"
 
 msgid "Clear"
 msgstr "Cancella"
@@ -103,7 +103,7 @@ msgid "Copy key"
 msgstr "Copia chiave"
 
 msgid "Could not load image: {0}"
-msgstr ""
+msgstr "Impossibile caricare l'immagine: {0}"
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "Impossibile aprire l’indirizzo {0} in un browser"
@@ -193,7 +193,7 @@ msgid "End"
 msgstr "Termine"
 
 msgid "End: {0}"
-msgstr ""
+msgstr "Fine: {0}"
 
 msgid "Erroneous Data"
 msgstr ""
@@ -222,7 +222,7 @@ msgid "F"
 msgstr "F"
 
 msgid "False Positive"
-msgstr ""
+msgstr "Falso Positivo"
 
 msgid "Filter"
 msgstr "Filtro"
@@ -242,8 +242,8 @@ msgstr "Termine visto per la prima volta"
 msgid "First Seen Start"
 msgstr "Inizio visto per la prima volta"
 
-msgid "Give way"
-msgstr "Dare la precedenza"
+msgid "Forward"
+msgstr "Avanti"
 
 #. column header: hide filter
 msgctxt "filter"
@@ -260,9 +260,6 @@ msgstr "Nascondi filtro"
 msgctxt "filter"
 msgid "I"
 msgstr "I"
-
-msgid "Image Quality"
-msgstr "Qualità immagine"
 
 msgid "Image actions"
 msgstr "Azioni sull’immagine"
@@ -282,9 +279,6 @@ msgstr "Chiave immagine"
 msgid "Image: "
 msgstr "Immagine:"
 
-msgid "Intersection danger"
-msgstr "Pericolo di incrocio"
-
 msgid "Inverse filter"
 msgstr "Filtro inverso"
 
@@ -300,6 +294,9 @@ msgstr "Inizio visto per l’ultima volta"
 msgid "Layer"
 msgstr "Livello"
 
+msgid "Left"
+msgstr "Sinistra"
+
 msgid "Login"
 msgstr "Accedi"
 
@@ -314,9 +311,6 @@ msgctxt "filter"
 msgid "M"
 msgstr "M"
 
-msgid "Mandatory direction (any)"
-msgstr "Direzione obbligatoria (qualsiasi)"
-
 msgid "Mapillary"
 msgstr "Mapillary"
 
@@ -324,7 +318,7 @@ msgid "Mapillary Expert Filter"
 msgstr "Filtro per esperti di Mapillary"
 
 msgid "Mapillary Filters"
-msgstr ""
+msgstr "Filtri Mapillary"
 
 #. ImageInfos
 msgid "Mapillary Images"
@@ -361,12 +355,39 @@ msgid "Mapillary point features layer"
 msgstr "Livello degli elementi nodo di Mapillary"
 
 msgid "Mapillary style sheet"
-msgstr ""
+msgstr "Foglio di stile Mapillary"
 
 msgid "Mapillary traffic signs layer"
 msgstr "Livello dei segnali stradali di Mapillary"
 
 msgid "Mapillary: Could not refresh login, logging out"
+msgstr ""
+
+msgid "Mapillary: Image Navigation"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: 360 panoramic"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Back"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Forward"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Left"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Reverse"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Right"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Turn Left"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Turn Right"
 msgstr ""
 
 msgid "Maximum distance to consider for changeset source calculations"
@@ -387,11 +408,11 @@ msgstr "Sposta filtro in alto."
 msgid "Multikey: {0}"
 msgstr "Chiave multipla: {0}"
 
+msgid "Navigate between different Mapillary images"
+msgstr ""
+
 msgid "No color selected"
 msgstr "Nessun colore selezionato"
-
-msgid "No entry"
-msgstr "Divieto di accesso"
 
 msgid "No images found"
 msgstr "Nessuna immagine trovata"
@@ -399,17 +420,8 @@ msgstr "Nessuna immagine trovata"
 msgid "No known image provider used"
 msgstr "Non è stato usato un fornitore di immagini conosciuto"
 
-msgid "No overtaking"
-msgstr "Divieto di sorpasso"
-
-msgid "No parking"
-msgstr "Divieto di parcheggio"
-
-msgid "No turn"
-msgstr "Divieto di svolta"
-
 msgid "Non-panoramic"
-msgstr ""
+msgstr "Non-panoramica"
 
 msgid "Not older than: "
 msgstr "Non più vecchio di: "
@@ -434,9 +446,6 @@ msgid ""
 "sequence=Mapillary/<sequence_id>"
 msgstr ""
 
-msgid "Only images with signs"
-msgstr "Solo immagini con segnali stradali"
-
 msgid "Only show objects on detection layers (\"Relevant objects\")"
 msgstr ""
 "Mostra solamente gli oggetti nei livelli di rilevamento (\"Oggetti "
@@ -455,16 +464,16 @@ msgid "Organization"
 msgstr "Organizzazione"
 
 msgid "Organization: {0}"
-msgstr ""
+msgstr "Organizzazione: {0}"
 
 msgid "Organizations"
 msgstr "Organizzazioni"
 
+msgid "Pano"
+msgstr "Pano"
+
 msgid "Panoramic"
 msgstr "Panoramica"
-
-msgid "Pedestrian crossing"
-msgstr "Strisce pedonali"
 
 msgid "Picture Filters"
 msgstr "Filtri immagini"
@@ -499,8 +508,8 @@ msgstr "Inverti"
 msgid "Reverse the filters order."
 msgstr "Inverti l’ordine dei filtri."
 
-msgid "Roundabout"
-msgstr "Rotatoria"
+msgid "Right"
+msgstr "Destra"
 
 msgid "Select Mapillary Detection ({0})"
 msgstr "Seleziona rilevamento Mapillary ({0})"
@@ -566,18 +575,11 @@ msgstr "Ordina"
 msgid "Sort filters."
 msgstr "Ordina filtri"
 
-msgid "Speed limit"
-msgstr "Limite di velocità"
-
 msgid "Start"
 msgstr "Inizio"
 
 msgid "Start: {0}"
-msgstr ""
-
-msgctxt "name of the traffic sign"
-msgid "Stop"
-msgstr "Stop"
+msgstr "Inizio: {0}"
 
 msgid "Tag conflict"
 msgstr "Conflitto nelle etichette"
@@ -609,8 +611,11 @@ msgstr "Immagini Mapillary totali: {0}"
 msgid "Traffic Signs"
 msgstr "Segnali stradali"
 
-msgid "Uneven road"
-msgstr "Strada sconnessa"
+msgid "Turn left"
+msgstr "Gira a sinistra"
+
+msgid "Turn right"
+msgstr "Gira a destra"
 
 msgid ""
 "Unknown Mapillary exception.\n"

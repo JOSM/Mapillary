@@ -8,9 +8,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.11\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.1-5-g72cff86\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-29 15:04+0000\n"
+"POT-Creation-Date: 2022-12-07 15:05+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Serbian (Latin) (https://www.transifex.com/josm/teams/2544/sr@latin/)\n"
 "MIME-Version: 1.0\n"
@@ -19,6 +19,7 @@ msgstr ""
 "Language: sr@latin\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+#. filter mode: add
 msgctxt "filter"
 msgid "A"
 msgstr "A"
@@ -45,17 +46,21 @@ msgstr "Sve"
 msgid "At least one of the optional arguments must be used ({0})"
 msgstr "Potrebno je da se koristi barem jedan neobavezan argument ({0})"
 
+msgid "Back"
+msgstr ""
+
+msgid "Bad Imagery"
+msgstr ""
+
 msgid "Cancel"
 msgstr "Otkaži"
 
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr ""
 "Centriraj prikaz na novu fotografiju prilikom upotrebe dugmića za prelazak "
 "na drugu fotografiju"
-
-msgid "Choose signs"
-msgstr "Izaberite znakove"
 
 msgid "Clear"
 msgstr "Poništi"
@@ -66,6 +71,12 @@ msgstr "Boja"
 msgctxt "Checkbox label in JOSM settings"
 msgid "Color images by capture date"
 msgstr "Oboji fotografije po datumu slikanja"
+
+msgid "Comment"
+msgstr ""
+
+msgid "Comment to send to Mapillary"
+msgstr ""
 
 msgid "Copied URL to clipboard …"
 msgstr "URL je kopiran u ostavu…"
@@ -85,9 +96,8 @@ msgstr "Kopiraj boju"
 msgid "Copy key"
 msgstr "Kopiraj ključ"
 
-msgid "Could not import a geotagged image to the Mapillary layer!"
+msgid "Could not load image: {0}"
 msgstr ""
-"Nije moguće uvesti geo pozicioniranu fotografiju na Mapillary podlogu!"
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "Nije moguće otvoriti URL adresu {0} u pregledaču"
@@ -95,9 +105,13 @@ msgstr "Nije moguće otvoriti URL adresu {0} u pregledaču"
 msgid "Could not refresh Mapillary token. HTTP Status Code {0}."
 msgstr "Nije moguće osvežiti Mapillary token. Status HTTP kôda {0}."
 
+#. filter mode: remove
 msgctxt "filter"
 msgid "D"
 msgstr "D"
+
+msgid "Dataset is currently being updated"
+msgstr ""
 
 msgid "Days"
 msgstr "dana"
@@ -111,6 +125,7 @@ msgstr "Izbriši Mapillary objekat"
 msgid "Delete filter."
 msgstr "Ukloni filter."
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Prikaži vreme kada je fotografija napravljena"
 
@@ -143,6 +158,11 @@ msgstr "Dole"
 msgid "Downloading…"
 msgstr "Preuzimanje…"
 
+msgid "Duplicate"
+msgstr ""
+
+#. translators notes must be in front
+#. column header: enable filter
 msgctxt "filter"
 msgid "E"
 msgstr "E"
@@ -153,6 +173,7 @@ msgstr "Uredi"
 msgid "Edit filter."
 msgstr "Uredi filter."
 
+#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "Omogući eksperimentalne beta funkcije (može biti nestabilno)"
 
@@ -164,6 +185,12 @@ msgstr "Uključi/isključi režim za programere"
 
 msgid "End"
 msgstr "Završi"
+
+msgid "End: {0}"
+msgstr ""
+
+msgid "Erroneous Data"
+msgstr ""
 
 msgid "Explore"
 msgstr "Istraži"
@@ -183,15 +210,16 @@ msgstr "Izvezite obeleženu sekvencu"
 msgid "Exporting Mapillary Images…"
 msgstr "Izvoz Mapillary fotografija…"
 
+#. filter mode: in selection
 msgctxt "filter"
 msgid "F"
 msgstr "F"
 
+msgid "False Positive"
+msgstr ""
+
 msgid "Filter"
 msgstr "Filter"
-
-msgid "Filter Hidden:{0} Disabled:{1}"
-msgstr "Filter je sakrio:{0} Onemogućeno:{1}"
 
 msgid "Filter Mapillary Detections"
 msgstr "Filtriranje Mapillary prepoznavanja"
@@ -208,15 +236,10 @@ msgstr "Prvi put viđeno - kraj"
 msgid "First Seen Start"
 msgstr "Prvi put viđeno - početak"
 
-msgid "Follow selected image"
-msgstr "Prati obeleženu fotografiju"
+msgid "Forward"
+msgstr ""
 
-msgid "Give way"
-msgstr "Ukrštanje sa putem sa prvenstvom prolaza"
-
-msgid "Go forward"
-msgstr "Idi napred"
-
+#. column header: hide filter
 msgctxt "filter"
 msgid "H"
 msgstr "H"
@@ -227,12 +250,10 @@ msgstr "Sakrij filter"
 msgid "Hiding filter"
 msgstr "Sakrivanje filtera"
 
+#. column header: inverted filter
 msgctxt "filter"
 msgid "I"
 msgstr "I"
-
-msgid "Image Quality"
-msgstr "Kvalitet fotografije"
 
 msgid "Image actions"
 msgstr "Akcije"
@@ -252,14 +273,11 @@ msgstr "Ključ fotografije"
 msgid "Image: "
 msgstr "Fotografija:"
 
-msgid "Import"
-msgstr "Uvoz"
-
-msgid "Intersection danger"
-msgstr "Opasnost od ukrštanja puteva"
-
 msgid "Inverse filter"
 msgstr "Inverzni filter"
+
+msgid "Just remove it"
+msgstr ""
 
 msgid "Last Seen End"
 msgstr "Poslednji put viđeno - kraj"
@@ -270,6 +288,9 @@ msgstr "Poslednji put viđeno - početak"
 msgid "Layer"
 msgstr "Podloga"
 
+msgid "Left"
+msgstr ""
+
 msgid "Login"
 msgstr "Prijava"
 
@@ -279,12 +300,10 @@ msgstr "Uspešna prijava, vratite se u JOSM."
 msgid "Logout"
 msgstr "Odjava"
 
+#. column header: filter mode
 msgctxt "filter"
 msgid "M"
 msgstr "M"
-
-msgid "Mandatory direction (any)"
-msgstr "Obavezan smer (bilo koji)"
 
 msgid "Mapillary"
 msgstr "Mapillary"
@@ -292,6 +311,10 @@ msgstr "Mapillary"
 msgid "Mapillary Expert Filter"
 msgstr "Mapillary filter za stručnjake"
 
+msgid "Mapillary Filters"
+msgstr ""
+
+#. ImageInfos
 msgid "Mapillary Images"
 msgstr "Mapillary fotografije"
 
@@ -310,6 +333,9 @@ msgstr "Mapillary filter"
 msgid "Mapillary image"
 msgstr "Mapillary fotografija"
 
+msgid "Mapillary image read should never occur on UI thread"
+msgstr ""
+
 msgid "Mapillary images Filter"
 msgstr "Mapillary filtriranje fotografija"
 
@@ -322,11 +348,41 @@ msgstr "Mapillary prijava"
 msgid "Mapillary point features layer"
 msgstr "Mapillary podloga funkcija tačaka"
 
+msgid "Mapillary style sheet"
+msgstr ""
+
 msgid "Mapillary traffic signs layer"
 msgstr "Mapillary podloga saobraćajnih znakova"
 
 msgid "Mapillary: Could not refresh login, logging out"
 msgstr "Mapillary: Nije moguće osvežiti prijavu, odjavljivanje"
+
+msgid "Mapillary: Image Navigation"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: 360 panoramic"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Back"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Forward"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Left"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Reverse"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Right"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Turn Left"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Turn Right"
+msgstr ""
 
 msgid "Maximum distance to consider for changeset source calculations"
 msgstr ""
@@ -348,11 +404,11 @@ msgstr "Premesti filter nagore."
 msgid "Multikey: {0}"
 msgstr "Više ključeva: {0}"
 
+msgid "Navigate between different Mapillary images"
+msgstr ""
+
 msgid "No color selected"
 msgstr "Nijedna boja nije izabrana"
-
-msgid "No entry"
-msgstr "Zabrana saobraćaja u jednom smeru"
 
 msgid "No images found"
 msgstr "Nije pronađena nijedna fotografija"
@@ -360,21 +416,13 @@ msgstr "Nije pronađena nijedna fotografija"
 msgid "No known image provider used"
 msgstr "Ne koristi se nijedan poznati provajder fotografija"
 
-msgid "No overtaking"
-msgstr "Zabrana preticanja za motorna vozila"
-
-msgid "No parking"
-msgstr "Zabrana zaustavljanja i parkiranja"
-
-msgid "No turn"
-msgstr "Zabrana skretanja"
-
 msgid "Non-panoramic"
 msgstr "Ne-panoramske"
 
 msgid "Not older than: "
 msgstr "Ne starije od: "
 
+#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "Broj fotografija koje će se unapred učitati (koje slede i prethode)"
 
@@ -398,9 +446,6 @@ msgstr ""
 "U ovom trenutku su podržane samo Mapillary sekvence, koristite "
 "sequence=Mapillary/<sequence_id>"
 
-msgid "Only images with signs"
-msgstr "Samo fotografije sa znakovima"
-
 msgid "Only show objects on detection layers (\"Relevant objects\")"
 msgstr ""
 "Prikaži objekte samo na podlogama sa prepoznavanjima („Relevantni objekti“)"
@@ -417,14 +462,17 @@ msgstr "Org."
 msgid "Organization"
 msgstr "Organizacija"
 
+msgid "Organization: {0}"
+msgstr ""
+
 msgid "Organizations"
 msgstr "Organizacije"
 
+msgid "Pano"
+msgstr ""
+
 msgid "Panoramic"
 msgstr "Panoramska"
-
-msgid "Pedestrian crossing"
-msgstr "Pešački prelaz"
 
 msgid "Picture Filters"
 msgstr "Filteri fotografija"
@@ -432,12 +480,20 @@ msgstr "Filteri fotografija"
 msgid "Point Objects"
 msgstr "Tačke objekata"
 
+#. translators notes must be in front
+#. filter mode: replace
 msgctxt "filter"
 msgid "R"
 msgstr "R"
 
 msgid "Remote Control has been asked to load:"
 msgstr "Daljinskoj kontroli je poslat zahtev za učitavanje:"
+
+msgid "Remote Control has been asked to set Mapillary filters:"
+msgstr ""
+
+msgid "Remove"
+msgstr ""
 
 msgid "Requires JOSM restart"
 msgstr "Zahteva ponovno pokretanje JOSM aplikacije"
@@ -451,8 +507,8 @@ msgstr "Obrni"
 msgid "Reverse the filters order."
 msgstr "Obrnuti redosled filtera."
 
-msgid "Roundabout"
-msgstr "Kružni tok"
+msgid "Right"
+msgstr ""
 
 msgid "Select Mapillary Detection ({0})"
 msgstr "Obeležavanje Mapillary prepoznavanja ({0})"
@@ -517,19 +573,16 @@ msgstr "Sortiranje"
 msgid "Sort filters."
 msgstr "Filteri za sortiranje."
 
-msgid "Speed limit"
-msgstr "Ograničenja brzine"
-
 msgid "Start"
 msgstr "Početak"
 
-msgctxt "name of the traffic sign"
-msgid "Stop"
-msgstr "Znak stop"
+msgid "Start: {0}"
+msgstr ""
 
 msgid "Tag conflict"
 msgstr "Konflikt u atributima"
 
+#. column header: filter text
 msgctxt "filter"
 msgid "Text"
 msgstr "Tekst"
@@ -538,6 +591,11 @@ msgid ""
 "There is a newer version of JOSM and/or the Mapillary plugin. Please update."
 msgstr ""
 "Postoji nova verzija JOSM aplikacije i/ili Mapillary dodatka. Ažurirajte ih."
+
+msgid ""
+"This currently removes the detection from the current layer, but may report "
+"back to Mapillary in the future"
+msgstr ""
 
 msgid "Today"
 msgstr "danas"
@@ -551,8 +609,18 @@ msgstr "Ukupno Mapillary fotografija: {0}"
 msgid "Traffic Signs"
 msgstr "Saobraćajni znakovi"
 
-msgid "Uneven road"
-msgstr "Neujednačen put"
+msgid "Turn left"
+msgstr ""
+
+msgid "Turn right"
+msgstr ""
+
+msgid ""
+"Unknown Mapillary exception.\n"
+"This message may contain potentially sensitive information!\n"
+"{0}\n"
+"{1}"
+msgstr ""
 
 msgid "Up"
 msgstr "Gore"
@@ -564,11 +632,12 @@ msgctxt "Checkbox label in JOSM settings"
 msgid "Use computed location information"
 msgstr "Koristi informacije o izračunatoj lokaciji"
 
+msgctxt "Checkbox label in JOSM settings"
+msgid "Use the custom Mapillary renderer"
+msgstr ""
+
 msgid "View in browser"
 msgstr "Prikaži u pregledaču"
-
-msgid "Wait for full quality pictures"
-msgstr "Sačekajte za pun kvalitet fotografija"
 
 msgid "We cannot export {0}"
 msgstr "Ne možemo da izvezemo {0}"
@@ -582,6 +651,7 @@ msgstr ""
 "Prijavljivanjem nakon što odnos ograničenja opadne može da spreči ovo da se ponovi u budućnosti.\n"
 "{0}"
 
+#. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
@@ -589,9 +659,8 @@ msgstr ""
 "Prilikom otvaranja Mapillary fotografije u web pregledaču, prikaži uređivač "
 "za zamagljivanje umesto prikaza same fotografije"
 
-msgid "Which image layers do you want to import into the Mapillary layer?"
+msgid "Why are you removing the object? (Note: not yet sent to Mapillary)"
 msgstr ""
-"Koju od podloga sa fotografijama želite da uvezete u Mapillary podlogu?"
 
 msgid "Year"
 msgstr "godine"
@@ -631,12 +700,6 @@ msgstr "prikazano"
 
 msgid "unknown organization"
 msgstr "nepoznata organizacija"
-
-msgid "{0} ({1} image)"
-msgid_plural "{0} ({1} images)"
-msgstr[0] "{0} ({1} fotografija)"
-msgstr[1] "{0} ({1} fotografije)"
-msgstr[2] "{0} ({1} fotografija)"
 
 msgid "{0} consists of:"
 msgstr "{0} sastoji se od:"
@@ -681,6 +744,7 @@ msgstr[2] "{0} linija"
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
+#. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr ""
 "Pruža korisniku mogućnost da radi sa fotografijama koje se nalaze na "

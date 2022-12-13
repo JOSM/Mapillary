@@ -14,9 +14,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.14-19-g22312a2\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.1-5-g72cff86\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-27 15:04+0000\n"
+"POT-Creation-Date: 2022-12-07 15:05+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/josm/teams/2544/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -52,6 +52,9 @@ msgstr "全部"
 msgid "At least one of the optional arguments must be used ({0})"
 msgstr "必须至少使用一个可选参数 ({0})"
 
+msgid "Back"
+msgstr "返回"
+
 msgid "Bad Imagery"
 msgstr ""
 
@@ -62,9 +65,6 @@ msgstr "取消"
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr "跳转至新图像时使图像居中"
-
-msgid "Choose signs"
-msgstr "选择标志"
 
 msgid "Clear"
 msgstr "清除"
@@ -233,8 +233,8 @@ msgstr ""
 msgid "First Seen Start"
 msgstr ""
 
-msgid "Give way"
-msgstr "让道"
+msgid "Forward"
+msgstr "前进"
 
 #. column header: hide filter
 msgctxt "filter"
@@ -251,9 +251,6 @@ msgstr "隐藏过滤器"
 msgctxt "filter"
 msgid "I"
 msgstr "逆转"
-
-msgid "Image Quality"
-msgstr "图像质量"
 
 msgid "Image actions"
 msgstr "图像动作"
@@ -273,9 +270,6 @@ msgstr ""
 msgid "Image: "
 msgstr "图像："
 
-msgid "Intersection danger"
-msgstr "危险交叉"
-
 msgid "Inverse filter"
 msgstr "逆转过滤器"
 
@@ -291,6 +285,9 @@ msgstr ""
 msgid "Layer"
 msgstr "层"
 
+msgid "Left"
+msgstr ""
+
 msgid "Login"
 msgstr "登录"
 
@@ -304,9 +301,6 @@ msgstr "注销"
 msgctxt "filter"
 msgid "M"
 msgstr "模式"
-
-msgid "Mandatory direction (any)"
-msgstr "强制性指示（任何）"
 
 msgid "Mapillary"
 msgstr "Mapillary"
@@ -360,6 +354,33 @@ msgstr "Mapillary交通标志图层"
 msgid "Mapillary: Could not refresh login, logging out"
 msgstr "Mapillary: 无法刷新登录，正在注销"
 
+msgid "Mapillary: Image Navigation"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: 360 panoramic"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Back"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Forward"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Left"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Reverse"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Right"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Turn Left"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Turn Right"
+msgstr ""
+
 msgid "Maximum distance to consider for changeset source calculations"
 msgstr "计算变化源时要考虑的最大距离"
 
@@ -378,26 +399,17 @@ msgstr "上移过滤器。"
 msgid "Multikey: {0}"
 msgstr "多重设定键：{0}"
 
+msgid "Navigate between different Mapillary images"
+msgstr ""
+
 msgid "No color selected"
 msgstr "未选择图像"
-
-msgid "No entry"
-msgstr "禁止入内"
 
 msgid "No images found"
 msgstr "没有找到图像"
 
 msgid "No known image provider used"
 msgstr "未使用已知的图像提供程序"
-
-msgid "No overtaking"
-msgstr "禁止超车"
-
-msgid "No parking"
-msgstr "禁止停车"
-
-msgid "No turn"
-msgstr "禁止掉头"
 
 msgid "Non-panoramic"
 msgstr ""
@@ -425,9 +437,6 @@ msgid ""
 "sequence=Mapillary/<sequence_id>"
 msgstr "目前仅支持 Mapillary 序列，请使用 sequence=Mapillary/<sequence_id>"
 
-msgid "Only images with signs"
-msgstr "只有有标志的图像"
-
 msgid "Only show objects on detection layers (\"Relevant objects\")"
 msgstr "只显示检测层上的对象(\"Relevant objects\")"
 
@@ -449,11 +458,11 @@ msgstr ""
 msgid "Organizations"
 msgstr "组织"
 
-msgid "Panoramic"
+msgid "Pano"
 msgstr ""
 
-msgid "Pedestrian crossing"
-msgstr "人行道十字路口"
+msgid "Panoramic"
+msgstr ""
 
 msgid "Picture Filters"
 msgstr "图片过滤器"
@@ -488,8 +497,8 @@ msgstr "反转"
 msgid "Reverse the filters order."
 msgstr "反转过滤器顺序。"
 
-msgid "Roundabout"
-msgstr "环岛"
+msgid "Right"
+msgstr ""
 
 msgid "Select Mapillary Detection ({0})"
 msgstr "选择Mapillary检测 ({0})"
@@ -551,18 +560,11 @@ msgstr "排序"
 msgid "Sort filters."
 msgstr "排序过滤器"
 
-msgid "Speed limit"
-msgstr "限速"
-
 msgid "Start"
 msgstr "开始"
 
 msgid "Start: {0}"
 msgstr ""
-
-msgctxt "name of the traffic sign"
-msgid "Stop"
-msgstr "停车让行"
 
 msgid "Tag conflict"
 msgstr "标签冲突"
@@ -593,8 +595,11 @@ msgstr "所有 Mapillary 图像：{0}"
 msgid "Traffic Signs"
 msgstr "交通标志"
 
-msgid "Uneven road"
-msgstr "不平整的路"
+msgid "Turn left"
+msgstr ""
+
+msgid "Turn right"
+msgstr ""
 
 msgid ""
 "Unknown Mapillary exception.\n"

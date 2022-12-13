@@ -9,9 +9,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.14-19-g22312a2\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.1-5-g72cff86\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-27 15:04+0000\n"
+"POT-Creation-Date: 2022-12-07 15:05+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Korean (https://www.transifex.com/josm/teams/2544/ko/)\n"
 "MIME-Version: 1.0\n"
@@ -47,6 +47,9 @@ msgstr "전부"
 msgid "At least one of the optional arguments must be used ({0})"
 msgstr "최소한 ({0}) 을 옵션으로 사용해야합니다."
 
+msgid "Back"
+msgstr "뒤로"
+
 msgid "Bad Imagery"
 msgstr ""
 
@@ -57,9 +60,6 @@ msgstr "취소"
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr "다른 이미지로 넘어가는 버튼을 사용 할 때 새로운 이미지로 센터로 보여줍니다."
-
-msgid "Choose signs"
-msgstr "표지판을 선택합니다"
 
 msgid "Clear"
 msgstr "지우기"
@@ -228,8 +228,8 @@ msgstr "처음 에서 끝"
 msgid "First Seen Start"
 msgstr "처음 본 시작"
 
-msgid "Give way"
-msgstr "방법을 제공"
+msgid "Forward"
+msgstr "앞으로"
 
 #. column header: hide filter
 msgctxt "filter"
@@ -246,9 +246,6 @@ msgstr "숨겨져 있는 필터"
 msgctxt "filter"
 msgid "I"
 msgstr "I"
-
-msgid "Image Quality"
-msgstr "이미지 품질"
 
 msgid "Image actions"
 msgstr "이미지 작업"
@@ -268,9 +265,6 @@ msgstr "이미지 키"
 msgid "Image: "
 msgstr "이미지:"
 
-msgid "Intersection danger"
-msgstr "교차로 위험"
-
 msgid "Inverse filter"
 msgstr "역 필터"
 
@@ -286,6 +280,9 @@ msgstr "마지막으로 본 시작"
 msgid "Layer"
 msgstr "레이어"
 
+msgid "Left"
+msgstr ""
+
 msgid "Login"
 msgstr "로그인"
 
@@ -299,9 +296,6 @@ msgstr "로그아웃"
 msgctxt "filter"
 msgid "M"
 msgstr "M"
-
-msgid "Mandatory direction (any)"
-msgstr "필수 방향(어떤 쪽이든)"
 
 msgid "Mapillary"
 msgstr "Mapillary"
@@ -355,6 +349,33 @@ msgstr "Mapillary 교통 표지판 레이어"
 msgid "Mapillary: Could not refresh login, logging out"
 msgstr "Mapillary: 새로고침으로 로그인 할수 없습니다./ 로그 아웃합니다."
 
+msgid "Mapillary: Image Navigation"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: 360 panoramic"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Back"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Forward"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Left"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Reverse"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Right"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Turn Left"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Turn Right"
+msgstr ""
+
 msgid "Maximum distance to consider for changeset source calculations"
 msgstr "변경점이 계산된 소스를 고려하는 최대 거리"
 
@@ -373,26 +394,17 @@ msgstr "필터를 위로 이동합니다."
 msgid "Multikey: {0}"
 msgstr "다중 키: {0}"
 
+msgid "Navigate between different Mapillary images"
+msgstr ""
+
 msgid "No color selected"
 msgstr "색상이 선택되지 않았습니다."
-
-msgid "No entry"
-msgstr "입력된 값이 없습니다."
 
 msgid "No images found"
 msgstr "이미지 찾기 어렵습니다."
 
 msgid "No known image provider used"
 msgstr "공급자가 사용한 이미지 알려지지 않았습니다."
-
-msgid "No overtaking"
-msgstr "추월 금지"
-
-msgid "No parking"
-msgstr "주차금지"
-
-msgid "No turn"
-msgstr "턴 금지"
 
 msgid "Non-panoramic"
 msgstr ""
@@ -420,9 +432,6 @@ msgid ""
 "sequence=Mapillary/<sequence_id>"
 msgstr "Mapillary 에서만 지원되는 순서입니다. 순서 사용=Mapillary/<sequence_id>"
 
-msgid "Only images with signs"
-msgstr "표지판만 있는 이미지들"
-
 msgid "Only show objects on detection layers (\"Relevant objects\")"
 msgstr "감지된 레이어 객체들만 보여줍니다.(\"관련 개체\")"
 
@@ -444,11 +453,11 @@ msgstr ""
 msgid "Organizations"
 msgstr "단체들"
 
-msgid "Panoramic"
+msgid "Pano"
 msgstr ""
 
-msgid "Pedestrian crossing"
-msgstr "횡단 보도"
+msgid "Panoramic"
+msgstr ""
 
 msgid "Picture Filters"
 msgstr "그림 필터들"
@@ -483,8 +492,8 @@ msgstr "뒤집기"
 msgid "Reverse the filters order."
 msgstr "필터 순서를 반대로 합니다."
 
-msgid "Roundabout"
-msgstr "원형 교차로"
+msgid "Right"
+msgstr ""
 
 msgid "Select Mapillary Detection ({0})"
 msgstr "Mapillary 탐지 선택  ({0})"
@@ -546,18 +555,11 @@ msgstr "정렬"
 msgid "Sort filters."
 msgstr "정렬 필터"
 
-msgid "Speed limit"
-msgstr "속도 제한"
-
 msgid "Start"
 msgstr "시작"
 
 msgid "Start: {0}"
 msgstr ""
-
-msgctxt "name of the traffic sign"
-msgid "Stop"
-msgstr "멈춤"
 
 msgid "Tag conflict"
 msgstr "태그 충돌"
@@ -588,8 +590,11 @@ msgstr "전체 Mapillary 이미지: {0}"
 msgid "Traffic Signs"
 msgstr "교통 표지판"
 
-msgid "Uneven road"
-msgstr "고르지 못한 길"
+msgid "Turn left"
+msgstr ""
+
+msgid "Turn right"
+msgstr ""
 
 msgid ""
 "Unknown Mapillary exception.\n"

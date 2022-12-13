@@ -14,9 +14,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.14-19-g22312a2\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.0.1-5-g72cff86\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-27 15:04+0000\n"
+"POT-Creation-Date: 2022-12-07 15:05+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: French (https://www.transifex.com/josm/teams/2544/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -54,6 +54,9 @@ msgstr "Tous"
 msgid "At least one of the optional arguments must be used ({0})"
 msgstr ""
 
+msgid "Back"
+msgstr "Retour"
+
 msgid "Bad Imagery"
 msgstr ""
 
@@ -66,9 +69,6 @@ msgid ""
 msgstr ""
 "Centrer la vue sur la nouvelle image lors de l'utilisation des boutons pour "
 "changer d'image"
-
-msgid "Choose signs"
-msgstr "Choisir les panneaux"
 
 msgid "Clear"
 msgstr "Effacer"
@@ -244,8 +244,8 @@ msgstr ""
 msgid "First Seen Start"
 msgstr ""
 
-msgid "Give way"
-msgstr "Cédez-le-passage"
+msgid "Forward"
+msgstr "Avancer"
 
 #. column header: hide filter
 msgctxt "filter"
@@ -262,9 +262,6 @@ msgstr "Cacher les objets filtrés"
 msgctxt "filter"
 msgid "I"
 msgstr "I"
-
-msgid "Image Quality"
-msgstr "Qualité de l'image"
 
 msgid "Image actions"
 msgstr "Actions sur l’image"
@@ -284,9 +281,6 @@ msgstr "Clé de l’image"
 msgid "Image: "
 msgstr "Image : "
 
-msgid "Intersection danger"
-msgstr "Danger à l''intersection"
-
 msgid "Inverse filter"
 msgstr "Inverser le filtre"
 
@@ -302,6 +296,9 @@ msgstr ""
 msgid "Layer"
 msgstr "Calque"
 
+msgid "Left"
+msgstr ""
+
 msgid "Login"
 msgstr "Connexion"
 
@@ -315,9 +312,6 @@ msgstr "Déconnexion"
 msgctxt "filter"
 msgid "M"
 msgstr "M"
-
-msgid "Mandatory direction (any)"
-msgstr "Prescription de sens (n''importe lequel)"
 
 msgid "Mapillary"
 msgstr "Mapillary"
@@ -371,6 +365,33 @@ msgstr ""
 msgid "Mapillary: Could not refresh login, logging out"
 msgstr ""
 
+msgid "Mapillary: Image Navigation"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: 360 panoramic"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Back"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Forward"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Left"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Reverse"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Right"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Turn Left"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Turn Right"
+msgstr ""
+
 msgid "Maximum distance to consider for changeset source calculations"
 msgstr ""
 
@@ -389,26 +410,17 @@ msgstr "Monter le filtre"
 msgid "Multikey: {0}"
 msgstr "Multiclé : {0}"
 
-msgid "No color selected"
+msgid "Navigate between different Mapillary images"
 msgstr ""
 
-msgid "No entry"
-msgstr "Aucune entrée"
+msgid "No color selected"
+msgstr ""
 
 msgid "No images found"
 msgstr "Aucune image trouvée"
 
 msgid "No known image provider used"
 msgstr ""
-
-msgid "No overtaking"
-msgstr "Interdiction de dépasser"
-
-msgid "No parking"
-msgstr "Stationnement interdit"
-
-msgid "No turn"
-msgstr "Changement de direction interdit"
 
 msgid "Non-panoramic"
 msgstr ""
@@ -436,9 +448,6 @@ msgid ""
 "sequence=Mapillary/<sequence_id>"
 msgstr ""
 
-msgid "Only images with signs"
-msgstr "Seulement les images avec panneaux"
-
 msgid "Only show objects on detection layers (\"Relevant objects\")"
 msgstr ""
 
@@ -460,11 +469,11 @@ msgstr ""
 msgid "Organizations"
 msgstr ""
 
-msgid "Panoramic"
+msgid "Pano"
 msgstr ""
 
-msgid "Pedestrian crossing"
-msgstr "Passage piéton"
+msgid "Panoramic"
+msgstr ""
 
 msgid "Picture Filters"
 msgstr ""
@@ -499,8 +508,8 @@ msgstr "Inverser"
 msgid "Reverse the filters order."
 msgstr ""
 
-msgid "Roundabout"
-msgstr "Giratoire"
+msgid "Right"
+msgstr ""
 
 msgid "Select Mapillary Detection ({0})"
 msgstr ""
@@ -562,18 +571,11 @@ msgstr "Trier"
 msgid "Sort filters."
 msgstr ""
 
-msgid "Speed limit"
-msgstr "Limite de vitesse"
-
 msgid "Start"
 msgstr ""
 
 msgid "Start: {0}"
 msgstr ""
-
-msgctxt "name of the traffic sign"
-msgid "Stop"
-msgstr "Stop"
 
 msgid "Tag conflict"
 msgstr "Tag en conflit"
@@ -604,8 +606,11 @@ msgstr "Nombre total de photos : {0}"
 msgid "Traffic Signs"
 msgstr ""
 
-msgid "Uneven road"
-msgstr "Route déformée"
+msgid "Turn left"
+msgstr ""
+
+msgid "Turn right"
+msgstr ""
 
 msgid ""
 "Unknown Mapillary exception.\n"
