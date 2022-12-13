@@ -8,8 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -17,12 +17,14 @@ import javax.swing.JPanel;
 import javax.swing.event.MouseInputAdapter;
 
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.data.imagery.street_level.IImageEntry;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.PrimitiveId;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.layer.LayerManager;
+import org.openstreetmap.josm.gui.layer.geoimage.IGeoImageLayer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ImageNavigation;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
@@ -34,7 +36,7 @@ import org.openstreetmap.josm.tools.Shortcut;
  * Create a new image navigation dialog
  */
 public class ImageNavigationDialog extends ToggleDialog
-    implements LayerManager.LayerChangeListener, BiConsumer<MapillaryLayer, MapillaryNode> {
+    implements LayerManager.LayerChangeListener, IGeoImageLayer.ImageChangeListener {
     private static final Shortcut FORWARD = Shortcut.registerShortcut("mapillary:image_navigation:forward",
         tr("Mapillary: Image Navigation: Forward"), Shortcut.NONE, KeyEvent.CHAR_UNDEFINED);
     private static final Shortcut LEFT = Shortcut.registerShortcut("mapillary:image_navigation:left",
@@ -84,9 +86,17 @@ public class ImageNavigationDialog extends ToggleDialog
     }
 
     @Override
-    public void accept(MapillaryLayer layer, MapillaryNode node) {
-        if (node != null && layer != null && layer.getData() != null && node.getSequence() != null) {
-            this.imageNavigation = new ImageNavigation(layer.getData(), node);
+    public void imageChanged(IGeoImageLayer source, List<? extends IImageEntry<?>> oldImages,
+        List<? extends IImageEntry<?>> newImages) {
+        if (source instanceof MapillaryLayer
+            && newImages.stream().filter(MapillaryNode.class::isInstance).count() == 1) {
+            MapillaryLayer layer = (MapillaryLayer) source;
+            MapillaryNode node = (MapillaryNode) newImages.get(0);
+            if (node != null && layer.getData() != null && node.getSequence() != null) {
+                this.imageNavigation = new ImageNavigation(layer.getData(), node);
+            } else {
+                this.imageNavigation = null;
+            }
         } else {
             this.imageNavigation = null;
         }

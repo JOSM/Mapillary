@@ -95,7 +95,6 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.plugins.mapillary.utils.ReflectionUtils;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
@@ -308,7 +307,7 @@ public class PointObjectLayer extends MVTLayer
             removeButton.setToolTipText(removeAction.getToolTip());
             addButton.setAction(addAction);
             removeButton.setAction(removeAction);
-            displayedPanel = new AdditionalActionPanel(addButton/*, removeButton*/);
+            displayedPanel = new AdditionalActionPanel(addButton/* , removeButton */);
             pTooltip = fixPanelSizeAndLocation(mv, displayedPanel, xl, xr, yt, yb);
             displayedWindow.setAutoRequestFocus(false);
             displayedWindow.add(displayedPanel);
@@ -457,8 +456,8 @@ public class PointObjectLayer extends MVTLayer
         super.destroy();
         MainApplication.getMap().filterDialog.getFilterModel().removeTableModelListener(tableModelListener);
         List<? extends PointObjectLayer> layers = MainApplication.getLayerManager().getLayersOfType(this.getClass());
-        if ((layers.isEmpty() || (layers.size() == 1 && this.equals(layers.get(0)))) &&
-            MapPaintStyles.getStyles().getStyleSources().contains(mapcss)) {
+        if ((layers.isEmpty() || (layers.size() == 1 && this.equals(layers.get(0))))
+            && MapPaintStyles.getStyles().getStyleSources().contains(mapcss)) {
             MapPaintStyles.removeStyle(mapcss);
         }
         VectorDataSet data = this.getData();
@@ -631,7 +630,7 @@ public class PointObjectLayer extends MVTLayer
                 this.getData().setSelected(selection);
             }
         }
-        if (ReflectionUtils.hasImageViewerDialog()) {
+        if (ImageViewerDialog.hasInstance()) {
             if (ImageViewerDialog.getInstance().hasImage()) {
                 IImageEntry<?> entry = ImageViewerDialog.getCurrentImage();
                 if (entry instanceof MapillaryImageEntry) {

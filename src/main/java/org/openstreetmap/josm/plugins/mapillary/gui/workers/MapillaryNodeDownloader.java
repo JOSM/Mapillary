@@ -40,6 +40,9 @@ public class MapillaryNodeDownloader extends MapillaryUIDownloader<MapillaryNode
      */
     public MapillaryNodeDownloader(long id, Consumer<MapillaryNode> onFinish) {
         Objects.requireNonNull(onFinish);
+        if (id <= 0) {
+            throw new IllegalArgumentException("Mapillary Image ids must be positive");
+        }
         downloadList.add(this);
         this.node = id;
         this.onFinish = onFinish;

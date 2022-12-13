@@ -572,6 +572,20 @@ public class MapillaryImageEntry
         return this.image;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.image);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this.getClass().isInstance(obj)) {
+            MapillaryImageEntry other = this.getClass().cast(obj);
+            return Objects.equals(this.image, other.image);
+        }
+        return false;
+    }
+
     private void updateImageEntry() {
         // Clone this entry. Needed to ensure that the image display refreshes.
         final MapillaryImageEntry temporaryImageEntry = new MapillaryImageEntry(this);

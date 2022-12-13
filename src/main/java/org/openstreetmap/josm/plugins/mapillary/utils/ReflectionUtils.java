@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import java.lang.reflect.Field;
@@ -9,7 +10,6 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -18,22 +18,6 @@ import org.openstreetmap.josm.tools.Logging;
 public final class ReflectionUtils {
     private ReflectionUtils() {
         // Hide constructor
-    }
-
-    /**
-     * Check if the image viewer dialog has been instantiated
-     *
-     * @return {@code true} if the image viewer dialog is present
-     */
-    public static boolean hasImageViewerDialog() {
-        try {
-            final Field f = ImageViewerDialog.class.getDeclaredField("dialog");
-            org.openstreetmap.josm.tools.ReflectionUtils.setObjectsAccessible(f);
-            return f.get(null) != null;
-        } catch (ReflectiveOperationException e) {
-            Logging.error(e);
-        }
-        return false;
     }
 
     /**

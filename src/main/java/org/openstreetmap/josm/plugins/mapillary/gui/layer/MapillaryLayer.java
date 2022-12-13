@@ -6,6 +6,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
@@ -30,7 +31,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -73,6 +73,7 @@ import org.openstreetmap.josm.gui.layer.LayerManager.LayerRemoveEvent;
 import org.openstreetmap.josm.gui.layer.MainLayerManager.ActiveLayerChangeEvent;
 import org.openstreetmap.josm.gui.layer.MainLayerManager.ActiveLayerChangeListener;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
+import org.openstreetmap.josm.gui.layer.geoimage.IGeoImageLayer;
 import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
 import org.openstreetmap.josm.gui.layer.imagery.MVTLayer;
 import org.openstreetmap.josm.gui.mappaint.Range;
@@ -96,7 +97,6 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.OffsetUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.ReflectionUtils;
 import org.openstreetmap.josm.tools.ColorHelper;
 import org.openstreetmap.josm.tools.Geometry;
 import org.openstreetmap.josm.tools.I18n;
@@ -113,8 +113,9 @@ import org.openstreetmap.josm.tools.Utils;
  *
  * @author nokutu
  */
-public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeListener, LayerChangeListener,
-    UploadHook, VectorDataSelectionListener, AbstractProperty.ValueChangeListener<Boolean>, HighlightUpdateListener {
+public final class MapillaryLayer extends MVTLayer
+    implements ActiveLayerChangeListener, LayerChangeListener, UploadHook, VectorDataSelectionListener,
+    AbstractProperty.ValueChangeListener<Boolean>, HighlightUpdateListener, IGeoImageLayer {
 
     /** The radius of the image marker */
     private static final int IMG_MARKER_RADIUS = 7;
@@ -159,7 +160,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
     private static Point2D standardImageCentroid;
     private final ListenerList<MVTTile.TileListener> tileListeners = ListenerList.create();
-    private final ListenerList<BiConsumer<MapillaryLayer, MapillaryNode>> imageChangeListeners = ListenerList.create();
+    private final ListenerList<IGeoImageLayer.ImageChangeListener> imageChangeListeners = ListenerList.create();
     private MapillaryNode image;
     private boolean colorByCaptureDate;
 
@@ -176,6 +177,9 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         this.getData().addHighlightUpdateListener(this);
         this.colorByCaptureDate = MapillaryProperties.COLOR_BY_CAPTURE_DATE.get();
         MapillaryProperties.COLOR_BY_CAPTURE_DATE.addListener(this);
+        if (!GraphicsEnvironment.isHeadless() && !ImageViewerDialog.hasInstance()) {
+            ImageViewerDialog.getInstance();
+        }
     }
 
     /**
@@ -732,7 +736,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         }
         this.image = image;
         this.invalidate();
-        if (ReflectionUtils.hasImageViewerDialog()) {
+        if (ImageViewerDialog.hasInstance()) {
             if (image == null) {
                 GuiHelper.runInEDT(() -> ImageViewerDialog.getInstance().displayImage(null));
             } else {
@@ -740,24 +744,23 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
                 if (Objects.equals(entry, ImageViewerDialog.getCurrentImage())) {
                     entry.reload();
                 } else {
+                    IImageEntry<?> old = ImageViewerDialog.getCurrentImage();
                     GuiHelper.runInEDT(() -> ImageViewerDialog.getInstance().displayImage(entry));
+                    MainApplication.worker.execute(() -> this.imageChangeListeners.fireEvent(f -> f.imageChanged(this,
+                        old instanceof MapillaryImageEntry ? Collections.singletonList(old) : Collections.emptyList(),
+                        Collections.singletonList(entry))));
                 }
             }
         }
-        MainApplication.worker.execute(() -> this.imageChangeListeners.fireEvent(f -> f.accept(this, image)));
-    }
-
-    public MapillaryNode getImage() {
-        return this.image;
     }
 
     /**
-     * Add an image change listener
+     * Get the currently visible image
      *
-     * @param listener The listener to notify of image changes
+     * @return The image node
      */
-    public void addImageChangeListener(BiConsumer<MapillaryLayer, MapillaryNode> listener) {
-        this.imageChangeListeners.addWeakListener(listener);
+    public MapillaryNode getImage() {
+        return this.image;
     }
 
     @Override
@@ -766,8 +769,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         final Collection<VectorNode> nodes = Utils.filteredCollection(event.getSelection(), VectorNode.class);
         if (nodes.size() == 1) {
             final VectorNode node = nodes.iterator().next();
-            final IImageEntry<?> displayImage = ReflectionUtils.hasImageViewerDialog()
-                ? ImageViewerDialog.getCurrentImage()
+            final IImageEntry<?> displayImage = ImageViewerDialog.hasInstance() ? ImageViewerDialog.getCurrentImage()
                 : null;
             final MapillaryNode currentImage = this.image;
             if (currentImage != null && displayImage instanceof MapillaryImageEntry
@@ -817,5 +819,45 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         if (MapillaryProperties.COLOR_BY_CAPTURE_DATE.equals(e.getProperty())) {
             this.colorByCaptureDate = MapillaryProperties.COLOR_BY_CAPTURE_DATE.get();
         }
+    }
+
+    @Override
+    public void clearSelection() {
+        this.setCurrentImage(null);
+    }
+
+    @Override
+    public List<? extends IImageEntry<?>> getSelection() {
+        if (this.image instanceof IImageEntry) {
+            return Collections.singletonList((IImageEntry<?>) this.image);
+        } else if (this.image != null) {
+            return Collections.singletonList(MapillaryImageEntry.getCachedEntry(this.image));
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean containsImage(IImageEntry<?> imageEntry) {
+        if (!(imageEntry instanceof MapillaryImageEntry)) {
+            return false;
+        }
+        MapillaryImageEntry entry = (MapillaryImageEntry) imageEntry;
+        if (Objects.equals(entry.getImage(), this.image)) {
+            return true;
+        }
+        if (entry.getImage() instanceof VectorNode) {
+            return this.getData().containsNode((VectorNode) entry.getImage());
+        }
+        return this.getData().getPrimitiveById(entry.getImage().getPrimitiveId()) != null;
+    }
+
+    @Override
+    public void addImageChangeListener(ImageChangeListener listener) {
+        this.imageChangeListeners.addListener(listener);
+    }
+
+    @Override
+    public void removeImageChangeListener(ImageChangeListener listener) {
+        this.imageChangeListeners.removeListener(listener);
     }
 }

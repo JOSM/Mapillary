@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.dialog;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
@@ -5,6 +6,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 import javax.json.Json;
@@ -74,7 +76,8 @@ public final class OldVersionDialog {
             latestMapillary.setMaxAge(60L * 15); // 15 minutes
             final JsonValue value = reader.read();
             final JsonObject object = value.asJsonObject();
-            return object.getString("tag_name", null);
+            return Optional.ofNullable(object.getString("tag_name", null)).map(s -> s.replaceFirst("^v", ""))
+                .orElse(null);
         } catch (IOException | JsonException | IllegalStateException e) {
             Logging.error(e);
         }

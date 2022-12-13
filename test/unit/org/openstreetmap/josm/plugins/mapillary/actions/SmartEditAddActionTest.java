@@ -45,6 +45,7 @@ import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryL
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMockErrors;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.ObjectDetectionsAnnotation;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
@@ -183,6 +184,7 @@ class SmartEditAddActionTest {
     void testAddMapillaryTagsMapObjectWithMapillaryLayerMapillarySelected(ObjectDetections detection, boolean added) {
         VectorNode image = new VectorNode("");
         image.setOsmId(12345678, 1);
+        image.put(MapillaryImageUtils.ImageProperties.ID.toString(), String.valueOf(image.getId()));
         MapillaryLayer.getInstance().getData().addPrimitive(image);
         MapillaryLayer.getInstance().getData().setSelected(image);
         node.setOsmId(1234, 1);
