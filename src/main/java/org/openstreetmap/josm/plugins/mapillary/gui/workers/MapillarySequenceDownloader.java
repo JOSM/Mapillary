@@ -105,7 +105,9 @@ public class MapillarySequenceDownloader extends MapillaryUIDownloader<Mapillary
                 final int j = i;
                 final int indexDifference = Math.min(Math.abs(j * STEP - location),
                     Math.abs((j + 1) * STEP - location));
-                organizedGet.add(new Pair<>(indexDifference, () -> getImageRange(j, imagesToGet, images)));
+                if (!this.isCancelled()) {
+                    organizedGet.add(new Pair<>(indexDifference, () -> getImageRange(j, imagesToGet, images)));
+                }
             }
         }
         organizedGet.sort(Comparator.comparingInt(pair -> pair.a));
