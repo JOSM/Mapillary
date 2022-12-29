@@ -1,8 +1,10 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.Locale;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -13,6 +15,7 @@ import javax.annotation.Nullable;
 
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntry;
+import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IWay;
@@ -136,8 +139,17 @@ public final class MapillaryImageUtils {
         }
         if (MapillaryImageUtils.isDownloadable(image)) {
             CompletableFuture<BufferedImageCacheEntry> completableFuture = new CompletableFuture<>();
-            CacheUtils.submit(image, type,
-                (entry, attributes, result) -> cacheImageFuture(image, completableFuture, entry));
+            CacheUtils.submit(image, type, (entry, attributes, result) -> {
+                if (result == ICachedLoaderListener.LoadResult.SUCCESS) {
+                    cacheImageFuture(image, completableFuture, entry);
+                } else if (result == ICachedLoaderListener.LoadResult.CANCELED) {
+                    completableFuture.completeExceptionally(new CancellationException(
+                        "Mapillary Image download was cancelled: " + MapillaryImageUtils.getKey(image)));
+                } else {
+                    completableFuture.completeExceptionally(new IOException(
+                        "Mapillary Image could not be downloaded: " + MapillaryImageUtils.getKey(image)));
+                }
+            });
             return completableFuture;
         } else if (getKey(image) > 0) {
             CompletableFuture<BufferedImageCacheEntry> completableFuture = new CompletableFuture<>();
