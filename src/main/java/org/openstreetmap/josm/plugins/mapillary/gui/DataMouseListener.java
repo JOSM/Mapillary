@@ -6,7 +6,9 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -50,6 +52,9 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
     @Override
     public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
+        if (e.getButton() != MouseEvent.BUTTON1) {
+            return;
+        }
         final BBox searchBBox = getSmallBBox(e.getPoint());
         // Don't bother if we don't have a usable bbox
         if (searchBBox == null) {
@@ -77,12 +82,13 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
      * @param searchBBox The bbox to search
      */
     private static void mouseClickedInner(final MouseEvent e, final MVTLayer layer, final BBox searchBBox) {
-        Collection<INode> nodes = searchNodes(layer, searchBBox).stream().distinct()
-            .filter(AbstractPrimitive::isDrawable).filter(INode.class::isInstance).map(INode.class::cast)
-            .filter(i -> i.getUniqueId() > 0).collect(Collectors.toList());
-        if (!nodes.isEmpty()) {
+        LatLon click = MainApplication.getMap().mapView.getLatLon(e.getX(), e.getY());
+        Optional<INode> nodes = searchNodes(layer, searchBBox).stream().distinct().filter(AbstractPrimitive::isDrawable)
+            .filter(INode.class::isInstance).map(INode.class::cast).filter(i -> i.getUniqueId() > 0)
+            .sorted(Comparator.comparingDouble(i -> i.distanceSq(click))).findFirst();
+        if (nodes.isPresent()) {
             // This is needed since Mapillary ids are only unique within a tile.
-            layer.getData().setSelected(nodes);
+            layer.getData().setSelected(Collections.singletonList(nodes.get()));
         } else if (layer instanceof MapillaryLayer) {
             if (e.getClickCount() >= MapillaryProperties.DESELECT_CLICK_COUNT.get()) {
                 layer.getData().clearSelection();
