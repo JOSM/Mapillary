@@ -356,7 +356,8 @@ public final class MapillaryLayer extends MVTLayer
                 for (INode imageAbs : images) {
                     if (imageAbs.isVisible() && MapillaryImageUtils.isImage(imageAbs)
                         && !MapillaryImageUtils.equals(this.image, imageAbs)
-                        && !Objects.equals(MapillaryImageUtils.getSequenceKey(imageAbs), sequenceKey)) {
+                        && !Objects.equals(MapillaryImageUtils.getSequenceKey(imageAbs), sequenceKey)
+                        && imageAbs != selectedImage) {
                         drawImageMarker(originalTransform, selectedImage, g, imageAbs, distPer100Pixel, false);
                     }
                 }
@@ -367,12 +368,15 @@ public final class MapillaryLayer extends MVTLayer
                     .map(IWay.class::cast).collect(Collectors.toSet())) {
                     drawSequence(g, mv, way, selectedImage);
                     for (INode n : way.getNodes()) {
-                        drawImageMarker(originalTransform, selectedImage, g, n, distPer100Pixel, false);
+                        if (n != selectedImage) {
+                            drawImageMarker(originalTransform, selectedImage, g, n, distPer100Pixel, false);
+                        }
                     }
                 }
                 // Paint selected images last. Not particularly worried about painting too much, since most people don't
                 // select thousands of images.
-                drawImageMarker(originalTransform, selectedImage, g, selectedImage, distPer100Pixel, true);
+                drawImageMarker(originalTransform, selectedImage, g, selectedImage, distPer100Pixel,
+                    OffsetUtils.getOffset(selectedImage) != 0);
             }
         } else {
             new MapillaryMapRenderer(g, mv).render(this.getData(), false, box);
@@ -464,16 +468,6 @@ public final class MapillaryLayer extends MVTLayer
                 .trace("An image was not painted due to a high zoom level, and not being the selected image/sequence");
             return;
         }
-        final ILatLon drawnCoordinates;
-        if (offset) {
-            drawnCoordinates = OffsetUtils.getOffsetLocation(img);
-        } else {
-            drawnCoordinates = img;
-        }
-        final Point p = drawnCoordinates instanceof INode
-            // INode implementations may optimize getEastNorth, so prefer that where possible.
-            ? MainApplication.getMap().mapView.getPoint(((INode) drawnCoordinates).getEastNorth())
-            : MainApplication.getMap().mapView.getPoint(drawnCoordinates);
         if (MapillaryImageUtils.getSequenceKey(selectedImg) != null && !Objects
             .equals(MapillaryImageUtils.getSequenceKey(selectedImg), MapillaryImageUtils.getSequenceKey(img))) {
             g.setComposite(fadeComposite);
@@ -496,6 +490,40 @@ public final class MapillaryLayer extends MVTLayer
             }
             directionC = getAgedColor(img, MapillaryColorScheme.SEQ_UNSELECTED);
         }
+        MapView mv = MainApplication.getMap().mapView;
+
+        final Point p = mv.getPoint(img.getEastNorth());
+        paintDirectionIndicator(g, directionC, img, originalTransform, p, i);
+        this.paintHighlight(g, img, selectedImg);
+
+        if (offset && selectedImg == img) {
+            final ILatLon drawnCoordinates = OffsetUtils.getOffsetLocation(img);
+            final Point offsetP = drawnCoordinates instanceof INode
+                // INode implementations may optimize getEastNorth, so prefer that where possible.
+                ? mv.getPoint(((INode) drawnCoordinates).getEastNorth())
+                : mv.getPoint(drawnCoordinates);
+            paintDirectionIndicator(g, directionC, img, originalTransform, offsetP, i);
+            g.setTransform(originalTransform);
+            paintOffsetLine(g, offsetP, drawnCoordinates, img, true);
+        }
+
+        // TODO get the following working
+        /*
+         * if (img instanceof Detections && !((Detections) img).getDetections().isEmpty()) {
+         * TRAFFIC_SIGN_SIZE = (int) (ImageProvider.ImageSizes.MAP.getAdjustedWidth() / 1.5);
+         * YIELD_SIGN = new ImageProvider(IMAGE_SPRITE_DIR,
+         * "sign-detection").setMaxSize(TRAFFIC_SIGN_SIZE).get().getImage()
+         * g.drawImage(YIELD_SIGN, (int) (p.getX() - TRAFFIC_SIGN_SIZE / 3d), (int) (p.getY() - TRAFFIC_SIGN_SIZE / 3d),
+         * null);
+         * }
+         */
+
+        g.setComposite(originalComposite);
+        g.setTransform(originalTransform);
+    }
+
+    private static void paintDirectionIndicator(Graphics2D g, Color directionC, INode img,
+        AffineTransform originalTransform, Point p, Image i) {
         // Paint direction indicator
         g.setColor(directionC);
         if (MapillaryImageUtils.IS_PANORAMIC.test(img)) {
@@ -533,7 +561,9 @@ public final class MapillaryLayer extends MVTLayer
             g.drawImage(i, p.x, p.y, null);
             g.setTransform(translate);
         }
+    }
 
+    private void paintHighlight(Graphics2D g, INode img, INode selectedImg) {
         // Paint highlight for selected or highlighted images
         if (getData().getHighlighted().contains(img.getPrimitiveId())
             || (selectedImg != null && selectedImg.equals(img))) {
@@ -541,17 +571,9 @@ public final class MapillaryLayer extends MVTLayer
             g.setStroke(new BasicStroke(2));
             g.drawOval(-IMG_MARKER_RADIUS, -IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
         }
-        // TODO get the following working
-        /*
-         * if (img instanceof Detections && !((Detections) img).getDetections().isEmpty()) {
-         * TRAFFIC_SIGN_SIZE = (int) (ImageProvider.ImageSizes.MAP.getAdjustedWidth() / 1.5);
-         * YIELD_SIGN = new ImageProvider(IMAGE_SPRITE_DIR,
-         * "sign-detection").setMaxSize(TRAFFIC_SIGN_SIZE).get().getImage()
-         * g.drawImage(YIELD_SIGN, (int) (p.getX() - TRAFFIC_SIGN_SIZE / 3d), (int) (p.getY() - TRAFFIC_SIGN_SIZE / 3d),
-         * null);
-         * }
-         */
+    }
 
+    private static void paintOffsetLine(Graphics2D g, Point p, ILatLon drawnCoordinates, ILatLon img, boolean offset) {
         // Draw a line to the original location
         if (offset && (Double.compare(drawnCoordinates.lat(), img.lat()) != 0
             || Double.compare(drawnCoordinates.lon(), img.lon()) != 0)) {
@@ -565,8 +587,6 @@ public final class MapillaryLayer extends MVTLayer
             g.setColor(MapillaryColorScheme.SEQ_IMPORTED_HIGHLIGHTED);
             g.fillOval(p.x - radius, p.y - radius, 2 * radius, 2 * radius);
         }
-        g.setComposite(originalComposite);
-        g.setTransform(originalTransform);
     }
 
     private static Point2D getOriginalCentroid(Image i) {
