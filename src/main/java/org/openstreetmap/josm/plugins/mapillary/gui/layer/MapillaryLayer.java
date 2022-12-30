@@ -180,6 +180,10 @@ public final class MapillaryLayer extends MVTLayer
         if (!GraphicsEnvironment.isHeadless() && !ImageViewerDialog.hasInstance()) {
             ImageViewerDialog.getInstance();
         }
+        if (Utils.getSystemEnv("CI") != null) {
+            Logging.error(
+                new IllegalStateException("Checking to see where MapillaryLayer is instantiated in Jenkins tests"));
+        }
     }
 
     /**
