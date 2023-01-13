@@ -1,37 +1,31 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
+import java.util.Arrays;
+
 import org.openstreetmap.josm.data.preferences.BooleanProperty;
-import org.openstreetmap.josm.data.preferences.CachingProperty;
 import org.openstreetmap.josm.data.preferences.DoubleProperty;
+import org.openstreetmap.josm.data.preferences.EnumProperty;
 import org.openstreetmap.josm.data.preferences.IntegerProperty;
 import org.openstreetmap.josm.data.preferences.LongProperty;
 import org.openstreetmap.josm.data.preferences.StringProperty;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayerDrawTypes;
+import org.openstreetmap.josm.spi.preferences.Config;
 
+/**
+ * A class for sharing properties between classes
+ */
 public final class MapillaryProperties {
-    public static final BooleanProperty DELETE_AFTER_UPLOAD = new BooleanProperty("mapillary.delete-after-upload",
-        true);
     public static final BooleanProperty DEVELOPER = new BooleanProperty("mapillary.developer", false);
     public static final BooleanProperty DISPLAY_HOUR = new BooleanProperty("mapillary.display-hour", true);
     public static final BooleanProperty MOVE_TO_IMG = new BooleanProperty("mapillary.move-to-picture", true);
     public static final BooleanProperty IMAGE_LINK_TO_BLUR_EDITOR = new BooleanProperty(
         "mapillary.image-link-to-blur-editor", false);
-
-    public static final IntegerProperty MAPOBJECT_ICON_SIZE = new IntegerProperty("mapillary.mapobjects.iconsize", 32);
-    public static final IntegerProperty MAX_MAPOBJECTS = new IntegerProperty("mapillary.mapobjects.maximum-number",
-        200);
     public static final BooleanProperty SHOW_DETECTED_SIGNS = new BooleanProperty("mapillary.show-detected-signs",
         true);
     public static final BooleanProperty SHOW_DETECTION_OUTLINES = new BooleanProperty(
         "mapillary.show-detection-outlines", false);
-
-    public static final IntegerProperty PICTURE_DRAG_BUTTON = new IntegerProperty("mapillary.picture-drag-button", 3);
-    public static final IntegerProperty PICTURE_OPTION_BUTTON = new IntegerProperty("mapillary.picture-option-button",
-        2);
-    public static final IntegerProperty PICTURE_ZOOM_BUTTON = new IntegerProperty("mapillary.picture-zoom-button", 1);
-    public static final IntegerProperty SEQUENCE_MAX_JUMP_DISTANCE = new IntegerProperty(
-        "mapillary.sequence-max-jump-distance", 100);
 
     /** The access token for authorization */
     public static final StringProperty ACCESS_TOKEN = new StringProperty("mapillary.access-token", null);
@@ -41,8 +35,6 @@ public final class MapillaryProperties {
     /** The time (in seconds since epoch) that we should try to refresh the token after */
     public static final LongProperty ACCESS_TOKEN_REFRESH_IN = new LongProperty("mapillary.access-token.refresh-in",
         Long.MAX_VALUE);
-    public static final StringProperty START_DIR = new StringProperty("mapillary.start-directory",
-        System.getProperty("user.home"));
 
     /** The assumed HDOP for Mapillary images. VDOP is assumed to be 3x this. Meters. */
     public static final IntegerProperty ASSUMED_HDOP = new IntegerProperty("mapillary.assumed_hdop", 6);
@@ -60,11 +52,6 @@ public final class MapillaryProperties {
      */
     public static final IntegerProperty PRE_FETCH_IMAGE_COUNT = new IntegerProperty("mapillary.prefetch-image-count",
         4);
-
-    /**
-     * Download point features (fire hydrants, trees, and so on)
-     */
-    public static final BooleanProperty POINT_FEATURES = new BooleanProperty("mapillary.pointfeatures", false);
 
     /**
      * The opacity for unselected images when an image is selected
@@ -89,9 +76,6 @@ public final class MapillaryProperties {
     /** Use computed locations instead of the original locations */
     public static final BooleanProperty USE_COMPUTED_LOCATIONS = new BooleanProperty("mapillary.computed_locations",
         true);
-    /** Use capture date to color image sequences and locations */
-    public static final BooleanProperty COLOR_BY_CAPTURE_DATE = new BooleanProperty("mapillary.color_by_capture_date",
-        false);
 
     /** The maximum distance for us to automatically add Mapillary to the changeset source */
     public static final DoubleProperty MAXIMUM_DISTANCE_FOR_CHANGESET_SOURCE = new DoubleProperty(
@@ -101,14 +85,24 @@ public final class MapillaryProperties {
      * The maximum number of images to show in the map view
      */
     public static final IntegerProperty MAXIMUM_DRAW_IMAGES = new IntegerProperty("mapillary.images.max_draw", 10_000);
+
     /**
-     * Use the custom renderer. This should be removed once the mapcss renderer works properly.
-     *
-     * @deprecated
+     * The draw type
      */
-    @Deprecated
-    public static final CachingProperty<Boolean> USE_CUSTOM_RENDERER = new BooleanProperty(
-        "mapillary.use-custom-renderer", true).cached();
+    public static final EnumProperty<MapillaryLayerDrawTypes> MAPILLARY_LAYER_DRAW_TYPE = new EnumProperty<>(
+        "mapillary.layer.draw.type", MapillaryLayerDrawTypes.class, MapillaryLayerDrawTypes.DEFAULT);
+
+    static {
+        if (Boolean.TRUE.equals(Config.getPref().getBoolean("mapillary.color_by_capture_date", false))) {
+            MAPILLARY_LAYER_DRAW_TYPE.put(MapillaryLayerDrawTypes.DATE);
+        }
+        for (String conf : Arrays.asList("mapillary.delete-after-upload", "mapillary.mapobjects.iconsize",
+            "mapillary.mapobjects.maximum-number", "mapillary.picture-drag-button", "mapillary.picture-option-button",
+            "mapillary.picture-zoom-button", "mapillary.sequence-max-jump-distance", "mapillary.start-directory",
+            "mapillary.color_by_capture_date")) {
+            Config.getPref().put(conf, null);
+        }
+    }
 
     private MapillaryProperties() {
         // Private constructor to avoid instantiation

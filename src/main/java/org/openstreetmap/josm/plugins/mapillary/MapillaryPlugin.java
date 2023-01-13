@@ -187,11 +187,8 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
                 .forEach(layer -> MainApplication.getLayerManager().removeLayer(layer));
         }
         MapFrame frame = MainApplication.getMap();
-        if (frame != null) {
-            toggleDialog.forEach(frame::removeToggleDialog);
-        }
+        this.mapFrameInitialized(frame, null);
         destroyables.forEach(Destroyable::destroy);
-        toggleDialog.forEach(ToggleDialog::destroy);
     }
 
     private void clearMenues(JMenu menu) {

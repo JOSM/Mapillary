@@ -1,6 +1,8 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.layer;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
+
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -16,6 +18,8 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,6 +38,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.annotation.Nonnull;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -54,7 +59,6 @@ import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
-import org.openstreetmap.josm.data.preferences.AbstractProperty;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorPrimitive;
@@ -64,7 +68,6 @@ import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
 import org.openstreetmap.josm.gui.dialogs.LayerListPopup;
-import org.openstreetmap.josm.gui.draw.MapViewPath;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.gui.layer.LayerManager.LayerAddEvent;
 import org.openstreetmap.josm.gui.layer.LayerManager.LayerChangeListener;
@@ -98,6 +101,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.OffsetUtils;
 import org.openstreetmap.josm.tools.ColorHelper;
+import org.openstreetmap.josm.tools.ColorScale;
 import org.openstreetmap.josm.tools.Geometry;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -113,17 +117,11 @@ import org.openstreetmap.josm.tools.Utils;
  *
  * @author nokutu
  */
-public final class MapillaryLayer extends MVTLayer
-    implements ActiveLayerChangeListener, LayerChangeListener, UploadHook, VectorDataSelectionListener,
-    AbstractProperty.ValueChangeListener<Boolean>, HighlightUpdateListener, IGeoImageLayer {
+public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeListener, LayerChangeListener,
+    UploadHook, VectorDataSelectionListener, HighlightUpdateListener, IGeoImageLayer {
 
     /** The radius of the image marker */
     private static final int IMG_MARKER_RADIUS = 7;
-
-    /** The color for really old imagery */
-    private static final Color REALLY_OLD_COLOR = ColorHelper.html2color("e17155");
-    /** The color for older imagery */
-    private static final Color OLD_COLOR = ColorHelper.html2color("fbc01b");
 
     /** The range to paint the full detection image at */
     private static final Range IMAGE_CA_PAINT_RANGE = Selector.GeneralSelector.fromLevel(18, Integer.MAX_VALUE);
@@ -142,8 +140,19 @@ public final class MapillaryLayer extends MVTLayer
     private static final Ellipse2D IMAGE_CIRCLE = new Ellipse2D.Double(-IMG_MARKER_RADIUS, -IMG_MARKER_RADIUS,
         2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
 
-    /** The milliseconds in a year (approx) */
-    private static final long YEAR_MILLIS = 31_557_600_000L;
+    /** The color scale used when drawing using velocity */
+    private final ColorScale velocityScale = ColorScale.createHSBScale(256);
+    /** The color scale used when drawing using date */
+    private final ColorScale dateScale = ColorScale.createFixedScale(new Color[] { ColorHelper.html2color("e17155"), // Really
+                                                                                                                     // old
+                                                                                                                     // color
+        ColorHelper.html2color("fbc01b"), // Old color
+        MapillaryColorScheme.SEQ_UNSELECTED // New color
+    }).addTitle(tr("Time"));
+
+    /** The color scale used when drawing using direction */
+    private final ColorScale directionScale = ColorScale.createCyclicScale(256).setIntervalCount(4)
+        .addTitle(tr("Direction"));;
 
     /** The nearest images to the selected image from different sequences sorted by distance from selection. */
     // Use ArrayList instead of an array, since there will not be thousands of instances, and allows for better
@@ -162,7 +171,8 @@ public final class MapillaryLayer extends MVTLayer
     private final ListenerList<MVTTile.TileListener> tileListeners = ListenerList.create();
     private final ListenerList<IGeoImageLayer.ImageChangeListener> imageChangeListeners = ListenerList.create();
     private MapillaryNode image;
-    private boolean colorByCaptureDate;
+    @Nonnull
+    private MapillaryLayerDrawTypes drawType = MapillaryLayerDrawTypes.DEFAULT;
 
     private MapillaryLayer() {
         super(MapillaryKeys.MAPILLARY_IMAGES);
@@ -175,8 +185,6 @@ public final class MapillaryLayer extends MVTLayer
         this.addTileDownloadListener(MapillaryFilterDialog.getInstance());
         this.getData().addSelectionListener(this);
         this.getData().addHighlightUpdateListener(this);
-        this.colorByCaptureDate = MapillaryProperties.COLOR_BY_CAPTURE_DATE.get();
-        MapillaryProperties.COLOR_BY_CAPTURE_DATE.addListener(this);
         if (!GraphicsEnvironment.isHeadless() && !ImageViewerDialog.hasInstance()) {
             ImageViewerDialog.getInstance();
         }
@@ -184,6 +192,15 @@ public final class MapillaryLayer extends MVTLayer
             Logging.error(
                 new IllegalStateException("Checking to see where MapillaryLayer is instantiated in Jenkins tests"));
         }
+        setupColorScales();
+    }
+
+    private void setupColorScales() {
+        this.dateScale.setNoDataColor(MapillaryColorScheme.SEQ_UNSELECTED);
+        // ChronoUnit.YEARS isn't supported since a year can be either 365 or 366.
+        this.dateScale.setRange(Instant.now().minus(4 * 365L, ChronoUnit.DAYS).toEpochMilli(), Instant.now().toEpochMilli());
+        this.directionScale.setNoDataColor(MapillaryColorScheme.SEQ_UNSELECTED);
+        this.velocityScale.setNoDataColor(MapillaryColorScheme.SEQ_UNSELECTED);
     }
 
     /**
@@ -194,6 +211,9 @@ public final class MapillaryLayer extends MVTLayer
         invalidate();
     }
 
+    /**
+     * Invalidate the MapillaryLayer instance
+     */
     public static void invalidateInstance() {
         if (hasInstance()) {
             getInstance().invalidate();
@@ -276,7 +296,6 @@ public final class MapillaryLayer extends MVTLayer
                 ImageViewerDialog.getInstance().displayImage(null);
             }
             UploadAction.unregisterUploadHook(this);
-            MapillaryProperties.COLOR_BY_CAPTURE_DATE.removeListener(this);
             super.destroy();
         }
         destroyed = true;
@@ -298,6 +317,7 @@ public final class MapillaryLayer extends MVTLayer
 
     @Override
     public void paint(final Graphics2D g, final MapView mv, final Bounds box) {
+        this.drawType = MapillaryProperties.MAPILLARY_LAYER_DRAW_TYPE.get();
         final Lock lock = this.getData().getReadLock();
         try {
             // This _must_ be set after operations complete (see JOSM #19516 for more information)
@@ -322,73 +342,64 @@ public final class MapillaryLayer extends MVTLayer
 
     private void paintWithLock(final Graphics2D g, final MapView mv, final Bounds box) {
         this.getData().setZoom(this.getZoomLevel());
-        final boolean useCustomRenderer = MapillaryProperties.USE_CUSTOM_RENDERER.get();
-        if (useCustomRenderer) {
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            fadeComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-                MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        fadeComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+            MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
 
-            final INode selectedImage = this.image;
-            synchronized (this) {
-                for (int i = 0; i < this.nearestImages.size(); i++) {
-                    if (i % 2 == 0) {
-                        g.setColor(Color.RED);
-                    } else {
-                        g.setColor(Color.BLUE);
-                    }
-                    if (selectedImage != null) {
-                        final Point selected = mv.getPoint(selectedImage);
-                        final Point p = mv.getPoint(this.nearestImages.get(i));
-                        g.draw(new Line2D.Double(p.getX(), p.getY(), selected.getX(), selected.getY()));
-                    }
+        final INode selectedImage = this.image;
+        synchronized (this) {
+            for (int i = 0; i < this.nearestImages.size(); i++) {
+                if (i % 2 == 0) {
+                    g.setColor(Color.RED);
+                } else {
+                    g.setColor(Color.BLUE);
+                }
+                if (selectedImage != null) {
+                    final Point selected = mv.getPoint(selectedImage);
+                    final Point p = mv.getPoint(this.nearestImages.get(i));
+                    g.draw(new Line2D.Double(p.getX(), p.getY(), selected.getX(), selected.getY()));
                 }
             }
+        }
 
-            // Draw sequence line
-            g.setStroke(new BasicStroke(2));
-            final String sequenceKey = MapillaryImageUtils.getSequenceKey(selectedImage);
-            for (IWay<?> seq : getData().searchWays(box.toBBox()).stream().distinct().collect(Collectors.toList())) {
-                if (!Objects.equals(sequenceKey, MapillarySequenceUtils.getKey(seq))) {
-                    drawSequence(g, mv, seq, selectedImage);
-                }
+        // Draw sequence line
+        g.setStroke(new BasicStroke(2));
+        final AffineTransform originalTransform = g.getTransform();
+        final double distPer100Pixel = mv.getDist100Pixel();
+        final String sequenceKey = MapillaryImageUtils.getSequenceKey(selectedImage);
+        for (IWay<?> seq : getData().searchWays(box.toBBox()).stream()
+            .sorted(Comparator.comparingInt(IWay::getRawTimestamp)).distinct().collect(Collectors.toList())) {
+            if (!Objects.equals(sequenceKey, MapillarySequenceUtils.getKey(seq))) {
+                drawSequence(g, mv, seq, selectedImage, originalTransform, distPer100Pixel);
             }
-            final AffineTransform originalTransform = g.getTransform();
-            final Collection<INode> images = this.getData().searchNodes(box.toBBox()).stream().distinct()
-                .collect(Collectors.toList());
-            final double distPer100Pixel = mv.getDist100Pixel();
-            if (images.size() < MapillaryProperties.MAXIMUM_DRAW_IMAGES.get()) {
-                for (INode imageAbs : images) {
-                    if (imageAbs.isVisible() && MapillaryImageUtils.isImage(imageAbs)
-                        && !MapillaryImageUtils.equals(this.image, imageAbs)
-                        && !Objects.equals(MapillaryImageUtils.getSequenceKey(imageAbs), sequenceKey)
-                        && imageAbs != selectedImage) {
-                        drawImageMarker(originalTransform, selectedImage, g, imageAbs, distPer100Pixel, false);
+        }
+
+        if (selectedImage != null) {
+            // Paint the selected sequences
+            for (IWay<?> way : selectedImage.getReferrers().stream().filter(IWay.class::isInstance)
+                .map(IWay.class::cast).collect(Collectors.toSet())) {
+                drawSequence(g, mv, way, selectedImage, originalTransform, distPer100Pixel);
+                for (INode n : way.getNodes()) {
+                    if (n != selectedImage) {
+                        drawImageMarker(originalTransform, selectedImage, g, n, distPer100Pixel, false);
                     }
                 }
             }
-            if (selectedImage != null) {
-                // Paint the selected sequences
-                for (IWay<?> way : selectedImage.getReferrers().stream().filter(IWay.class::isInstance)
-                    .map(IWay.class::cast).collect(Collectors.toSet())) {
-                    drawSequence(g, mv, way, selectedImage);
-                    for (INode n : way.getNodes()) {
-                        if (n != selectedImage) {
-                            drawImageMarker(originalTransform, selectedImage, g, n, distPer100Pixel, false);
-                        }
-                    }
-                }
-                // Paint selected images last. Not particularly worried about painting too much, since most people don't
-                // select thousands of images.
-                drawImageMarker(originalTransform, selectedImage, g, selectedImage, distPer100Pixel,
-                    OffsetUtils.getOffset(selectedImage) != 0);
-            }
-        } else {
-            new MapillaryMapRenderer(g, mv).render(this.getData(), false, box);
+            // Paint selected images last. Not particularly worried about painting too much, since most people don't
+            // select thousands of images.
+            drawImageMarker(originalTransform, selectedImage, g, selectedImage, distPer100Pixel,
+                OffsetUtils.getOffset(selectedImage) != 0);
         }
     }
 
-    private void drawSequence(final Graphics2D g, final MapView mv, final IWay<?> sequence, final INode image) {
-        if (sequence.getNodes().contains(image)) {
+    private void drawSequence(final Graphics2D g, final MapView mv, final IWay<?> sequence, final INode selectedImage,
+        AffineTransform originalTransform, double distPer100Pixel) {
+        final List<? extends INode> nodes = sequence.getNodes();
+        if (selectedImage != null && !nodes.contains(selectedImage)) {
+            g.setComposite(fadeComposite);
+        }
+        // START OLD IMAGE BITS FIXME
+        if (sequence.getNodes().contains(selectedImage)) {
             g.setColor(!MapillarySequenceUtils.hasKey(sequence) ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED
                 : MapillaryColorScheme.SEQ_SELECTED);
         } else {
@@ -397,55 +408,95 @@ public final class MapillaryLayer extends MVTLayer
                 final INode toCheck = sequence.getNodes().stream()
                     .filter(inode -> !Instant.EPOCH.equals(MapillaryImageUtils.getDate(inode))).map(INode.class::cast)
                     .findFirst().orElse(sequence.firstNode());
-                color = getAgedColor(toCheck, MapillaryColorScheme.SEQ_UNSELECTED);
+                color = getColor(toCheck);
             } else {
                 color = MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED;
             }
             g.setColor(color);
-            if (image != null) {
+            if (selectedImage != null) {
                 g.setComposite(fadeComposite);
             }
         }
-        List<INode> nodes = new ArrayList<>(sequence.getNodesCount());
+        // END OLD IMAGE BITS FIXME
         final int zoom = getZoomLevel();
-        boolean someVisible = false;
-        for (INode n : sequence.getNodes()) {
-            boolean visibleNode = zoom < 14 || sequence.isVisible() || MapillaryImageUtils.isImage(n);
-            someVisible |= visibleNode;
-            if (visibleNode || sequence.isFirstLastNode(n)) {
-                nodes.add(n);
-            }
-        }
-        // All zoom levels 14 and above kind of need the full sequence. We could probably simplify at z14 as well.
-        if (zoom < 14 && nodes.size() > 20) {
-            // SimplifyWayAction.simplifyWays() would be better, but that requires Way objects.
-            List<INode> extraneousNodes = new ArrayList<>(nodes.size());
-            for (int i = 0; i < nodes.size(); i++) {
-                if (i % (15 - zoom) != 0 && i != nodes.size() - 1) {
-                    extraneousNodes.add(nodes.get(i));
+        INode previous = null;
+        Point previousPoint = null;
+        for (INode current : nodes) {
+            final Point currentPoint = mv.getPoint(current);
+            if (previous != null && (mv.contains(currentPoint) || mv.contains(previousPoint))) {
+                // FIXME get the right color for the line segment
+                g.drawLine(previousPoint.x, previousPoint.y, currentPoint.x, currentPoint.y);
+                final boolean visibleNode = zoom < 14 || sequence.isVisible() || MapillaryImageUtils.isImage(previous);
+                if (visibleNode) {
+                    // FIXME draw the image here (avoid calculating the points twice)
+                    drawImageMarker(originalTransform, selectedImage, g, previous, distPer100Pixel, false);
                 }
             }
-            nodes.removeAll(extraneousNodes);
+            previous = current;
+            previousPoint = currentPoint;
         }
-        if (someVisible) {
-            MapViewPath path = new MapViewPath(mv);
-            path.append(nodes, false);
-            g.draw(path.computeClippedLine(g.getStroke()));
-            g.setComposite(AlphaComposite.SrcOver);
+        final boolean visibleNode = zoom < 14 || sequence.isVisible() || MapillaryImageUtils.isImage(previous);
+        if (visibleNode) {
+            // FIXME draw the image here (avoid calculating the points twice)
+            drawImageMarker(originalTransform, selectedImage, g, previous, distPer100Pixel, false);
         }
+        g.setComposite(AlphaComposite.SrcOver);
     }
 
-    private Color getAgedColor(final INode node, final Color defaultColor) {
-        if (this.colorByCaptureDate) {
-            final long timeDiff = Instant.now().toEpochMilli() - MapillaryImageUtils.getDate(node).toEpochMilli();
-            // ms per year is ~31_556_952_000 ms
-            if (timeDiff > 4 * YEAR_MILLIS) {
-                return REALLY_OLD_COLOR;
-            } else if (timeDiff > YEAR_MILLIS) {
-                return OLD_COLOR;
+    private Color getColor(final INode node) {
+        switch (this.drawType) {
+        case DATE:
+            return this.dateScale.getColor(MapillaryImageUtils.getDate(node).toEpochMilli());
+        case VELOCITY_FOOT:
+        case VELOCITY_BIKE:
+        case VELOCITY_CAR:
+            final double normalized = calculateVelocity(node);
+            if (Double.isNaN(normalized)) {
+                return this.velocityScale.getNoDataColor();
+            }
+            return this.velocityScale.getColor(normalized);
+        case DIRECTION:
+            final double direction = MapillaryImageUtils.getAngle(node);
+            if (Double.isNaN(direction)) {
+                return this.directionScale.getNoDataColor();
+            }
+            return this.directionScale.getColor(direction);
+        case DEFAULT:
+        }
+        return MapillaryColorScheme.SEQ_UNSELECTED;
+    }
+
+    /**
+     * Calculate the velocity at the node
+     *
+     * @param node The node to get the velocity of
+     * @return The velocity (m/s), or {@link Double#NaN}
+     */
+    private static double calculateVelocity(@Nonnull INode node) {
+        final IWay<?> sequence = MapillaryImageUtils.getSequence(node);
+        if (sequence != null && sequence.getNodesCount() >= 2) {
+            final INode first;
+            final INode second;
+            if (sequence.isFirstLastNode(node)) {
+                if (node.equals(sequence.firstNode())) {
+                    first = node;
+                    second = sequence.getNode(1);
+                } else {
+                    first = sequence.getNode(sequence.getNodesCount() - 2);
+                    second = node;
+                }
+            } else {
+                first = MapillarySequenceUtils.getNextOrPrevious(node, MapillarySequenceUtils.NextOrPrevious.PREVIOUS);
+                second = MapillarySequenceUtils.getNextOrPrevious(node, MapillarySequenceUtils.NextOrPrevious.NEXT);
+            }
+            if (first != null && second != null) {
+                final long dt = MapillaryImageUtils.getDate(second).toEpochMilli()
+                    - MapillaryImageUtils.getDate(first).toEpochMilli();
+                final double dd = second.greatCircleDistance(first);
+                return dd / dt;
             }
         }
-        return defaultColor;
+        return Double.NaN;
     }
 
     /**
@@ -492,7 +543,7 @@ public final class MapillaryLayer extends MVTLayer
             } else {
                 i = null;
             }
-            directionC = getAgedColor(img, MapillaryColorScheme.SEQ_UNSELECTED);
+            directionC = getColor(img);
         }
         MapView mv = MainApplication.getMap().mapView;
 
@@ -593,7 +644,7 @@ public final class MapillaryLayer extends MVTLayer
         }
     }
 
-    private static Point2D getOriginalCentroid(Image i) {
+    private static synchronized Point2D getOriginalCentroid(Image i) {
         if (standardImageCentroid == null) {
             int width = i.getWidth(null);
             int height = i.getHeight(null);
@@ -623,11 +674,11 @@ public final class MapillaryLayer extends MVTLayer
             Set<INode> imageViewedList = imageViewedMap.getOrDefault(ds,
                 Collections.synchronizedSet(Collections.emptySet()));
             synchronized (imageViewedList) {
-                for (INode image : imageViewedList) {
+                for (INode imageToCheck : imageViewedList) {
                     BBox bbox = new BBox();
+                    final LatLon coor = new LatLon(imageToCheck.lat(), imageToCheck.lon());
                     // 96m-556m, depending upon N/S location (low at 80 degrees, high at 0)
-                    final LatLon coor = image.getCoor();
-                    bbox.addLatLon(coor, 0.005);
+                    bbox.addPrimitive(imageToCheck, 0.005);
                     List<OsmPrimitive> searchPrimitives = ds.searchPrimitives(bbox);
                     if (primitives.parallelStream().filter(searchPrimitives::contains)
                         .mapToDouble(prim -> Geometry.getDistance(prim, new Node(coor)))
@@ -659,17 +710,19 @@ public final class MapillaryLayer extends MVTLayer
     @Override
     public Action[] getMenuEntries() {
         return new Action[] { LayerListDialog.getInstance().createShowHideLayerAction(),
-            LayerListDialog.getInstance().createDeleteLayerAction(), new LayerListPopup.InfoAction(this) };
+            LayerListDialog.getInstance().createDeleteLayerAction(), new LayerListPopup.InfoAction(this),
+            new MapillaryCustomizeDrawingAction(Collections.singletonList(this)) };
     }
 
     @Override
     public Object getInfoComponent() {
         Map<String, List<VectorNode>> nodeCollection = getData().getNodes().stream()
             .filter(node -> MapillaryImageUtils.getKey(node) != 0)
+            .filter(node -> MapillaryImageUtils.getSequence(node) != null)
             .collect(Collectors.groupingBy(MapillaryImageUtils::getSequenceKey));
         IntSummaryStatistics seqSizeStats = nodeCollection.values().stream().mapToInt(List::size).summaryStatistics();
         final long numTotal = seqSizeStats.getSum();
-        return I18n.tr("Mapillary layer") + '\n'
+        return tr("Mapillary layer") + '\n'
             + I18n.trn("{0} sequence, containing between {1} and {2} images (ø {3})",
                 "{0} sequences, each containing between {1} and {2} images (ø {3})", getData().getWays().size(),
                 getData().getWays().size(), seqSizeStats.getCount() <= 0 ? 0 : seqSizeStats.getMin(),
@@ -682,12 +735,12 @@ public final class MapillaryLayer extends MVTLayer
         final Lock readLock = getData().getReadLock();
         if (readLock.tryLock()) {
             try {
-                return I18n.tr("{0} images in {1} sequences", getData().getNodes().size(), getData().getWays().size());
+                return tr("{0} images in {1} sequences", getData().getNodes().size(), getData().getWays().size());
             } finally {
                 readLock.unlock();
             }
         }
-        return I18n.tr("Dataset is currently being updated");
+        return tr("Dataset is currently being updated");
     }
 
     @Override
@@ -765,8 +818,9 @@ public final class MapillaryLayer extends MVTLayer
                 GuiHelper.runInEDT(() -> ImageViewerDialog.getInstance().displayImage(null));
             } else {
                 MapillaryImageEntry entry = MapillaryImageEntry.getCachedEntry(image);
-                if (Objects.equals(entry, ImageViewerDialog.getCurrentImage())) {
-                    entry.reload();
+                IImageEntry<?> currentEntry = ImageViewerDialog.getCurrentImage();
+                if (Objects.equals(entry, currentEntry)) {
+                    ImageViewerDialog.getInstance().displayImages(Collections.singletonList(entry));
                 } else {
                     IImageEntry<?> old = ImageViewerDialog.getCurrentImage();
                     GuiHelper.runInEDT(() -> ImageViewerDialog.getInstance().displayImage(entry));
@@ -835,13 +889,6 @@ public final class MapillaryLayer extends MVTLayer
             if (tImage != null && Objects.equals(this.image, tImage)) {
                 this.setCurrentImage(tImage);
             }
-        }
-    }
-
-    @Override
-    public void valueChanged(AbstractProperty.ValueChangeEvent<? extends Boolean> e) {
-        if (MapillaryProperties.COLOR_BY_CAPTURE_DATE.equals(e.getProperty())) {
-            this.colorByCaptureDate = MapillaryProperties.COLOR_BY_CAPTURE_DATE.get();
         }
     }
 

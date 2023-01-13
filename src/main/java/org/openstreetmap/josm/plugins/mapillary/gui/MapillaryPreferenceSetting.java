@@ -61,17 +61,9 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
         I18n.tr("When opening Mapillary image in web browser, show the blur editor instead of the image viewer"),
         MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.get());
 
-    private final JCheckBox colorImagesByCaptureDate = new JCheckBox(
-        I18n.trc("Checkbox label in JOSM settings", "Color images by capture date"),
-        MapillaryProperties.COLOR_BY_CAPTURE_DATE.get());
-
     private final JCheckBox useComputedLocations = new JCheckBox(
         I18n.trc("Checkbox label in JOSM settings", "Use computed location information"),
         MapillaryProperties.USE_COMPUTED_LOCATIONS.get());
-
-    private final JCheckBox useCustomRenderer = new JCheckBox(
-        I18n.trc("Checkbox label in JOSM settings", "Use the custom Mapillary renderer"),
-        MapillaryProperties.USE_CUSTOM_RENDERER.get());
 
     private final SpinnerNumberModel maxDistanceForChangesetSource = new SpinnerNumberModel(
         MapillaryProperties.MAXIMUM_DISTANCE_FOR_CHANGESET_SOURCE.get().doubleValue(), 0.0,
@@ -122,7 +114,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
         mainPanel.add(displayHour, GBC.eol());
         mainPanel.add(moveTo, GBC.eol());
         mainPanel.add(imageLinkToBlurEditor, GBC.eol());
-        mainPanel.add(colorImagesByCaptureDate, GBC.eol());
         mainPanel.add(this.useComputedLocations, GBC.eol());
         this.useComputedLocations.setToolTipText(I18n.tr("Requires JOSM restart"));
 
@@ -151,9 +142,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
         mainPanel.add(numberOfImagesToDraw, GBC.eol());
         ExpertToggleAction.addVisibilitySwitcher(numberOfImagesToDraw);
 
-        mainPanel.add(this.useCustomRenderer, GBC.eol());
-        ExpertToggleAction.addVisibilitySwitcher(this.useCustomRenderer);
-
         developer.addActionListener(e -> DeveloperToggleAction.getInstance().actionPerformed(null));
 
         ExpertToggleAction.addVisibilitySwitcher(developer);
@@ -162,8 +150,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
             developer.setVisible(true);
         }
         MapillaryColorScheme.styleAsDefaultPanel(mainPanel, this.displayHour, this.moveTo, this.imageLinkToBlurEditor,
-            this.colorImagesByCaptureDate, this.useComputedLocations, this.developer, preFetchPanel,
-            changesetSourceDistancePanel, numberOfImagesToDraw, this.useCustomRenderer, this.requiresLogin);
+            this.useComputedLocations, this.developer, preFetchPanel, changesetSourceDistancePanel,
+            numberOfImagesToDraw, this.requiresLogin);
         mainPanel.add(Box.createVerticalGlue(), GBC.eol().fill(GridBagConstraints.BOTH));
 
         container.add(mainPanel, BorderLayout.CENTER);
@@ -213,7 +201,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
         loginPanel.repaint();
     }
 
-    @SuppressWarnings("PMD.ShortMethodName")
     @Override
     public boolean ok() {
         DeveloperToggleAction.getInstance().setDeveloper(developer.isSelected());
@@ -221,13 +208,10 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
         MapillaryProperties.MOVE_TO_IMG.put(moveTo.isSelected());
         MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.put(imageLinkToBlurEditor.isSelected());
         MapillaryProperties.PRE_FETCH_IMAGE_COUNT.put(preFetchSize.getNumber().intValue());
-        MapillaryProperties.COLOR_BY_CAPTURE_DATE.put(colorImagesByCaptureDate.isSelected());
 
         MapillaryProperties.MAXIMUM_DRAW_IMAGES.put(maxForImagesToDraw.getNumber().intValue());
         MapillaryProperties.MAXIMUM_DISTANCE_FOR_CHANGESET_SOURCE
             .put(maxDistanceForChangesetSource.getNumber().doubleValue());
-
-        MapillaryProperties.USE_CUSTOM_RENDERER.put(this.useCustomRenderer.isSelected());
 
         if (ExpertToggleAction.isExpert()) {
             MapillaryProperties.MAXIMUM_DISTANCE_FOR_CHANGESET_SOURCE

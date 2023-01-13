@@ -103,9 +103,7 @@ class MapillaryPreferenceSettingTest {
         return Stream.of(Arguments.of(MapillaryProperties.DISPLAY_HOUR, "displayHour"),
             Arguments.of(MapillaryProperties.MOVE_TO_IMG, "moveTo"),
             Arguments.of(MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR, "imageLinkToBlurEditor"),
-            Arguments.of(MapillaryProperties.COLOR_BY_CAPTURE_DATE, "colorImagesByCaptureDate"),
             Arguments.of(MapillaryProperties.USE_COMPUTED_LOCATIONS, "useComputedLocations"),
-            Arguments.of(MapillaryProperties.USE_CUSTOM_RENDERER, "useCustomRenderer"),
             Arguments.of(MapillaryProperties.DEVELOPER, "developer"));
     }
 
