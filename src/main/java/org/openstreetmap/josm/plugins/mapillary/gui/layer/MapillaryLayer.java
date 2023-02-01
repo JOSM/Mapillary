@@ -389,11 +389,13 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         Point previousPoint = null;
         for (INode current : nodes) {
             final Point currentPoint = mv.getPoint(current);
-            g.setColor(forcedColor != null ? forcedColor : getColor(current));
+            if (MapillaryImageUtils.isImage(current)) {
+                g.setColor(forcedColor != null ? forcedColor : getColor(current));
+            }
             if (previous != null && (mv.contains(currentPoint) || mv.contains(previousPoint))) {
                 // FIXME get the right color for the line segment
+                final boolean visibleNode = zoom >= 14 && sequence.isVisible() && MapillaryImageUtils.isImage(previous);
                 g.drawLine(previousPoint.x, previousPoint.y, currentPoint.x, currentPoint.y);
-                final boolean visibleNode = zoom < 14 || sequence.isVisible() || MapillaryImageUtils.isImage(previous);
                 if (visibleNode) {
                     // FIXME draw the image here (avoid calculating the points twice)
                     drawImageMarker(originalTransform, selectedImage, g, previous, distPer100Pixel, false);
@@ -402,7 +404,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
             previous = current;
             previousPoint = currentPoint;
         }
-        final boolean visibleNode = zoom < 14 || sequence.isVisible() || MapillaryImageUtils.isImage(previous);
+        final boolean visibleNode = zoom >= 14 && sequence.isVisible() && MapillaryImageUtils.isImage(previous);
         if (visibleNode) {
             // FIXME draw the image here (avoid calculating the points twice)
             drawImageMarker(originalTransform, selectedImage, g, previous, distPer100Pixel, false);
