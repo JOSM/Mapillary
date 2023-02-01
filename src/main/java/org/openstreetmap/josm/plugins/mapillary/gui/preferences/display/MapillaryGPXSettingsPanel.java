@@ -61,8 +61,8 @@ public class MapillaryGPXSettingsPanel extends JPanel {
 
         add(new JLabel(tr("Track and Point Coloring")), GBC.eol().insets(20, 0, 0, 0));
         add(colorTypeDefault, GBC.eol().insets(40, 0, 0, 0));
-        add(colorTypeVelocity, GBC.std().insets(40, 0, 0, 0));
-        add(colorTypeVelocityTune, GBC.eop().fill(GBC.HORIZONTAL).insets(5, 0, 0, 5));
+        // add(colorTypeVelocity, GBC.std().insets(40, 0, 0, 0));
+        // add(colorTypeVelocityTune, GBC.eop().fill(GBC.HORIZONTAL).insets(5, 0, 0, 5));
         add(colorTypeDirection, GBC.eol().insets(40, 0, 0, 0));
         add(colorTypeTrackTime, GBC.eol().insets(40, 0, 0, 0));
 

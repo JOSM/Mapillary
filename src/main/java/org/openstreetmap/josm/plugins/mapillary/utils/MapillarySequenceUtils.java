@@ -67,13 +67,20 @@ public class MapillarySequenceUtils {
                 nodes.addAll(0, newNodes);
             }
         }
-        nodes.removeIf(n -> !MapillaryImageUtils.isDownloadable(n));
         final INode nodeOnCurrentSequence;
         int index = nodes.indexOf(node);
         if (next == NextOrPrevious.NEXT && index + 1 < nodes.size()) {
-            nodeOnCurrentSequence = nodes.get(index + 1);
+            INode expectedNext = nodes.get(++index);
+            while (!MapillaryImageUtils.isImage(expectedNext) && index < nodes.size() - 1) {
+                expectedNext = nodes.get(++index);
+            }
+            nodeOnCurrentSequence = expectedNext;
         } else if (next == NextOrPrevious.PREVIOUS && index > 0) {
-            nodeOnCurrentSequence = nodes.get(index - 1);
+            INode expectedPrevious = nodes.get(--index);
+            while (!MapillaryImageUtils.isImage(expectedPrevious) && index > 0) {
+                expectedPrevious = nodes.get(--index);
+            }
+            nodeOnCurrentSequence = expectedPrevious;
         } else {
             nodeOnCurrentSequence = null;
         }

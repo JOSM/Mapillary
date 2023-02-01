@@ -14,13 +14,9 @@ import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -137,9 +133,6 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     private static final ImageIcon SELECTED_IMAGE = new ImageProvider(IMAGE_SPRITE_DIR, "current-ca")
         .setMaxWidth(ImageProvider.ImageSizes.MAP.getAdjustedHeight()).get();
 
-    private static final Ellipse2D IMAGE_CIRCLE = new Ellipse2D.Double(-IMG_MARKER_RADIUS, -IMG_MARKER_RADIUS,
-        2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
-
     /** The color scale used when drawing using velocity */
     private final ColorScale velocityScale = ColorScale.createHSBScale(256);
     /** The color scale used when drawing using date */
@@ -152,12 +145,11 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
 
     /** The color scale used when drawing using direction */
     private final ColorScale directionScale = ColorScale.createCyclicScale(256).setIntervalCount(4)
-        .addTitle(tr("Direction"));;
+        .addTitle(tr("Direction"));
 
     /** The nearest images to the selected image from different sequences sorted by distance from selection. */
     // Use ArrayList instead of an array, since there will not be thousands of instances, and allows for better
     // synchronization
-    private final List<INode> nearestImages = Collections.synchronizedList(new ArrayList<>(2));
 
     /** The images that have been viewed since the last upload */
     private final ConcurrentHashMap<DataSet, Set<INode>> imageViewedMap = new ConcurrentHashMap<>(1);
@@ -198,7 +190,8 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     private void setupColorScales() {
         this.dateScale.setNoDataColor(MapillaryColorScheme.SEQ_UNSELECTED);
         // ChronoUnit.YEARS isn't supported since a year can be either 365 or 366.
-        this.dateScale.setRange(Instant.now().minus(4 * 365L, ChronoUnit.DAYS).toEpochMilli(), Instant.now().toEpochMilli());
+        this.dateScale.setRange(Instant.now().minus(4 * 365L, ChronoUnit.DAYS).toEpochMilli(),
+            Instant.now().toEpochMilli());
         this.directionScale.setNoDataColor(MapillaryColorScheme.SEQ_UNSELECTED);
         this.velocityScale.setNoDataColor(MapillaryColorScheme.SEQ_UNSELECTED);
     }
@@ -347,20 +340,6 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
             MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
 
         final INode selectedImage = this.image;
-        synchronized (this) {
-            for (int i = 0; i < this.nearestImages.size(); i++) {
-                if (i % 2 == 0) {
-                    g.setColor(Color.RED);
-                } else {
-                    g.setColor(Color.BLUE);
-                }
-                if (selectedImage != null) {
-                    final Point selected = mv.getPoint(selectedImage);
-                    final Point p = mv.getPoint(this.nearestImages.get(i));
-                    g.draw(new Line2D.Double(p.getX(), p.getY(), selected.getX(), selected.getY()));
-                }
-            }
-        }
 
         // Draw sequence line
         g.setStroke(new BasicStroke(2));
@@ -398,31 +377,19 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         if (selectedImage != null && !nodes.contains(selectedImage)) {
             g.setComposite(fadeComposite);
         }
-        // START OLD IMAGE BITS FIXME
+        final Color forcedColor;
         if (sequence.getNodes().contains(selectedImage)) {
-            g.setColor(!MapillarySequenceUtils.hasKey(sequence) ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED
-                : MapillaryColorScheme.SEQ_SELECTED);
+            forcedColor = !MapillarySequenceUtils.hasKey(sequence) ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED
+                : MapillaryColorScheme.SEQ_SELECTED;
         } else {
-            final Color color;
-            if (MapillarySequenceUtils.hasKey(sequence)) {
-                final INode toCheck = sequence.getNodes().stream()
-                    .filter(inode -> !Instant.EPOCH.equals(MapillaryImageUtils.getDate(inode))).map(INode.class::cast)
-                    .findFirst().orElse(sequence.firstNode());
-                color = getColor(toCheck);
-            } else {
-                color = MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED;
-            }
-            g.setColor(color);
-            if (selectedImage != null) {
-                g.setComposite(fadeComposite);
-            }
+            forcedColor = null;
         }
-        // END OLD IMAGE BITS FIXME
         final int zoom = getZoomLevel();
         INode previous = null;
         Point previousPoint = null;
         for (INode current : nodes) {
             final Point currentPoint = mv.getPoint(current);
+            g.setColor(forcedColor != null ? forcedColor : getColor(current));
             if (previous != null && (mv.contains(currentPoint) || mv.contains(previousPoint))) {
                 // FIXME get the right color for the line segment
                 g.drawLine(previousPoint.x, previousPoint.y, currentPoint.x, currentPoint.y);
@@ -493,7 +460,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
                 final long dt = MapillaryImageUtils.getDate(second).toEpochMilli()
                     - MapillaryImageUtils.getDate(first).toEpochMilli();
                 final double dd = second.greatCircleDistance(first);
-                return dd / dt;
+                return dd / (dt / 1000d);
             }
         }
         return Double.NaN;
@@ -588,13 +555,13 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
             scale.scale(2, 2);
             g.setTransform(scale);
             g.setComposite(fadeComposite);
-            g.fill(IMAGE_CIRCLE);
+            g.fillOval(-IMG_MARKER_RADIUS, -IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
             g.setComposite(currentComposite);
         }
         final AffineTransform translate = AffineTransform.getTranslateInstance(p.x, p.y);
         translate.preConcatenate(originalTransform);
         g.setTransform(translate);
-        g.fill(IMAGE_CIRCLE);
+        g.fillOval(-IMG_MARKER_RADIUS, -IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
         if (i != null) {
             // This _must_ be set after operations complete (see JOSM #19516 for more information)
             // convert the angle to radians from degrees
