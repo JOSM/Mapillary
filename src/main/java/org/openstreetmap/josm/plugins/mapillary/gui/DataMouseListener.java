@@ -145,7 +145,7 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
                             layer.getData().setHighlighted(
                                 ways.stream().map(IPrimitive::getPrimitiveId).collect(Collectors.toSet()));
                             layer.invalidate();
-                        } else {
+                        } else if (!layer.getData().getHighlighted().isEmpty()) {
                             layer.getData().setHighlighted(Collections.emptyList());
                         }
                     } finally {
