@@ -83,7 +83,6 @@ import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
-import org.openstreetmap.josm.plugins.mapillary.data.mapillary.visitor.paint.MapillaryMapRenderer;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.OldVersionDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.geoimage.MapillaryImageEntry;
@@ -831,12 +830,10 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
 
             new MapillaryNodeDownloader(node, MapillaryLayer.getInstance()::setCurrentImage).execute();
         }
-        MapillaryMapRenderer.selectionOrHighlightChanged();
     }
 
     @Override
     public void highlightUpdated(HighlightUpdateEvent e) {
-        MapillaryMapRenderer.selectionOrHighlightChanged();
         this.invalidate();
     }
 
