@@ -135,11 +135,13 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     /** The color scale used when drawing using velocity */
     private final ColorScale velocityScale = ColorScale.createHSBScale(256);
     /** The color scale used when drawing using date */
-    private final ColorScale dateScale = ColorScale.createFixedScale(new Color[] { ColorHelper.html2color("e17155"), // Really
-                                                                                                                     // old
-                                                                                                                     // color
-        ColorHelper.html2color("fbc01b"), // Old color
-        MapillaryColorScheme.SEQ_UNSELECTED // New color
+    private final ColorScale dateScale = ColorScale.createFixedScale(
+        // Really old color
+        new Color[] { ColorHelper.html2color("e17155"),
+        // Old color
+        ColorHelper.html2color("fbc01b"),
+        // New color
+        MapillaryColorScheme.SEQ_UNSELECTED
     }).addTitle(tr("Time"));
 
     /** The color scale used when drawing using direction */
@@ -189,8 +191,8 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     private void setupColorScales() {
         this.dateScale.setNoDataColor(MapillaryColorScheme.SEQ_UNSELECTED);
         // ChronoUnit.YEARS isn't supported since a year can be either 365 or 366.
-        this.dateScale.setRange(Instant.now().minus(4 * 365L, ChronoUnit.DAYS).toEpochMilli(),
-            Instant.now().toEpochMilli());
+        this.dateScale.setRange(Instant.now().minus(4 * 365L, ChronoUnit.DAYS).getEpochSecond(),
+            Instant.now().getEpochSecond());
         this.directionScale.setNoDataColor(MapillaryColorScheme.SEQ_UNSELECTED);
         this.velocityScale.setNoDataColor(MapillaryColorScheme.SEQ_UNSELECTED);
     }
@@ -414,7 +416,10 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     private Color getColor(final INode node) {
         switch (this.drawType) {
         case DATE:
-            return this.dateScale.getColor(MapillaryImageUtils.getDate(node).toEpochMilli());
+            if (node.isTimestampEmpty()) {
+                MapillaryImageUtils.getDate(node);
+            }
+            return this.dateScale.getColor(node.getRawTimestamp());
         case VELOCITY_FOOT:
         case VELOCITY_BIKE:
         case VELOCITY_CAR:
