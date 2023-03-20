@@ -38,6 +38,7 @@ import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+import org.openstreetmap.josm.data.Version;
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
@@ -562,7 +563,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
         if (!destroyed) {
             super.destroy();
             this.destroyable.fireEvent(Destroyable::destroy);
-            if (MainApplication.getMap() != null) {
+            if (MainApplication.getMap() != null && Version.getInstance().getVersion() < 18686) {
                 MainApplication.getMap().removeToggleDialog(this);
             }
             OrganizationRecord.removeOrganizationListener(this);
