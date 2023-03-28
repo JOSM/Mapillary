@@ -375,6 +375,11 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     private void drawSequence(final Graphics2D g, final MapView mv, final IWay<?> sequence, final INode selectedImage,
         AffineTransform originalTransform, double distPer100Pixel) {
         final List<? extends INode> nodes = sequence.getNodes();
+        String id = MapillarySequenceUtils.getKey(sequence);
+        if (nodes.stream().filter(INode::isTagged).filter(INode::isVisible).map(MapillaryImageUtils::getSequenceKey)
+            .noneMatch(id::equals)) {
+            return;
+        }
         if (selectedImage != null && !nodes.contains(selectedImage)) {
             g.setComposite(fadeComposite);
         }
@@ -389,6 +394,9 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         INode previous = null;
         Point previousPoint = null;
         for (INode current : nodes) {
+            if (!current.isVisible() && current.isTagged()) {
+                continue;
+            }
             final Point currentPoint = mv.getPoint(current);
             if (MapillaryImageUtils.isImage(current)) {
                 g.setColor(forcedColor != null ? forcedColor : getColor(current));
@@ -486,6 +494,9 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         final INode img, final double dist100Pixel, final boolean offset) {
         if (img == null || !img.isLatLonKnown()) {
             Logging.warn("An image is not painted, because it is null or has no LatLon!");
+            return;
+        }
+        if (!img.isVisible()) {
             return;
         }
         Composite originalComposite = g.getComposite();
