@@ -215,8 +215,16 @@ public final class MapillaryFilterDialog extends ToggleDialog
 
         // Listeners
         filterByDateCheckbox.addItemListener(itemE -> {
-            spinner.setEnabled(filterByDateCheckbox.isSelected());
-            time.setEnabled(filterByDateCheckbox.isSelected());
+            final boolean isSelected = filterByDateCheckbox.isSelected();
+            spinner.setEnabled(isSelected);
+            time.setEnabled(isSelected);
+            if (isSelected) {
+                this.startDate.setInstant(convertDateRangeBox(spinnerModel, time));
+                this.shouldHidePredicate.startDateRefresh = this.startDate.getInstant();
+            } else {
+                this.startDate.reset();
+                this.shouldHidePredicate.startDateRefresh = Instant.MIN;
+            }
         });
 
         spinner.addChangeListener(l -> {
