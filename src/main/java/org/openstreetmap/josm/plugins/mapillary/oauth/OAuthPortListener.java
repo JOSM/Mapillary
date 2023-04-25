@@ -80,6 +80,7 @@ public class OAuthPortListener extends Thread {
             client.setHeader("Authorization", "OAuth " + MapillaryConfig.getUrls().getClientSecret());
             client.setRequestBody(("grant_type=authorization_code&client_id=" + MapillaryConfig.getUrls().getClientId()
                 + "&code=" + authorizationCode).getBytes(StandardCharsets.UTF_8));
+            client.setHeader("Content-Type", "application/x-www-form-urlencoded");
 
             final HttpClient.Response response = client.connect();
             try (JsonReader jsonReader = Json.createReader(response.getContentReader())) {
