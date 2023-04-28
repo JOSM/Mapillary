@@ -27,8 +27,8 @@ public class MapPointObjectLayerAction extends JosmAction {
         "Displays the layer displaying the map point objects detected by Mapillary");
 
     public MapPointObjectLayerAction() {
-        super(tr(ACTION_NAME), MapillaryPlugin.LOGO.setSize(ImageSizes.DEFAULT), tr(TOOLTIP), Shortcut
-            .registerShortcut("mapillary:pointFeaturesLayer", tr(ACTION_NAME), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+        super(tr(ACTION_NAME), MapillaryPlugin.LOGO.setSize(ImageSizes.DEFAULT), tr(TOOLTIP),
+            Shortcut.registerShortcut("mapillary:pointFeaturesLayer", tr(ACTION_NAME), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
             false, "mapillary:pointFeaturesLayer", true);
     }
 

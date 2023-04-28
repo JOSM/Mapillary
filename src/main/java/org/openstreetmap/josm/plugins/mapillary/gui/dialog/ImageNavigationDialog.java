@@ -39,28 +39,28 @@ public class ImageNavigationDialog extends ToggleDialog
     implements LayerManager.LayerChangeListener, IGeoImageLayer.ImageChangeListener {
     /* Shortcut for image navigation: forward */
     private static final Shortcut FORWARD = Shortcut.registerShortcut("mapillary:image_navigation:forward",
-        tr("Mapillary: Image Navigation: Forward"), Shortcut.NONE, KeyEvent.CHAR_UNDEFINED);
+        tr("Mapillary: Image Navigation: Forward"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE);
     /* Shortcut for image navigation: left */
     private static final Shortcut LEFT = Shortcut.registerShortcut("mapillary:image_navigation:left",
-        tr("Mapillary: Image Navigation: Left"), Shortcut.NONE, KeyEvent.CHAR_UNDEFINED);
+        tr("Mapillary: Image Navigation: Left"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE);
     /* Shortcut for image navigation: right */
     private static final Shortcut RIGHT = Shortcut.registerShortcut("mapillary:image_navigation:right",
-        tr("Mapillary: Image Navigation: Right"), Shortcut.NONE, KeyEvent.CHAR_UNDEFINED);
+        tr("Mapillary: Image Navigation: Right"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE);
     /* Shortcut for image navigation: turn left */
     private static final Shortcut TURN_LEFT = Shortcut.registerShortcut("mapillary:image_navigation:turn_left",
-        tr("Mapillary: Image Navigation: Turn Left"), Shortcut.NONE, KeyEvent.CHAR_UNDEFINED);
+        tr("Mapillary: Image Navigation: Turn Left"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE);
     /* Shortcut for image navigation: turn right */
     private static final Shortcut TURN_RIGHT = Shortcut.registerShortcut("mapillary:image_navigation:turn_right",
-        tr("Mapillary: Image Navigation: Turn Right"), Shortcut.NONE, KeyEvent.CHAR_UNDEFINED);
+        tr("Mapillary: Image Navigation: Turn Right"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE);
     /* Shortcut for image navigation: reverse */
     private static final Shortcut U_TURN = Shortcut.registerShortcut("mapillary:image_navigation:reverse",
-        tr("Mapillary: Image Navigation: Reverse"), Shortcut.NONE, KeyEvent.CHAR_UNDEFINED);
+        tr("Mapillary: Image Navigation: Reverse"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE);
     /* Shortcut for image navigation: back */
     private static final Shortcut BACK = Shortcut.registerShortcut("mapillary:image_navigation:back",
-        tr("Mapillary: Image Navigation: Back"), Shortcut.NONE, KeyEvent.CHAR_UNDEFINED);
+        tr("Mapillary: Image Navigation: Back"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE);
     /* Shortcut for image navigation: 360deg panoramic */
     private static final Shortcut PANO = Shortcut.registerShortcut("mapillary:image_navigation:pano",
-        tr("Mapillary: Image Navigation: 360 panoramic"), Shortcut.NONE, KeyEvent.CHAR_UNDEFINED);
+        tr("Mapillary: Image Navigation: 360 panoramic"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE);
     private ImageNavigation imageNavigation;
     private JPanel panel;
 
@@ -69,8 +69,8 @@ public class ImageNavigationDialog extends ToggleDialog
      */
     public ImageNavigationDialog() {
         super(tr("Mapillary: Image Navigation"), "mapillary-main", tr("Navigate between different Mapillary images"),
-            Shortcut.registerShortcut("mapillary:image_navigation", tr("Mapillary: Image Navigation"), Shortcut.NONE,
-                KeyEvent.CHAR_UNDEFINED),
+            Shortcut.registerShortcut("mapillary:image_navigation", tr("Mapillary: Image Navigation"), KeyEvent.CHAR_UNDEFINED,
+                Shortcut.NONE),
             80);
         MainApplication.getLayerManager().addAndFireLayerChangeListener(this);
     }
