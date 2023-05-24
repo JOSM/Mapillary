@@ -218,6 +218,7 @@ transifex.com:
     name: transifex.com
     url: https://www.transifex.com/josm/josm/josm-plugin_$PLUGIN_NAME/
   script:
+    - mv .tx/config_old .tx/config
     - TX_TOKEN="$TRANSIFEX_TOKEN" tx push -s --no-interactive
   needs: ["translate"]
   only:
