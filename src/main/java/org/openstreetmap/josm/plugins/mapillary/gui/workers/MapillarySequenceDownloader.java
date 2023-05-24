@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -175,14 +176,22 @@ public class MapillarySequenceDownloader extends MapillaryUIDownloader<Mapillary
     protected void process(List<MapillarySequence> chunks) {
         super.process(chunks);
         VectorDataSet ds = MapillaryLayer.getInstance().getData();
-        for (MapillarySequence seq : chunks) {
-            for (MapillaryNode oldNode : seq.getNodes()) {
-                VectorNode oldPrimitive = (VectorNode) ds.getPrimitiveById(oldNode);
-                if (oldPrimitive != null) {
-                    oldPrimitive.putAll(oldNode.getKeys());
-                    oldPrimitive.setCoor(oldNode.getCoor());
+        // Technically a writeLock would be better, but we cannot get that with the current VectorDataSet
+        // implementation.
+        final Lock dsLock = ds.getReadLock();
+        try {
+            dsLock.lock();
+            for (MapillarySequence seq : chunks) {
+                for (MapillaryNode oldNode : seq.getNodes()) {
+                    VectorNode oldPrimitive = (VectorNode) ds.getPrimitiveById(oldNode);
+                    if (oldPrimitive != null) {
+                        oldPrimitive.putAll(oldNode.getKeys());
+                        oldPrimitive.setCoor(oldNode.getCoor());
+                    }
                 }
             }
+        } finally {
+            dsLock.unlock();
         }
         // The counter just avoids many resets of the imagery window in short order
         if (!chunks.isEmpty() && counter.getAndAdd(chunks.size()) < 3) {
