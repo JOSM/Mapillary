@@ -107,12 +107,14 @@ public final class TrafficSignFilter extends JPanel
             lbox.setSelected(true);
             lbox.putClientProperty("layer", layer[0]);
             // TODO remove when it listens to layers.
-            // Maybe get rid of Traffic SIgn/Point object layer filters (no longer needed due to separate layers) OR
+            // Maybe get rid of Traffic Sign/Point object layer filters (no longer needed due to separate layers) OR
             // clicking on them adds the appropriate layer. Affect hide/show action of layers instead of adding filters?
             DeveloperToggleAction.addVisibilitySwitcher(lbox);
         }
 
         JCheckBox smartEditModeBox = new JCheckBox(I18n.tr("Smart Edit Mode"));
+        smartEditModeBox.setToolTipText(
+            I18n.tr("Add Mapillary Objects to OpenStreetMap; some additional client-side filtering will occur."));
         smartEditModeBox.setSelected(Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()));
         MapillaryProperties.SMART_EDIT.addListener(l -> updateSmartEdit(l, smartEditModeBox));
         smartEditModeBox.addItemListener(l -> smartEditMode(l.getStateChange() == ItemEvent.SELECTED));
