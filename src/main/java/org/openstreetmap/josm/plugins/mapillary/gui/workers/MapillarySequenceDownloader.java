@@ -20,6 +20,7 @@ import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
+import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Pair;
@@ -121,7 +122,13 @@ public class MapillarySequenceDownloader extends MapillaryUIDownloader<Mapillary
     }
 
     private void getImageRange(int i, long[] imagesToGet, long[] images) {
+        int retries = 0;
         Map<String, List<MapillaryNode>> map = MapillaryDownloader.downloadImages(imagesToGet);
+        while (retries < Config.getPref().getInt("mapillary.image.retries", 10) && (map.size() != 1
+            || !map.containsKey(this.sequenceKey) || map.get(this.sequenceKey).size() != imagesToGet.length)) {
+            map = MapillaryDownloader.downloadImages(imagesToGet);
+            retries++;
+        }
         if (map.size() != 1 || !map.containsKey(this.sequenceKey)) {
             throw new IllegalArgumentException(
                 "Mapillary sequence " + this.sequenceKey + " did not download any images");
