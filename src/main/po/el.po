@@ -1,19 +1,20 @@
 # Translations for the JOSM plugin 'Mapillary' (el)
-# Copyright (C) 2022
+# Copyright (C) 2023
 # This file is distributed under the same license as the josm-plugin_Mapillary package.
 # FIRST AUTHOR, YEAR.
 #
 # Translators:
 # Gerasimos Maris, 2018
-# Simon Legner, 2022
+# Simon Legner, 2023
+# G. Traveller, 2023
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.14-19-g22312a2\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.1.1-7-gb92f8ff\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-27 15:04+0000\n"
+"POT-Creation-Date: 2023-02-08 15:05+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
-"Language-Team: Greek (https://www.transifex.com/josm/teams/2544/el/)\n"
+"Language-Team: Greek (https://app.transifex.com/josm/teams/2544/el/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -35,7 +36,7 @@ msgid "Add"
 msgstr "Προσθήκη"
 
 msgid "Add Map Feature to OSM"
-msgstr ""
+msgstr "Προσθήκη Χαρακτηριστικό Χάρτη στο OSM"
 
 msgid "Add Mapillary tag"
 msgstr "Προσθήκη ετικέτας Mapillary"
@@ -46,14 +47,26 @@ msgstr "Προσθήκη φίλτρου."
 msgid "All"
 msgstr "Όλα"
 
-msgid "At least one of the optional arguments must be used ({0})"
+#. color Tracks by Velocity Tune
+msgid "Allows to tune the track coloring for different average speeds."
 msgstr ""
+"Επιτρέπει τη ρύθμιση του χρωματισμού της διαδρομής για διαφορετικούς μέσους "
+"όρους ταχυτήτων."
+
+msgid "Back"
+msgstr "Πίσω"
 
 msgid "Bad Imagery"
-msgstr ""
+msgstr "Κακό Υπόβαθρο"
+
+msgid "Bicycle"
+msgstr "Ποδήλατο"
 
 msgid "Cancel"
 msgstr "Ακύρωση"
+
+msgid "Car"
+msgstr "Αυτοκίνητο"
 
 #. i18n: Checkbox label in JOSM settings
 msgid ""
@@ -62,72 +75,78 @@ msgstr ""
 "Κεντράρισμα προβολής σε νέα εικόνα όταν χρησιμοποιείτε τα κουμπιά για να "
 "μεταβείτε σε άλλη εικόνα"
 
-msgid "Choose signs"
-msgstr "Επιλέξτε σημάδια"
-
 msgid "Clear"
 msgstr "Καθαρισμός"
 
 msgid "Color"
 msgstr "Χρώμα"
 
-msgctxt "Checkbox label in JOSM settings"
-msgid "Color images by capture date"
+msgid "Colors points and track segments by direction."
+msgstr "Χρωματισμός σημείων και τμημάτων ιχνών ανάλογα με την κατεύθυνση."
+
+msgid "Colors points and track segments by its timestamp."
 msgstr ""
+"Χρωματισμός σημείων και τμημάτων ιχνών ανάλογα με το χρόνο καταγραφής."
+
+msgid "Colors points and track segments by velocity."
+msgstr "Χρωματισμός σημείων και τμημάτων ιχνών ανάλογα με την ταχύτητα."
 
 msgid "Comment"
 msgstr "Σχόλιο"
 
 msgid "Comment to send to Mapillary"
-msgstr ""
+msgstr "Σχόλιο να αποσταλθεί στο Mapillary"
 
 msgid "Copied URL to clipboard …"
-msgstr ""
+msgstr "Αντιγραμμένα URL στο πρόχειρο..."
 
 msgid "Copied color to clipboard"
-msgstr ""
+msgstr "Αντιγραμμένα χρώμα στο πρόχειρο..."
 
 msgid "Copied key to clipboard …"
-msgstr ""
+msgstr "Αντιγραμμένα κλειδί στο πρόχειρο..."
 
 msgid "Copy URL"
-msgstr ""
+msgstr "Αντιγραφή URL"
 
 msgid "Copy color"
-msgstr ""
+msgstr "Αντιγραφή χρώματος"
 
 msgid "Copy key"
 msgstr "Αντιγραφή κλειδιού"
 
 msgid "Could not load image: {0}"
-msgstr ""
+msgstr "Αδυναμία φόρτωσης εικόνας: {0}"
 
 msgid "Could not open the URL {0} in a browser"
 msgstr ""
 "Δεν είναι δυνατό να ανοίξει η διεύθυνση {0} σε ένα πρόγραμμα περιήγησης"
 
-msgid "Could not refresh Mapillary token. HTTP Status Code {0}."
-msgstr ""
+msgid "Customize track drawing"
+msgstr "Προσαρμογή σχεδίασης ίχνους"
 
 #. filter mode: remove
 msgctxt "filter"
 msgid "D"
 msgstr "Δ"
 
-msgid "Dataset is currently being updated"
-msgstr ""
-
 msgid "Days"
 msgstr "Ημέρες"
+
+msgid "Default"
+msgstr "Προκαθορισμένο"
 
 msgid "Delete"
 msgstr "Διαγραφή"
 
 msgid "Delete Mapillary object"
-msgstr ""
+msgstr "Διαφραφή αντικείμενου Mapillary"
 
 msgid "Delete filter."
 msgstr "Διαγραφή φίλτρου."
+
+msgid "Direction"
+msgstr "Κατεύθυνση"
 
 #. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
@@ -137,14 +156,6 @@ msgid "Displays detail information on the currently selected Mapillary image"
 msgstr ""
 "Εμφάνιση λεπτομερούς πληροφορίας στην τρέχουσα επιλεγμένη εικόνα του "
 "Mapillary"
-
-msgid ""
-"Displays the layer displaying the map point objects detected by Mapillary"
-msgstr ""
-
-msgid ""
-"Displays the layer displaying the traffic sign objects detected by Mapillary"
-msgstr ""
 
 msgid ""
 "Do you really want to replace the current value <i>{0}</i> with the new "
@@ -182,18 +193,6 @@ msgstr ""
 msgid "Enable filter"
 msgstr "Ενεργοποίηση φίλτρου"
 
-msgid "Enable/disable developer mode"
-msgstr ""
-
-msgid "End"
-msgstr ""
-
-msgid "End: {0}"
-msgstr ""
-
-msgid "Erroneous Data"
-msgstr ""
-
 msgid "Explore"
 msgstr "Εξερεύνηση"
 
@@ -217,29 +216,17 @@ msgctxt "filter"
 msgid "F"
 msgstr "F"
 
-msgid "False Positive"
-msgstr ""
-
 msgid "Filter"
 msgstr "Φίλτρο"
-
-msgid "Filter Mapillary Detections"
-msgstr ""
-
-msgid "Filter mapillary objects and hide/disable them."
-msgstr ""
 
 msgid "Filter mode"
 msgstr "Λειτουργία φίλτρου"
 
-msgid "First Seen End"
-msgstr ""
+msgid "Foot"
+msgstr "Πεζοί"
 
-msgid "First Seen Start"
-msgstr ""
-
-msgid "Give way"
-msgstr ""
+msgid "Forward"
+msgstr "Εμπρός"
 
 #. column header: hide filter
 msgctxt "filter"
@@ -257,9 +244,6 @@ msgctxt "filter"
 msgid "I"
 msgstr "I"
 
-msgid "Image Quality"
-msgstr ""
-
 msgid "Image actions"
 msgstr "Ενέργειες εικόνας"
 
@@ -269,29 +253,11 @@ msgstr "Ανιχνεύσεις εικόνας"
 msgid "Image info"
 msgstr "Πληροφορία εικόνας"
 
-msgid "Image info dialog"
-msgstr ""
-
 msgid "Image key"
 msgstr "Κουμπί εικόνας"
 
-msgid "Image: "
-msgstr ""
-
-msgid "Intersection danger"
-msgstr "Κίνδυνος διασταύρωσης"
-
 msgid "Inverse filter"
 msgstr "Αντιστροφή φίλτρου"
-
-msgid "Just remove it"
-msgstr ""
-
-msgid "Last Seen End"
-msgstr ""
-
-msgid "Last Seen Start"
-msgstr ""
 
 msgid "Layer"
 msgstr "Επίπεδο"
@@ -310,30 +276,12 @@ msgctxt "filter"
 msgid "M"
 msgstr "M"
 
-msgid "Mandatory direction (any)"
-msgstr "Υποχρεωτική κατεύθυνση (οποιαδήποτε)"
-
 msgid "Mapillary"
 msgstr "Mapillary"
-
-msgid "Mapillary Expert Filter"
-msgstr ""
-
-msgid "Mapillary Filters"
-msgstr ""
 
 #. ImageInfos
 msgid "Mapillary Images"
 msgstr "Εικόνες Mapillary"
-
-msgid "Mapillary Point Objects"
-msgstr ""
-
-msgid "Mapillary Smart Edit: Add objects"
-msgstr ""
-
-msgid "Mapillary Traffic Signs"
-msgstr ""
 
 msgid "Mapillary filter"
 msgstr "Φίλτρο Mapillary"
@@ -341,35 +289,11 @@ msgstr "Φίλτρο Mapillary"
 msgid "Mapillary image"
 msgstr "Εικόνα Mapillary"
 
-msgid "Mapillary image read should never occur on UI thread"
-msgstr ""
-
-msgid "Mapillary images Filter"
-msgstr ""
-
 msgid "Mapillary layer"
 msgstr "Επίπεδο Mapillary"
 
 msgid "Mapillary login"
 msgstr "Σύνδεση στο Mapillary"
-
-msgid "Mapillary point features layer"
-msgstr ""
-
-msgid "Mapillary style sheet"
-msgstr ""
-
-msgid "Mapillary traffic signs layer"
-msgstr ""
-
-msgid "Mapillary: Could not refresh login, logging out"
-msgstr ""
-
-msgid "Maximum distance to consider for changeset source calculations"
-msgstr ""
-
-msgid "Month"
-msgstr ""
 
 msgid "Months"
 msgstr "Μήνες"
@@ -383,29 +307,8 @@ msgstr "Μετακίνηση φίλτρου πάνω."
 msgid "Multikey: {0}"
 msgstr "Πολλαπλό κλειδί: {0}"
 
-msgid "No color selected"
-msgstr ""
-
-msgid "No entry"
-msgstr "Απαγορεύεται η είσοδος"
-
 msgid "No images found"
 msgstr "Δεν βρέθηκαν εικόνες"
-
-msgid "No known image provider used"
-msgstr ""
-
-msgid "No overtaking"
-msgstr "Απαγορεύεται η προσπέραση"
-
-msgid "No parking"
-msgstr "Απαγορεύεται η στάθμευση"
-
-msgid "No turn"
-msgstr "Απαγορεύεται η στροφή"
-
-msgid "Non-panoramic"
-msgstr ""
 
 msgid "Not older than: "
 msgstr "Δεν είναι παλαιότερο από:"
@@ -415,57 +318,11 @@ msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr ""
 "Αριθμός εικόνων που πρέπει να προωθηθούν (προς τα εμπρός και προς τα πίσω)"
 
-msgid "Number of images to draw in the map view (affects performance)"
-msgstr ""
-
-msgid "Object Detection Filters"
-msgstr ""
-
-msgid ""
-"Only Mapillary images are supported at this time, use "
-"photo=Mapillary/<image_id>"
-msgstr ""
-
-msgid ""
-"Only Mapillary sequences are supported at this time, use "
-"sequence=Mapillary/<sequence_id>"
-msgstr ""
-
-msgid "Only images with signs"
-msgstr "Μόνο εικόνες με πινακίδες"
-
-msgid "Only show objects on detection layers (\"Relevant objects\")"
-msgstr ""
-
 msgid "Open Mapillary filter dialog"
 msgstr "Άνοιγμα διαλόγου φίλτρου Mapillary"
 
 msgid "Open Mapillary layer"
 msgstr "Άνοιγμα επιπέδου Mapillary"
-
-msgid "Org"
-msgstr ""
-
-msgid "Organization"
-msgstr ""
-
-msgid "Organization: {0}"
-msgstr ""
-
-msgid "Organizations"
-msgstr ""
-
-msgid "Panoramic"
-msgstr ""
-
-msgid "Pedestrian crossing"
-msgstr "Διάβαση πεζών"
-
-msgid "Picture Filters"
-msgstr ""
-
-msgid "Point Objects"
-msgstr ""
 
 #. translators notes must be in front
 #. filter mode: replace
@@ -473,17 +330,8 @@ msgctxt "filter"
 msgid "R"
 msgstr "R"
 
-msgid "Remote Control has been asked to load:"
-msgstr ""
-
-msgid "Remote Control has been asked to set Mapillary filters:"
-msgstr ""
-
 msgid "Remove"
 msgstr "Αφαίρεση"
-
-msgid "Requires JOSM restart"
-msgstr ""
 
 msgid "Reset"
 msgstr "Μηδενισμός"
@@ -491,84 +339,17 @@ msgstr "Μηδενισμός"
 msgid "Reverse"
 msgstr "Αντιστροφή"
 
-msgid "Reverse the filters order."
-msgstr ""
-
-msgid "Roundabout"
-msgstr "Κυκλικός κόμβος"
-
-msgid "Select Mapillary Detection ({0})"
-msgstr ""
-
-msgid "Select Mapillary Image ({0})"
-msgstr ""
-
-msgid "Select Visible"
-msgstr ""
-
 msgid "Select a directory"
 msgstr "Επιλέξτε έναν κατάλογο"
-
-msgid "Select the Mapillary Detection {0}"
-msgstr ""
-
-msgid "Select the Mapillary Image {0} on the {1} layer (downloads if needed)"
-msgstr ""
-
-msgid "Select/Deselect all object detections on the current page"
-msgstr ""
 
 msgid "Sequence key"
 msgstr "Κουμπί αλληλουχίας"
 
-msgid "Sequence offset"
-msgstr ""
-
-msgid "Sequence: "
-msgstr ""
-
-msgid "Show Image types: "
-msgstr ""
-
-msgid "Show Relevant"
-msgstr ""
-
 msgid "Show detections on top of image"
 msgstr "Εμφάνιση ανιχνεύσεων στην κορυφή της εικόνας"
 
-msgid "Show the next page of items"
-msgstr ""
-
-msgid "Show the previous page of items"
-msgstr ""
-
-msgid "Show this number of items on each page"
-msgstr ""
-
-msgid "Smart Edit Mode"
-msgstr ""
-
-msgid "Snap to highway"
-msgstr ""
-
 msgid "Sort"
 msgstr "Ταξινόμηση"
-
-msgid "Sort filters."
-msgstr ""
-
-msgid "Speed limit"
-msgstr "Οριο ταχύτητας"
-
-msgid "Start"
-msgstr ""
-
-msgid "Start: {0}"
-msgstr ""
-
-msgctxt "name of the traffic sign"
-msgid "Stop"
-msgstr "Stop"
 
 msgid "Tag conflict"
 msgstr "Σύγκρουση ετικέτας"
@@ -578,17 +359,8 @@ msgctxt "filter"
 msgid "Text"
 msgstr "Κείμενο"
 
-msgid ""
-"There is a newer version of JOSM and/or the Mapillary plugin. Please update."
-msgstr ""
-
-msgid ""
-"This currently removes the detection from the current layer, but may report "
-"back to Mapillary in the future"
-msgstr ""
-
-msgid "Today"
-msgstr ""
+msgid "Time"
+msgstr "Ώρα"
 
 msgid "Toggle: {0}"
 msgstr "Εναλλαγή: {0}"
@@ -596,18 +368,11 @@ msgstr "Εναλλαγή: {0}"
 msgid "Total Mapillary images: {0}"
 msgstr "Σύνολο εικόνων Mapillary: {0}"
 
-msgid "Traffic Signs"
-msgstr ""
+msgid "Track and Point Coloring"
+msgstr "Χρωματισμός Ιχνών και Σημείων"
 
-msgid "Uneven road"
-msgstr "Ανώμαλος δρόμος"
-
-msgid ""
-"Unknown Mapillary exception.\n"
-"This message may contain potentially sensitive information!\n"
-"{0}\n"
-"{1}"
-msgstr ""
+msgid "Track date"
+msgstr "Ημερομηνία ίχνους"
 
 msgid "Up"
 msgstr "Πάνω"
@@ -615,37 +380,11 @@ msgstr "Πάνω"
 msgid "Update"
 msgstr "Ενημέρωση"
 
-msgctxt "Checkbox label in JOSM settings"
-msgid "Use computed location information"
-msgstr ""
-
-msgctxt "Checkbox label in JOSM settings"
-msgid "Use the custom Mapillary renderer"
-msgstr ""
+msgid "Velocity (red = slow, green = fast)"
+msgstr "Ταχύτητα (κόκκινο = αργό, πράσινο = γρήγορο)"
 
 msgid "View in browser"
 msgstr "Προβολή στο πρόγραμμα περιήγησης"
-
-msgid "We cannot export {0}"
-msgstr ""
-
-msgid ""
-"We have reached the Mapillary API limit. Disabling Mapillary networking until JOSM restart. Sorry.\n"
-"Logging in after the rate limit subsides may help prevent this in the future.\n"
-"{0}"
-msgstr ""
-
-#. i18n: Checkbox label in JOSM settings
-msgid ""
-"When opening Mapillary image in web browser, show the blur editor instead of"
-" the image viewer"
-msgstr ""
-
-msgid "Why are you removing the object? (Note: not yet sent to Mapillary)"
-msgstr ""
-
-msgid "Year"
-msgstr ""
 
 msgid "Years"
 msgstr "Έτος"
@@ -656,20 +395,11 @@ msgstr "Αυτή την στιγμή δεν έχετε συνδεθεί."
 msgid "You are logged in as ''{0}''."
 msgstr "Έχετε συνδεθεί ως ''{0}''."
 
-msgid "You are logged in."
-msgstr ""
-
 msgid "Zoom to selected image"
 msgstr "Μεγέθυνση σε επιλεγμένη εικόνα"
 
 msgid "Zoom to the currently selected Mapillary image"
 msgstr "Μεγέθυνση στη τρέχουσα επιλεγμένη εικόνα του Mapillary"
-
-msgid "downloads street level images (currently supports {0})"
-msgstr ""
-
-msgid "hidden"
-msgstr ""
 
 msgid "image has no key"
 msgstr "η εικόνα δεν έχει κανένα κλειδί"
@@ -677,49 +407,14 @@ msgstr "η εικόνα δεν έχει κανένα κλειδί"
 msgid "sequence has no key"
 msgstr "η ακολουθία δεν έχει κανένα κλειδί"
 
-msgid "shown"
-msgstr ""
-
-msgid "unknown organization"
-msgstr ""
-
 msgid "{0} consists of:"
 msgstr "το {0} αποτελείται από:"
 
 msgid "{0} detections"
 msgstr "{0} ανακαλύψεις"
 
-msgid "{0} image in total"
-msgid_plural "{0} images in total"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "{0} images in {1} sequences"
 msgstr "{0} εικόνες σε {1} ακολουθίες"
-
-msgid "{0} node"
-msgid_plural "{0} nodes"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{0} relation"
-msgid_plural "{0} relations"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{0} sequence, containing between {1} and {2} images (ø {3})"
-msgid_plural ""
-"{0} sequences, each containing between {1} and {2} images (ø {3})"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{0} way"
-msgid_plural "{0} ways"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{0}: {1}"
-msgstr ""
 
 #. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"

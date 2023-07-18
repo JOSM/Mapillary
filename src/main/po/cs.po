@@ -1,19 +1,20 @@
 # Translations for the JOSM plugin 'Mapillary' (cs)
-# Copyright (C) 2022
+# Copyright (C) 2023
 # This file is distributed under the same license as the josm-plugin_Mapillary package.
 # FIRST AUTHOR, YEAR.
 #
 # Translators:
 # Florian Schäfer, 2020
-# Simon Legner, 2022
+# Simon Legner, 2023
+# Jakub Slabák, 2023
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 2.0.0-beta.14-19-g22312a2\n"
+"Project-Id-Version: josm-plugin_Mapillary 2.1.1-7-gb92f8ff\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-27 15:04+0000\n"
+"POT-Creation-Date: 2023-02-08 15:05+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
-"Language-Team: Czech (https://www.transifex.com/josm/teams/2544/cs/)\n"
+"Language-Team: Czech (https://app.transifex.com/josm/teams/2544/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -44,22 +45,32 @@ msgstr "Přidat filtr."
 msgid "All"
 msgstr "Všechny"
 
+#. color Tracks by Velocity Tune
+msgid "Allows to tune the track coloring for different average speeds."
+msgstr "Umožní ladit barvy cesty podle různých průměrných rychlostí."
+
 msgid "At least one of the optional arguments must be used ({0})"
 msgstr ""
+
+msgid "Back"
+msgstr "Zpět"
 
 msgid "Bad Imagery"
 msgstr ""
 
+msgid "Bicycle"
+msgstr "Jízdní kolo"
+
 msgid "Cancel"
 msgstr "Zrušit"
+
+msgid "Car"
+msgstr "Automobil"
 
 #. i18n: Checkbox label in JOSM settings
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr ""
-
-msgid "Choose signs"
-msgstr "Zvolit značky"
 
 msgid "Clear"
 msgstr "Vymazat"
@@ -67,9 +78,14 @@ msgstr "Vymazat"
 msgid "Color"
 msgstr "Barva"
 
-msgctxt "Checkbox label in JOSM settings"
-msgid "Color images by capture date"
-msgstr ""
+msgid "Colors points and track segments by direction."
+msgstr "Obarvovat body a úseky trasy podle směru."
+
+msgid "Colors points and track segments by its timestamp."
+msgstr "Obarvovat body a části trasy podle časových značek."
+
+msgid "Colors points and track segments by velocity."
+msgstr "Obarvovat body a úseky trasy podle rychlosti."
 
 msgid "Comment"
 msgstr "Komentář"
@@ -78,31 +94,37 @@ msgid "Comment to send to Mapillary"
 msgstr ""
 
 msgid "Copied URL to clipboard …"
-msgstr ""
+msgstr "Adresa URL byla zkopírována do schránky…"
 
 msgid "Copied color to clipboard"
-msgstr ""
+msgstr "Barva byla zkopírována do schránky"
 
 msgid "Copied key to clipboard …"
 msgstr ""
 
 msgid "Copy URL"
-msgstr ""
+msgstr "Kopírovat adresu URL"
 
 msgid "Copy color"
-msgstr ""
+msgstr "Kopírovat barvu"
 
 msgid "Copy key"
 msgstr "Kopírovat klíč"
 
 msgid "Could not load image: {0}"
-msgstr ""
+msgstr "Obrázek {0} se nepodařilo načíst"
 
 msgid "Could not open the URL {0} in a browser"
 msgstr "Nemohu otevřít URL {0} v prohlížeči"
 
 msgid "Could not refresh Mapillary token. HTTP Status Code {0}."
 msgstr ""
+
+msgid "Customize Mapillary track drawing"
+msgstr ""
+
+msgid "Customize track drawing"
+msgstr "Přizpůsobení kreslení záznamu"
 
 #. filter mode: remove
 msgctxt "filter"
@@ -115,6 +137,9 @@ msgstr ""
 msgid "Days"
 msgstr "Dnů"
 
+msgid "Default"
+msgstr "Výchozí"
+
 msgid "Delete"
 msgstr "Smazat"
 
@@ -123,6 +148,9 @@ msgstr ""
 
 msgid "Delete filter."
 msgstr "Smazat filtr."
+
+msgid "Direction"
+msgstr "Směr"
 
 #. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
@@ -150,7 +178,7 @@ msgid "Down"
 msgstr "Dolů"
 
 msgid "Downloading…"
-msgstr ""
+msgstr "Stahování…"
 
 msgid "Duplicate"
 msgstr "Duplikovat"
@@ -178,10 +206,10 @@ msgid "Enable/disable developer mode"
 msgstr ""
 
 msgid "End"
-msgstr ""
+msgstr "Konec"
 
 msgid "End: {0}"
-msgstr ""
+msgstr "Konec: {0}"
 
 msgid "Erroneous Data"
 msgstr ""
@@ -230,8 +258,11 @@ msgstr ""
 msgid "First Seen Start"
 msgstr ""
 
-msgid "Give way"
-msgstr "Dej přednost"
+msgid "Foot"
+msgstr "Pěší"
+
+msgid "Forward"
+msgstr "Vpřed"
 
 #. column header: hide filter
 msgctxt "filter"
@@ -249,9 +280,6 @@ msgctxt "filter"
 msgid "I"
 msgstr "I"
 
-msgid "Image Quality"
-msgstr ""
-
 msgid "Image actions"
 msgstr "Akce s obrázkem"
 
@@ -268,10 +296,7 @@ msgid "Image key"
 msgstr "Klíč obrázku"
 
 msgid "Image: "
-msgstr ""
-
-msgid "Intersection danger"
-msgstr "Upozornění na křižovatku"
+msgstr "Obrázek:"
 
 msgid "Inverse filter"
 msgstr "Obrácený filtr"
@@ -288,6 +313,9 @@ msgstr ""
 msgid "Layer"
 msgstr "Vrstva"
 
+msgid "Left"
+msgstr ""
+
 msgid "Login"
 msgstr "Přihlásit se"
 
@@ -301,9 +329,6 @@ msgstr "Odhlásit se"
 msgctxt "filter"
 msgid "M"
 msgstr "M"
-
-msgid "Mandatory direction (any)"
-msgstr "Přikázaný směr jízdy (jakýkoliv)"
 
 msgid "Mapillary"
 msgstr "Mapillary"
@@ -327,6 +352,9 @@ msgstr ""
 msgid "Mapillary Traffic Signs"
 msgstr ""
 
+msgid "Mapillary default"
+msgstr ""
+
 msgid "Mapillary filter"
 msgstr "Filtr Mapillary"
 
@@ -348,20 +376,44 @@ msgstr "Přihlášení Mapillary"
 msgid "Mapillary point features layer"
 msgstr ""
 
-msgid "Mapillary style sheet"
-msgstr ""
-
 msgid "Mapillary traffic signs layer"
 msgstr ""
 
 msgid "Mapillary: Could not refresh login, logging out"
 msgstr ""
 
+msgid "Mapillary: Image Navigation"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: 360 panoramic"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Back"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Forward"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Left"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Reverse"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Right"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Turn Left"
+msgstr ""
+
+msgid "Mapillary: Image Navigation: Turn Right"
+msgstr ""
+
 msgid "Maximum distance to consider for changeset source calculations"
 msgstr ""
 
 msgid "Month"
-msgstr ""
+msgstr "Měsíc"
 
 msgid "Months"
 msgstr "Měsíců"
@@ -375,26 +427,17 @@ msgstr "Přesunout filtr nahoru."
 msgid "Multikey: {0}"
 msgstr "Kombinace kláves: {0}"
 
-msgid "No color selected"
+msgid "Navigate between different Mapillary images"
 msgstr ""
 
-msgid "No entry"
-msgstr "Zákaz vjezdu"
+msgid "No color selected"
+msgstr "Není vybrána žádná barva"
 
 msgid "No images found"
 msgstr "Nebyly nalezeny žádné obrázky"
 
 msgid "No known image provider used"
 msgstr ""
-
-msgid "No overtaking"
-msgstr "Zákaz předjíždění"
-
-msgid "No parking"
-msgstr "Zákaz parkování"
-
-msgid "No turn"
-msgstr "Zákaz odbočení"
 
 msgid "Non-panoramic"
 msgstr ""
@@ -422,9 +465,6 @@ msgid ""
 "sequence=Mapillary/<sequence_id>"
 msgstr ""
 
-msgid "Only images with signs"
-msgstr "Pouze obrázky se značkami"
-
 msgid "Only show objects on detection layers (\"Relevant objects\")"
 msgstr ""
 
@@ -446,11 +486,11 @@ msgstr ""
 msgid "Organizations"
 msgstr ""
 
-msgid "Panoramic"
+msgid "Pano"
 msgstr ""
 
-msgid "Pedestrian crossing"
-msgstr "Přechod pro chodce"
+msgid "Panoramic"
+msgstr ""
 
 msgid "Picture Filters"
 msgstr ""
@@ -474,7 +514,7 @@ msgid "Remove"
 msgstr "Odstranit"
 
 msgid "Requires JOSM restart"
-msgstr ""
+msgstr "Je zapotřebí restartovat JOSM"
 
 msgid "Reset"
 msgstr "Reset"
@@ -485,8 +525,8 @@ msgstr "Obrátit"
 msgid "Reverse the filters order."
 msgstr ""
 
-msgid "Roundabout"
-msgstr "Kruhový objezd"
+msgid "Right"
+msgstr ""
 
 msgid "Select Mapillary Detection ({0})"
 msgstr ""
@@ -495,7 +535,7 @@ msgid "Select Mapillary Image ({0})"
 msgstr ""
 
 msgid "Select Visible"
-msgstr ""
+msgstr "Vybrat viditelné"
 
 msgid "Select a directory"
 msgstr "Zvolte adresář"
@@ -516,13 +556,13 @@ msgid "Sequence offset"
 msgstr ""
 
 msgid "Sequence: "
-msgstr ""
+msgstr "Posloupnost:"
 
 msgid "Show Image types: "
-msgstr ""
+msgstr "Zobrazit typy obrázků: "
 
 msgid "Show Relevant"
-msgstr ""
+msgstr "Zobrazit relevantní"
 
 msgid "Show detections on top of image"
 msgstr "Zobrazit detekce na vrcholu snímku"
@@ -537,7 +577,7 @@ msgid "Show this number of items on each page"
 msgstr ""
 
 msgid "Smart Edit Mode"
-msgstr ""
+msgstr "Režim chytrých úprav"
 
 msgid "Snap to highway"
 msgstr ""
@@ -548,18 +588,11 @@ msgstr "Seřadit"
 msgid "Sort filters."
 msgstr ""
 
-msgid "Speed limit"
-msgstr "Omezení rychlosti"
-
 msgid "Start"
-msgstr ""
+msgstr "Začátek"
 
 msgid "Start: {0}"
-msgstr ""
-
-msgctxt "name of the traffic sign"
-msgid "Stop"
-msgstr "Stop"
+msgstr "Začátek: {0}"
 
 msgid "Tag conflict"
 msgstr "Konflikt značek"
@@ -572,14 +605,19 @@ msgstr "Text"
 msgid ""
 "There is a newer version of JOSM and/or the Mapillary plugin. Please update."
 msgstr ""
+"Byla vydána novější verze JOSM a/nebo pluginu Mapillary. Prosíme, stáhněte "
+"si novou verzi."
 
 msgid ""
 "This currently removes the detection from the current layer, but may report "
 "back to Mapillary in the future"
 msgstr ""
 
+msgid "Time"
+msgstr "Čas"
+
 msgid "Today"
-msgstr ""
+msgstr "Dnes"
 
 msgid "Toggle: {0}"
 msgstr "Přepnout: {0}"
@@ -587,11 +625,24 @@ msgstr "Přepnout: {0}"
 msgid "Total Mapillary images: {0}"
 msgstr "Celkem obrázků z Mapillary: {0}"
 
-msgid "Traffic Signs"
+msgid ""
+"Track Direction (red = west, yellow = north, green = east, blue = south)"
 msgstr ""
 
-msgid "Uneven road"
-msgstr "Nerovnost vozovky"
+msgid "Track and Point Coloring"
+msgstr "Barvy tras a bodů"
+
+msgid "Track date"
+msgstr "Datum záznamu"
+
+msgid "Traffic Signs"
+msgstr "Dopravní značky"
+
+msgid "Turn left"
+msgstr ""
+
+msgid "Turn right"
+msgstr ""
 
 msgid ""
 "Unknown Mapillary exception.\n"
@@ -610,9 +661,8 @@ msgctxt "Checkbox label in JOSM settings"
 msgid "Use computed location information"
 msgstr ""
 
-msgctxt "Checkbox label in JOSM settings"
-msgid "Use the custom Mapillary renderer"
-msgstr ""
+msgid "Velocity (red = slow, green = fast)"
+msgstr "Rychlost (červená = pomalá, zelená = rychlá)"
 
 msgid "View in browser"
 msgstr "Zobrazit v prohlížeči"
@@ -638,7 +688,7 @@ msgid "Why are you removing the object? (Note: not yet sent to Mapillary)"
 msgstr ""
 
 msgid "Year"
-msgstr ""
+msgstr "Rok"
 
 msgid "Years"
 msgstr "Let"
@@ -650,7 +700,7 @@ msgid "You are logged in as ''{0}''."
 msgstr "Jste přihlášen jako ''{0}''."
 
 msgid "You are logged in."
-msgstr ""
+msgstr "Byli jste úspěšně přihlášeni."
 
 msgid "Zoom to selected image"
 msgstr "Zvětšit na zvolený obrázek"
@@ -662,7 +712,7 @@ msgid "downloads street level images (currently supports {0})"
 msgstr ""
 
 msgid "hidden"
-msgstr ""
+msgstr "skryto"
 
 msgid "image has no key"
 msgstr "obrázek nemá žádný klíč"
@@ -671,7 +721,7 @@ msgid "sequence has no key"
 msgstr "sekvence nemá žádný klíč"
 
 msgid "shown"
-msgstr ""
+msgstr "zobrazeno"
 
 msgid "unknown organization"
 msgstr ""
@@ -684,27 +734,27 @@ msgstr "{0} detekcí"
 
 msgid "{0} image in total"
 msgid_plural "{0} images in total"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Celkem {0} obrázek"
+msgstr[1] "Celkem {0} obrázky"
+msgstr[2] "Celkem {0} obrázků"
+msgstr[3] "Celkem {0} obrázků"
 
 msgid "{0} images in {1} sequences"
 msgstr "{0} obrázků ve {1} sekvencích"
 
 msgid "{0} node"
 msgid_plural "{0} nodes"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "{0} uzel"
+msgstr[1] "{0} uzly"
+msgstr[2] "{0} uzlů"
+msgstr[3] "{0} uzlů"
 
 msgid "{0} relation"
 msgid_plural "{0} relations"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "{0} relace"
+msgstr[1] "{0} relace"
+msgstr[2] "{0} relací"
+msgstr[3] "{0} relací"
 
 msgid "{0} sequence, containing between {1} and {2} images (ø {3})"
 msgid_plural ""
@@ -716,10 +766,10 @@ msgstr[3] ""
 
 msgid "{0} way"
 msgid_plural "{0} ways"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "{0} cesta"
+msgstr[1] "{0} cesty"
+msgstr[2] "{0} cest"
+msgstr[3] "{0} cest"
 
 msgid "{0}: {1}"
 msgstr "{0}: {1}"

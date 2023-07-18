@@ -19,7 +19,7 @@ Our contribution guidelines can be found in [CONTRIBUTING.md](CONTRIBUTING.md).
   - [JOSM GitLab Group](https://gitlab.com/JOSM/plugin/Mapillary)
 - **Issues** are managed in [JOSM Trac](https://josm.openstreetmap.de/query?status=assigned&status=needinfo&status=new&status=reopened&component=Plugin+mapillary&group=component&max=200&col=id&col=summary&col=component&col=status&col=type&col=priority&order=priority&report=17)
   - Report a [New Ticket](https://josm.openstreetmap.de/newticket?component=Plugin+mapillary)
-- **Translations** are done on [transifex](https://www.transifex.com/josm/josm/josm-plugin_Mapillary/).
+- **Translations** are done on JOSM's [Launchpad](https://translations.launchpad.net/josm/trunk/+pots/josm/) and were previously done on [transifex](https://www.transifex.com/josm/josm/josm-plugin_Mapillary/).
 
 * Maintainers:
   * Taylor Smock <taylor.smock@kaart.com> (active, @smocktaylor)
