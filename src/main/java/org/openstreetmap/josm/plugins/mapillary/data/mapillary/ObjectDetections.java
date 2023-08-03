@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -51,6 +50,8 @@ public final class ObjectDetections {
         "information", "marking", "object", "regulatory", "warning");
     public static final List<ObjectDetections> IGNORE_DETECTIONS = Collections
         .unmodifiableList(loadObjectDetections(21, "ignorable"));
+
+    private static ObjectDetections[] cachedValuesArray;
     static {
         VALUES.addAll(IGNORE_DETECTIONS);
     }
@@ -136,8 +137,13 @@ public final class ObjectDetections {
      * @param detection The detection to get an enum for
      * @return The enum
      */
-    public static Optional<ObjectDetections> getDetection(String detection) {
-        return Stream.of(values()).filter(d -> d.getKey().equals(detection)).findAny();
+    public static ObjectDetections getDetection(String detection) {
+        for (ObjectDetections value : values()) {
+            if (value.getKey().equals(detection)) {
+                return value;
+            }
+        }
+        return null;
     }
 
     /**
@@ -145,13 +151,12 @@ public final class ObjectDetections {
      *
      * @param detection The detection to find a fallback for
      * @return A (somewhat) specific fallback detection <i>or</i> {@link #UNKNOWN}, with the boolean indicating if it
-     *         was
-     *         rejected.
+     *         was rejected.
      */
     public static Pair<Boolean, ObjectDetections> findFallbackDetection(String detection) {
-        Optional<ObjectDetections> objectDetection = getDetection(detection);
-        if (objectDetection.isPresent()) {
-            return new Pair<>(false, objectDetection.get());
+        ObjectDetections objectDetection = getDetection(detection);
+        if (objectDetection != null) {
+            return new Pair<>(false, objectDetection);
         }
         if (detection.endsWith("--reject")) {
             Pair<Boolean, ObjectDetections> pair = findFallbackDetection(
@@ -291,10 +296,13 @@ public final class ObjectDetections {
     /**
      * Get the values for object detections
      *
-     * @return The loaded detections
+     * @return The loaded detections (don't modify this array)
      */
     public static ObjectDetections[] values() {
-        return VALUES.toArray(new ObjectDetections[0]);
+        if (cachedValuesArray == null || cachedValuesArray.length != VALUES.size()) {
+            cachedValuesArray = VALUES.toArray(new ObjectDetections[0]);
+        }
+        return cachedValuesArray;
     }
 
     /**
