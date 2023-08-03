@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -138,11 +139,11 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     private final ColorScale dateScale = ColorScale.createFixedScale(
         // Really old color
         new Color[] { ColorHelper.html2color("e17155"),
-        // Old color
-        ColorHelper.html2color("fbc01b"),
-        // New color
-        MapillaryColorScheme.SEQ_UNSELECTED
-    }).addTitle(tr("Time"));
+            // Old color
+            ColorHelper.html2color("fbc01b"),
+            // New color
+            MapillaryColorScheme.SEQ_UNSELECTED })
+        .addTitle(tr("Time"));
 
     /** The color scale used when drawing using direction */
     private final ColorScale directionScale = ColorScale.createCyclicScale(256).setIntervalCount(4)
@@ -361,14 +362,14 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
                 drawSequence(g, mv, way, selectedImage, originalTransform, distPer100Pixel);
                 for (INode n : way.getNodes()) {
                     if (n != selectedImage) {
-                        drawImageMarker(originalTransform, selectedImage, g, n, distPer100Pixel, false);
+                        drawImageMarker(originalTransform, selectedImage, g, n, distPer100Pixel, false, null);
                     }
                 }
             }
             // Paint selected images last. Not particularly worried about painting too much, since most people don't
             // select thousands of images.
             drawImageMarker(originalTransform, selectedImage, g, selectedImage, distPer100Pixel,
-                OffsetUtils.getOffset(selectedImage) != 0);
+                OffsetUtils.getOffset(selectedImage) != 0, null);
         }
     }
 
@@ -402,12 +403,11 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
                 g.setColor(forcedColor != null ? forcedColor : getColor(current));
             }
             if (previous != null && (mv.contains(currentPoint) || mv.contains(previousPoint))) {
-                // FIXME get the right color for the line segment
                 final boolean visibleNode = zoom >= 14 && sequence.isVisible() && MapillaryImageUtils.isImage(previous);
                 g.drawLine(previousPoint.x, previousPoint.y, currentPoint.x, currentPoint.y);
                 if (visibleNode) {
-                    // FIXME draw the image here (avoid calculating the points twice)
-                    drawImageMarker(originalTransform, selectedImage, g, previous, distPer100Pixel, false);
+                    drawImageMarker(originalTransform, selectedImage, g, previous, distPer100Pixel, false,
+                        previousPoint);
                 }
             }
             previous = current;
@@ -415,8 +415,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         }
         final boolean visibleNode = zoom >= 14 && sequence.isVisible() && MapillaryImageUtils.isImage(previous);
         if (visibleNode) {
-            // FIXME draw the image here (avoid calculating the points twice)
-            drawImageMarker(originalTransform, selectedImage, g, previous, distPer100Pixel, false);
+            drawImageMarker(originalTransform, selectedImage, g, previous, distPer100Pixel, false, previousPoint);
         }
         g.setComposite(AlphaComposite.SrcOver);
     }
@@ -487,11 +486,12 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
      * @param selectedImg Currently selected nodes
      * @param g the Graphics context
      * @param img the image to be drawn onto the Graphics context
+     * @param imgPoint The point where the image is located in the graphics space
      * @param dist100Pixel The distance per 100 px
      * @param offset {@code true} if we may be painting the offset for an image
      */
     private void drawImageMarker(final AffineTransform originalTransform, final INode selectedImg, final Graphics2D g,
-        final INode img, final double dist100Pixel, final boolean offset) {
+        final INode img, final double dist100Pixel, final boolean offset, @Nullable final Point imgPoint) {
         if (img == null || !img.isLatLonKnown()) {
             Logging.warn("An image is not painted, because it is null or has no LatLon!");
             return;
@@ -531,7 +531,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         }
         MapView mv = MainApplication.getMap().mapView;
 
-        final Point p = mv.getPoint(img.getEastNorth());
+        final Point p = imgPoint != null ? imgPoint : mv.getPoint(img.getEastNorth());
         paintDirectionIndicator(g, directionC, img, originalTransform, p, i);
         this.paintHighlight(g, img, selectedImg);
 
