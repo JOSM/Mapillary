@@ -355,6 +355,12 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
             }
         }
 
+        // Paint single images (see GH #219)
+        for (INode node : getData().searchNodes(box.toBBox()).stream().filter(node -> !node.isReferredByWays(1))
+            .sorted(Comparator.comparingInt(INode::getRawTimestamp)).distinct().collect(Collectors.toList())) {
+            drawImageMarker(originalTransform, selectedImage, g, node, distPer100Pixel, false, null);
+        }
+
         if (selectedImage != null) {
             // Paint the selected sequences
             for (IWay<?> way : selectedImage.getReferrers().stream().filter(IWay.class::isInstance)
