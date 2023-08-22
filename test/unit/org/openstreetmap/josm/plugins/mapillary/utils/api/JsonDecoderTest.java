@@ -2,17 +2,16 @@
 package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Function;
 
-import javax.json.Json;
-import javax.json.JsonReader;
-import javax.json.JsonValue;
-
+import jakarta.json.Json;
+import jakarta.json.JsonReader;
+import jakarta.json.JsonValue;
 import org.junit.jupiter.api.Test;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 
@@ -53,8 +52,7 @@ class JsonDecoderTest {
             JsonReader reader = Json.createReader(stream)) {
             return function.apply(reader);
         } catch (IOException e) {
-            fail(e);
-            return null;
+            throw new UncheckedIOException(e);
         }
     }
 

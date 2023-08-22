@@ -3,7 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Locale;
@@ -13,9 +13,9 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.json.Json;
-import javax.json.JsonReader;
 
+import jakarta.json.Json;
+import jakarta.json.JsonReader;
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.vector.VectorPrimitive;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
@@ -40,7 +40,8 @@ public final class MapillaryMapFeatureUtils {
         /** string, name of the class which this object represent */
         VALUE,
         /*
-         * Start queryable info (seen_at in tiles as timestamp in ms but is in query as timestamp in YYYY-mm-DDTHH:MM:SS
+         * Start queryable info (seen_at in tiles as timestamp in ms but is in query as a timestamp in
+         * YYYY-mm-DDTHH:MM:SS
          * format)
          */
         /**
@@ -50,13 +51,13 @@ public final class MapillaryMapFeatureUtils {
         /**
          * int, timestamp in ms since epoch, capture time of the earliest image on which the detection contribute to
          * this
-         * map feature, can also be timestamp (YYYY-MM-DDTHH:MM:SS)
+         * map feature, can also be a timestamp (YYYY-MM-DDTHH:MM:SS)
          */
         FIRST_SEEN_AT,
         /**
          * int, timestamp in ms since epoch, capture time of the latest image on which the detection contribute to this
          * map
-         * feature, can also be timestamp (YYYY-MM-DDTHH:MM:SS)
+         * feature, can also be a timestamp (YYYY-MM-DDTHH:MM:SS)
          */
         LAST_SEEN_AT,
         /* End info in vector layer */
@@ -197,7 +198,7 @@ public final class MapillaryMapFeatureUtils {
             MapFeatureProperties.GEOMETRY, MapFeatureProperties.IMAGES, MapFeatureProperties.ALIGNED_DIRECTION);
         final String json = Caches.META_DATA_CACHE.get(url, () -> {
             try {
-                return OAuthUtils.getWithHeader(new URL(url)).toString();
+                return OAuthUtils.getWithHeader(URI.create(url)).toString();
             } catch (IOException e) {
                 Logging.error(e);
                 return null;

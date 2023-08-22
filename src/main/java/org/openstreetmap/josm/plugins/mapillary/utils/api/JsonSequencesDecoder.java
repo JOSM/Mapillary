@@ -6,12 +6,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import javax.json.JsonArray;
-import javax.json.JsonNumber;
-import javax.json.JsonObject;
-import javax.json.JsonString;
-import javax.json.JsonValue;
-
+import jakarta.json.JsonArray;
+import jakarta.json.JsonNumber;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonString;
+import jakarta.json.JsonValue;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.plugins.mapillary.spi.preferences.IMapillaryUrls;
 import org.openstreetmap.josm.tools.Logging;

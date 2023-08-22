@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.Shape;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,10 +23,10 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 import org.apache.commons.jcs3.access.CacheAccess;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.data.osm.IPrimitive;
@@ -333,7 +333,7 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
             final String urlString = MapillaryConfig.getUrls().getDetectionInformation(key);
             final String jsonString = Caches.META_DATA_CACHE.get(urlString, () -> {
                 try {
-                    final JsonObject jsonObject = OAuthUtils.getWithHeader(new URL(urlString));
+                    final JsonObject jsonObject = OAuthUtils.getWithHeader(URI.create(urlString));
                     return jsonObject != null ? jsonObject.toString() : null;
                 } catch (IOException e) {
                     Logging.error(e);

@@ -8,6 +8,6 @@ jobs:
   call-workflow:
     uses: JOSM/JOSMPluginAction/.github/workflows/ant.yml@v1
     with:
-      josm-revision: "r18613"
+      josm-revision: "r18723"
 
 

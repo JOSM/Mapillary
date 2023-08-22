@@ -6,9 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 
-import javax.json.Json;
-import javax.json.JsonReader;
-
+import jakarta.json.Json;
+import jakarta.json.JsonReader;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryCaches;
@@ -25,7 +24,7 @@ class JsonImageDetectionDecoderTest {
      */
     @ParameterizedTest
     @ValueSource(strings = { "GiB4AgoGbXB5LW9yKIAgEhEYAwgBIgsJxheqLxIEFQAeDw==" })
-    void decodeImageDetectionGeometryNonRegression21254(final String geometry) {
+    void testDecodeImageDetectionGeometryNonRegression21254(final String geometry) {
         final String jsonString = "{\"value\":\"construction--barrier--concrete-block\",\"id\":\"1\",\"geometry\":\""
             + geometry + "\",\"image\":{\"id\":\"1\"}}";
         try (JsonReader jsonReader = Json

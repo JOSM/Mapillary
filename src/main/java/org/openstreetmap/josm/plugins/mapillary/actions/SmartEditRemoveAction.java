@@ -9,11 +9,11 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
 import javax.swing.JOptionPane;
 import javax.swing.text.AbstractDocument;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObjectBuilder;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.data.vector.VectorPrimitive;
 import org.openstreetmap.josm.gui.ConditionalOptionPaneUtil;

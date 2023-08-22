@@ -15,9 +15,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import javax.json.Json;
-import javax.json.JsonReader;
-
+import jakarta.json.Json;
+import jakarta.json.JsonReader;
 import org.junit.jupiter.api.Test;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.JsonUtil;

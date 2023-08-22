@@ -10,7 +10,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URL;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -19,10 +19,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.LongStream;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 import org.awaitility.Awaitility;
 import org.awaitility.Durations;
 import org.junit.jupiter.api.RepeatedTest;
@@ -64,7 +63,7 @@ public class JsonImageDetailsDecoderTest {
 
         List<MapillaryNode> downloadedImages = new ArrayList<>();
         for (long image : images) {
-            final URL url = new URL(
+            final URI url = URI.create(
                 MapillaryConfig.getUrls().getImageInformation(image, MapillaryImageUtils.ImageProperties.values()));
             downloadedImages.addAll(
                 JsonDecoder.decodeData(OAuthUtils.getWithHeader(url), JsonImageDetailsDecoder::decodeImageInfos));
@@ -122,7 +121,7 @@ public class JsonImageDetailsDecoderTest {
 
     @Test
     @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.APPLICATION_REQUEST_LIMIT_REACHED)
-    void testDecodeImageInfosWithFetchErrorsApplicationRequestLimitReached() throws IOException {
+    void testDecodeImageInfosWithFetchErrorsApplicationRequestLimitReached() {
         final long[] images = new long[] { 148137757289079L, 311799370533334L, 4235112816526838L, 464249047982277L,
             308609047601518L, 135511895288847L, 311681117131457L, };
 
@@ -131,7 +130,7 @@ public class JsonImageDetailsDecoderTest {
             .forEach(data::addPrimitive);
 
         for (long image : images) {
-            final URL url = new URL(
+            final URI url = URI.create(
                 MapillaryConfig.getUrls().getImageInformation(image, MapillaryImageUtils.ImageProperties.values()));
             assertDoesNotThrow(
                 () -> JsonDecoder.decodeData(OAuthUtils.getWithHeader(url), JsonImageDetailsDecoder::decodeImageInfos));

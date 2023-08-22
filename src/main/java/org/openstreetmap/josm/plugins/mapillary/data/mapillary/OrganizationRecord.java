@@ -4,7 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary.data.mapillary;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.URL;
+import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -15,9 +15,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import javax.imageio.ImageIO;
-import javax.json.JsonObject;
 import javax.swing.ImageIcon;
 
+import jakarta.json.JsonObject;
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.gui.MainApplication;
@@ -85,7 +85,7 @@ public final class OrganizationRecord implements Serializable {
      */
     private static BufferedImage fetchAvatarIcon(String url) {
         try {
-            HttpClient client = HttpClient.create(new URL(url));
+            HttpClient client = HttpClient.create(URI.create(url).toURL());
             OAuthUtils.addAuthenticationHeader(client);
             HttpClient.Response response = client.connect();
             if (response.getResponseCode() >= 200 && response.getResponseCode() < 400) {
@@ -127,7 +127,7 @@ public final class OrganizationRecord implements Serializable {
         // TODO check for API in v4 (preferably one that doesn't need user auth)
         final String url = MapillaryConfig.getUrls().getOrganizationInformation(id);
         try {
-            final JsonObject data = OAuthUtils.getWithHeader(new URL(url));
+            final JsonObject data = OAuthUtils.getWithHeader(URI.create(url));
             final OrganizationRecord organizationRecord = decodeNewOrganization(data);
             // Ensure that we aren't blocking the main EDT thread
             MainApplication.worker.execute(() -> LISTENERS.fireEvent(l -> l.organizationAdded(organizationRecord)));
@@ -213,15 +213,33 @@ public final class OrganizationRecord implements Serializable {
         return niceName;
     }
 
+    /**
+     * Add listener for organizations
+     *
+     * @param listener The listener to notify when a new organization is added
+     */
     public static void addOrganizationListener(OrganizationRecordListener listener) {
         LISTENERS.addListener(listener);
     }
 
+    /**
+     * Remove a listener for organizations
+     *
+     * @param listener The listener to remove from the notification list
+     */
     public static void removeOrganizationListener(OrganizationRecordListener listener) {
         LISTENERS.removeListener(listener);
     }
 
+    /**
+     * The interface for listening for new organizations
+     */
     public interface OrganizationRecordListener extends Serializable {
+        /**
+         * Called when a new organization is added
+         *
+         * @param organization The new organization
+         */
         void organizationAdded(OrganizationRecord organization);
     }
 

@@ -3,12 +3,12 @@ package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
 
 import javax.imageio.ImageIO;
-import javax.json.JsonObject;
 import javax.swing.ImageIcon;
 
+import jakarta.json.JsonObject;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.spi.preferences.IMapillaryUrls;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -45,7 +45,7 @@ public final class JsonUserProfileDecoder {
         ImageIcon icon = null;
         if (avatar != null) {
             try {
-                BufferedImage img = ImageIO.read(new URL(avatar));
+                BufferedImage img = ImageIO.read(URI.create(avatar).toURL());
                 if (img != null) {
                     icon = new ImageIcon(img);
                 }

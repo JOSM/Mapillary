@@ -11,11 +11,12 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonString;
-import javax.json.JsonValue;
 
+import jakarta.json.JsonArray;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonString;
+import jakarta.json.JsonValue;
+import org.openstreetmap.josm.data.coor.ILatLon;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.Tag;
@@ -131,7 +132,7 @@ public final class JsonImageDetailsDecoder {
                 .decodeLatLon(json.getJsonObject(MapillaryImageUtils.ImageProperties.COMPUTED_GEOMETRY.toString())
                     .getJsonArray("coordinates"));
             if (computedCoordinates != null && originalCoordinates != null && computedCoordinates
-                .greatCircleDistance(originalCoordinates) < MapillaryProperties.ASSUMED_HDOP.get()) {
+                .greatCircleDistance((ILatLon) originalCoordinates) < MapillaryProperties.ASSUMED_HDOP.get()) {
                 return computedCoordinates;
             }
             return Utils.firstNonNull(originalCoordinates, computedCoordinates);

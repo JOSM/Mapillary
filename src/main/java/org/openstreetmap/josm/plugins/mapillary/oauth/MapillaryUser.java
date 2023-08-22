@@ -8,9 +8,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.json.JsonString;
-import javax.json.JsonValue;
-
+import jakarta.json.JsonString;
+import jakarta.json.JsonValue;
 import org.openstreetmap.josm.data.preferences.AbstractProperty;
 import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
@@ -65,7 +64,7 @@ public final class MapillaryUser {
         if (userInformation == null) {
             try {
                 userInformation = OAuthUtils.getWithHeader(MapillaryConfig.getUrls().getUserInformation()).entrySet()
-                    .parallelStream().filter(e -> JsonValue.ValueType.STRING.equals(e.getValue().getValueType()))
+                    .parallelStream().filter(e -> JsonValue.ValueType.STRING == e.getValue().getValueType())
                     .collect(Collectors.toMap(Map.Entry::getKey, e -> ((JsonString) e.getValue()).getString()));
             } catch (IOException e) {
                 Logging.log(Logging.LEVEL_WARN, "Invalid Mapillary token, resetting field", e);

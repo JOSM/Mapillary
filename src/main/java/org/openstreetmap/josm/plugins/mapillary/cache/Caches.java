@@ -23,12 +23,12 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.json.Json;
-import javax.json.JsonReader;
-import javax.json.JsonValue;
-import javax.json.stream.JsonParser;
 import javax.swing.JOptionPane;
 
+import jakarta.json.Json;
+import jakarta.json.JsonReader;
+import jakarta.json.JsonValue;
+import jakarta.json.stream.JsonParser;
 import org.apache.commons.jcs3.access.CacheAccess;
 import org.apache.commons.jcs3.access.behavior.ICacheAccess;
 import org.apache.commons.jcs3.engine.behavior.ICompositeCacheAttributes;
@@ -54,7 +54,7 @@ public final class Caches {
 
     /** The cache for metadata objects */
     public static final MapillaryCacheAccess<String> META_DATA_CACHE = new MapillaryCacheAccess<>(
-        JCSCacheManager.getCache("mapillary:metadata", 100, 100000, getCacheDirectory().getPath()), string -> {
+        JCSCacheManager.getCache("mapillary:metadata", 100, 100_000, getCacheDirectory().getPath()), string -> {
             try (JsonParser reader = Json
                 .createParser(new ByteArrayInputStream(string.getBytes(StandardCharsets.UTF_8)))) {
                 while (reader.hasNext()) {

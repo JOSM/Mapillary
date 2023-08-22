@@ -3,16 +3,15 @@ package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
 import java.util.Map;
 
-import javax.json.JsonObject;
-import javax.json.JsonString;
-import javax.json.JsonValue;
-
+import jakarta.json.JsonObject;
+import jakarta.json.JsonString;
+import jakarta.json.JsonValue;
 import org.openstreetmap.josm.data.osm.TagMap;
 
 /**
  * Convert a properties object into a TagMap
  */
-public class JsonTagMapDecoder {
+public final class JsonTagMapDecoder {
     private JsonTagMapDecoder() {
         // Utility class, shouldn't be instantiated
     }

@@ -18,13 +18,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 
 import javax.annotation.Nullable;
-import javax.json.Json;
-import javax.json.JsonException;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonStructure;
 import javax.swing.JOptionPane;
 
+import jakarta.json.Json;
+import jakarta.json.JsonException;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
+import jakarta.json.JsonStructure;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.io.CachedFile;
@@ -212,7 +212,7 @@ public final class OAuthUtils {
         String content = null;
         IMapillaryUrls urls = MapillaryConfig.getUrls();
         try {
-            final HttpClient client = HttpClient.create(new URL(urls.getTokenUrl()), "POST");
+            final HttpClient client = HttpClient.create(URI.create(urls.getTokenUrl()).toURL(), "POST");
             client.setHeader(AUTHORIZATION, BEARER + urls.getClientSecret());
             client.setRequestBody(
                 ("grant_type=refresh_token&client_id=" + urls.getClientId() + "&refresh_token=" + authorizationCode)

@@ -9,6 +9,8 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -27,14 +29,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonReader;
-import javax.json.JsonString;
-import javax.json.JsonValue;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -50,6 +44,14 @@ import com.github.tomakehurst.wiremock.matching.AnythingPattern;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonReader;
+import jakarta.json.JsonString;
+import jakarta.json.JsonValue;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -71,7 +73,7 @@ import org.openstreetmap.josm.tools.Utils;
 @Target(ElementType.TYPE)
 @ExtendWith(MapillaryURLWireMock.MapillaryURLMockExtension.class)
 public @interface MapillaryURLWireMock {
-    /** Use to indicate whether or not the API calls should be mocked */
+    /** Use to indicate whether the API calls should be mocked */
     enum Type {
         /** Mock the API calls */
         STANDARD,
@@ -174,7 +176,7 @@ public @interface MapillaryURLWireMock {
             final Map<String, StringValuePattern> imageIdsParameters = new HashMap<>(potentialParameters);
             imageIdsParameters.put("image_ids", new AnythingPattern());
 
-            // This stub *MUST* be accounted for in the an extension (for example, the CollectionEndpoint extension)
+            // This stub *MUST* be accounted for in the extension (for example, the CollectionEndpoint extension)
             server.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/graph/images.*"))
                 .withQueryParams(imageIdsParameters).willReturn(WireMock.aResponse()).atPriority(0));
             // This stub is needed, since the creation of new layers often makes a call to the "stub" URL
@@ -192,8 +194,8 @@ public @interface MapillaryURLWireMock {
                 ImageIO.write(bufferedImage, "png", imageOut);
                 server.stubFor(WireMock.get(WireMock.urlPathMatching("/thumb_([0-9]+)_([0-9]+)"))
                     .willReturn(WireMock.aResponse().withBody(imageOut.toByteArray())).atPriority(100));
-            } catch (Exception exception) {
-                fail(exception);
+            } catch (IOException exception) {
+                throw new UncheckedIOException(exception);
             }
 
             // Store the stub mappings for future use.
@@ -269,7 +271,7 @@ public @interface MapillaryURLWireMock {
                 if (Utils.isBlank(origBody)) {
                     return response;
                 }
-                String newBody = origBody.replaceAll("https?:\\/\\/.*?\\/", server.baseUrl() + "/");
+                String newBody = origBody.replaceAll("https?://.*?/", server.baseUrl() + "/");
                 // Replace with ids
                 try (JsonReader reader = Json
                     .createReader(new ByteArrayInputStream(newBody.getBytes(StandardCharsets.UTF_8)))) {

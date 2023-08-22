@@ -4,10 +4,9 @@ package org.openstreetmap.josm.plugins.mapillary.spi.preferences;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.ResourceProvider;

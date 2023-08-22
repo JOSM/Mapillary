@@ -5,22 +5,20 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoderTest.stringToJsonValue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonValue;
-
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
+import jakarta.json.JsonValue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -41,7 +39,7 @@ class JsonSequencesDecoderTest {
     static JOSMTestRules rules = new JOSMTestRules().main();
 
     @Test
-    void testDecodeSequencesInvalid() {
+    void testDecodeSequencesInvalid() throws IOException {
         // null input
         assertThrows(NullPointerException.class,
             () -> JsonDecoder.decodeData(null, JsonSequencesDecoder::decodeSequence));
@@ -58,24 +56,23 @@ class JsonSequencesDecoderTest {
     }
 
     @Test
-    void testDecodeSequencesWithArbitraryObjectAsFeature() {
+    void testDecodeSequencesWithArbitraryObjectAsFeature() throws IOException {
         assertNumberOfDecodedSequences(0, "{\"type\": \"FeatureCollection\", \"features\": [{}]}");
     }
 
-    private static void assertNumberOfDecodedSequences(int expectedNumberOfSequences, String jsonString) {
+    private static void assertNumberOfDecodedSequences(int expectedNumberOfSequences, String jsonString)
+        throws IOException {
         try (InputStream stream = new ByteArrayInputStream(jsonString.getBytes(StandardCharsets.UTF_8));
             JsonReader reader = Json.createReader(stream)) {
             assertEquals(expectedNumberOfSequences,
                 JsonDecoder.decodeData(reader.readObject(), JsonSequencesDecoder::decodeSequence).size());
-        } catch (IOException e) {
-            fail(jsonString, e);
         }
     }
 
     @Test
     void testDecodeSequence() throws IOException {
         final JsonObject json = OAuthUtils
-            .getWithHeader(new URL(MapillaryConfig.getUrls().getImagesBySequences("7nfcwfvjdtphz7yj6zat6a")));
+            .getWithHeader(URI.create(MapillaryConfig.getUrls().getImagesBySequences("7nfcwfvjdtphz7yj6zat6a")));
         final Collection<Long> exampleSequences = JsonDecoder.decodeData(json, JsonSequencesDecoder::decodeSequence);
         // Since the sequence key isn't returned in the API response, we have to rely upon the sequence key
         // being present in the vector tiles. Therefore, we cannot test that the expected sequence id is in the

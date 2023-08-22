@@ -8,14 +8,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.json.JsonArray;
-import javax.json.JsonNumber;
-import javax.json.JsonObject;
-import javax.json.JsonValue;
 
+import jakarta.json.JsonArray;
+import jakarta.json.JsonNumber;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonValue;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapObject;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.INode;
@@ -37,6 +38,14 @@ public final class JsonMapObjectDecoder {
         // Private constructor to avoid instantiation
     }
 
+    /**
+     * Decode a feature object
+     *
+     * @param json The object json
+     * @param primitive The primitive
+     * @return The primitive with added values as a singleton collection
+     * @param <T> The primitive type
+     */
     @Nonnull
     public static <T extends IPrimitive> Collection<T> decodeMapFeatureObject(@Nullable final JsonValue json,
         @Nullable final T primitive) {
@@ -139,7 +148,7 @@ public final class JsonMapObjectDecoder {
             final List<String> parsedImages = new ArrayList<>(value.asJsonArray().size());
             for (final JsonValue tValue : value.asJsonArray()) {
                 final Collection<String> tParsedImages = parseImages(tValue);
-                tParsedImages.stream().filter(Objects::nonNull).forEach(parsedImages::add);
+                parsedImages.addAll(tParsedImages.stream().filter(Objects::nonNull).collect(Collectors.toList()));
             }
             return Collections.unmodifiableList(parsedImages);
         } else if (value.getValueType() == JsonValue.ValueType.OBJECT

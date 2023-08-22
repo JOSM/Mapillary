@@ -11,17 +11,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonValue;
-
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
+import jakarta.json.JsonValue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -50,7 +49,7 @@ class JsonMapObjectDecoderTest {
 
     @Test
     void testDecodeMapObject() throws IOException {
-        final JsonObject jsonObject = OAuthUtils.getWithHeader(new URL(MapillaryConfig.getUrls()
+        final JsonObject jsonObject = OAuthUtils.getWithHeader(URI.create(MapillaryConfig.getUrls()
             .getMapFeatureInformation(496980935069177L, MapillaryMapFeatureUtils.MapFeatureProperties.values())));
         final VectorNode node1 = new VectorNode("test");
         Collection<VectorPrimitive> exampleMapObjects = JsonDecoder.decodeData(jsonObject,
@@ -77,7 +76,7 @@ class JsonMapObjectDecoderTest {
 
     @Test
     void testNoOverwriteFromInitialVector() throws IOException {
-        final JsonObject jsonObject = OAuthUtils.getWithHeader(new URL(MapillaryConfig.getUrls()
+        final JsonObject jsonObject = OAuthUtils.getWithHeader(URI.create(MapillaryConfig.getUrls()
             .getMapFeatureInformation(496980935069177L, MapillaryMapFeatureUtils.MapFeatureProperties.values())));
         final VectorNode node1 = new VectorNode("test");
         node1.setCoor(new LatLon(12, 2));

@@ -8,17 +8,16 @@ import java.io.PrintWriter;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URL;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.stream.JsonParsingException;
-
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
+import jakarta.json.stream.JsonParsingException;
 import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.I18n;
@@ -38,6 +37,11 @@ public class OAuthPortListener extends Thread {
         I18n.tr("Mapillary login"), I18n.tr("Login successful, return to JOSM."));
     private final MapillaryLoginListener callback;
 
+    /**
+     * Create a new OAuth callback listener
+     *
+     * @param loginCallback The callback to call once we have authenticated
+     */
     public OAuthPortListener(MapillaryLoginListener loginCallback) {
         this.callback = loginCallback;
     }
@@ -76,7 +80,8 @@ public class OAuthPortListener extends Thread {
 
             MapillaryUser.reset();
 
-            final HttpClient client = HttpClient.create(new URL("https://graph.mapillary.com/token"), "POST");
+            final HttpClient client = HttpClient.create(URI.create("https://graph.mapillary.com/token").toURL(),
+                "POST");
             client.setHeader("Authorization", "OAuth " + MapillaryConfig.getUrls().getClientSecret());
             client.setRequestBody(("grant_type=authorization_code&client_id=" + MapillaryConfig.getUrls().getClientId()
                 + "&code=" + authorizationCode).getBytes(StandardCharsets.UTF_8));
