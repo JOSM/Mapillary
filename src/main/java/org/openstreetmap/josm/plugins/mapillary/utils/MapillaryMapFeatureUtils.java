@@ -11,9 +11,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.json.Json;
 import jakarta.json.JsonReader;
 import org.openstreetmap.josm.data.osm.IPrimitive;

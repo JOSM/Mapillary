@@ -18,13 +18,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpinnerNumberModel;
 
+import jakarta.annotation.Nullable;
 import org.openstreetmap.josm.data.Version;
 import org.openstreetmap.josm.data.osm.DataSelectionListener;
 import org.openstreetmap.josm.data.osm.INode;

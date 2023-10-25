@@ -2,14 +2,10 @@
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import java.lang.reflect.Field;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.Optional;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -37,15 +33,12 @@ public final class ReflectionUtils {
         @Nonnull String fieldInParentClass, @Nullable C objectWithField, @Nonnull Class<R> returnClass) {
         try {
             Field tagMenuField = parentClass.getDeclaredField(fieldInParentClass);
-            AccessController.doPrivileged((PrivilegedExceptionAction<Void>) () -> {
-                tagMenuField.setAccessible(true);
-                return null;
-            });
+            org.openstreetmap.josm.tools.ReflectionUtils.setObjectsAccessible(tagMenuField);
             final Object object = tagMenuField.get(objectWithField);
             if (returnClass.isInstance(object)) {
                 return Optional.of(returnClass.cast(object));
             }
-        } catch (PrivilegedActionException | ReflectiveOperationException e) {
+        } catch (ReflectiveOperationException e) {
             Logging.error(e);
         }
         return Optional.empty();

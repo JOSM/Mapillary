@@ -7,11 +7,11 @@ import java.awt.event.ActionEvent;
 import java.util.Locale;
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 import javax.swing.text.AbstractDocument;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.json.Json;
 import jakarta.json.JsonObjectBuilder;
 import org.openstreetmap.josm.actions.JosmAction;
@@ -34,7 +34,7 @@ import org.openstreetmap.josm.tools.ImageProvider;
 public class SmartEditRemoveAction extends JosmAction {
     private static final String TOOLTIP = tr(
         "This currently removes the detection from the current layer, but may report back to Mapillary in the future");
-    private final VectorPrimitive mapillaryObject;
+    private final transient VectorPrimitive mapillaryObject;
     private final PointObjectLayer pointObjectLayer;
 
     /**

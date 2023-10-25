@@ -10,9 +10,8 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
@@ -33,7 +32,7 @@ import org.openstreetmap.josm.tools.date.DateUtils;
  */
 public final class MapillaryImageUtils {
     /** The base image url key pattern (v4 sizes are 256, 1024, 2048, and original) */
-    public static final Pattern BASE_IMAGE_KEY = Pattern.compile("^thumb_([0-9]+|original)_url$");
+    public static final Pattern BASE_IMAGE_KEY = Pattern.compile("^thumb_(\\d+|original)_url$");
     // Image specific
     /** Check if the node is for a panoramic image */
     public static final Predicate<INode> IS_PANORAMIC = node -> node != null

@@ -7,8 +7,7 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nullable;
-
+import jakarta.annotation.Nullable;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.Filter;
 import org.openstreetmap.josm.data.osm.FilterMatcher;

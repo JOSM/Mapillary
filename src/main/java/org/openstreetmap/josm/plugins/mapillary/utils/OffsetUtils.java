@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import java.util.ArrayList;
@@ -5,8 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import javax.annotation.Nullable;
-
+import jakarta.annotation.Nullable;
 import org.openstreetmap.josm.data.coor.ILatLon;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IWay;

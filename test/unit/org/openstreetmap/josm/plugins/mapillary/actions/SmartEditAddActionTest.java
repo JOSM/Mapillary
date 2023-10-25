@@ -16,14 +16,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import mockit.Invocation;
 import mockit.Mock;
 import mockit.MockUp;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -48,8 +46,10 @@ import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.ObjectDete
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
-import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
+import org.openstreetmap.josm.testutils.annotations.Main;
+import org.openstreetmap.josm.testutils.annotations.Projection;
+import org.openstreetmap.josm.testutils.annotations.TaggingPresets;
 
 /**
  * Test class for {@link SmartEditAddAction}
@@ -59,11 +59,11 @@ import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 @MapillaryLayerAnnotation
 @MapillaryURLWireMock
 @BasicPreferences
+@Main
 @ObjectDetectionsAnnotation
+@Projection
+@TaggingPresets
 class SmartEditAddActionTest {
-    // Needed for layer cleanup and for UI mocks
-    @RegisterExtension
-    static JOSMTestRules josmTestRules = new JOSMTestRules().main().projection().presets();
     private PointObjectLayer pointObjectLayer;
     private VectorNode node;
 
@@ -91,7 +91,7 @@ class SmartEditAddActionTest {
     @MapillaryURLWireMockErrors
     @ParameterizedTest
     @MethodSource("detectionsAreAdded")
-    void actionPerformedNoOsmLayer(ObjectDetections detection) {
+    void testActionPerformedNoOsmLayer(ObjectDetections detection) {
         node.put("value", detection.getKey());
         final SmartEditAddAction smartEditAddAction = new SmartEditAddAction(pointObjectLayer, node);
         smartEditAddAction.actionPerformed(null);
@@ -103,7 +103,7 @@ class SmartEditAddActionTest {
     @MapillaryURLWireMockErrors
     @ParameterizedTest
     @MethodSource("detectionsAreAdded")
-    void actionPerformedOsmLayerLocked(ObjectDetections detection) {
+    void testActionPerformedOsmLayerLocked(ObjectDetections detection) {
         node.put("value", detection.getKey());
         final SmartEditAddAction smartEditAddAction = new SmartEditAddAction(pointObjectLayer, node);
         final OsmDataLayer osmDataLayer = new OsmDataLayer(new DataSet(), "SmartEditAddActionTest", null);
@@ -117,7 +117,7 @@ class SmartEditAddActionTest {
     @MapillaryURLWireMockErrors
     @ParameterizedTest
     @MethodSource("detectionsAreAdded")
-    void actionPerformedOsmLayerUnlockedNoApply(ObjectDetections detection) {
+    void testActionPerformedOsmLayerUnlockedNoApply(ObjectDetections detection) {
         node.put("value", detection.getKey());
         final SmartEditAddAction smartEditAddAction = new SmartEditAddAction(pointObjectLayer, node);
         final OsmDataLayer osmDataLayer = new OsmDataLayer(new DataSet(), "SmartEditAddActionTest", null);
@@ -136,7 +136,7 @@ class SmartEditAddActionTest {
     @MapillaryURLWireMockErrors
     @ParameterizedTest
     @MethodSource("detectionsAreAdded")
-    void actionPerformedOsmLayerUnlockedApply(ObjectDetections detection, boolean added) {
+    void testActionPerformedOsmLayerUnlockedApply(ObjectDetections detection, boolean added) {
         final OsmDataLayer osmDataLayer = this.commonApply(detection);
         final SmartEditAddAction smartEditAddAction = new SmartEditAddAction(pointObjectLayer, node);
 

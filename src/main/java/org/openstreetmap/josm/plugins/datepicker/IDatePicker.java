@@ -4,9 +4,9 @@ package org.openstreetmap.josm.plugins.datepicker;
 import java.time.Instant;
 import java.util.function.Consumer;
 
-import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 
+import jakarta.annotation.Nonnull;
 import org.openstreetmap.josm.plugins.datepicker.impl.DatePickerSwing;
 import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.Logging;
@@ -16,6 +16,7 @@ import org.openstreetmap.josm.tools.Logging;
  * {@link IDatePicker#getNewDatePicker} to get a new date picker. It uses the
  * {@code "datepicker.classname"} setting to determine the appropriate class.
  *
+ * @param <T> The component that the date picker returns for the UI
  * @author Taylor Smock
  */
 public interface IDatePicker<T extends JComponent> {

@@ -11,12 +11,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.json.JsonObject;
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
 import org.openstreetmap.josm.data.osm.INode;
@@ -36,9 +35,9 @@ import org.openstreetmap.josm.tools.Logging;
  *
  * @author Taylor Smock
  */
-@Immutable
+// @Immutable
 public final class OrganizationRecord implements Serializable {
-    private static final Pattern NUMBER_PATTERN = Pattern.compile("[0-9]+");
+    private static final Pattern NUMBER_PATTERN = Pattern.compile("\\d+");
     private static final ListenerList<OrganizationRecordListener> LISTENERS = ListenerList.create();
     private final String description;
     private final long id;

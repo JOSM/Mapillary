@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.apache.commons.jcs3.access.CacheAccess;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.data.osm.BBox;
@@ -15,7 +14,10 @@ import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IWay;
 
-public class MapillarySequenceUtils {
+/**
+ * Utils for Mapillary sequences
+ */
+public final class MapillarySequenceUtils {
     /**
      * An enum for next/previous, largely to help ensure that booleans aren't accidentally reversed
      */

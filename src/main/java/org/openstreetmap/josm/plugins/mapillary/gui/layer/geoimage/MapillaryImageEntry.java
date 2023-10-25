@@ -33,8 +33,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
@@ -43,7 +41,10 @@ import com.drew.imaging.jpeg.JpegProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.MetadataException;
+import com.drew.metadata.exif.ExifDirectoryBase;
 import com.drew.metadata.exif.ExifIFD0Directory;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.apache.commons.jcs3.access.CacheAccess;
 import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
@@ -629,8 +630,8 @@ public class MapillaryImageEntry
             final Metadata metadata = JpegMetadataReader.readMetadata(new ByteArrayInputStream(imageBytes));
             final Directory dirExif = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
             try {
-                if (dirExif != null && dirExif.containsTag(ExifIFD0Directory.TAG_ORIENTATION)) {
-                    setExifOrientation(dirExif.getInt(ExifIFD0Directory.TAG_ORIENTATION));
+                if (dirExif != null && dirExif.containsTag(ExifDirectoryBase.TAG_ORIENTATION)) {
+                    setExifOrientation(dirExif.getInt(ExifDirectoryBase.TAG_ORIENTATION));
                 }
             } catch (MetadataException ex) {
                 Logging.debug(ex);

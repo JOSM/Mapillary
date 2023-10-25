@@ -21,10 +21,10 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.json.Json;
 import jakarta.json.JsonReader;
 import jakarta.json.JsonValue;

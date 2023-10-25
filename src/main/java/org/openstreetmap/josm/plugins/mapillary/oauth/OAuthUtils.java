@@ -17,9 +17,9 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 
-import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 
+import jakarta.annotation.Nullable;
 import jakarta.json.Json;
 import jakarta.json.JsonException;
 import jakarta.json.JsonObject;

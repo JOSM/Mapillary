@@ -8,8 +8,7 @@ import java.util.Calendar;
 import java.util.Properties;
 import java.util.function.Consumer;
 
-import javax.annotation.Nonnull;
-
+import jakarta.annotation.Nonnull;
 import org.jdatepicker.impl.DateComponentFormatter;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
@@ -34,6 +33,7 @@ public class DatePickerJDatePicker implements IDatePicker<JDatePickerImpl> {
     private final JDatePickerImpl datePicker;
     private final UtilCalendarModel model;
 
+    /** Create a new {@link DatePickerJDatePicker} component */
     public DatePickerJDatePicker() {
         model = new UtilCalendarModel();
         JDatePanelImpl datePanel = new JDatePanelImpl(model, PROPERTIES);

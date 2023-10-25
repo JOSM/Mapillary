@@ -10,4 +10,4 @@ permissions:
 
 jobs:
   call-workflow:
-    uses: JOSM/JOSMPluginAction/.github/workflows/reports.yaml@v1
+    uses: JOSM/JOSMPluginAction/.github/workflows/reports.yaml@v2

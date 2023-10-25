@@ -1,11 +1,12 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.command;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collection;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.openstreetmap.josm.command.Command;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.gui.MainApplication;
@@ -22,6 +23,12 @@ public class AddMapillaryObjectCommand extends Command {
     @Nonnull
     private final GenericCommand<?, ?, ?, ?, ?> deleteOriginal;
 
+    /**
+     * Create a new command for adding a mapillary object
+     *
+     * @param deleteOriginal The command to delete the original object from the Mapillary layer
+     * @param updateTagsCommand The command to use to update tags
+     */
     public AddMapillaryObjectCommand(@Nonnull final GenericCommand<?, ?, ?, ?, ?> deleteOriginal,
         @Nullable final Command updateTagsCommand) {
         super(updateTagsCommand != null ? updateTagsCommand.getAffectedDataSet()

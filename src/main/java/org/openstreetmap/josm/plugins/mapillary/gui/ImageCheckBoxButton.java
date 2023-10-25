@@ -9,8 +9,6 @@ import java.awt.GridBagLayout;
 import java.util.Collection;
 import java.util.stream.Stream;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
@@ -18,6 +16,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.openstreetmap.josm.data.osm.Filter;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;

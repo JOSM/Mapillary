@@ -16,9 +16,8 @@ import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.command.AddPrimitivesCommand;
 import org.openstreetmap.josm.command.Command;

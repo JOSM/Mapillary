@@ -34,13 +34,13 @@ import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.openstreetmap.josm.actions.UploadAction;
 import org.openstreetmap.josm.actions.upload.UploadHook;
 import org.openstreetmap.josm.data.Bounds;
@@ -159,7 +159,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     /** {@code true} if this layer is destroyed */
     private boolean destroyed;
 
-    private static AlphaComposite fadeComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+    private AlphaComposite fadeComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
         MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
     private static Point2D standardImageCentroid;
     private final ListenerList<MVTTile.TileListener> tileListeners = ListenerList.create();
@@ -567,8 +567,8 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         g.setTransform(originalTransform);
     }
 
-    private static void paintDirectionIndicator(Graphics2D g, Color directionC, INode img,
-        AffineTransform originalTransform, Point p, Image i) {
+    private void paintDirectionIndicator(Graphics2D g, Color directionC, INode img, AffineTransform originalTransform,
+        Point p, Image i) {
         // Paint direction indicator
         g.setColor(directionC);
         if (MapillaryImageUtils.IS_PANORAMIC.test(img)) {
