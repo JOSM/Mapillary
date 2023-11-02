@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.testutils.annotations;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.testutils.annotations.ThreadSync;
 
 /**
  * An annotation that waits for threads to finish before continuing
@@ -29,6 +31,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @ExtendWith(AwaitThreadFinish.AwaitThreadFinishExtension.class)
+@ExtendWith(ThreadSync.ThreadSyncExtension.class)
 public @interface AwaitThreadFinish {
     /**
      * An extension that waits for threads to finish, and then continues

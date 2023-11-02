@@ -20,7 +20,6 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import jakarta.json.JsonValue;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -30,14 +29,12 @@ import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryC
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMockErrors;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
-import org.openstreetmap.josm.testutils.JOSMTestRules;
+import org.openstreetmap.josm.testutils.annotations.Main;
 
+@Main
 @MapillaryCaches
 @MapillaryURLWireMock
 class JsonSequencesDecoderTest {
-    @RegisterExtension
-    static JOSMTestRules rules = new JOSMTestRules().main();
-
     @Test
     void testDecodeSequencesInvalid() throws IOException {
         // null input

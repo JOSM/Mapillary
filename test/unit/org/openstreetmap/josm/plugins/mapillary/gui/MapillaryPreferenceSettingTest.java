@@ -24,7 +24,6 @@ import javax.swing.SpinnerNumberModel;
 
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -34,16 +33,13 @@ import org.openstreetmap.josm.data.preferences.BooleanProperty;
 import org.openstreetmap.josm.data.preferences.StringProperty;
 import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
+import org.openstreetmap.josm.testutils.annotations.Main;
 import org.openstreetmap.josm.tools.I18n;
 
 @BasicPreferences
+@Main
 class MapillaryPreferenceSettingTest {
-
-    @RegisterExtension
-    static JOSMTestRules rules = new JOSMTestRules().main();
-
     @Test
     void testAddGui() {
         PreferenceTabbedPane tabs = new PreferenceTabbedPane();

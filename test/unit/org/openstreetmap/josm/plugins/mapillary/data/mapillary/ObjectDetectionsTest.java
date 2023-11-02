@@ -12,24 +12,22 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.DeveloperToggleAction;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.ObjectDetectionsAnnotation;
-import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
+import org.openstreetmap.josm.testutils.annotations.TaggingPresets;
 
 /**
  * Test class for {@link ObjectDetections}
  */
 @BasicPreferences
 @ObjectDetectionsAnnotation
+@TaggingPresets
 class ObjectDetectionsTest {
-    @RegisterExtension
-    static JOSMTestRules rule = new JOSMTestRules().presets();
     static Field osmKey;
 
     @BeforeAll

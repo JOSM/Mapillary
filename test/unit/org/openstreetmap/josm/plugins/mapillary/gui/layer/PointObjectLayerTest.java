@@ -13,25 +13,25 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.Timeout;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.AwaitThreadFinish;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryLayerAnnotation;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
-import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
+import org.openstreetmap.josm.testutils.annotations.Main;
+import org.openstreetmap.josm.testutils.annotations.Projection;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 
-@BasicPreferences
 @AwaitThreadFinish
+@BasicPreferences
+@Main
 @MapillaryLayerAnnotation
+@Projection
+@Timeout(20)
 class PointObjectLayerTest {
-
-    @RegisterExtension
-    static JOSMTestRules rules = new JOSMTestRules().timeout(20000).projection().main();
-
     private PointObjectLayer instance;
 
     private static WireMockServer wmRule;

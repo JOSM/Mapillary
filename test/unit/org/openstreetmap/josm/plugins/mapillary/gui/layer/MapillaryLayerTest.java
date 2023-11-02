@@ -20,7 +20,6 @@ import java.util.Collections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.imagery.ImageryInfo;
@@ -40,18 +39,17 @@ import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryU
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMockErrors;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoderTest;
-import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
+import org.openstreetmap.josm.testutils.annotations.Main;
+import org.openstreetmap.josm.testutils.annotations.Projection;
 
 @BasicPreferences
+@Main
 @MapillaryLayerAnnotation
 @MapillaryURLWireMock
 @MapillaryURLWireMockErrors
+@Projection
 class MapillaryLayerTest {
-
-    @RegisterExtension
-    static JOSMTestRules rules = new JOSMTestRules().main().projection();
-
     private static Layer getDummyLayer() {
         return ImageryLayer.create(new ImageryInfo("dummy", "https://example.org"));
     }

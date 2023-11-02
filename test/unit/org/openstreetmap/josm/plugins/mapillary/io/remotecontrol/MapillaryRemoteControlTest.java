@@ -16,7 +16,6 @@ import java.util.stream.Stream;
 import org.awaitility.Awaitility;
 import org.awaitility.Durations;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -30,8 +29,9 @@ import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryC
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryLayerAnnotation;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
-import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
+import org.openstreetmap.josm.testutils.annotations.Main;
+import org.openstreetmap.josm.testutils.annotations.Projection;
 
 /**
  * Test class for {@link MapillaryRemoteControl}
@@ -40,13 +40,11 @@ import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
  */
 @AwaitThreadFinish
 @BasicPreferences
-@MapillaryURLWireMock
+@Main
 @MapillaryLayerAnnotation
+@MapillaryURLWireMock
+@Projection
 class MapillaryRemoteControlTest {
-    // Needed for layer clearing. And Main.
-    @RegisterExtension
-    static JOSMTestRules josmTestRules = new JOSMTestRules().main().projection();
-
     @Test
     void testGetMandatoryParams() {
         assertEquals(0, new MapillaryRemoteControl().getMandatoryParams().length);

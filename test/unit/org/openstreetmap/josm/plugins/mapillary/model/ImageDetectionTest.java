@@ -10,21 +10,16 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryCaches;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
-import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 @MapillaryURLWireMock
 @MapillaryCaches
 class ImageDetectionTest {
-    @RegisterExtension
-    static JOSMTestRules josmTestRules = new JOSMTestRules();
-
     @Test
     void testBasics() {
         ImageDetection<Path2D.Double> id = new ImageDetection<>(new Path2D.Double(), 1, 2, "value");

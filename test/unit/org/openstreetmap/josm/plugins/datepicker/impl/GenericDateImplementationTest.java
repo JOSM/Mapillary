@@ -11,22 +11,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
 import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
-import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 /**
  * Test method for date implementations.
  * The {@link #getDatePickers} method should be updated when new date pickers are implemented.
  */
 class GenericDateImplementationTest {
-    @RegisterExtension
-    static JOSMTestRules rules = new JOSMTestRules();
-
     static Stream<Arguments> getDatePickers() {
         Calendar minCalendar = Calendar.getInstance();
         minCalendar.setTime(new Date(Long.MIN_VALUE));

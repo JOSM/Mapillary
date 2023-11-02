@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -7,7 +8,6 @@ import java.lang.reflect.Field;
 import javax.swing.JPopupMenu;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -26,9 +26,10 @@ import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryU
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
-import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 import org.openstreetmap.josm.testutils.annotations.BasicWiremock;
+import org.openstreetmap.josm.testutils.annotations.Main;
+import org.openstreetmap.josm.testutils.annotations.Projection;
 
 /**
  * Test class for {@link MapillaryKeyListener}
@@ -36,14 +37,14 @@ import org.openstreetmap.josm.testutils.annotations.BasicWiremock;
  * @author Taylor Smock
  */
 @BasicPreferences
-@BasicWiremock // TODO remove when it is inheritable (see #21139)
-@MapillaryURLWireMock
+@BasicWiremock
+@Main
 @MapillaryLayerAnnotation
+@MapillaryURLWireMock
+@Projection
 class MapillaryKeyListenerTest {
     /** This is the JOSM standard component count. Update as needed. */
     private static final int TAG_MENU_COMPONENT_COUNT = 15;
-    @RegisterExtension
-    static JOSMTestRules josmTestRules = new JOSMTestRules().main().projection();
 
     @Test
     void testListenerNoSpuriousActions() throws ReflectiveOperationException {

@@ -18,7 +18,6 @@ import junit.framework.AssertionFailedError;
 import org.awaitility.Awaitility;
 import org.awaitility.Durations;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openstreetmap.josm.TestUtils;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -34,19 +33,18 @@ import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryU
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMockErrors;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
-import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
+import org.openstreetmap.josm.testutils.annotations.Main;
+import org.openstreetmap.josm.testutils.annotations.Projection;
 import org.openstreetmap.josm.tools.Logging;
 
 @AwaitThreadFinish
 @BasicPreferences
+@Main
 @MapillaryCaches
 @MapillaryURLWireMock
+@Projection
 class MapillaryCacheTest {
-
-    @RegisterExtension
-    static JOSMTestRules rules = new JOSMTestRules().main().projection();
-
     @Test
     void test() throws ExecutionException, InterruptedException, TimeoutException {
         // Use 135511895288847 since that is an image we have real information for

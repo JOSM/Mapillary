@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.data.mapillary;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -9,14 +10,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openstreetmap.josm.command.Command;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.Way;
-import org.openstreetmap.josm.testutils.JOSMTestRules;
+import org.openstreetmap.josm.testutils.annotations.AssumeRevision;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
+import org.openstreetmap.josm.testutils.annotations.Projection;
 
 /**
  * Test class for {@link AdditionalInstructions}
@@ -24,9 +25,8 @@ import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
  * @author Taylor Smock
  */
 @BasicPreferences
+@Projection
 class AdditionalInstructionsTest {
-    @RegisterExtension
-    static JOSMTestRules josmTestRules = new JOSMTestRules().projection();
     private DataSet dataSet;
 
     @BeforeEach
@@ -55,13 +55,13 @@ class AdditionalInstructionsTest {
             assertNull(this.snapToRoad.apply(node));
         }
 
-        @JOSMTestRules.OverrideAssumeRevision("18108\n")
+        @AssumeRevision("18108\n")
         @Test
         void testApplyHighway() {
             this.applyHighwayCommon();
         }
 
-        @JOSMTestRules.OverrideAssumeRevision("18109\n")
+        @AssumeRevision("18109\n")
         @Test
         void testApplyHighway18109() {
             this.applyHighwayCommon();
