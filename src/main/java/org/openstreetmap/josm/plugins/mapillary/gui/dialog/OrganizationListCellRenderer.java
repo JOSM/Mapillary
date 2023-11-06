@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.dialog;
 
 import java.awt.Component;
@@ -27,13 +28,13 @@ public class OrganizationListCellRenderer extends DefaultListCellRenderer {
         JLabel comp = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         if (value instanceof OrganizationRecord) {
             OrganizationRecord organization = (OrganizationRecord) value;
-            if ((organization.getNiceName() != null && !organization.getNiceName().isEmpty())
+            if ((organization.niceName() != null && !organization.niceName().isEmpty())
                 || OrganizationRecord.NULL_RECORD.equals(organization)) {
-                comp.setText(organization.getNiceName());
+                comp.setText(organization.niceName());
             } else {
-                comp.setText(Long.toString(organization.getId()));
+                comp.setText(Long.toString(organization.id()));
             }
-            if (organization.getAvatar() != null) {
+            if (organization.avatar() != null) {
                 comp.setIcon(ORGANIZATION_SCALED_ICONS.computeIfAbsent(organization,
                     OrganizationListCellRenderer::scaleOrganizationIcon));
             }
@@ -49,7 +50,7 @@ public class OrganizationListCellRenderer extends DefaultListCellRenderer {
      */
     private static ImageIcon scaleOrganizationIcon(final OrganizationRecord organization) {
         final ImageProvider.ImageSizes size = ImageProvider.ImageSizes.DEFAULT;
-        final Image scaledImage = organization.getAvatar().getImage().getScaledInstance(size.getAdjustedWidth(),
+        final Image scaledImage = organization.avatar().getImage().getScaledInstance(size.getAdjustedWidth(),
             size.getAdjustedHeight(), Image.SCALE_SMOOTH);
         return new ImageIcon(scaledImage);
     }

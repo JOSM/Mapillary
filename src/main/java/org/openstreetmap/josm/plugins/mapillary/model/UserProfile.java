@@ -1,48 +1,61 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.model;
 
-import java.util.Objects;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.ImageIcon;
 
+import jakarta.json.Json;
+import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonUserProfileDecoder;
 import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.Logging;
 
-public class UserProfile extends KeyIndexedObject<String> {
-    private static final long serialVersionUID = -2626823438368139952L;
+/**
+ * A profile for a user
+ *
+ * @param key The user id
+ * @param username The username for the user
+ * @param avatar The avatar for the user
+ */
+public record UserProfile(long key, String username, ImageIcon avatar) {
 
+    private static final Map<Long, UserProfile> CACHE = new ConcurrentHashMap<>(1);
     /** A default user profile */
-    public static final UserProfile NONE = new UserProfile("", "",
+    public static final UserProfile NONE = new UserProfile(Long.MIN_VALUE, "",
         ImageProvider.createBlankIcon(ImageProvider.ImageSizes.DEFAULT));
 
-    private final String username;
-    private final ImageIcon avatar;
-
-    public UserProfile(String key, String username, ImageIcon avatar) {
-        super(key);
-        this.avatar = avatar;
-        this.username = username;
+    static {
+        CACHE.put(NONE.key(), NONE);
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public ImageIcon getAvatar() {
-        return avatar;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof UserProfile) {
-            UserProfile other = (UserProfile) o;
-            return super.equals(other) && Objects.equals(this.username, other.username)
-                && Objects.equals(this.avatar, other.avatar);
+    public static UserProfile getUser(String json) {
+        final UserProfile user;
+        try (var reader = Json.createReader(new StringReader(json))) {
+            user = JsonUserProfileDecoder.decodeUserProfile(reader.readObject());
         }
-        return false;
+        return CACHE.computeIfAbsent(user.key(), ignored -> user);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), this.username, this.avatar);
+    public static UserProfile getUser(long id) {
+        final var user = CACHE.computeIfAbsent(id, UserProfile::getNewUser);
+        if (NONE.equals(user)) {
+            CACHE.remove(id);
+        }
+        return user;
+    }
+
+    private static UserProfile getNewUser(long id) {
+        try {
+            final var data = OAuthUtils.getWithHeader(MapillaryConfig.getUrls().getUserInformation(id));
+            return JsonUserProfileDecoder.decodeUserProfile(data);
+        } catch (IOException exception) {
+            Logging.error(exception);
+        }
+        return NONE;
     }
 }

@@ -205,14 +205,15 @@ public interface IMapillaryUrls {
             MapillaryImageUtils.ImageProperties.COMPUTED_ALTITUDE,
             MapillaryImageUtils.ImageProperties.COMPUTED_COMPASS_ANGLE,
             MapillaryImageUtils.ImageProperties.COMPUTED_GEOMETRY,
-            MapillaryImageUtils.ImageProperties.COMPUTED_ROTATION, MapillaryImageUtils.ImageProperties.EXIF_ORIENTATION,
-            MapillaryImageUtils.ImageProperties.GEOMETRY, MapillaryImageUtils.ImageProperties.HEIGHT,
-            MapillaryImageUtils.ImageProperties.ID, MapillaryImageUtils.ImageProperties.QUALITY_SCORE,
-            MapillaryImageUtils.ImageProperties.SEQUENCE, MapillaryImageUtils.ImageProperties.THUMB_1024_URL,
-            MapillaryImageUtils.ImageProperties.THUMB_2048_URL, MapillaryImageUtils.ImageProperties.THUMB_256_URL,
-            MapillaryImageUtils.ImageProperties.THUMB_ORIGINAL_URL, MapillaryImageUtils.ImageProperties.WIDTH,
-            MapillaryImageUtils.ImageProperties.WORST_IMAGE).distinct().sorted()
-            .toArray(MapillaryImageUtils.ImageProperties[]::new);
+            MapillaryImageUtils.ImageProperties.COMPUTED_ROTATION, MapillaryImageUtils.ImageProperties.CREATOR,
+            MapillaryImageUtils.ImageProperties.EXIF_ORIENTATION, MapillaryImageUtils.ImageProperties.GEOMETRY,
+            MapillaryImageUtils.ImageProperties.HEIGHT, MapillaryImageUtils.ImageProperties.ID,
+            MapillaryImageUtils.ImageProperties.MAKE, MapillaryImageUtils.ImageProperties.MODEL,
+            MapillaryImageUtils.ImageProperties.QUALITY_SCORE, MapillaryImageUtils.ImageProperties.SEQUENCE,
+            MapillaryImageUtils.ImageProperties.THUMB_1024_URL, MapillaryImageUtils.ImageProperties.THUMB_2048_URL,
+            MapillaryImageUtils.ImageProperties.THUMB_256_URL, MapillaryImageUtils.ImageProperties.THUMB_ORIGINAL_URL,
+            MapillaryImageUtils.ImageProperties.WIDTH, MapillaryImageUtils.ImageProperties.WORST_IMAGE).distinct()
+            .sorted().toArray(MapillaryImageUtils.ImageProperties[]::new);
     }
 
     /**
@@ -251,6 +252,17 @@ public interface IMapillaryUrls {
         checkIds(id);
         return MapillaryConfig.getUrls().getBaseMetaDataUrl() + id
             + queryString(Collections.singletonMap(FIELDS, "slug,name,description"));
+    }
+
+    /**
+     * Get user information for the specified user
+     *
+     * @return The URL to get user information
+     */
+    default URI getUserInformation(long id) {
+        checkIds(id);
+        return string2URL(MapillaryConfig.getUrls().getBaseMetaDataUrl() + id
+            + queryString(Collections.singletonMap(FIELDS, "username,id")));
     }
 
     /**

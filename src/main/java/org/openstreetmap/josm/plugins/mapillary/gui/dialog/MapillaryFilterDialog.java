@@ -12,15 +12,14 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
+import java.io.Serial;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.concurrent.locks.Lock;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -34,7 +33,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
 import jakarta.annotation.Nonnull;
@@ -76,6 +74,7 @@ import org.openstreetmap.josm.tools.Utils;
 public final class MapillaryFilterDialog extends ToggleDialog
     implements OrganizationRecordListener, MVTTile.TileListener {
 
+    @Serial
     private static final long serialVersionUID = -4192029663670922103L;
 
     private static MapillaryFilterDialog instance;
@@ -108,9 +107,9 @@ public final class MapillaryFilterDialog extends ToggleDialog
                 Shortcut.NONE),
             200, false, MapillaryPreferenceSetting.class);
 
-        final JPanel panel = new JPanel(new GridBagLayout());
+        final var panel = new JPanel(new GridBagLayout());
         panel.add(new JLabel(tr("Picture Filters")), GBC.eol().anchor(GridBagConstraints.LINE_START));
-        final JPanel imageLine = new JPanel();
+        final var imageLine = new JPanel();
         panel.add(imageLine, GBC.eol().anchor(GridBagConstraints.LINE_START));
         this.addTimeFilters(panel);
         this.addUserGroupFilters(panel);
@@ -120,7 +119,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
         panel.add(imageTypes, GBC.eol().anchor(GridBagConstraints.LINE_START));
 
         panel.add(new JSeparator(), GBC.eol().fill(GridBagConstraints.HORIZONTAL));
-        final TrafficSignFilter objectFilter = new TrafficSignFilter();
+        final var objectFilter = new TrafficSignFilter();
         panel.add(new JLabel(tr("Object Detection Filters")),
             GBC.eol().anchor(GridBagConstraints.WEST).fill(GridBagConstraints.HORIZONTAL));
         this.destroyable.addListener(objectFilter);
@@ -148,7 +147,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
      * @param panel The panel to add the filters to
      */
     private void addUserGroupFilters(JPanel panel) {
-        final JPanel userSearchPanel = new JPanel();
+        final var userSearchPanel = new JPanel();
         userSearchPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         organizationLabel.setToolTipText(tr("Organizations"));
@@ -181,23 +180,23 @@ public final class MapillaryFilterDialog extends ToggleDialog
      */
     private void addTimeFilters(JPanel panel) {
         // Time from panel
-        final JPanel fromPanel = new JPanel();
+        final var fromPanel = new JPanel();
         fromPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        final JCheckBox filterByDateCheckbox = new JCheckBox(tr("Not older than: "));
+        final var filterByDateCheckbox = new JCheckBox(tr("Not older than: "));
         fromPanel.add(filterByDateCheckbox);
-        final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(1.0, 0, 10000, .1);
-        final JSpinner spinner = new DisableShortcutsOnFocusGainedJSpinner(spinnerModel);
+        final var spinnerModel = new SpinnerNumberModel(1.0, 0, 10000, .1);
+        final var spinner = new DisableShortcutsOnFocusGainedJSpinner(spinnerModel);
         // Set the editor such that we aren't zooming all over the place.
         spinner.setEnabled(false);
         fromPanel.add(spinner);
 
-        final JComboBox<String> time = new JComboBox<>(TIME_LIST);
+        final var time = new JComboBox<>(TIME_LIST);
         time.setEnabled(false);
         fromPanel.add(time);
 
         panel.add(fromPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
         // Time panel
-        final JPanel timePanel = new JPanel(new GridBagLayout());
+        final var timePanel = new JPanel(new GridBagLayout());
         startDate = IDatePicker.getNewDatePicker();
         endDate = IDatePicker.getNewDatePicker();
         final Consumer<IDatePicker<?>> function = modified -> updateDates(startDate, endDate, modified);
@@ -299,7 +298,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
      * @param organization The organization to filter on
      */
     public void setOrganization(String organization) {
-        OrganizationRecord organizationRecord = OrganizationRecord.getOrganization(organization);
+        final var organizationRecord = OrganizationRecord.getOrganization(organization);
         this.organizations.setSelectedItem(organizationRecord);
     }
 
@@ -307,10 +306,10 @@ public final class MapillaryFilterDialog extends ToggleDialog
     private static Instant convertDateRangeBox(@Nonnull SpinnerNumberModel spinner,
         @Nonnull JComboBox<String> timeStep) {
         if (timeStep.isEnabled()) {
-            ZonedDateTime current = LocalDate.now(ZoneOffset.UTC).atStartOfDay(ZoneOffset.UTC);
-            String type = (String) timeStep.getSelectedItem();
-            Number start = spinner.getNumber();
-            int[] difference = new int[] { 0, 0, 0 }; // Year, Month, Day
+            final var current = LocalDate.now(ZoneOffset.UTC).atStartOfDay(ZoneOffset.UTC);
+            final var type = (String) timeStep.getSelectedItem();
+            final var start = spinner.getNumber();
+            final var difference = new int[] { 0, 0, 0 }; // Year, Month, Day
             if (TIME_LIST[0].equals(type)) {
                 difference[0] = start.intValue();
                 difference[1] = (int) ((start.floatValue() - difference[0]) * 12);
@@ -328,8 +327,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
     }
 
     private static void updateDates(IDatePicker<?> startDate, IDatePicker<?> endDate, IDatePicker<?> modified) {
-        Instant start = startDate.getInstant();
-        Instant end = endDate.getInstant();
+        final var start = startDate.getInstant();
+        final var end = endDate.getInstant();
         if (Instant.MIN.equals(start) || Instant.MIN.equals(end)) {
             return;
         }
@@ -388,7 +387,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
     public void updateFilteredImages() {
         if (MapillaryLayer.hasInstance()) {
             MainApplication.worker.execute(() -> {
-                final Lock readLock = MapillaryLayer.getInstance().getData().getReadLock();
+                final var readLock = MapillaryLayer.getInstance().getData().getReadLock();
                 try {
                     readLock.lockInterruptibly();
                     this.updateFilteredImages(MapillaryLayer.getInstance().getData().getNodes());
@@ -485,7 +484,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
                 // Filter on organizations
                 return !OrganizationRecord.NULL_RECORD.equals(this.organization)
                     && MapillaryImageUtils.getSequenceKey(img) != null
-                    && this.organization.getId() != MapillaryImageUtils.getOrganization(img).getId();
+                    && this.organization.id() != MapillaryImageUtils.getOrganization(img).id();
             }
             return false;
         }
@@ -505,9 +504,9 @@ public final class MapillaryFilterDialog extends ToggleDialog
             if (Instant.MIN.equals(startDateRefresh)) {
                 return false;
             }
-            final Instant start = LocalDateTime.ofInstant(startDateRefresh, ZoneOffset.UTC).toLocalDate()
+            final var start = LocalDateTime.ofInstant(startDateRefresh, ZoneOffset.UTC).toLocalDate()
                 .atStartOfDay(ZoneOffset.UTC).toInstant();
-            final Instant imgDate = MapillaryImageUtils.getDate(img);
+            final var imgDate = MapillaryImageUtils.getDate(img);
             return start.isAfter(imgDate);
         }
 
@@ -519,10 +518,10 @@ public final class MapillaryFilterDialog extends ToggleDialog
             if (Instant.MIN.equals(endDateRefresh)) {
                 return false;
             }
-            final ZonedDateTime nextDate = LocalDateTime.ofInstant(endDateRefresh, ZoneOffset.UTC).toLocalDate()
+            final var nextDate = LocalDateTime.ofInstant(endDateRefresh, ZoneOffset.UTC).toLocalDate()
                 .atStartOfDay(ZoneOffset.UTC).plus(1, ChronoUnit.DAYS);
-            final Instant end = nextDate.toInstant();
-            final Instant imgDate = MapillaryImageUtils.getDate(img);
+            final var end = nextDate.toInstant();
+            final var imgDate = MapillaryImageUtils.getDate(img);
             return end.isBefore(imgDate);
         }
     }
@@ -536,6 +535,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
 
     private static class UpdateAction extends AbstractAction {
 
+        @Serial
         private static final long serialVersionUID = -7417238601979689863L;
 
         UpdateAction() {
@@ -550,6 +550,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
     }
 
     private static class ResetAction extends AbstractAction {
+        @Serial
         private static final long serialVersionUID = 1178261778165525040L;
 
         ResetAction() {
@@ -579,8 +580,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
 
     @Override
     public void organizationAdded(OrganizationRecord organization) {
-        boolean add = true;
-        for (int i = 0; i < organizations.getItemCount(); i++) {
+        var add = true;
+        for (var i = 0; i < organizations.getItemCount(); i++) {
             if (organizations.getItemAt(i).equals(organization)) {
                 add = false;
                 break;

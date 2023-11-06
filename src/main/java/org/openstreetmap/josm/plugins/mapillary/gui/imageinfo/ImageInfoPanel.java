@@ -11,6 +11,7 @@ import java.awt.Insets;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.Serial;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
@@ -47,11 +48,13 @@ import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.widget.DisableShortcutsOnFocusGainedJSpinner;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
+import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.OffsetUtils;
 import org.openstreetmap.josm.tools.GBC;
+import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -61,6 +64,7 @@ import org.openstreetmap.josm.tools.Utils;
  * A panel to show image specific information
  */
 public final class ImageInfoPanel extends ToggleDialog implements DataSelectionListener, VectorDataSelectionListener {
+    @Serial
     private static final long serialVersionUID = 1320443250226377651L;
     private static ImageInfoPanel instance;
     private static final ImageIcon EMPTY_USER_AVATAR = new ImageIcon(
@@ -69,6 +73,7 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
     private final JLabel numDetectionsLabel;
     private final JCheckBox showDetectionsCheck;
     private final JLabel usernameLabel;
+    private final JLabel organizationNameLabel;
     private final HtmlPanel imgKeyValue;
     private final WebLinkAction imgLinkAction;
     private final ClipboardAction copyImgUrlAction;
@@ -109,30 +114,33 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
         usernameLabel = new JLabel();
         usernameLabel.setFont(usernameLabel.getFont().deriveFont(Font.PLAIN));
 
+        organizationNameLabel = new JLabel();
+        organizationNameLabel.setFont(organizationNameLabel.getFont().deriveFont(Font.PLAIN));
+
         imgKeyValue = new HtmlPanel();
 
         imgLinkAction = new WebLinkAction(tr("View in browser"), null);
 
         copyImgUrlAction = new ClipboardAction(tr("Copy URL"), tr("Copied URL to clipboard …"), null);
-        final MapillaryButton copyUrlButton = new MapillaryButton(copyImgUrlAction, true);
+        final var copyUrlButton = new MapillaryButton(copyImgUrlAction, true);
         copyImgUrlAction.setPopupParent(copyUrlButton);
 
         copyImgKeyAction = new ClipboardAction(tr("Copy key"), tr("Copied key to clipboard …"), null);
-        final MapillaryButton copyKeyButton = new MapillaryButton(copyImgKeyAction, true);
+        final var copyKeyButton = new MapillaryButton(copyImgKeyAction, true);
         copyImgKeyAction.setPopupParent(copyKeyButton);
 
         addMapillaryTagAction = new AddTagToPrimitiveAction(tr("Add Mapillary tag"));
 
-        JPanel imgKey = new JPanel();
+        final var imgKey = new JPanel();
         imgKey.add(imgKeyValue);
         imgKey.add(copyKeyButton);
-        JPanel imgButtons = new JPanel(new GridBagLayout());
+        final var imgButtons = new JPanel(new GridBagLayout());
         imgButtons.add(new MapillaryButton(imgLinkAction, true), GBC.eol());
         imgButtons.add(copyUrlButton, GBC.eol());
         imgButtons.add(new MapillaryButton(addMapillaryTagAction, true), GBC.eol());
         seqKeyValue = new HtmlPanel();
 
-        JPanel offsetPanel = new JPanel();
+        final var offsetPanel = new JPanel();
         offsetModel = new SpinnerNumberModel(OffsetUtils.getOffset(null), -100, 100, 1);
         offsetModel.addChangeListener(l -> {
             OffsetUtils.setOffset(offsetModel.getNumber());
@@ -142,8 +150,8 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
         });
         offsetPanel.add(new DisableShortcutsOnFocusGainedJSpinner(offsetModel));
 
-        JPanel root = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
+        final var root = new JPanel(new GridBagLayout());
+        final var gbc = new GridBagConstraints();
         gbc.insets = new Insets(0, 5, 0, 5);
 
         // Left column
@@ -155,6 +163,8 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
         root.add(new JLabel(tr("Image detections")), gbc);
         gbc.gridy += 2;
         gbc.gridheight = 1;
+        root.add(new JLabel(tr("User")), gbc);
+        gbc.gridy++;
         root.add(new JLabel(tr("Organization")), gbc);
         gbc.gridy++;
         root.add(new JLabel(tr("Image actions")), gbc);
@@ -175,6 +185,8 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
         root.add(showDetectionsCheck, gbc);
         gbc.gridy++;
         root.add(usernameLabel, gbc);
+        gbc.gridy++;
+        root.add(organizationNameLabel, gbc);
         gbc.gridy++;
         root.add(imgButtons, gbc);
         gbc.gridy++;
@@ -250,7 +262,7 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
         final String newImageKey = newImage != null ? Long.toString(newImage.getId()) : null;
         if (newImageKey != null) {
             final boolean blur = Boolean.TRUE.equals(MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.get());
-            final URI newImageUrl = blur ? MapillaryConfig.getUrls().blurEditImage(newImageKey)
+            final var newImageUrl = blur ? MapillaryConfig.getUrls().blurEditImage(newImageKey)
                 : MapillaryConfig.getUrls().browseImage(newImageKey);
 
             offsetModel.setValue(OffsetUtils.getOffset(newImage));
@@ -258,7 +270,7 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
                 imageLinkChangeListener = b -> imgLinkAction.setURI(newImageUrl);
             } else {
                 try {
-                    final URI newImageUrlWithLocation = new URI(newImageUrl.getScheme(), newImageUrl.getAuthority(),
+                    final var newImageUrlWithLocation = new URI(newImageUrl.getScheme(), newImageUrl.getAuthority(),
                         newImageUrl.getPath(),
                         newImageUrl.getQuery() + "&z=18&lat=" + newImage.lat() + "&lng=" + newImage.lon(),
                         newImageUrl.getFragment());
@@ -299,17 +311,46 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
             addMapillaryTagAction.setTag(null);
         }
 
-        final OrganizationRecord organizationRecord = MapillaryImageUtils.getOrganization(newImage);
-        usernameLabel.setEnabled(!OrganizationRecord.NULL_RECORD.equals(organizationRecord));
+        setUserLabel(this.usernameLabel, MapillaryImageUtils.getUser(newImage));
+        setOrganizationLabel(this.organizationNameLabel, MapillaryImageUtils.getOrganization(newImage));
+        setSequenceKey(this.seqKeyValue, newImage);
+    }
+
+    private static void setUserLabel(JLabel usernameLabel, UserProfile userProfile) {
+        usernameLabel.setEnabled(!UserProfile.NONE.equals(userProfile));
         if (usernameLabel.isEnabled()) {
-            usernameLabel.setText(organizationRecord.getNiceName());
-            usernameLabel.setIcon(
-                new ImageIcon(organizationRecord.getAvatar().getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
+            usernameLabel.setText(userProfile.username());
+            if (userProfile.avatar() != null) {
+                final var avatar = userProfile.avatar();
+                final var expectedSize = ImageProvider.ImageSizes.DEFAULT;
+                final var height = expectedSize.getAdjustedHeight();
+                final var width = expectedSize.getAdjustedWidth();
+                if (avatar.getIconWidth() > width || avatar.getIconHeight() > height) {
+                    usernameLabel.setIcon(
+                        new ImageIcon(avatar.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT)));
+                } else {
+                    usernameLabel.setIcon(userProfile.avatar());
+                }
+            }
         } else {
-            usernameLabel.setText("‹" + tr("unknown organization") + "›");
+            usernameLabel.setText("‹" + tr("unknown user") + "›");
             usernameLabel.setIcon(EMPTY_USER_AVATAR);
         }
+    }
 
+    private static void setOrganizationLabel(JLabel organizationNameLabel, OrganizationRecord organizationRecord) {
+        organizationNameLabel.setEnabled(!OrganizationRecord.NULL_RECORD.equals(organizationRecord));
+        if (organizationNameLabel.isEnabled()) {
+            organizationNameLabel.setText(organizationRecord.niceName());
+            organizationNameLabel.setIcon(
+                new ImageIcon(organizationRecord.avatar().getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
+        } else {
+            organizationNameLabel.setText("‹" + tr("unknown organization") + "›");
+            organizationNameLabel.setIcon(EMPTY_USER_AVATAR);
+        }
+    }
+
+    private static void setSequenceKey(HtmlPanel seqKeyValue, INode newImage) {
         final boolean partOfSequence = MapillaryImageUtils.getSequenceKey(newImage) != null;
         seqKeyValue.setEnabled(partOfSequence);
         if (partOfSequence) {

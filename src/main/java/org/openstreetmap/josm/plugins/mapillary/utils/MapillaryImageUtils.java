@@ -7,7 +7,6 @@ import java.util.Locale;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import jakarta.annotation.Nonnull;
@@ -18,11 +17,13 @@ import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IWay;
+import org.openstreetmap.josm.data.osm.Tagged;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillaryNodeDownloader;
+import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.UncheckedParseException;
 import org.openstreetmap.josm.tools.date.DateUtils;
@@ -77,7 +78,7 @@ public final class MapillaryImageUtils {
     public static Instant getDate(@Nonnull INode img) {
         if (Instant.EPOCH.equals(img.getInstant()) && !Instant.EPOCH.equals(getCapturedAt(img))) {
             try {
-                Instant instant = getCapturedAt(img);
+                final var instant = getCapturedAt(img);
                 img.setInstant(instant);
                 return instant;
             } catch (NumberFormatException e) {
@@ -172,7 +173,7 @@ public final class MapillaryImageUtils {
      */
     public static boolean isDownloadable(@Nullable INode node) {
         if (node != null) {
-            Matcher matcher = BASE_IMAGE_KEY.matcher("");
+            final var matcher = BASE_IMAGE_KEY.matcher("");
             for (String key : node.getKeys().keySet()) {
                 matcher.reset(key);
                 if (matcher.matches()) {
@@ -192,9 +193,9 @@ public final class MapillaryImageUtils {
      */
     private static void cacheImageFuture(INode image, CompletableFuture<BufferedImageCacheEntry> completableFuture,
         CacheEntry entry) {
-        if (entry instanceof BufferedImageCacheEntry) {
+        if (entry instanceof BufferedImageCacheEntry bufferedImageCacheEntry) {
             // Using the BufferedImageCacheEntry may speed up processing, if the image is already loaded.
-            completableFuture.complete((BufferedImageCacheEntry) entry);
+            completableFuture.complete(bufferedImageCacheEntry);
         } else if (entry != null && entry.getContent() != null) {
             // Fall back. More expensive if the image has already been loaded twice.
             completableFuture.complete(new BufferedImageCacheEntry(entry.getContent()));
@@ -213,8 +214,8 @@ public final class MapillaryImageUtils {
      * @return The time the image was captured at, or {@link Instant#EPOCH} if not known.
      */
     @Nonnull
-    private static Instant getCapturedAt(@Nonnull INode image) {
-        String time = "";
+    private static Instant getCapturedAt(@Nonnull Tagged image) {
+        var time = "";
         if (image.hasKey(ImageProperties.CAPTURED_AT.toString())) {
             time = image.get(ImageProperties.CAPTURED_AT.toString());
         }
@@ -255,7 +256,7 @@ public final class MapillaryImageUtils {
             // This should always be a parseable integer according to API docs. By not checking that all characters are
             // digits, we save 55.6 MB of allocations in the test area during download.
             if (image.hasKey(ImageProperties.ID.toString())) {
-                final long id = Long.parseLong(image.get(ImageProperties.ID.toString()));
+                final var id = Long.parseLong(image.get(ImageProperties.ID.toString()));
                 if (id > 0) {
                     image.setOsmId(id, 1);
                 }
@@ -302,7 +303,7 @@ public final class MapillaryImageUtils {
     @Nonnull
     public static OrganizationRecord getOrganization(@Nullable INode img) {
         if (img != null) {
-            final String organizationKey = ImageProperties.ORGANIZATION_ID.toString();
+            final var organizationKey = ImageProperties.ORGANIZATION_ID.toString();
             if (img.hasKey(organizationKey)) {
                 return OrganizationRecord.getOrganization(img.get(organizationKey));
             }
@@ -312,6 +313,21 @@ public final class MapillaryImageUtils {
             }
         }
         return OrganizationRecord.NULL_RECORD;
+    }
+
+    /**
+     * Get the user for the image
+     *
+     * @param mapillaryImage The image to get the user profile for
+     * @return The user profile
+     */
+    @Nonnull
+    public static UserProfile getUser(@Nullable Tagged mapillaryImage) {
+        if (mapillaryImage != null && mapillaryImage.hasKey(MapillaryImageUtils.ImageProperties.CREATOR.toString())) {
+            final var creator = mapillaryImage.get(MapillaryImageUtils.ImageProperties.CREATOR.toString());
+            return UserProfile.getUser(creator);
+        }
+        return UserProfile.NONE;
     }
 
     private MapillaryImageUtils() {
@@ -385,6 +401,8 @@ public final class MapillaryImageUtils {
          * @see #EXIF_ORIENTATION
          */
         COMPUTED_ROTATION,
+        /** The username and user id who uploaded the image ({@code {username: string, id: int}}) */
+        CREATOR,
         /**
          * Original orientation of the image
          *
@@ -401,6 +419,10 @@ public final class MapillaryImageUtils {
         HEIGHT,
         /** 1 if the image is panoramic */
         IS_PANO,
+        /** The manufacturer of the camera */
+        MAKE,
+        /** The model of the camera */
+        MODEL,
         /** The id of the organization */
         ORGANIZATION_ID,
         /** A 256px image (max width). You should prefer {@link #WORST_IMAGE}. */

@@ -102,7 +102,7 @@ public final class JsonImageDetailsDecoder {
             // Clean up bad key value combinations
             // Using for loop to (hopefully) fix JOSM #21070 and #21072
             for (Tag tag : map.getTags()) {
-                // Tag#getKey and Tag#getValue are never null. According to docs.
+                // Tag#key and Tag#getValue are never null. According to docs.
                 if (Utils.isStripEmpty(tag.getKey()) || Utils.isStripEmpty(tag.getValue())) {
                     image.put(tag.getKey(), null);
                 }

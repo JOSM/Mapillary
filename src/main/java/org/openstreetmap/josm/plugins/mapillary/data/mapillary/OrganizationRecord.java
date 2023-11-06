@@ -33,32 +33,25 @@ import org.openstreetmap.josm.tools.Logging;
 /**
  * Record organization information
  *
+ * @param id the unique key for the organization
+ * @param name the machine-readable name for an organization
+ * @param niceName the human-readable name for an organization
+ * @param description the description for the organization
+ * @param avatar the avatar for the organization
  * @author Taylor Smock
  */
-// @Immutable
-public final class OrganizationRecord implements Serializable {
+public record OrganizationRecord(long id, String name, String niceName, String description, ImageIcon avatar)
+    implements Serializable {
+
     private static final Pattern NUMBER_PATTERN = Pattern.compile("\\d+");
     private static final ListenerList<OrganizationRecordListener> LISTENERS = ListenerList.create();
-    private final String description;
-    private final long id;
-    private final String name;
-    private final String niceName;
-    private final ImageIcon avatar;
 
     private static final Map<Long, OrganizationRecord> CACHE = new ConcurrentHashMap<>(1);
 
-    public static final OrganizationRecord NULL_RECORD = new OrganizationRecord(0L, "", "", "", "");
+    public static final OrganizationRecord NULL_RECORD = new OrganizationRecord(0L, "", "", "", createAvatarIcon(""));
 
     static {
         CACHE.put(0L, NULL_RECORD);
-    }
-
-    private OrganizationRecord(Long id, String slug, String name, String description, String avatarUrl) {
-        this.avatar = createAvatarIcon(avatarUrl);
-        this.description = description;
-        this.id = id;
-        this.name = slug;
-        this.niceName = name;
     }
 
     /**
@@ -84,9 +77,9 @@ public final class OrganizationRecord implements Serializable {
      */
     private static BufferedImage fetchAvatarIcon(String url) {
         try {
-            HttpClient client = HttpClient.create(URI.create(url).toURL());
+            final var client = HttpClient.create(URI.create(url).toURL());
             OAuthUtils.addAuthenticationHeader(client);
-            HttpClient.Response response = client.connect();
+            final var response = client.connect();
             if (response.getResponseCode() >= 200 && response.getResponseCode() < 400) {
                 return ImageIO.read(response.getContent());
             }
@@ -126,8 +119,8 @@ public final class OrganizationRecord implements Serializable {
         // TODO check for API in v4 (preferably one that doesn't need user auth)
         final String url = MapillaryConfig.getUrls().getOrganizationInformation(id);
         try {
-            final JsonObject data = OAuthUtils.getWithHeader(URI.create(url));
-            final OrganizationRecord organizationRecord = decodeNewOrganization(data);
+            final var data = OAuthUtils.getWithHeader(URI.create(url));
+            final var organizationRecord = decodeNewOrganization(data);
             // Ensure that we aren't blocking the main EDT thread
             MainApplication.worker.execute(() -> LISTENERS.fireEvent(l -> l.organizationAdded(organizationRecord)));
             return organizationRecord;
@@ -144,16 +137,16 @@ public final class OrganizationRecord implements Serializable {
      * @return A new organization record
      */
     private static OrganizationRecord decodeNewOrganization(JsonObject organization) {
-        String description = organization.getString("description", "");
-        String slug = organization.getString("slug", "");
-        String name = organization.getString("name", "");
-        String idString = organization.getString("id", "");
-        String avatarUrl = organization.getString("profile_photo_url", null);
+        final var description = organization.getString("description", "");
+        final var slug = organization.getString("slug", "");
+        final var name = organization.getString("name", "");
+        final var idString = organization.getString("id", "");
+        final var avatarUrl = organization.getString("profile_photo_url", null);
         long id = 0;
         if (NUMBER_PATTERN.matcher(idString).matches()) {
             id = Long.parseLong(idString);
         }
-        return new OrganizationRecord(id, slug, name, description, avatarUrl);
+        return new OrganizationRecord(id, slug, name, description, createAvatarIcon(avatarUrl));
     }
 
     /**
@@ -164,52 +157,6 @@ public final class OrganizationRecord implements Serializable {
     public static void addFromTile(MVTTile tile) {
         tile.getData().getAllPrimitives().stream().filter(INode.class::isInstance).map(INode.class::cast)
             .forEach(MapillaryImageUtils::getOrganization);
-    }
-
-    /**
-     * Get the avatar for the organization
-     *
-     * @return The avatar for the organization
-     */
-    public ImageIcon getAvatar() {
-        return avatar != null ? avatar : ImageProvider.createBlankIcon(ImageSizes.DEFAULT);
-    }
-
-    /**
-     * Get the description for the organization
-     *
-     * @return The organization description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Get the unique key for the organization
-     *
-     * @return The organization key
-     */
-    public long getId() {
-        return id;
-    }
-
-    /**
-     * Get the machine-readable name for an organization
-     *
-     * @return The name of the organization
-     * @see OrganizationRecord#getNiceName
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Get the human-readable name for an organization
-     *
-     * @return The nice-looking name of the organization
-     */
-    public String getNiceName() {
-        return niceName;
     }
 
     /**

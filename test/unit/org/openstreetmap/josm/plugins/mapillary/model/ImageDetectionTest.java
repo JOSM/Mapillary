@@ -29,8 +29,8 @@ class ImageDetectionTest {
         assertEquals(1, id.getImageKey());
         assertEquals(3, trafficsign.getImageKey());
 
-        assertEquals(2, id.getKey());
-        assertEquals(4, trafficsign.getKey());
+        assertEquals(2, id.key());
+        assertEquals(4, trafficsign.key());
 
         assertFalse(id.isTrafficSign());
         assertTrue(trafficsign.isTrafficSign());

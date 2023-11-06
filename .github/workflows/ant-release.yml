@@ -9,5 +9,5 @@ jobs:
     uses: JOSM/JOSMPluginAction/.github/workflows/ant.yml@v2
     with:
       josm-revision: "r18877"
-
+      java-version: 17
 

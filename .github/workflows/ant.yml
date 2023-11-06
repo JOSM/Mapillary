@@ -20,3 +20,5 @@ jobs:
     uses: JOSM/JOSMPluginAction/.github/workflows/ant.yml@v2
     with:
       josm-revision: ${{ matrix.josm-revision }}
+      java-version: 17
+

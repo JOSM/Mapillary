@@ -8,17 +8,19 @@ import java.net.URI;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-import jakarta.json.JsonObject;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.spi.preferences.IMapillaryUrls;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
+
+import jakarta.json.JsonObject;
 
 /**
  * Decodes the JSON returned by {@link IMapillaryUrls} into Java objects.
  * Takes a {@link JsonObject} and {@link #decodeUserProfile(JsonObject)} tries to convert it to a {@link UserProfile}.
  */
 public final class JsonUserProfileDecoder {
+    /** The avatar for profiles without an avatar */
     private static final ImageIcon FAKE_AVATAR = new ImageProvider("fake-avatar").get();
 
     private JsonUserProfileDecoder() {
@@ -35,13 +37,13 @@ public final class JsonUserProfileDecoder {
         if (json == null) {
             return null;
         }
-        String username = json.getString("username", null);
-        String key = json.getString("key", null);
+        final var username = json.getString("username", null);
+        final var key = json.getString("id", null);
         if (key == null || username == null) {
             return null;
         }
 
-        String avatar = json.getString("avatar", null);
+        final var avatar = json.getString("avatar", null);
         ImageIcon icon = null;
         if (avatar != null) {
             try {
@@ -56,6 +58,6 @@ public final class JsonUserProfileDecoder {
         if (icon == null) {
             icon = FAKE_AVATAR;
         }
-        return new UserProfile(key, username, icon);
+        return new UserProfile(Long.parseLong(key), username, icon);
     }
 }

@@ -243,7 +243,7 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
         if (MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).parallelStream()
             .map(PointObjectLayer::getData).map(VectorDataSet::getSelected).flatMap(Collection::stream)
             .mapToLong(IPrimitive::getId).mapToObj(ImageDetection::getDetections).flatMap(Collection::stream)
-            .filter(Objects::nonNull).anyMatch(id -> id.getKey().equals(this.getKey()))) {
+            .filter(Objects::nonNull).anyMatch(id -> id.key().equals(this.key()))) {
             return isRejected() || Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()) ? Color.RED : Color.CYAN;
         }
         if (this.isTrafficSign())

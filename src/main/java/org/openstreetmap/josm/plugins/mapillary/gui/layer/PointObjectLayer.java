@@ -651,7 +651,7 @@ public class PointObjectLayer extends MVTLayer
         if (newImage != null && !ImageDetection.getDetections(newImage.getId()).isEmpty()) {
             final long key = newImage.getId();
             final Collection<IPrimitive> nodes = ImageDetection.getDetections(key).stream()
-                .map(detection -> data.getPrimitiveById(detection.getKey(), OsmPrimitiveType.NODE))
+                .map(detection -> data.getPrimitiveById(detection.key(), OsmPrimitiveType.NODE))
                 .collect(Collectors.toList());
 
             if (!nodes.containsAll(currentSelection) && !nodes.isEmpty()

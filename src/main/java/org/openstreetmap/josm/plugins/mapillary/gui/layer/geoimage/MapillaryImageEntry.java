@@ -1,15 +1,12 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.layer.geoimage;
 
-import static org.openstreetmap.josm.tools.I18n.marktr;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -38,8 +35,6 @@ import javax.swing.SwingUtilities;
 
 import com.drew.imaging.jpeg.JpegMetadataReader;
 import com.drew.imaging.jpeg.JpegProcessingException;
-import com.drew.metadata.Directory;
-import com.drew.metadata.Metadata;
 import com.drew.metadata.MetadataException;
 import com.drew.metadata.exif.ExifDirectoryBase;
 import com.drew.metadata.exif.ExifIFD0Directory;
@@ -68,6 +63,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.KeyIndexedObject;
+import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
@@ -89,7 +85,6 @@ public class MapillaryImageEntry
     implements IImageEntry<MapillaryImageEntry>, BiConsumer<Long, Collection<ImageDetection<?>>> {
     private static final CacheAccess<Long, MapillaryImageEntry> CACHE = JCSCacheManager
         .getCache("mapillary:mapillaryimageentry");
-    private static final String BASE_TITLE = marktr("Mapillary image");
     private static final String MESSAGE_SEPARATOR = " — ";
     private final INode image;
     private final List<ImageDetection<?>> imageDetections = new ArrayList<>();
@@ -202,8 +197,8 @@ public class MapillaryImageEntry
     @Override
     public void selectImage(ImageViewerDialog imageViewerDialog, IImageEntry<?> entry) {
         IImageEntry.super.selectImage(imageViewerDialog, entry);
-        if (entry instanceof MapillaryImageEntry) {
-            selectImage((MapillaryImageEntry) entry);
+        if (entry instanceof MapillaryImageEntry mapillaryImageEntry) {
+            selectImage(mapillaryImageEntry);
         }
     }
 
@@ -216,29 +211,48 @@ public class MapillaryImageEntry
 
     @Override
     public String getDisplayName() {
-        StringBuilder title = new StringBuilder(tr(BASE_TITLE));
-        if (MapillaryImageUtils.getKey(this.image) != 0) {
-            INode mapillaryImage = this.image;
-            OrganizationRecord organizationRecord = MapillaryImageUtils.getOrganization(mapillaryImage);
-            if (!OrganizationRecord.NULL_RECORD.equals(organizationRecord)) {
-                title.append(MESSAGE_SEPARATOR).append(organizationRecord.getNiceName());
-            }
-            if (!Instant.EPOCH.equals(MapillaryImageUtils.getDate(mapillaryImage))) {
-                final boolean showHour = Boolean.TRUE.equals(MapillaryProperties.DISPLAY_HOUR.get());
-                final Instant pictureTime = MapillaryImageUtils.getDate(mapillaryImage);
-                title.append(MESSAGE_SEPARATOR);
-                final DateFormat formatter;
-                if (showHour) {
-                    formatter = DateUtils.getDateTimeFormat(DateFormat.DEFAULT, DateFormat.DEFAULT);
-                } else {
-                    formatter = DateUtils.getDateFormat(DateFormat.DEFAULT);
-                }
-                // Use UTC, since mappers may be outside of "their" timezone, which would be even more confusing.
-                formatter.setTimeZone(TimeZone.getTimeZone(ZoneOffset.UTC));
-                title.append(formatter.format(Date.from(pictureTime)));
-            }
+        final var title = new StringBuilder();
+        INode mapillaryImage = this.image;
+        if (MapillaryImageUtils.getKey(mapillaryImage) != 0) {
+            addUserInformation(mapillaryImage, title);
+            addOrganizationInformation(mapillaryImage, title);
+            addTimeInformation(mapillaryImage, title);
         }
         return title.toString();
+    }
+
+    private static void addUserInformation(INode mapillaryImage, StringBuilder title) {
+        final var userProfile = MapillaryImageUtils.getUser(mapillaryImage);
+        if (!UserProfile.NONE.equals(userProfile)) {
+            title.append(userProfile.username());
+        }
+    }
+
+    private static void addOrganizationInformation(INode mapillaryImage, StringBuilder title) {
+        final var organizationRecord = MapillaryImageUtils.getOrganization(mapillaryImage);
+        if (!OrganizationRecord.NULL_RECORD.equals(organizationRecord)) {
+            if (title.length() != 0)
+                title.append(MESSAGE_SEPARATOR);
+            title.append(organizationRecord.niceName());
+        }
+    }
+
+    private static void addTimeInformation(INode mapillaryImage, StringBuilder title) {
+        if (!Instant.EPOCH.equals(MapillaryImageUtils.getDate(mapillaryImage))) {
+            final boolean showHour = Boolean.TRUE.equals(MapillaryProperties.DISPLAY_HOUR.get());
+            final Instant pictureTime = MapillaryImageUtils.getDate(mapillaryImage);
+            if (title.length() != 0)
+                title.append(MESSAGE_SEPARATOR);
+            final DateFormat formatter;
+            if (showHour) {
+                formatter = DateUtils.getDateTimeFormat(DateFormat.DEFAULT, DateFormat.DEFAULT);
+            } else {
+                formatter = DateUtils.getDateFormat(DateFormat.DEFAULT);
+            }
+            // Use UTC, since mappers may be outside of "their" timezone, which would be even more confusing.
+            formatter.setTimeZone(TimeZone.getTimeZone(ZoneOffset.UTC));
+            title.append(formatter.format(Date.from(pictureTime)));
+        }
     }
 
     @Override
@@ -246,8 +260,7 @@ public class MapillaryImageEntry
         if (SwingUtilities.isEventDispatchThread()) {
             throw new JosmRuntimeException(tr("Mapillary image read should never occur on UI thread"));
         }
-        BufferedImageCacheEntry bufferedImageCacheEntry = Optional.ofNullable(this.originalImage)
-            .map(SoftReference::get).orElse(null);
+        var bufferedImageCacheEntry = Optional.ofNullable(this.originalImage).map(SoftReference::get).orElse(null);
         boolean tFullImage = this.fullImage;
         CompletableFuture<BufferedImageCacheEntry> bestForMemory;
         if (tFullImage) {
@@ -355,7 +368,7 @@ public class MapillaryImageEntry
         final int height = bufferedLayeredImage.getHeight();
         List<PointObjectLayer> detectionLayers = MainApplication.getLayerManager()
             .getLayersOfType(PointObjectLayer.class);
-        final AffineTransform unit2CompTransform = AffineTransform.getTranslateInstance(0, 0);
+        final var unit2CompTransform = AffineTransform.getTranslateInstance(0, 0);
         unit2CompTransform.concatenate(AffineTransform.getScaleInstance(width, height));
 
         final Graphics2D graphics = bufferedLayeredImage.createGraphics();
@@ -376,9 +389,9 @@ public class MapillaryImageEntry
                     || !checkIfDetectionInImageAndSelected(detectionLayers, imageDetection))) {
                 continue;
             }
-            final Color color = imageDetection.getColor();
+            final var color = imageDetection.getColor();
             graphics.setColor(color);
-            final Shape transformedShape = unit2CompTransform.createTransformedShape(imageDetection.getShape());
+            final var transformedShape = unit2CompTransform.createTransformedShape(imageDetection.getShape());
             graphics.draw(transformedShape);
             ImageIcon icon = imageDetection.getValue().getIcon();
             if (imageDetection.isTrafficSign() && !icon.equals(ObjectDetections.NO_ICON)) {
@@ -405,7 +418,7 @@ public class MapillaryImageEntry
             .map(VectorDataSet::getSelected).flatMap(Collection::stream).mapToLong(IPrimitive::getId)
             .mapToObj(l -> ImageDetection.getDetections(l, ImageDetection.Options.WAIT)).flatMap(Collection::stream)
             .collect(Collectors.toSet());
-        return selectedDetections.stream().mapToLong(KeyIndexedObject::getKey).anyMatch(l -> l == detection.getKey());
+        return selectedDetections.stream().mapToLong(KeyIndexedObject::key).anyMatch(l -> l == detection.key());
     }
 
     @Override
@@ -424,7 +437,7 @@ public class MapillaryImageEntry
         return new File(getImageURI());
     }
 
-    // @Override -- added in JOSM r18427
+    @Override
     public URI getImageURI() {
         return MapillaryConfig.getUrls().browseImage(Long.toString(MapillaryImageUtils.getKey(this.image)));
     }
@@ -589,7 +602,7 @@ public class MapillaryImageEntry
 
     private void updateImageEntry() {
         // Clone this entry. Needed to ensure that the image display refreshes.
-        final MapillaryImageEntry temporaryImageEntry = new MapillaryImageEntry(this);
+        final var temporaryImageEntry = new MapillaryImageEntry(this);
         // Ensure that detections are repainted
         if (this.layeredImage != null) {
             this.layeredImage.clear();
@@ -604,15 +617,15 @@ public class MapillaryImageEntry
 
     // FIXME copied from ImageEntry
     private BufferedImage applyRotation(BufferedImage img) {
-        int currentExifOrientation = getExifOrientation();
+        final int currentExifOrientation = getExifOrientation();
         if (!ExifReader.orientationNeedsCorrection(currentExifOrientation)) {
             return img;
         }
-        boolean switchesDimensions = ExifReader.orientationSwitchesDimensions(currentExifOrientation);
-        int width = switchesDimensions ? img.getHeight() : img.getWidth();
-        int height = switchesDimensions ? img.getWidth() : img.getHeight();
-        BufferedImage rotated = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        AffineTransform transform = ExifReader.getRestoreOrientationTransform(currentExifOrientation, img.getWidth(),
+        final boolean switchesDimensions = ExifReader.orientationSwitchesDimensions(currentExifOrientation);
+        final int width = switchesDimensions ? img.getHeight() : img.getWidth();
+        final int height = switchesDimensions ? img.getWidth() : img.getHeight();
+        final var rotated = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        final var transform = ExifReader.getRestoreOrientationTransform(currentExifOrientation, img.getWidth(),
             img.getHeight());
         Graphics2D g = rotated.createGraphics();
         g.drawImage(img, transform, null);
@@ -627,15 +640,13 @@ public class MapillaryImageEntry
      */
     private void updateExifInformation(byte[] imageBytes) {
         try {
-            final Metadata metadata = JpegMetadataReader.readMetadata(new ByteArrayInputStream(imageBytes));
-            final Directory dirExif = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
-            try {
-                if (dirExif != null && dirExif.containsTag(ExifDirectoryBase.TAG_ORIENTATION)) {
-                    setExifOrientation(dirExif.getInt(ExifDirectoryBase.TAG_ORIENTATION));
-                }
-            } catch (MetadataException ex) {
-                Logging.debug(ex);
+            final var metadata = JpegMetadataReader.readMetadata(new ByteArrayInputStream(imageBytes));
+            final var dirExif = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
+            if (dirExif != null && dirExif.containsTag(ExifDirectoryBase.TAG_ORIENTATION)) {
+                setExifOrientation(dirExif.getInt(ExifDirectoryBase.TAG_ORIENTATION));
             }
+        } catch (MetadataException e) {
+            Logging.debug(e);
         } catch (JpegProcessingException | IOException e) {
             Logging.error(e);
         }

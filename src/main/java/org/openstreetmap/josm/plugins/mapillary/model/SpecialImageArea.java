@@ -6,12 +6,19 @@ import java.util.Objects;
 
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 
-public class SpecialImageArea<S, T extends Shape> extends KeyIndexedObject<S> {
+/**
+ * Special image areas
+ *
+ * @param <S> The key type
+ * @param <T> The shape type
+ */
+public class SpecialImageArea<S, T extends Shape> implements KeyIndexedObject<S> {
+    private final S key;
     private final S imageKey;
     private final T shape;
 
     protected SpecialImageArea(final T shape, final S imageKey, final S key) {
-        super(key);
+        this.key = key;
         this.shape = shape;
         this.imageKey = imageKey;
     }
@@ -28,8 +35,13 @@ public class SpecialImageArea<S, T extends Shape> extends KeyIndexedObject<S> {
     }
 
     @Override
+    public S key() {
+        return this.key;
+    }
+
+    @Override
     public boolean equals(Object object) {
-        if (super.equals(object) && object instanceof SpecialImageArea) {
+        if (super.equals(object) && this.getClass().equals(object.getClass())) {
             SpecialImageArea<?, ?> other = (SpecialImageArea<?, ?>) object;
             return Objects.equals(this.shape, other.shape) && Objects.equals(this.imageKey, other.imageKey);
         }

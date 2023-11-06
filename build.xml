@@ -6,6 +6,8 @@
   <property file="${basedir}/gradle.properties"/>
   <property name="josm" location="../../core/dist/josm-custom.jar"/>
   <property name="plugin.dist.dir" value="../../dist"/>
+  <property name="java.lang.version" value="17"/>
+  <property name="plugin.minimum.java.version" value="${java.lang.version}"/>
   <!-- ** include targets that all plugins have in common ** -->
   <import file="../build-common.xml"/>
   <target name="pre-compile" depends="fetch_dependencies,mapillary_secrets">
