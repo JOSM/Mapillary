@@ -24,7 +24,11 @@ public final class ApiKeyReader {
     static String readValue(final String key) {
         // Prefer system property (this is something that can be changed fairly easily)
         if (System.getProperty(key) != null) {
-            return System.getProperty(key);
+            return Utils.strip(System.getProperty(key), "\"");
+        }
+        // Then environment variables
+        if (System.getenv(key) != null) {
+            return Utils.strip(System.getenv(key), "\"");
         }
         // Then check if there was something stored in JOSM preferences
         if (Config.getPref() != null && !Utils.isBlank(Config.getPref().get("mapillary.api." + key))) {
