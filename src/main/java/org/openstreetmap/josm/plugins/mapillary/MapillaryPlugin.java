@@ -24,6 +24,7 @@ import org.openstreetmap.josm.plugins.mapillary.actions.MapObjectLayerAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapPointObjectLayerAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryExportAction;
+import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryPointCloudAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryZoomAction;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.smartedit.IgnoredObjects;
@@ -103,6 +104,10 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
         MainMenu.add(menu.imagerySubMenu, mapPointObjectLayerAction, false);
         mapPointObjectLayerAction.updateEnabledState();
         destroyables.add(mapPointObjectLayerAction);
+
+        MapillaryPointCloudAction mapillaryPointCloudAction = new MapillaryPointCloudAction();
+        MainMenu.add(menu.imagerySubMenu, mapillaryPointCloudAction, true); // FIXME expert until stable
+        destroyables.add(mapillaryPointCloudAction);
 
         // TODO remove in destroy (not currently possible)
         RequestProcessor.addRequestHandlerClass("photo", MapillaryRemoteControl.class);
