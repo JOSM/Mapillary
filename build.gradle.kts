@@ -12,9 +12,9 @@ import kotlin.reflect.full.starProjectedType
 
 plugins {
   id("application")
-  id("com.diffplug.spotless") version "6.20.0"
-  id("com.github.ben-manes.versions") version "0.47.0"
-  id("com.github.spotbugs") version "5.0.14"
+  id("com.diffplug.spotless") version "6.25.0"
+  id("com.github.ben-manes.versions") version "0.51.0"
+  id("com.github.spotbugs") version "6.0.12"
   id("net.ltgt.errorprone") version "3.1.0"
   id("org.openstreetmap.josm") version "0.8.2"
   id("org.sonarqube") version "4.3.0.3225"
@@ -56,21 +56,17 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_17
 
 val versions = mapOf(
-  "awaitility" to "4.2.0",
-  // Errorprone 2.11 requires Java 11+
-  "errorprone" to if (JavaVersion.current() >= JavaVersion.VERSION_11) "2.20.0" else "2.10.0",
+  "awaitility" to "4.2.1",
+  "errorprone" to "2.26.1",
   "jdatepicker" to "1.3.4",
   "jmockit" to "1.49",
-  "junit" to "5.9.3",
+  "junit" to "5.10.2",
   "pmd" to "6.42.0",
-  "spotbugs" to "4.7.3",
-  "wiremock" to "2.35.0"
+  "spotbugs" to "4.8.4",
+  "wiremock" to "2.35.1"
 )
 
 dependencies {
-  if (!JavaVersion.current().isJava9Compatible) {
-    errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
-  }
   errorprone("com.google.errorprone:error_prone_core:${versions["errorprone"]}")
   testImplementation ("org.openstreetmap.josm:josm-unittest:SNAPSHOT"){ isChanging = true }
   testImplementation("com.github.tomakehurst:wiremock-jre8:${versions["wiremock"]}")
@@ -255,23 +251,21 @@ project.afterEvaluate {
 
 // Spotbugs config
 spotbugs {
-  toolVersion.set("4.0.6")
   ignoreFailures.set(true)
   effort.set(Effort.MAX)
   reportLevel.set(Confidence.LOW)
-  reportsDir.set(File(buildDir, "reports/spotbugs"))
+  reportsDir = file("$buildDir/reports/spotbugs")
 }
 tasks.withType(SpotBugsTask::class) {
   reports.create("html") {
-    outputLocation.set(File(spotbugs.reportsDir.get().asFile, "$baseName.html"))
-    setStylesheet("color.xsl")
+    setStylesheet("fancy-hist.xsl")
   }
 }
 
 
 // JaCoCo config
 jacoco {
-  toolVersion = "0.8.10"
+  toolVersion = "0.8.12"
 }
 
 tasks.jacocoTestReport {
