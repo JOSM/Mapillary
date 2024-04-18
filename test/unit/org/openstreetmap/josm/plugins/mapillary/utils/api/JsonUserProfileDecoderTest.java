@@ -9,19 +9,18 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import jakarta.json.Json;
+import jakarta.json.JsonReader;
 import org.junit.jupiter.api.Test;
+import org.openstreetmap.josm.TestUtils;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.JsonUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
-
-import jakarta.json.Json;
-import jakarta.json.JsonReader;
 
 @BasicPreferences
 class JsonUserProfileDecoderTest {
@@ -34,14 +33,14 @@ class JsonUserProfileDecoderTest {
         TestUtil.testUtilityClass(JsonUserProfileDecoder.class);
     }
 
-    private static InputStream getJsonInputStream(final String path) throws IOException, URISyntaxException {
-        String fileContent = String.join("\n", Files.readAllLines(
-            Paths.get(JsonUserProfileDecoderTest.class.getResource(path).toURI()), StandardCharsets.UTF_8));
+    private static InputStream getJsonInputStream(final String path) throws IOException {
+        String fileContent = String.join("\n",
+            Files.readAllLines(Paths.get(TestUtils.getTestDataRoot(), path), StandardCharsets.UTF_8));
         return new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
     }
 
     @Test
-    void testDecodeUserProfile() throws IOException, URISyntaxException, IllegalArgumentException {
+    void testDecodeUserProfile() throws IOException, IllegalArgumentException {
         try (InputStream inputStream = getJsonInputStream("/__files/api/v4/responses/graph/104214208486349.json");
             JsonReader reader = Json.createReader(inputStream)) {
             UserProfile profile = JsonUserProfileDecoder.decodeUserProfile(reader.readObject());
@@ -52,7 +51,7 @@ class JsonUserProfileDecoderTest {
     }
 
     @Test
-    void testDecodeUserProfile2() throws IOException, URISyntaxException, IllegalArgumentException {
+    void testDecodeUserProfile2() throws IOException, IllegalArgumentException {
         try (InputStream inputStream = getJsonInputStream("/__files/api/v4/responses/graph/104214208486350.json");
             JsonReader reader = Json.createReader(inputStream)) {
             UserProfile profile = JsonUserProfileDecoder.decodeUserProfile(reader.readObject());
@@ -69,8 +68,8 @@ class JsonUserProfileDecoderTest {
         assertNull(JsonUserProfileDecoder.decodeUserProfile(JsonUtil.string2jsonObject("{}")));
         assertNull(JsonUserProfileDecoder.decodeUserProfile(JsonUtil.string2jsonObject("{\"key\":\"arbitrary_key\"}")));
 
-        UserProfile profile = JsonUserProfileDecoder.decodeUserProfile(
-            JsonUtil.string2jsonObject("{\"id\":\"-1\", \"username\":\"arbitrary_username\"}"));
+        UserProfile profile = JsonUserProfileDecoder
+            .decodeUserProfile(JsonUtil.string2jsonObject("{\"id\":\"-1\", \"username\":\"arbitrary_username\"}"));
         assertNotNull(profile);
         assertSame(getFakeAvatar(), profile.avatar());
 

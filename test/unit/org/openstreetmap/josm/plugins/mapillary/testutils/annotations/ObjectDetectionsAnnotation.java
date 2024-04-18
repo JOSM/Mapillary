@@ -11,10 +11,11 @@ import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.openstreetmap.josm.gui.tagging.presets.TaggingPresets;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.testutils.annotations.BasicPreferences;
 import org.openstreetmap.josm.testutils.annotations.HTTP;
+import org.openstreetmap.josm.testutils.annotations.Projection;
+import org.openstreetmap.josm.testutils.annotations.TaggingPresets;
 
 /**
  * Annotation for ObjectDetections (ensures they have the appropriate presets)
@@ -22,11 +23,13 @@ import org.openstreetmap.josm.testutils.annotations.HTTP;
  * @author Taylor Smock
  */
 @Documented
-@HTTP
-@ExtendWith(ObjectDetectionsAnnotation.ObjectDetectionsExtension.class)
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @BasicPreferences
+@HTTP
+@Projection
+@TaggingPresets
+@ExtendWith(ObjectDetectionsAnnotation.ObjectDetectionsExtension.class)
 public @interface ObjectDetectionsAnnotation {
     class ObjectDetectionsExtension implements AfterAllCallback, BeforeAllCallback {
 
@@ -37,10 +40,6 @@ public @interface ObjectDetectionsAnnotation {
 
         @Override
         public void beforeAll(ExtensionContext context) {
-            // TODO replace with @Presets dependency
-            if (TaggingPresets.getTaggingPresets().isEmpty()) {
-                TaggingPresets.readFromPreferences();
-            }
             ObjectDetections.updatePresets();
         }
     }
