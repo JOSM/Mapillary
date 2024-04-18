@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,8 +18,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import javax.swing.JOptionPane;
@@ -38,6 +39,8 @@ import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
+import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonUserProfileDecoder;
 import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
@@ -103,6 +106,16 @@ public final class Caches {
         final IElementAttributes fullImageElementCacheAttributes = FULL_IMAGE_CACHE.getDefaultElementAttributes();
         fullImageElementCacheAttributes.setMaxLife(maxTime);
         FULL_IMAGE_CACHE.setDefaultElementAttributes(fullImageElementCacheAttributes);
+
+        USER_PROFILE_CACHE.setDefaultSupplier(url -> {
+            try {
+                final var data = OAuthUtils.getWithHeader(URI.create(url));
+                return JsonUserProfileDecoder.decodeUserProfile(data);
+            } catch (IOException e) {
+                Logging.error(e);
+                return null;
+            }
+        });
     }
 
     public static File getCacheDirectory() {
@@ -131,7 +144,7 @@ public final class Caches {
         @Nonnull
         private final List<Predicate<V>> validators;
         @Nullable
-        private Supplier<V> defaultSupplier;
+        private Function<String, V> defaultSupplier;
 
         private boolean rateLimited;
 
@@ -150,7 +163,7 @@ public final class Caches {
          *
          * @param defaultSupplier The default supplier
          */
-        public void setDefaultSupplier(@Nullable Supplier<V> defaultSupplier) {
+        public void setDefaultSupplier(@Nullable Function<String, V> defaultSupplier) {
             this.defaultSupplier = defaultSupplier;
         }
 
@@ -185,7 +198,7 @@ public final class Caches {
             if (this.defaultSupplier != null) {
                 return this.get(url, this.defaultSupplier);
             } else {
-                return this.get(url, () -> null);
+                return this.get(url, (u) -> null);
             }
         }
 
@@ -202,7 +215,7 @@ public final class Caches {
             if (this.defaultSupplier != null) {
                 return this.get(url, pool, this.defaultSupplier);
             } else {
-                return this.get(url, pool, () -> null);
+                return this.get(url, pool, (u) -> null);
             }
         }
 
@@ -214,7 +227,7 @@ public final class Caches {
          * @return The type the supplier returns
          */
         @Nullable
-        public V get(@Nonnull String url, @Nonnull Supplier<V> supplier) {
+        public V get(@Nonnull String url, @Nonnull Function<String, V> supplier) {
             if (this.cacheAccess.get(url) != null) {
                 return this.cacheAccess.get(url);
             }
@@ -228,7 +241,7 @@ public final class Caches {
             }
             final V newReturnObject;
             synchronized (this) {
-                newReturnObject = this.cacheAccess.get(url) == null ? supplier.get() : this.cacheAccess.get(url);
+                newReturnObject = this.cacheAccess.get(url) == null ? supplier.apply(url) : this.cacheAccess.get(url);
                 if (newReturnObject != null && this.validators.stream().allMatch(p -> p.test(newReturnObject))) {
                     this.cacheAccess.put(url, newReturnObject);
                 } else if (newReturnObject != null) {
@@ -253,7 +266,7 @@ public final class Caches {
          * @param supplier The supplier to get the object with
          * @return A future with the object, when it completes.
          */
-        public Future<V> get(@Nonnull String url, @Nonnull ForkJoinPool pool, @Nonnull Supplier<V> supplier) {
+        public Future<V> get(@Nonnull String url, @Nonnull ForkJoinPool pool, @Nonnull Function<String, V> supplier) {
             if (this.cacheAccess.get(url) != null) {
                 return CompletableFuture.completedFuture(this.cacheAccess.get(url));
             }

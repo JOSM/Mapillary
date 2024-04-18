@@ -337,9 +337,9 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<Long, T> {
                 return Collections.emptyList();
             }
             final String urlString = MapillaryConfig.getUrls().getDetectionInformation(key);
-            final String jsonString = Caches.META_DATA_CACHE.get(urlString, () -> {
+            final String jsonString = Caches.META_DATA_CACHE.get(urlString, (u) -> {
                 try {
-                    final JsonObject jsonObject = OAuthUtils.getWithHeader(URI.create(urlString));
+                    final JsonObject jsonObject = OAuthUtils.getWithHeader(URI.create(u));
                     return jsonObject != null ? jsonObject.toString() : null;
                 } catch (IOException e) {
                     Logging.error(e);

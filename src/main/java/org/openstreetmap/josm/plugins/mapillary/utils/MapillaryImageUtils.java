@@ -306,6 +306,8 @@ public final class MapillaryImageUtils {
             final var organizationKey = ImageProperties.ORGANIZATION_ID.toString();
             if (img.hasKey(organizationKey)) {
                 return OrganizationRecord.getOrganization(img.get(organizationKey));
+            } else if (img.hasKey(ImageProperties.ORGANIZATION.toString())) {
+                return OrganizationRecord.getOrganization(img.get(ImageProperties.ORGANIZATION.toString()));
             }
             IWay<?> sequence = getSequence(img);
             if (sequence != null && sequence.hasKey(organizationKey)) {
@@ -323,9 +325,10 @@ public final class MapillaryImageUtils {
      */
     @Nonnull
     public static UserProfile getUser(@Nullable Tagged mapillaryImage) {
-        if (mapillaryImage != null && mapillaryImage.hasKey(MapillaryImageUtils.ImageProperties.CREATOR.toString())) {
-            final var creator = mapillaryImage.get(MapillaryImageUtils.ImageProperties.CREATOR.toString());
-            return UserProfile.getUser(creator);
+        if (mapillaryImage != null && mapillaryImage.hasKey(ImageProperties.CREATOR_ID.toString())) {
+            return UserProfile.getUser(Long.parseLong(mapillaryImage.get(ImageProperties.CREATOR_ID.toString())));
+        } else if (mapillaryImage != null && mapillaryImage.hasKey(ImageProperties.CREATOR.toString())) {
+            return UserProfile.getUser(mapillaryImage.get(ImageProperties.CREATOR.toString()));
         }
         return UserProfile.NONE;
     }
@@ -403,6 +406,8 @@ public final class MapillaryImageUtils {
         COMPUTED_ROTATION,
         /** The username and user id who uploaded the image ({@code {username: string, id: int}}) */
         CREATOR,
+        /** The id of the creator who uploaded the image */
+        CREATOR_ID,
         /**
          * Original orientation of the image
          *
@@ -423,6 +428,8 @@ public final class MapillaryImageUtils {
         MAKE,
         /** The model of the camera */
         MODEL,
+        /** The organization field */
+        ORGANIZATION,
         /** The id of the organization */
         ORGANIZATION_ID,
         /** A 256px image (max width). You should prefer {@link #WORST_IMAGE}. */

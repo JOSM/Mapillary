@@ -18,8 +18,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -40,6 +42,7 @@ import org.openstreetmap.josm.data.Version;
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
+import org.openstreetmap.josm.data.osm.Tagged;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
@@ -48,6 +51,7 @@ import org.openstreetmap.josm.gui.layer.AbstractOsmDataLayer;
 import org.openstreetmap.josm.gui.layer.MainLayerManager;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
+import org.openstreetmap.josm.gui.widgets.JosmComboBox;
 import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord.OrganizationRecordListener;
@@ -55,6 +59,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.widget.DisableShortcutsOnFocusGainedJSpinner;
+import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
@@ -72,7 +77,7 @@ import org.openstreetmap.josm.tools.Utils;
  * @author nokutu
  */
 public final class MapillaryFilterDialog extends ToggleDialog
-    implements OrganizationRecordListener, MVTTile.TileListener {
+    implements OrganizationRecordListener, UserProfile.UserProfileListener, MVTTile.TileListener {
 
     @Serial
     private static final long serialVersionUID = -4192029663670922103L;
@@ -82,8 +87,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
     private static final String[] TIME_LIST = { tr("Years"), tr("Months"), tr("Days") };
 
     private static final long[] TIME_FACTOR = new long[] { 31_536_000_000L, // = 365 * 24 * 60 * 60 * 1000 = number of
-                                                                            // ms
-                                                                            // in a year
+                                                                            // ms in a year
         2_592_000_000L, // = 30 * 24 * 60 * 60 * 1000 = number of ms in a month
         86_400_000 // = 24 * 60 * 60 * 1000 = number of ms in a day
     };
@@ -93,7 +97,10 @@ public final class MapillaryFilterDialog extends ToggleDialog
     private final transient ListenerList<Destroyable> destroyable = ListenerList.create();
 
     private final JLabel organizationLabel = new JLabel(tr("Org"));
-    final JComboBox<OrganizationRecord> organizations = new JComboBox<>();
+    final JosmComboBox<OrganizationRecord> organizations = new JosmComboBox<>();
+
+    private final JLabel userLabel = new JLabel(tr("User"));
+    final JosmComboBox<UserProfile> users = new JosmComboBox<>();
 
     private boolean destroyed;
 
@@ -150,27 +157,40 @@ public final class MapillaryFilterDialog extends ToggleDialog
         final var userSearchPanel = new JPanel();
         userSearchPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-        organizationLabel.setToolTipText(tr("Organizations"));
-        userSearchPanel.add(organizationLabel);
+        this.userLabel.setToolTipText(tr("Mapillary Users"));
+        userSearchPanel.add(this.userLabel);
+        userSearchPanel.add(this.users, GBC.eol());
+        this.users.addItem(UserProfile.NONE);
+        this.organizationLabel.setToolTipText(tr("Organizations"));
+        userSearchPanel.add(this.organizationLabel);
         userSearchPanel.add(this.organizations);
-        organizations.addItem(OrganizationRecord.NULL_RECORD);
-        for (Component comp : Arrays.asList(organizationLabel, organizations)) {
+        this.organizations.addItem(OrganizationRecord.NULL_RECORD);
+        for (Component comp : Arrays.asList(this.userLabel, this.users, this.organizationLabel, this.organizations)) {
             comp.setEnabled(false);
         }
-        organizations.setRenderer(new OrganizationListCellRenderer());
+        this.users.setRenderer(new UserProfileListCellRenderer());
+        this.organizations.setRenderer(new OrganizationListCellRenderer());
         panel.add(userSearchPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
 
         OrganizationRecord.addOrganizationListener(this);
         OrganizationRecord.getOrganizations().forEach(this::organizationAdded);
+        UserProfile.addUserProfileListener(this);
+        UserProfile.getUsers().forEach(this::userProfileAdded);
 
         this.organizations
             .addItemListener(l -> this.shouldHidePredicate.organization = (OrganizationRecord) l.getItem());
+        this.users.addItemListener(l -> this.shouldHidePredicate.userProfile = (UserProfile) l.getItem());
 
         this.resetObjects.addListener(() -> organizations.setSelectedItem(OrganizationRecord.NULL_RECORD));
         ResetListener setListener = () -> this.shouldHidePredicate.organization = (OrganizationRecord) this.organizations
             .getSelectedItem();
         this.resetObjects.addListener(setListener);
         setListener.reset();
+        this.resetObjects.addListener(() -> this.users.setSelectedItem(UserProfile.NONE));
+        ResetListener userResetListener = () -> this.shouldHidePredicate.userProfile = (UserProfile) this.users
+            .getSelectedItem();
+        userResetListener.reset();
+        this.resetObjects.addListener(userResetListener);
     }
 
     /**
@@ -432,6 +452,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
         Instant endDateRefresh;
         Instant startDateRefresh;
         OrganizationRecord organization;
+        UserProfile userProfile;
         boolean smartAdd;
 
         public ImageFilterPredicate() {
@@ -480,11 +501,12 @@ public final class MapillaryFilterDialog extends ToggleDialog
                 || (this.imageTypes == ImageTypes.NON_PANORAMIC && MapillaryImageUtils.IS_PANORAMIC.test(img))) {
                 return true;
             }
-            if (MapillaryImageUtils.getKey(img) > 0) {
+            if (MapillaryImageUtils.getKey(img) > 0 && MapillaryImageUtils.getSequenceKey(img) != null) {
                 // Filter on organizations
-                return !OrganizationRecord.NULL_RECORD.equals(this.organization)
-                    && MapillaryImageUtils.getSequenceKey(img) != null
-                    && this.organization.id() != MapillaryImageUtils.getOrganization(img).id();
+                if (checkOrganization(img)) {
+                    return true;
+                }
+                return checkUser(img);
             }
             return false;
         }
@@ -494,6 +516,28 @@ public final class MapillaryFilterDialog extends ToggleDialog
          */
         final void updateLayerVisible() {
             this.layerVisible = MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().isVisible();
+        }
+
+        /**
+         * Check if the organization does not match
+         *
+         * @param img The image to check
+         * @return {@code true} if the organization does not match
+         */
+        private boolean checkOrganization(INode img) {
+            return this.organization != null && !OrganizationRecord.NULL_RECORD.equals(this.organization)
+                && this.organization.id() != MapillaryImageUtils.getOrganization(img).id();
+        }
+
+        /**
+         * Check if the user does not match
+         *
+         * @param img The image to check
+         * @return {@code true} if the user does not match
+         */
+        private boolean checkUser(Tagged img) {
+            return this.userProfile != null && !UserProfile.NONE.equals(this.userProfile)
+                && this.userProfile.key() != MapillaryImageUtils.getUser(img).key();
         }
 
         /**
@@ -573,6 +617,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
                 MainApplication.getMap().removeToggleDialog(this);
             }
             OrganizationRecord.removeOrganizationListener(this);
+            UserProfile.removeUserProfileListener(this);
             destroyed = true;
         }
         destroyInstance();
@@ -580,20 +625,48 @@ public final class MapillaryFilterDialog extends ToggleDialog
 
     @Override
     public void organizationAdded(OrganizationRecord organization) {
-        var add = true;
-        for (var i = 0; i < organizations.getItemCount(); i++) {
-            if (organizations.getItemAt(i).equals(organization)) {
-                add = false;
-                break;
-            }
-        }
-        if (add) {
+        if (organization != null && comboBoxDoesNotContainItem(organizations, organization)) {
             GuiHelper.runInEDT(() -> organizations.addItem(organization));
         }
         for (Component comp : Arrays.asList(organizationLabel, organizations)) {
             GuiHelper.runInEDT(() -> comp
                 .setEnabled(organizations.getItemCount() > 1 || !OrganizationRecord.NULL_RECORD.equals(organization)));
         }
+    }
+
+    @Override
+    public void userProfileAdded(UserProfile userProfile) {
+        if (userProfile != null && comboBoxDoesNotContainItem(users, userProfile)) {
+            GuiHelper.runInEDT(() -> {
+                final var list = new ArrayList<>(users.getModel().asCollection());
+                list.add(userProfile);
+                list.sort(Comparator.comparing(UserProfile::username));
+                final var model = users.getModel();
+                model.removeAllElements();
+                model.addAllElements(list);
+            });
+        }
+        for (Component comp : Arrays.asList(userLabel, users)) {
+            GuiHelper
+                .runInEDT(() -> comp.setEnabled(users.getItemCount() > 1 || !UserProfile.NONE.equals(userProfile)));
+        }
+    }
+
+    /**
+     * Check if a combo box does <i>not</i> contain a specified item
+     *
+     * @param comboBox The combo box to look through
+     * @param object The object to look for
+     * @return {@code true} if the combobox did not contain the object
+     * @param <T> The object type
+     */
+    private static <T> boolean comboBoxDoesNotContainItem(JComboBox<T> comboBox, T object) {
+        for (var i = 0; i < comboBox.getItemCount(); i++) {
+            if (comboBox.getItemAt(i).equals(object)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

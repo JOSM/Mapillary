@@ -89,6 +89,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.dialog.OldVersionDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.geoimage.MapillaryImageEntry;
 import org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillaryNodeDownloader;
 import org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillarySequenceDownloader;
+import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
@@ -176,6 +177,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         SwingUtilities.invokeLater(OldVersionDialog::showOldVersion);
 
         this.addTileDownloadListener(OrganizationRecord::addFromTile);
+        this.addTileDownloadListener(UserProfile::addFromTile);
         this.addTileDownloadListener(MapillaryFilterDialog.getInstance());
         this.getData().addSelectionListener(this);
         this.getData().addHighlightUpdateListener(this);

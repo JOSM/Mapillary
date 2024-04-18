@@ -195,9 +195,9 @@ public final class MapillaryMapFeatureUtils {
     private static void updateMapFeature(@Nonnull final IPrimitive primitive) {
         final String url = MapillaryConfig.getUrls().getMapFeatureInformation(primitive.getId(),
             MapFeatureProperties.GEOMETRY, MapFeatureProperties.IMAGES, MapFeatureProperties.ALIGNED_DIRECTION);
-        final String json = Caches.META_DATA_CACHE.get(url, () -> {
+        final String json = Caches.META_DATA_CACHE.get(url, (u) -> {
             try {
-                return OAuthUtils.getWithHeader(URI.create(url)).toString();
+                return OAuthUtils.getWithHeader(URI.create(u)).toString();
             } catch (IOException e) {
                 Logging.error(e);
                 return null;

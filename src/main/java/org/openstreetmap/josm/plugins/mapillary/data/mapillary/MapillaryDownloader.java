@@ -57,8 +57,8 @@ public final class MapillaryDownloader {
         }
         final Caches.MapillaryCacheAccess<String> metaDataCache = Caches.META_DATA_CACHE;
         String url = MapillaryConfig.getUrls().getImageInformation(images);
-        String stringJson = metaDataCache.get(url, () -> {
-            final JsonObject jsonObject = getUrlResponse(url);
+        String stringJson = metaDataCache.get(url, (u) -> {
+            final JsonObject jsonObject = getUrlResponse(u);
             return jsonObject != null ? jsonObject.toString() : null;
         });
         if (stringJson == null) {
@@ -118,8 +118,8 @@ public final class MapillaryDownloader {
             }
         }
         final String url = MapillaryConfig.getUrls().getImagesBySequences(sequence);
-        final String response = Caches.META_DATA_CACHE.get(url, () -> {
-            final JsonObject urlResponse = getUrlResponse(url);
+        final String response = Caches.META_DATA_CACHE.get(url, (u) -> {
+            final JsonObject urlResponse = getUrlResponse(u);
             return urlResponse == null ? null : urlResponse.toString();
         });
         if (response != null) {

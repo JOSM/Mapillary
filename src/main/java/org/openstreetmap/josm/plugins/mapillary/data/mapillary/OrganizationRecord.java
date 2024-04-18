@@ -2,9 +2,11 @@
 package org.openstreetmap.josm.plugins.mapillary.data.mapillary;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -16,6 +18,7 @@ import javax.swing.ImageIcon;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
 import org.openstreetmap.josm.data.osm.INode;
@@ -63,7 +66,7 @@ public record OrganizationRecord(long id, String name, String niceName, String d
     @Nonnull
     private static ImageIcon createAvatarIcon(@Nullable String avatar) {
         if (avatar != null && !avatar.isEmpty()) {
-            final BufferedImage avatarImage = Caches.META_IMAGES.get(avatar, () -> fetchAvatarIcon(avatar));
+            final BufferedImage avatarImage = Caches.META_IMAGES.get(avatar, OrganizationRecord::fetchAvatarIcon);
             return avatarImage != null ? new ImageIcon(avatarImage) : ImageProvider.createBlankIcon(ImageSizes.DEFAULT);
         }
         return ImageProvider.getEmpty(ImageSizes.DEFAULT);
@@ -106,7 +109,13 @@ public record OrganizationRecord(long id, String name, String niceName, String d
      * @return The organization
      */
     public static OrganizationRecord getOrganization(String id) {
-        return getOrganization(Long.parseLong(id));
+        if (id.matches("^\\d+$")) {
+            return getOrganization(Long.parseLong(id));
+        } else { // Assume json
+            try (var reader = Json.createReader(new ByteArrayInputStream(id.getBytes(StandardCharsets.UTF_8)))) {
+                return getOrganization(Long.parseLong(reader.readObject().getString("id")));
+            }
+        }
     }
 
     /**
