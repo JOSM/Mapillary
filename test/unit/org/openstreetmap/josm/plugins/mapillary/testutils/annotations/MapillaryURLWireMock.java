@@ -30,18 +30,29 @@ import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.platform.commons.support.AnnotationSupport;
+import org.openstreetmap.josm.TestUtils;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.IMapillaryUrls;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryUrls;
+import org.openstreetmap.josm.tools.Utils;
+
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.common.FileSource;
 import com.github.tomakehurst.wiremock.common.TextFile;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import com.github.tomakehurst.wiremock.extension.Parameters;
-import com.github.tomakehurst.wiremock.extension.ResponseTransformer;
+import com.github.tomakehurst.wiremock.extension.ResponseTransformerV2;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
-import com.github.tomakehurst.wiremock.http.Request;
+import com.github.tomakehurst.wiremock.extension.responsetemplating.TemplateEngine;
 import com.github.tomakehurst.wiremock.http.Response;
 import com.github.tomakehurst.wiremock.matching.AnythingPattern;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
+import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import jakarta.json.Json;
@@ -52,16 +63,6 @@ import jakarta.json.JsonObjectBuilder;
 import jakarta.json.JsonReader;
 import jakarta.json.JsonString;
 import jakarta.json.JsonValue;
-import org.junit.jupiter.api.extension.AfterAllCallback;
-import org.junit.jupiter.api.extension.AfterEachCallback;
-import org.junit.jupiter.api.extension.BeforeAllCallback;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.platform.commons.support.AnnotationSupport;
-import org.openstreetmap.josm.plugins.mapillary.spi.preferences.IMapillaryUrls;
-import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
-import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryUrls;
-import org.openstreetmap.josm.tools.Utils;
 
 /**
  * Mock Mapillary API calls
@@ -122,7 +123,8 @@ public @interface MapillaryURLWireMock {
 
             final WireMockConfiguration wireMockConfiguration = new WireMockConfiguration().dynamicPort();
             final FillerUrlReplacer fillerUrlReplacer = new FillerUrlReplacer();
-            wireMockConfiguration.extensions(new CollectionEndpoint(), new ResponseTemplateTransformer(false),
+            wireMockConfiguration.extensions(new CollectionEndpoint(),
+                new ResponseTemplateTransformer(TemplateEngine.defaultTemplateEngine(), false, null, null),
                 fillerUrlReplacer);
             // See JOSM #21121 for why this is necessary
             Path directory = Paths.get("test", "resources");
@@ -215,18 +217,21 @@ public @interface MapillaryURLWireMock {
         /**
          * Account for collection endpoints
          */
-        private static final class CollectionEndpoint extends ResponseTransformer {
+        private static final class CollectionEndpoint implements ResponseTransformerV2 {
 
             @Override
-            public Response transform(Request request, Response response, FileSource files, Parameters parameters) {
+            public Response transform(Response response, ServeEvent serveEvent) {
+                final var request = serveEvent.getRequest();
                 if (request.queryParameter("image_ids").isPresent()) {
                     // Not implemented currently since I don't know if I need to split on `,` or `%2C`
                     final List<String> imageIds = request.queryParameter("image_ids").values().stream()
                         .map(str -> str.split(",", -1)).flatMap(Stream::of).filter(Objects::nonNull)
-                        .collect(Collectors.toList());
+                        .toList();
                     final List<TextFile> imageText = imageIds.stream()
-                        .map(image -> files.getTextFileNamed("api/v4/responses/graph/" + image + ".json"))
-                        .collect(Collectors.toList());
+                        .map(image -> Path.of(TestUtils.getTestDataRoot(), "__files", "api", "v4", "responses", "graph", image + ".json"))
+                        .map(Path::toUri)
+                        .map(TextFile::new)
+                        .toList();
                     // We need to get the actual bytes prior to returning, so we need to read the files.
                     final String body = imageText.stream().map(TextFile::readContentsAsString)
                         .collect(Collectors.joining(",", "{\"data\":[", "]}"));
@@ -244,7 +249,7 @@ public @interface MapillaryURLWireMock {
         /**
          * Replace filler urls with wiremock URLs
          */
-        private static final class FillerUrlReplacer extends ResponseTransformer {
+        private static final class FillerUrlReplacer implements ResponseTransformerV2 {
             private static final Pattern FILLER_URL_PATTERN = Pattern.compile("([a-zA-Z0-9_]*?)_filler_url");
 
             WireMockServer server;
@@ -255,10 +260,11 @@ public @interface MapillaryURLWireMock {
             }
 
             @Override
-            public Response transform(Request request, Response response, FileSource files, Parameters parameters) {
+            public Response transform(Response response, ServeEvent serveEvent) {
                 if (server == null) {
                     fail("No wiremock server set");
                 }
+                final var request = serveEvent.getRequest();
                 // If the user is logged in, we <i>technically</i> don't need the access_token in parameters
                 if (!request.queryParameter("access_token").isPresent() && !request.containsHeader("Authorization")) {
                     fail("Always pass the access token: " + request.getUrl());
