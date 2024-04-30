@@ -75,17 +75,21 @@ public class ImageNavigation {
         final EastNorth nodeEn = node.getEastNorth();
         final double travelAngle;
         MapillarySequence seq = this.node.getSequence();
-        if (Objects.equals(this.node, seq.firstNode()) && seq.getNodes().size() > 1) {
-            travelAngle = Math.toDegrees(this.node.bearing(seq.getNode(1)));
-        } else if (Objects.equals(this.node, seq.lastNode()) && seq.getNodes().size() > 1) {
-            travelAngle = Math.toDegrees(seq.getNode(seq.getNodesCount() - 1).bearing(this.node));
-        } else {
-            int idx = seq.getNodes().indexOf(this.node);
-            if (seq.getNodes().size() <= 3) {
-                travelAngle = MapillaryImageUtils.getAngle(this.node);
+        if (seq != null) {
+            if (Objects.equals(this.node, seq.firstNode()) && seq.getNodes().size() > 1) {
+                travelAngle = Math.toDegrees(this.node.bearing(seq.getNode(1)));
+            } else if (Objects.equals(this.node, seq.lastNode()) && seq.getNodes().size() > 1) {
+                travelAngle = Math.toDegrees(seq.getNode(seq.getNodesCount() - 1).bearing(this.node));
             } else {
-                travelAngle = Math.toDegrees(seq.getNode(idx - 1).bearing(seq.getNode(idx + 1)));
+                int idx = seq.getNodes().indexOf(this.node);
+                if (seq.getNodes().size() <= 3) {
+                    travelAngle = MapillaryImageUtils.getAngle(this.node);
+                } else {
+                    travelAngle = Math.toDegrees(seq.getNode(idx - 1).bearing(seq.getNode(idx + 1)));
+                }
             }
+        } else {
+            travelAngle = Double.NaN;
         }
         this.originalSort = surroundingNodes.stream().map(n -> sort(isPano, false, angle, travelAngle, n, nodeEn))
             .filter(Objects::nonNull)

@@ -30,6 +30,7 @@ import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ImageNavigation;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.geoimage.MapillaryImageEntry;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -69,16 +70,15 @@ public class ImageNavigationDialog extends ToggleDialog
      */
     public ImageNavigationDialog() {
         super(tr("Mapillary: Image Navigation"), "mapillary-main", tr("Navigate between different Mapillary images"),
-            Shortcut.registerShortcut("mapillary:image_navigation", tr("Mapillary: Image Navigation"), KeyEvent.CHAR_UNDEFINED,
-                Shortcut.NONE),
+            Shortcut.registerShortcut("mapillary:image_navigation", tr("Mapillary: Image Navigation"),
+                KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
             80);
         MainApplication.getLayerManager().addAndFireLayerChangeListener(this);
     }
 
     @Override
     public void layerAdded(LayerManager.LayerAddEvent e) {
-        if (e.getAddedLayer() instanceof MapillaryLayer) {
-            MapillaryLayer layer = (MapillaryLayer) e.getAddedLayer();
+        if (e.getAddedLayer() instanceof MapillaryLayer layer) {
             layer.addImageChangeListener(this);
         }
     }
@@ -96,11 +96,18 @@ public class ImageNavigationDialog extends ToggleDialog
     @Override
     public void imageChanged(IGeoImageLayer source, List<? extends IImageEntry<?>> oldImages,
         List<? extends IImageEntry<?>> newImages) {
-        if (source instanceof MapillaryLayer
-            && newImages.stream().filter(MapillaryNode.class::isInstance).count() == 1) {
-            MapillaryLayer layer = (MapillaryLayer) source;
-            MapillaryNode node = (MapillaryNode) newImages.get(0);
-            if (node != null && layer.getData() != null && node.getSequence() != null) {
+        if (source instanceof MapillaryLayer layer
+            && newImages.stream()
+                .filter(n -> n instanceof MapillaryNode
+                    || (n instanceof MapillaryImageEntry mie && mie.getImage() instanceof MapillaryNode))
+                .count() == 1) {
+            final MapillaryNode node;
+            if (newImages.get(0) instanceof MapillaryNode tNode) {
+                node = tNode;
+            } else {
+                node = (MapillaryNode) ((MapillaryImageEntry) newImages.get(0)).getImage();
+            }
+            if (node != null && layer.getData() != null) {
                 this.imageNavigation = new ImageNavigation(layer.getData(), node);
             } else {
                 this.imageNavigation = null;
@@ -201,8 +208,8 @@ public class ImageNavigationDialog extends ToggleDialog
         @Override
         public void actionPerformed(ActionEvent e) {
             MapillaryLayer layer = MapillaryLayer.getInstance();
-            if (this.toSelect instanceof MapillaryNode) {
-                layer.setCurrentImage((MapillaryNode) this.toSelect);
+            if (this.toSelect instanceof MapillaryNode node) {
+                layer.setCurrentImage(node);
             } else {
                 layer.getData().setSelected(this.toSelect);
             }

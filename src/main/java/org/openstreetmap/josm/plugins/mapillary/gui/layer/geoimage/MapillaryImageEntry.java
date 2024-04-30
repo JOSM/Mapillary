@@ -196,10 +196,11 @@ public class MapillaryImageEntry
 
     @Override
     public void selectImage(ImageViewerDialog imageViewerDialog, IImageEntry<?> entry) {
-        IImageEntry.super.selectImage(imageViewerDialog, entry);
+        // If the image is a Mapillary image, we want to use our custom path *first*
         if (entry instanceof MapillaryImageEntry mapillaryImageEntry) {
             selectImage(mapillaryImageEntry);
         }
+        IImageEntry.super.selectImage(imageViewerDialog, entry);
     }
 
     private static void selectImage(@Nullable final MapillaryImageEntry entry) {

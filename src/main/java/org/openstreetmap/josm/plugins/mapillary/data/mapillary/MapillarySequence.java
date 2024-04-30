@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.INode;
@@ -74,7 +73,7 @@ public class MapillarySequence extends MapillaryPrimitive implements IWay<Mapill
 
     @Override
     public List<Long> getNodeIds() {
-        return Arrays.stream(this.nodes).map(MapillaryNode::getId).collect(Collectors.toList());
+        return Arrays.stream(this.nodes).map(MapillaryNode::getId).toList();
     }
 
     @Override
@@ -124,8 +123,8 @@ public class MapillarySequence extends MapillaryPrimitive implements IWay<Mapill
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof IWay) {
-            return Objects.equals(MapillarySequenceUtils.getKey(this), MapillarySequenceUtils.getKey((IWay<?>) other));
+        if (other instanceof IWay<?> iway) {
+            return Objects.equals(MapillarySequenceUtils.getKey(this), MapillarySequenceUtils.getKey(iway));
         }
         return false;
     }
