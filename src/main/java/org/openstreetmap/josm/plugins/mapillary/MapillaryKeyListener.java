@@ -82,7 +82,7 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
     }
 
     private void addAction(JPopupMenu popup, String key, String value) {
-        if (Utils.isBlank(value) || !MapillaryLayer.hasInstance()) {
+        if (Utils.isStripEmpty(value) || !MapillaryLayer.hasInstance()) {
             return;
         }
         String lowerKey = key.toLowerCase(Locale.ENGLISH);

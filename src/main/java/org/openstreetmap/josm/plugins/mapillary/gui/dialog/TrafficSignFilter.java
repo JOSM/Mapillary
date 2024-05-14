@@ -401,7 +401,7 @@ public final class TrafficSignFilter extends JPanel
                     .map(OsmDataLayer::getDataSet).flatMap(d -> d.searchPrimitives(searchBBox).stream())
                     .filter(pr -> !pr.isDeleted()).filter(pr -> tagMapIsSubset(pr.getKeys(), tags))
                     .map(o -> o.getOsmPrimitiveId().toString()).collect(Collectors.joining(";"));
-                if (!Utils.isBlank(nearby)) {
+                if (!Utils.isStripEmpty(nearby)) {
                     p.put(NEARBY_KEY, nearby);
                 }
             });

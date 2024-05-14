@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.testutils.annotations;
 
+import static java.util.function.Predicate.not;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -274,7 +275,7 @@ public @interface MapillaryURLWireMock {
                     return response;
                 }
                 final String origBody = response.getBodyAsString();
-                if (Utils.isBlank(origBody)) {
+                if (Utils.isStripEmpty(origBody)) {
                     return response;
                 }
                 String newBody = origBody.replaceAll("https?://.*?/", server.baseUrl() + "/");
@@ -307,7 +308,7 @@ public @interface MapillaryURLWireMock {
                 if (request.queryParameter("fields").isPresent()) {
                     final List<String> fields = request.queryParameter("fields").values().stream()
                         .flatMap(string -> Stream.of(string.split(",", -1))).filter(Objects::nonNull)
-                        .filter(string -> !Utils.isStripEmpty(string)).collect(Collectors.toList());
+                        .filter(not(Utils::isStripEmpty)).collect(Collectors.toList());
                     try (JsonReader reader = Json
                         .createReader(new ByteArrayInputStream(newBody.getBytes(StandardCharsets.UTF_8)))) {
                         final JsonValue jsonValue = reader.readValue();

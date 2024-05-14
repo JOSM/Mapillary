@@ -27,7 +27,7 @@ public final class ApiKeyReader {
             return System.getProperty(key);
         }
         // Then check if there was something stored in JOSM preferences
-        if (Config.getPref() != null && !Utils.isBlank(Config.getPref().get("mapillary.api." + key))) {
+        if (Config.getPref() != null && !Utils.isStripEmpty(Config.getPref().get("mapillary.api." + key))) {
             return Config.getPref().get("mapillary.api." + key);
         }
         // Then check and see if the api key file has the key
