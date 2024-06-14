@@ -20,8 +20,6 @@ import javax.imageio.ImageIO;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.apache.commons.imaging.ImageReadException;
-import org.apache.commons.imaging.ImageWriteException;
 import org.apache.commons.imaging.common.RationalNumber;
 import org.apache.commons.imaging.formats.jpeg.exif.ExifRewriter;
 import org.apache.commons.imaging.formats.jpeg.xmp.JpegXmpRewriter;
@@ -118,7 +116,7 @@ public class MapillaryExportWriterThread extends Thread {
                     outputSet = new TiffOutputSet();
                 }
                 exifDirectory = outputSet.getOrCreateExifDirectory();
-                gpsDirectory = outputSet.getOrCreateGPSDirectory();
+                gpsDirectory = outputSet.getOrCreateGpsDirectory();
 
                 gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);
                 gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF,
@@ -139,7 +137,7 @@ public class MapillaryExportWriterThread extends Thread {
 
                 final String xml = getXmpXml(img, mimg);
 
-                outputSet.setGPSInDegrees(mimg.lon(), mimg.lat());
+                outputSet.setGpsInDegrees(mimg.lon(), mimg.lat());
                 Path parentFile = file.getParent();
                 if (!Files.exists(parentFile) && !Files.isDirectory(parentFile)) {
                     Files.createDirectories(parentFile);
@@ -167,7 +165,7 @@ public class MapillaryExportWriterThread extends Thread {
                 }
                 Thread.currentThread().interrupt();
                 return;
-            } catch (IOException | ImageReadException | ImageWriteException e) {
+            } catch (IOException e) {
                 Logging.error(e);
             }
 
