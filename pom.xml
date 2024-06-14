@@ -1,0 +1,70 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.openstreetmap.josm.plugins</groupId>
+        <artifactId>plugin-root</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>Mapillary</artifactId>
+
+    <url>${plugin.link}</url>
+    <developers>
+        <developer>
+            <id>nokutu</id>
+        </developer>
+        <developer>
+            <id>floscher</id>
+        </developer>
+        <developer>
+            <id>taylor.smock</id>
+            <name>Taylor Smock</name>
+            <email>tsmock@meta.com</email>
+        </developer>
+    </developers>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.lang.version>17</java.lang.version>
+        <plugin.src.dir>src/main/java</plugin.src.dir>
+        <plugin.resources.dir>src/main/</plugin.resources.dir>
+        <plugin.main.version>18940</plugin.main.version>
+        <plugin.author>nokutu, floscher, taylor.smock &lt;tsmock@meta.com&gt;</plugin.author>
+        <plugin.class>org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin</plugin.class>
+        <plugin.description>Allows the user to work with pictures hosted at mapillary.com</plugin.description>
+        <plugin.icon>images/mapillary-logo.svg</plugin.icon>
+        <plugin.link>https://wiki.openstreetmap.org/wiki/JOSM/Plugins/Mapillary</plugin.link>
+        <plugin.canloadatruntime>true</plugin.canloadatruntime>
+        <plugin.requires>apache-commons</plugin.requires>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.openstreetmap.josm.plugins</groupId>
+            <artifactId>apache-commons</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jdatepicker</groupId>
+            <artifactId>jdatepicker</artifactId>
+            <version>1.3.4</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Plugin-Link>${plugin.link}</Plugin-Link>
+                            <Plugin-Icon>${plugin.icon}</Plugin-Icon>
+                            <Plugin-Canloadatruntime>${plugin.canloadatruntime}</Plugin-Canloadatruntime>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
