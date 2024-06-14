@@ -10,7 +10,6 @@ import java.io.StringReader;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.Imaging;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.XmlUtils;
@@ -53,7 +52,7 @@ public final class ImageMetaDataUtil {
         boolean pano = false;
         try {
             pano = checkXmpProjectionType(Imaging.getXmpXml(is, null), "equirectangular");
-        } catch (ImageReadException | IOException ex) {
+        } catch (IOException ex) {
             Logging.trace(ex);
         }
         return pano;
