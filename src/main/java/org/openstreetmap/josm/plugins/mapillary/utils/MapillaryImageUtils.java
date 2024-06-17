@@ -255,12 +255,17 @@ public final class MapillaryImageUtils {
             }
             // This should always be a parseable integer according to API docs. By not checking that all characters are
             // digits, we save 55.6 MB of allocations in the test area during download.
-            if (image.hasKey(ImageProperties.ID.toString())) {
-                final var id = Long.parseLong(image.get(ImageProperties.ID.toString()));
-                if (id > 0) {
-                    image.setOsmId(id, 1);
+            try {
+                if (image.hasKey(ImageProperties.ID.toString())) {
+                    final var id = Long.parseLong(image.get(ImageProperties.ID.toString()));
+                    if (id > 0) {
+                        image.setOsmId(id, 1);
+                    }
+                    return id;
                 }
-                return id;
+            } catch (NumberFormatException numberFormatException) {
+                // This does actually happen; see #23734
+                Logging.error(numberFormatException);
             }
         }
         return 0;
