@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.data.mapillary;
 
 import org.openstreetmap.josm.data.osm.event.IDataSelectionListener;

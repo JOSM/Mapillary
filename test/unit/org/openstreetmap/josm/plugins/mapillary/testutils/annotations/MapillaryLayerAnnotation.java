@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.testutils.annotations;
 
 import java.lang.annotation.Documented;

@@ -87,7 +87,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
     private static final String[] TIME_LIST = { tr("Years"), tr("Months"), tr("Days") };
 
     private static final long[] TIME_FACTOR = new long[] { 31_536_000_000L, // = 365 * 24 * 60 * 60 * 1000 = number of
-                                                                            // ms in a year
+        // ms in a year
         2_592_000_000L, // = 30 * 24 * 60 * 60 * 1000 = number of ms in a month
         86_400_000 // = 24 * 60 * 60 * 1000 = number of ms in a day
     };

@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

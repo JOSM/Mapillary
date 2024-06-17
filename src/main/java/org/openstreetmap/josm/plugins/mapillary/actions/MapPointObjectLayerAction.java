@@ -1,6 +1,12 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.actions;
 
+import static org.openstreetmap.josm.tools.I18n.marktr;
+import static org.openstreetmap.josm.tools.I18n.tr;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.Layer;
@@ -10,12 +16,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Shortcut;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-
-import static org.openstreetmap.josm.tools.I18n.marktr;
-import static org.openstreetmap.josm.tools.I18n.tr;
 
 /**
  * An action to create a layer for Mapillary point objects (not traffic signs)
@@ -27,8 +27,8 @@ public class MapPointObjectLayerAction extends JosmAction {
         "Displays the layer displaying the map point objects detected by Mapillary");
 
     public MapPointObjectLayerAction() {
-        super(tr(ACTION_NAME), MapillaryPlugin.LOGO.setSize(ImageSizes.DEFAULT), tr(TOOLTIP),
-            Shortcut.registerShortcut("mapillary:pointFeaturesLayer", tr(ACTION_NAME), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+        super(tr(ACTION_NAME), MapillaryPlugin.LOGO.setSize(ImageSizes.DEFAULT), tr(TOOLTIP), Shortcut
+            .registerShortcut("mapillary:pointFeaturesLayer", tr(ACTION_NAME), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
             false, "mapillary:pointFeaturesLayer", true);
     }
 

@@ -31,18 +31,6 @@ import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
-import org.junit.jupiter.api.extension.AfterAllCallback;
-import org.junit.jupiter.api.extension.AfterEachCallback;
-import org.junit.jupiter.api.extension.BeforeAllCallback;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.platform.commons.support.AnnotationSupport;
-import org.openstreetmap.josm.TestUtils;
-import org.openstreetmap.josm.plugins.mapillary.spi.preferences.IMapillaryUrls;
-import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
-import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryUrls;
-import org.openstreetmap.josm.tools.Utils;
-
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.common.TextFile;
@@ -64,6 +52,17 @@ import jakarta.json.JsonObjectBuilder;
 import jakarta.json.JsonReader;
 import jakarta.json.JsonString;
 import jakarta.json.JsonValue;
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.platform.commons.support.AnnotationSupport;
+import org.openstreetmap.josm.TestUtils;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.IMapillaryUrls;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryConfig;
+import org.openstreetmap.josm.plugins.mapillary.spi.preferences.MapillaryUrls;
+import org.openstreetmap.josm.tools.Utils;
 
 /**
  * Mock Mapillary API calls
@@ -226,13 +225,10 @@ public @interface MapillaryURLWireMock {
                 if (request.queryParameter("image_ids").isPresent()) {
                     // Not implemented currently since I don't know if I need to split on `,` or `%2C`
                     final List<String> imageIds = request.queryParameter("image_ids").values().stream()
-                        .map(str -> str.split(",", -1)).flatMap(Stream::of).filter(Objects::nonNull)
-                        .toList();
-                    final List<TextFile> imageText = imageIds.stream()
-                        .map(image -> Path.of(TestUtils.getTestDataRoot(), "__files", "api", "v4", "responses", "graph", image + ".json"))
-                        .map(Path::toUri)
-                        .map(TextFile::new)
-                        .toList();
+                        .map(str -> str.split(",", -1)).flatMap(Stream::of).filter(Objects::nonNull).toList();
+                    final List<TextFile> imageText = imageIds.stream().map(image -> Path.of(TestUtils.getTestDataRoot(),
+                        "__files", "api", "v4", "responses", "graph", image + ".json")).map(Path::toUri)
+                        .map(TextFile::new).toList();
                     // We need to get the actual bytes prior to returning, so we need to read the files.
                     final String body = imageText.stream().map(TextFile::readContentsAsString)
                         .collect(Collectors.joining(",", "{\"data\":[", "]}"));

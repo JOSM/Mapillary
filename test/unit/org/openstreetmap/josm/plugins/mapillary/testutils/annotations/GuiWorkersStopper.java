@@ -26,10 +26,12 @@ public @interface GuiWorkersStopper {
         @Override
         public void afterEach(ExtensionContext context) {
             AtomicBoolean done = new AtomicBoolean();
-            new org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillaryNodesDownloader(nodes -> done.set(true), 1).execute();
+            new org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillaryNodesDownloader(nodes -> done.set(true),
+                1).execute();
             Awaitility.await().atMost(Durations.FIVE_SECONDS).untilTrue(done);
             done.set(false);
-            new org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillarySequenceDownloader("", chunks -> done.set(true)).execute();
+            new org.openstreetmap.josm.plugins.mapillary.gui.workers.MapillarySequenceDownloader("",
+                chunks -> done.set(true)).execute();
             Awaitility.await().atMost(Durations.FIVE_SECONDS).untilTrue(done);
         }
     }
