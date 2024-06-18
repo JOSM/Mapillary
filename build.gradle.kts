@@ -14,7 +14,7 @@ plugins {
   id("application")
   id("com.diffplug.spotless") version "6.25.0"
   id("com.github.ben-manes.versions") version "0.51.0"
-  id("com.github.spotbugs") version "6.0.12"
+  id("com.github.spotbugs") version "6.0.17"
   id("net.ltgt.errorprone") version "3.1.0"
   id("org.openstreetmap.josm") version "0.8.2"
   id("org.sonarqube") version "4.3.0.3225"
@@ -57,24 +57,24 @@ java.targetCompatibility = JavaVersion.VERSION_17
 
 val versions = mapOf(
   "awaitility" to "4.2.1",
-  "errorprone" to "2.26.1",
+  "errorprone" to "2.28.0",
   "jdatepicker" to "1.3.4",
   "jmockit" to "1.49",
   "junit" to "5.10.2",
   "pmd" to "6.42.0",
-  "spotbugs" to "4.8.4",
-  "wiremock" to "2.35.1"
+  "spotbugs" to "4.8.6",
+  "wiremock" to "3.6.0"
 )
 
 dependencies {
   errorprone("com.google.errorprone:error_prone_core:${versions["errorprone"]}")
   testImplementation ("org.openstreetmap.josm:josm-unittest:SNAPSHOT"){ isChanging = true }
-  testImplementation("com.github.tomakehurst:wiremock-jre8:${versions["wiremock"]}")
+  testImplementation("org.wiremock:wiremock:${versions["wiremock"]}")
 
   testImplementation("org.junit.jupiter:junit-jupiter-api:${versions["junit"]}")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${versions["junit"]}")
-  // This can be removed once JOSM drops all JUnit4 support. Nothing remaining in Mapillary uses JUnit4.
   testImplementation("org.junit.jupiter:junit-jupiter-params:${versions["junit"]}")
+    // This can be removed once JOSM drops all JUnit4 support. Nothing remaining in Mapillary uses JUnit4.
   testImplementation("org.junit.vintage:junit-vintage-engine:${versions["junit"]}")
 
   testImplementation("org.awaitility:awaitility:${versions["awaitility"]}")

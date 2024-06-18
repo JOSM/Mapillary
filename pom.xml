@@ -66,6 +66,7 @@
                             <Plugin-Link>${plugin.link}</Plugin-Link>
                             <Plugin-Icon>${plugin.icon}</Plugin-Icon>
                             <Plugin-Canloadatruntime>${plugin.canloadatruntime}</Plugin-Canloadatruntime>
+                            <Plugin-Minimum-Java-Version>${plugin.minimum.java.version}</Plugin-Minimum-Java-Version>
                         </manifestEntries>
                     </archive>
                 </configuration>
