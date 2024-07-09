@@ -13,23 +13,25 @@ on:
   workflow_dispatch:
 
 jobs:
-  call-workflow:
-    strategy:
-      matrix:
-        josm-revision: ["", "r18877"]
+  call-workflow-latest:
+      uses: JOSM/JOSMPluginAction/.github/workflows/ant.yml@v2
+      with:
+          josm-revision: ""
+          java-version: 17
+  call-workflow-min:
     uses: JOSM/JOSMPluginAction/.github/workflows/ant.yml@v2
     with:
-      josm-revision: ${{ matrix.josm-revision }}
+      josm-revision: "r18877"
       java-version: 17
-      perform-revision-tagging: ${{ matrix.josm-revision == 'r18877' && github.repository == 'JOSM/Mapillary' && github.ref_type == 'branch' && github.ref_name == 'master' && github.event_name != 'schedule' && github.event_name != 'pull_request' }}
+      perform-revision-tagging: ${{ github.repository == 'JOSM/Mapillary' && github.ref_type == 'branch' && github.ref_name == 'master' && github.event_name != 'schedule' && github.event_name != 'pull_request' }}
 
   add-mapillary-keys:
       runs-on: ubuntu
-      needs: call-workflow
-      if: needs.call-workflow.outputs.tag
+      needs: call-workflow-min
+      if: needs.call-workflow-min.outputs.tag
       steps:
           - name: Get Mapillary jar
-            run: gh release download ${{ needs.call-workflow.outputs.tag }} --pattern Mapillary.jar
+            run: gh release download ${{ needs.call-workflow-min.outputs.tag }} --pattern Mapillary.jar
           - name: Add keys
             run: |
                 cat <<EOF > mapillary_api_keys.json
@@ -41,4 +43,4 @@ jobs:
                 EOF
                 zip Mapillary.jar mapillary_api_keys.json
           - name: Upload Mapillary jar
-            run: gh release upload ${{ needs.call-workflow.outputs.tag }} --clobber Mapillary.jar
+            run: gh release upload ${{ needs.call-workflow-min.outputs.tag }} --clobber Mapillary.jar
