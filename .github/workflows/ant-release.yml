@@ -10,5 +10,21 @@ jobs:
     with:
       josm-revision: "r18877"
       java-version: 17
-      additional_build_args: "-DMAPILLARY_CLIENT_ID=${{ secrets.MAPILLARY_CLIENT_ID }} -DMAPILLARY_CLIENT_SECRET=${{ secrets.MAPILLARY_CLIENT_SECRET }} -DMAPILLARY_CLIENT_TOKEN=${{ secrets.MAPILLARY_CLIENT_TOKEN }}"
-
+  add-mapillary-keys:
+    runs-on: ubuntu
+    needs: call-workflow
+    steps:
+      - name: Get Mapillary jar
+        run: gh release download ${GITHUB_REF##*/} --pattern Mapillary.jar
+      - name: Add keys
+        run: |
+            cat <<EOF > mapillary_api_keys.json
+            {
+                "MAPILLARY_CLIENT_ID": "${real_MAPILLARY_CLIENT_ID}",
+                "MAPILLARY_CLIENT_TOKEN": "${real_MAPILLARY_CLIENT_TOKEN}",
+                "MAPILLARY_CLIENT_SECRET": "${real_MAPILLARY_CLIENT_SECRET}"
+            }
+            EOF
+            zip Mapillary.jar mapillary_api_keys.json
+      - name: Upload Mapillary jar
+        run: gh release upload ${GITHUB_REF##*/} --clobber Mapillary.jar
