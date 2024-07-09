@@ -21,4 +21,24 @@ jobs:
     with:
       josm-revision: ${{ matrix.josm-revision }}
       java-version: 17
+      perform-revision-tagging: ${{ matrix.josm-revision == 'r18877' && github.repository == 'JOSM/Mapillary' && github.ref_type == 'branch' && github.ref_name == 'master' && github.event_name != 'schedule' && github.event_name != 'pull_request' }}
 
+  add-mapillary-keys:
+      runs-on: ubuntu
+      needs: call-workflow
+      if: needs.call-workflow.outputs.tag
+      steps:
+          - name: Get Mapillary jar
+            run: gh release download ${{ needs.call-workflow.outputs.tag }} --pattern Mapillary.jar
+          - name: Add keys
+            run: |
+                cat <<EOF > mapillary_api_keys.json
+                {
+                    "MAPILLARY_CLIENT_ID": "${real_MAPILLARY_CLIENT_ID}",
+                    "MAPILLARY_CLIENT_TOKEN": "${real_MAPILLARY_CLIENT_TOKEN}",
+                    "MAPILLARY_CLIENT_SECRET": "${real_MAPILLARY_CLIENT_SECRET}"
+                }
+                EOF
+                zip Mapillary.jar mapillary_api_keys.json
+          - name: Upload Mapillary jar
+            run: gh release upload ${{ needs.call-workflow.outputs.tag }} --clobber Mapillary.jar
