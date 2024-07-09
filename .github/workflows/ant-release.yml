@@ -10,4 +10,8 @@ jobs:
     with:
       josm-revision: "r18877"
       java-version: 17
+    env:
+      MAPILLARY_CLIENT_ID: ${{ secrets.MAPILLARY_CLIENT_ID }}
+      MAPILLARY_CLIENT_SECRET: ${{ secrets.MAPILLARY_CLIENT_SECRET }}
+      MAPILLARY_CLIENT_TOKEN: ${{ secrets.MAPILLARY_CLIENT_TOKEN }}
 
