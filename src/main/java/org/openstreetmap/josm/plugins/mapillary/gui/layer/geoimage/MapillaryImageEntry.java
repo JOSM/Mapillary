@@ -86,7 +86,7 @@ public class MapillaryImageEntry
     private static final CacheAccess<Long, MapillaryImageEntry> CACHE = JCSCacheManager
         .getCache("mapillary:mapillaryimageentry");
     private static final String MESSAGE_SEPARATOR = " — ";
-    private final INode image;
+    private INode image;
     private final List<ImageDetection<?>> imageDetections = new ArrayList<>();
     private SoftReference<BufferedImageCacheEntry> originalImage;
     private SoftReference<BufferedImage> layeredImage;
@@ -124,8 +124,7 @@ public class MapillaryImageEntry
             MapillaryImageEntry entry = CACHE.get(id, () -> new MapillaryImageEntry(image));
             if (entry.image.getNumKeys() <= image.getNumKeys()
                 || image != entry.image /* Object reference equality */) {
-                CACHE.remove(id);
-                entry = CACHE.get(id, () -> new MapillaryImageEntry(image));
+                entry.image = image;
             }
             return entry;
         }

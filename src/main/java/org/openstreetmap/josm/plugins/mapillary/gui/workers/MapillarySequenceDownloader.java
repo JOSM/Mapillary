@@ -11,7 +11,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
@@ -157,7 +156,7 @@ public class MapillarySequenceDownloader extends MapillaryUIDownloader<Mapillary
             tNode.setOsmId(n.getOsmId(), n.getVersion());
             tNode.setKeys(n.getKeys());
             return tNode;
-        }).collect(Collectors.toList()));
+        }).toList());
         return seq;
     }
 
