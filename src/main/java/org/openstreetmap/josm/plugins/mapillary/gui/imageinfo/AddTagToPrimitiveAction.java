@@ -1,9 +1,12 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.imageinfo;
 
-import java.awt.event.ActionEvent;
+import static org.openstreetmap.josm.tools.I18n.tr;
 
-import javax.swing.AbstractAction;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.io.Serial;
+
 import javax.swing.JOptionPane;
 
 import org.openstreetmap.josm.command.ChangePropertyCommand;
@@ -14,11 +17,13 @@ import org.openstreetmap.josm.data.osm.Tag;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.geoimage.ImageViewerDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.geoimage.MapillaryImageEntry;
-import org.openstreetmap.josm.tools.I18n;
-import org.openstreetmap.josm.tools.ImageProvider;
-import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
+import org.openstreetmap.josm.tools.Shortcut;
 
-public class AddTagToPrimitiveAction extends AbstractAction {
+/**
+ * Add the mapillary tag to a primitive
+ */
+public class AddTagToPrimitiveAction extends MapillaryAction {
+    @Serial
     private static final long serialVersionUID = 4834918715956633953L;
 
     private Tag tag;
@@ -30,7 +35,10 @@ public class AddTagToPrimitiveAction extends AbstractAction {
      * @param name The name to use
      */
     public AddTagToPrimitiveAction(final String name) {
-        super(name, ImageProvider.get("dialogs/add", ImageSizes.SMALLICON));
+        super(name, "dialogs/add", tr("Add the mapillary source tag to the selected primitive"),
+            Shortcut.registerShortcut("mapillary:add_tag_to_primitive", tr("Mapillary: Add Tag to Primitive"),
+                KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+            false, "mapillary:add_tag_to_primitive", false);
         this.updateEnabled();
     }
 
@@ -63,21 +71,17 @@ public class AddTagToPrimitiveAction extends AbstractAction {
         if (target != null && tag != null) {
             int conflictResolution = JOptionPane.YES_OPTION;
             if (target.hasKey(tag.getKey()) && !target.hasTag(tag.getKey(), tag.getValue())) {
-                conflictResolution = JOptionPane.showConfirmDialog(MainApplication.getMainFrame(),
-                    "<html>"
-                        + I18n.tr(
-                            "A tag with key <i>{0}</i> is already present on the selected OSM object.", tag.getKey())
-                        + "<br>"
-                        + I18n.tr(
-                            "Do you really want to replace the current value <i>{0}</i> with the new value <i>{1}</i>?",
-                            target.get(tag.getKey()), tag.getValue())
-                        + "</html>",
-                    I18n.tr("Tag conflict"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                conflictResolution = JOptionPane.showConfirmDialog(MainApplication.getMainFrame(), "<html>"
+                    + tr("A tag with key <i>{0}</i> is already present on the selected OSM object.", tag.getKey())
+                    + "<br>"
+                    + tr("Do you really want to replace the current value <i>{0}</i> with the new value <i>{1}</i>?",
+                        target.get(tag.getKey()), tag.getValue())
+                    + "</html>", tr("Tag conflict"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             }
             if (JOptionPane.YES_OPTION == conflictResolution) {
-                if (target instanceof OsmPrimitive) {
+                if (target instanceof OsmPrimitive primitive) {
                     UndoRedoHandler.getInstance()
-                        .add(new ChangePropertyCommand((OsmPrimitive) target, tag.getKey(), tag.getValue()));
+                        .add(new ChangePropertyCommand(primitive, tag.getKey(), tag.getValue()));
                 } else {
                     target.put(tag);
                     target.setModified(true);

@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.imageinfo;
 
+import static org.openstreetmap.josm.tools.I18n.marktr;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.Font;
@@ -119,13 +120,13 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
 
         imgKeyValue = new HtmlPanel();
 
-        imgLinkAction = new WebLinkAction(tr("View in browser"), null);
+        imgLinkAction = new WebLinkAction(marktr("View in browser"), null);
 
-        copyImgUrlAction = new ClipboardAction(tr("Copy URL"), tr("Copied URL to clipboard …"), null);
+        copyImgUrlAction = new ClipboardAction(marktr("Copy URL"), tr("Copied URL to clipboard …"), null);
         final var copyUrlButton = new MapillaryButton(copyImgUrlAction, true);
         copyImgUrlAction.setPopupParent(copyUrlButton);
 
-        copyImgKeyAction = new ClipboardAction(tr("Copy key"), tr("Copied key to clipboard …"), null);
+        copyImgKeyAction = new ClipboardAction(marktr("Copy key"), tr("Copied key to clipboard …"), null);
         final var copyKeyButton = new MapillaryButton(copyImgKeyAction, true);
         copyImgKeyAction.setPopupParent(copyKeyButton);
 

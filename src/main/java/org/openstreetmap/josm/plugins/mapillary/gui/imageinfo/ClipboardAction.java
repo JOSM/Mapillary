@@ -1,16 +1,18 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.imageinfo;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
-import java.awt.Toolkit;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.io.Serial;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -18,12 +20,16 @@ import javax.swing.JPanel;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
 
+import org.openstreetmap.josm.gui.datatransfer.ClipboardUtils;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
-import org.openstreetmap.josm.tools.ImageProvider;
-import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
+import org.openstreetmap.josm.tools.Shortcut;
 
-public class ClipboardAction extends AbstractAction {
+/**
+ * An action for copying items to the clipboard
+ */
+public class ClipboardAction extends MapillaryAction {
+    @Serial
     private static final long serialVersionUID = 3323536079627210533L;
     /**
      * The duration in milliseconds for which the popup will be shown
@@ -48,8 +54,18 @@ public class ClipboardAction extends AbstractAction {
      */
     private Transferable contents;
 
+    /**
+     * Create a new action for clipboards
+     *
+     * @param name The name of the action (use {@link org.openstreetmap.josm.tools.I18n#marktr(String)})
+     * @param successMessage The message for success
+     * @param contents The initial contents to use
+     */
     public ClipboardAction(final String name, final String successMessage, final Transferable contents) {
-        super(name, ImageProvider.get("copy", ImageSizes.SMALLICON));
+        super(tr(name), "copy", tr("Copy {0} to clipboard", tr(name)),
+            Shortcut.registerShortcut("mapillary:copy_to_clipboard_" + name.replace(' ', '_'),
+                tr("Mapillary: {0}", tr(name)), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+            false, "mapillary:copy_to_clipboard_" + name.replace(' ', '_'), false);
         this.contents = contents;
 
         // Init popup
@@ -88,7 +104,7 @@ public class ClipboardAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (contents != null) {
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(contents, null);
+            ClipboardUtils.copy(contents);
             if (popupParent != null && lastCopyTime + POPUP_DURATION < System.currentTimeMillis()) {
                 final PopupFactory popupFactory = new PopupFactory();
                 final Popup popup = popupFactory.getPopup(popupParent, popupContent,
