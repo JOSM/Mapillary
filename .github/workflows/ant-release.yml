@@ -15,7 +15,7 @@ jobs:
     needs: call-workflow
     steps:
       - name: Get Mapillary jar
-        run: gh release download ${GITHUB_REF##*/} --pattern Mapillary.jar
+        run: gh release download ${{ github.ref_name }} --pattern Mapillary.jar
       - name: Add keys
         run: |
             cat <<EOF > mapillary_api_keys.json
@@ -27,4 +27,4 @@ jobs:
             EOF
             zip Mapillary.jar mapillary_api_keys.json
       - name: Upload Mapillary jar
-        run: gh release upload ${GITHUB_REF##*/} --clobber Mapillary.jar
+        run: gh release upload ${{ github.ref_name }} --clobber Mapillary.jar
