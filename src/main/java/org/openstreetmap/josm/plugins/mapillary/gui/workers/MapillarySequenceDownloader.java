@@ -9,15 +9,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Lock;
 import java.util.function.Consumer;
 
-import org.openstreetmap.josm.data.vector.VectorDataSet;
-import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryNode;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillarySequence;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
@@ -181,24 +177,6 @@ public class MapillarySequenceDownloader extends MapillaryUIDownloader<Mapillary
     @Override
     protected void process(List<MapillarySequence> chunks) {
         super.process(chunks);
-        VectorDataSet ds = MapillaryLayer.getInstance().getData();
-        // Technically a writeLock would be better, but we cannot get that with the current VectorDataSet
-        // implementation.
-        final Lock dsLock = ds.getReadLock();
-        try {
-            dsLock.lock();
-            for (MapillarySequence seq : chunks) {
-                for (MapillaryNode oldNode : seq.getNodes()) {
-                    VectorNode oldPrimitive = (VectorNode) ds.getPrimitiveById(oldNode);
-                    if (oldPrimitive != null) {
-                        oldPrimitive.putAll(oldNode.getKeys());
-                        oldPrimitive.setCoor(oldNode.getCoor());
-                    }
-                }
-            }
-        } finally {
-            dsLock.unlock();
-        }
         // The counter just avoids many resets of the imagery window in short order
         if (!chunks.isEmpty() && counter.getAndAdd(chunks.size()) < 3) {
             this.updater.accept(chunks.get(chunks.size() - 1));

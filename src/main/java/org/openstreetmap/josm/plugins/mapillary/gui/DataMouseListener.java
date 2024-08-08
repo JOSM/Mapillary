@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import javax.swing.event.MouseInputAdapter;
@@ -85,14 +86,14 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
         LatLon click = MainApplication.getMap().mapView.getLatLon(e.getX(), e.getY());
         Optional<INode> nodes = searchNodes(layer, searchBBox).stream().distinct().filter(AbstractPrimitive::isDrawable)
             .filter(INode.class::isInstance).map(INode.class::cast).filter(i -> i.getUniqueId() > 0)
-            .sorted(Comparator.comparingDouble(i -> i.distanceSq(click))).findFirst();
+            .min(Comparator.comparingDouble(i -> i.distanceSq(click)));
         if (nodes.isPresent()) {
             // This is needed since Mapillary ids are only unique within a tile.
             layer.getData().setSelected(Collections.singletonList(nodes.get()));
-        } else if (layer instanceof MapillaryLayer) {
+        } else if (layer instanceof MapillaryLayer mapillaryLayer) {
             if (e.getClickCount() >= MapillaryProperties.DESELECT_CLICK_COUNT.get()) {
                 layer.getData().clearSelection();
-                ((MapillaryLayer) layer).setCurrentImage(null);
+                mapillaryLayer.setCurrentImage(null);
             }
         } else {
             Collection<VectorWay> ways = layer.getData().searchWays(searchBBox);
@@ -115,64 +116,66 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
         final BBox searchBBox = getSmallBBox(e.getPoint());
         for (MVTLayer layer : MainApplication.getLayerManager().getLayersOfType(MVTLayer.class)) {
             if (layer instanceof MapillaryLayer || layer instanceof PointObjectLayer) {
-                final Lock readLock = layer.getData().getReadLock();
-                if (readLock.tryLock()) {
-                    layer.getData().getPrimitivesById(layer.getData().getHighlighted().toArray(new PrimitiveId[0]))
-                        .forEach(vectorPrimitive -> vectorPrimitive.setHighlighted(false));
-                    try {
-                        if (searchBBox == null) {
-                            layer.getData().setHighlighted(Collections.emptyList());
-                            continue;
-                        }
-                        if (layer instanceof MapillaryLayer) {
-                            MapillaryNode node = ((MapillaryLayer) layer).getImage();
-                            if (node != null && node.getSequence() != null) {
-                                node.getSequence().getNodes().forEach(n -> n.setHighlighted(false));
-                            }
-                        }
-                        List<? extends AbstractPrimitive> nodes = searchNodes(layer, searchBBox);
-                        if (!nodes.isEmpty()) {
-                            layer.getData().setHighlighted(nodes.stream().filter(IPrimitive::isDrawable)
-                                .map(IPrimitive::getPrimitiveId).collect(Collectors.toSet()));
-                            nodes.forEach(node -> node.setHighlighted(true));
-                            layer.invalidate();
-                            continue;
-                        }
-                        Collection<VectorWay> ways = SubclassFilteredCollection.filter(
-                            layer.getData().searchWays(searchBBox),
-                            way -> convertToWaySegmentBBox(way).anyMatch(searchBBox::intersects));
-                        if (!ways.isEmpty()) {
-                            layer.getData().setHighlighted(
-                                ways.stream().map(IPrimitive::getPrimitiveId).collect(Collectors.toSet()));
-                            layer.invalidate();
-                        } else if (!layer.getData().getHighlighted().isEmpty()) {
-                            layer.getData().setHighlighted(Collections.emptyList());
-                        }
-                    } finally {
-                        readLock.unlock();
+                performHighlight(layer, searchBBox);
+            }
+        }
+    }
+
+    private static void performHighlight(MVTLayer layer, BBox searchBBox) {
+        final Lock readLock = layer.getData().getReadLock();
+        if (readLock.tryLock()) {
+            layer.getData().getPrimitivesById(layer.getData().getHighlighted().toArray(new PrimitiveId[0]))
+                .forEach(vectorPrimitive -> vectorPrimitive.setHighlighted(false));
+            try {
+                if (searchBBox == null) {
+                    layer.getData().setHighlighted(Collections.emptyList());
+                    return;
+                }
+                if (layer instanceof MapillaryLayer mapillaryLayer) {
+                    MapillaryNode node = mapillaryLayer.getImage();
+                    if (node != null && node.getSequence() != null) {
+                        node.getSequence().getNodes().forEach(n -> n.setHighlighted(false));
                     }
                 }
+                List<? extends AbstractPrimitive> nodes = searchNodes(layer, searchBBox);
+                if (!nodes.isEmpty()) {
+                    layer.getData().setHighlighted(nodes.stream().filter(IPrimitive::isDrawable)
+                        .map(IPrimitive::getPrimitiveId).collect(Collectors.toSet()));
+                    nodes.forEach(node -> node.setHighlighted(true));
+                    layer.invalidate();
+                    return;
+                }
+                Collection<VectorWay> ways = SubclassFilteredCollection.filter(
+                    layer.getData().searchWays(searchBBox),
+                    way -> convertToWaySegmentBBox(way).anyMatch(searchBBox::intersects));
+                if (!ways.isEmpty()) {
+                    layer.getData().setHighlighted(
+                        ways.stream().map(IPrimitive::getPrimitiveId).collect(Collectors.toSet()));
+                    layer.invalidate();
+                } else if (!layer.getData().getHighlighted().isEmpty()) {
+                    layer.getData().setHighlighted(Collections.emptyList());
+                }
+            } finally {
+                readLock.unlock();
             }
         }
     }
 
     private static <N extends INode, W extends IWay<N>> Stream<BBox> convertToWaySegmentBBox(W way) {
-        // TODO: Stream.iterate would be good here (Java 9)
-        Stream.Builder<BBox> builder = Stream.builder();
-        for (int i = 0; i < way.getNodesCount() - 1; i++) {
-            BBox bbox = new BBox(way.getNode(i));
-            bbox.add(way.getNode(i + 1));
-            builder.add(bbox);
-        }
-        return builder.build();
+        return IntStream.iterate(0, i -> i < way.getNodesCount() - 1, i -> i + 1)
+            .mapToObj(i -> {
+                BBox bbox = new BBox(way.getNode(i));
+                bbox.add(way.getNode(i + 1));
+                return bbox;
+            });
     }
 
     private static List<? extends AbstractPrimitive> searchNodes(MVTLayer layer, BBox searchBBox) {
         if (searchBBox == null) {
             return Collections.emptyList();
         }
-        if (layer instanceof MapillaryLayer) {
-            final MapillaryNode image = ((MapillaryLayer) layer).getImage();
+        if (layer instanceof MapillaryLayer mapillaryLayer) {
+            final MapillaryNode image = mapillaryLayer.getImage();
             if (image != null) {
                 final List<AbstractPrimitive> nodes;
                 if (image.getSequence() != null) {
