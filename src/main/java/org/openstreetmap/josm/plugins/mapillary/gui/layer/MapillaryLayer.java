@@ -351,7 +351,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         final double distPer100Pixel = mv.getDist100Pixel();
         final String sequenceKey = MapillaryImageUtils.getSequenceKey(selectedImage);
         for (IWay<?> seq : getData().searchWays(box.toBBox()).stream()
-            .sorted(Comparator.comparingInt(IWay::getRawTimestamp)).distinct().collect(Collectors.toList())) {
+            .sorted(Comparator.comparingInt(IWay::getRawTimestamp)).distinct().toList()) {
             if (!Objects.equals(sequenceKey, MapillarySequenceUtils.getKey(seq))) {
                 drawSequence(g, mv, seq, selectedImage, originalTransform, distPer100Pixel);
             }
@@ -359,7 +359,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
 
         // Paint single images (see GH #219)
         for (INode node : getData().searchNodes(box.toBBox()).stream().filter(node -> !node.isReferredByWays(1))
-            .sorted(Comparator.comparingInt(INode::getRawTimestamp)).distinct().collect(Collectors.toList())) {
+            .sorted(Comparator.comparingInt(INode::getRawTimestamp)).distinct().toList()) {
             drawImageMarker(originalTransform, selectedImage, g, node, distPer100Pixel, false, null);
         }
 
@@ -435,9 +435,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
                 MapillaryImageUtils.getDate(node);
             }
             return this.dateScale.getColor(node.getRawTimestamp());
-        case VELOCITY_FOOT:
-        case VELOCITY_BIKE:
-        case VELOCITY_CAR:
+        case VELOCITY_FOOT, VELOCITY_BIKE, VELOCITY_CAR:
             final double normalized = calculateVelocity(node);
             if (Double.isNaN(normalized)) {
                 return this.velocityScale.getNoDataColor();
@@ -545,9 +543,9 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
 
         if (offset && selectedImg == img) {
             final ILatLon drawnCoordinates = OffsetUtils.getOffsetLocation(img);
-            final Point offsetP = drawnCoordinates instanceof INode
+            final Point offsetP = drawnCoordinates instanceof INode node
                 // INode implementations may optimize getEastNorth, so prefer that where possible.
-                ? mv.getPoint(((INode) drawnCoordinates).getEastNorth())
+                ? mv.getPoint(node.getEastNorth())
                 : mv.getPoint(drawnCoordinates);
             paintDirectionIndicator(g, directionC, img, originalTransform, offsetP, i);
             g.setTransform(originalTransform);
@@ -690,11 +688,6 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     }
 
     @Override
-    public boolean isMergable(Layer other) {
-        return false;
-    }
-
-    @Override
     public void mergeFrom(Layer from) {
         throw new UnsupportedOperationException("This layer does not support merging yet");
     }
@@ -750,7 +743,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     @Override
     public void layerRemoving(LayerRemoveEvent e) {
         List<DataSet> currentDataSets = MainApplication.getLayerManager().getLayersOfType(OsmDataLayer.class).stream()
-            .map(OsmDataLayer::getDataSet).collect(Collectors.toList());
+            .map(OsmDataLayer::getDataSet).toList();
         for (Map.Entry<DataSet, Set<INode>> entry : imageViewedMap.entrySet()) {
             if (!currentDataSets.contains(entry.getKey())) {
                 imageViewedMap.remove(entry.getKey());
@@ -852,7 +845,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
                 }
             }
 
-            new MapillaryNodeDownloader(node, MapillaryLayer.getInstance()::setCurrentImage).execute();
+            new MapillaryNodeDownloader(node, this::setCurrentImage).execute();
         }
     }
 
@@ -899,15 +892,14 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
 
     @Override
     public boolean containsImage(IImageEntry<?> imageEntry) {
-        if (!(imageEntry instanceof MapillaryImageEntry)) {
+        if (!(imageEntry instanceof MapillaryImageEntry entry)) {
             return false;
         }
-        MapillaryImageEntry entry = (MapillaryImageEntry) imageEntry;
         if (Objects.equals(entry.getImage(), this.image)) {
             return true;
         }
-        if (entry.getImage() instanceof VectorNode) {
-            return this.getData().containsNode((VectorNode) entry.getImage());
+        if (entry.getImage()instanceof VectorNode vectorNode) {
+            return this.getData().containsNode(vectorNode);
         }
         return this.getData().getPrimitiveById(entry.getImage().getPrimitiveId()) != null;
     }
