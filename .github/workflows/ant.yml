@@ -27,7 +27,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: ${{ (github.repository == 'JOSM/MapRoulette' && github.ref_type == 'branch' && github.ref_name == 'master' && github.event_name != 'schedule' && github.event_name != 'pull_request') && '0' || '1' }}
+          fetch-depth: ${{ (github.repository == 'JOSM/Mapillary' && github.ref_type == 'branch' && github.ref_name == 'master' && github.event_name != 'schedule' && github.event_name != 'pull_request') && '0' || '1' }}
 
       - name: Set release needed
         id: create_release_needed
@@ -53,7 +53,7 @@ jobs:
     with:
       josm-revision: "r18877"
       java-version: 17
-      perform-revision-tagging: ${{ github.repository == 'JOSM/Mapillary' && github.ref_type == 'branch' && github.ref_name == 'master' && github.event_name != 'schedule' && github.event_name != 'pull_request' }}
+      perform-revision-tagging: ${{ needs.check-release-needed.outputs.release_needed == 'true' }}
 
   add-mapillary-keys:
       runs-on: ubuntu-latest
