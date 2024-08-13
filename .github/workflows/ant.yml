@@ -19,12 +19,36 @@ permissions:
   packages: write
 
 jobs:
+  check-release-needed:
+    runs-on: ubuntu-latest
+    outputs:
+      release_needed: ${{ steps.create_release_needed.outputs.release_needed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: ${{ (github.repository == 'JOSM/MapRoulette' && github.ref_type == 'branch' && github.ref_name == 'master' && github.event_name != 'schedule' && github.event_name != 'pull_request') && '0' || '1' }}
+
+      - name: Set release needed
+        id: create_release_needed
+        run: |
+          last_tag=$(git describe --tags --abbrev=0 --always)
+          release_needed="false"
+          for file in $(git diff ${last_tag}..HEAD --name-only); do
+            if [[ $file = "src/main"* ]]; then
+              release_needed="true"
+              break
+            fi
+          done
+          echo "release_needed=$release_needed" >> $GITHUB_OUTPUT
   call-workflow-latest:
-      uses: JOSM/JOSMPluginAction/.github/workflows/ant.yml@v3
-      with:
-          josm-revision: ""
-          java-version: 17
+    needs: check-release-needed
+    uses: JOSM/JOSMPluginAction/.github/workflows/ant.yml@v3
+    with:
+      josm-revision: ""
+      java-version: 17
   call-workflow-min:
+    needs: check-release-needed
     uses: JOSM/JOSMPluginAction/.github/workflows/ant.yml@v3
     with:
       josm-revision: "r18877"
