@@ -53,7 +53,6 @@ public class ImageColorPicker extends JPanel {
     private final JLabel colorLabel;
     private EyeDropper eyeDropper;
     private boolean mouseIsDragging;
-    private Point pointInComponent;
     private JToggleButton eyeDropperButton;
     // private final Painter<Graphics, BufferedImage, Rectangle> dropperConsumer = new ImageColorPickerPainter();
 
@@ -101,7 +100,6 @@ public class ImageColorPicker extends JPanel {
         copyAction.setContents(new StringSelection(color2html(color, false)));
         colorPanel.setBackground(color);
         tempColorPanel.setBackground(tempColor);
-        pointInComponent = p;
     }
 
     public void addEyeDropper() {
