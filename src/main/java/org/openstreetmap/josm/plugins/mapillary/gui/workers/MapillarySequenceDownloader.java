@@ -118,10 +118,11 @@ public class MapillarySequenceDownloader extends MapillaryUIDownloader<Mapillary
 
     private void getImageRange(int i, long[] imagesToGet, long[] images) {
         int retries = 0;
-        Map<String, List<MapillaryNode>> map = MapillaryDownloader.downloadImages(imagesToGet);
+        final Map<String, List<MapillaryNode>> map = MapillaryDownloader.downloadImages(imagesToGet);
         while (retries < Config.getPref().getInt("mapillary.image.retries", 10) && (map.size() != 1
             || !map.containsKey(this.sequenceKey) || map.get(this.sequenceKey).size() != imagesToGet.length)) {
-            map = MapillaryDownloader.downloadImages(imagesToGet);
+            MapillaryDownloader.downloadImages(imagesToGet).forEach(
+                (key, value) -> map.merge(key, value, (list1, list2) -> list1.size() > list2.size() ? list1 : list2));
             retries++;
         }
         if (map.size() != 1 || !map.containsKey(this.sequenceKey)) {
