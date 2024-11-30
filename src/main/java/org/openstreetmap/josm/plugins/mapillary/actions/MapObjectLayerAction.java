@@ -22,8 +22,8 @@ public class MapObjectLayerAction extends JosmAction {
 
     public MapObjectLayerAction() {
         super(
-            I18n.tr(ACTION_NAME), MapillaryPlugin.LOGO.setSize(ImageSizes.DEFAULT), I18n.tr(DESCRIPTION), Shortcut
-                .registerShortcut("mapillary:trafficSignLayer", ACTION_NAME, KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+            I18n.tr(ACTION_NAME), MapillaryPlugin.LOGO.setSize(ImageSizes.DEFAULT), I18n.tr(DESCRIPTION),
+                Shortcut.registerShortcut("mapillary:trafficSignLayer", ACTION_NAME, KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
             false, "mapillary:trafficSignLayer", true);
     }
 
