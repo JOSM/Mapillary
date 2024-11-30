@@ -68,6 +68,7 @@ public class ImageColorPicker extends JPanel {
         colorPanel.setPreferredSize(new Dimension(COLOR_AREA, COLOR_AREA));
         tempColorPanel.setPreferredSize(new Dimension(COLOR_AREA, COLOR_AREA));
 
+        /* SHORTCUT(Mapillary: Copy color, mapillary:copy_to_clipboard_Copy_color, CHAR_UNDEFINED, NONE) */
         copyAction = new ClipboardAction(tr("Copy color"), tr("Copied color to clipboard"), null);
         final MapillaryButton copyButton = new MapillaryButton(copyAction, true);
         copyAction.setPopupParent(copyButton);
