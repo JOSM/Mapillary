@@ -63,8 +63,8 @@ public class ClipboardAction extends MapillaryAction {
      */
     public ClipboardAction(final String name, final String successMessage, final Transferable contents) {
         super(tr(name), "copy", tr("Copy {0} to clipboard", tr(name)),
-            Shortcut.registerShortcut("mapillary:copy_to_clipboard_" + name.replace(' ', '_'),
-                /* NO-SHORTCUT - add definition in classes using ClipboardAction */
+            Shortcut.registerShortcut(/* NO-SHORTCUT - add definition in classes using ClipboardAction */
+                "mapillary:copy_to_clipboard_" + name.replace(' ', '_'),
                 tr("Mapillary: {0}", tr(name)), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
             false, "mapillary:copy_to_clipboard_" + name.replace(' ', '_'), false);
         this.contents = contents;
