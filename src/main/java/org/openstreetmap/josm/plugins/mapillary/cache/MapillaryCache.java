@@ -176,7 +176,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
         }
         final IWay<?> iWay = MapillaryImageUtils.getSequence(currentImage);
         // We prefetch both ways
-        final Type type = Type.THUMB_256;
+        final Type type = MapillaryImageUtils.IS_PANORAMIC.test(currentImage) ? Type.THUMB_1024 : Type.THUMB_256; // Prefetch larger pic in case of Pano photo.
         if (iWay != null) {
             // Avoid CME -- getImage may remove nodes from the way
             final List<? extends INode> wayNodes = new ArrayList<>(iWay.getNodes());
