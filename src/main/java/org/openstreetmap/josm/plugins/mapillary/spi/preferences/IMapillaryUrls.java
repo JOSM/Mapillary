@@ -320,7 +320,7 @@ public interface IMapillaryUrls {
         if (key == null) {
             throw new IllegalArgumentException("The image key must not be null!");
         }
-        return string2URL(getBaseUrl(), "app/?pKey=", key);
+        return string2URL(getBaseUrl(), "app/?pKey=", key, "&focus=photo");
     }
 
     /**

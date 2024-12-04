@@ -26,7 +26,7 @@ class MapillaryURLTest {
 
     @Test
     void testBrowseImageURL() {
-        assertEquals(URI.create("https://www.mapillary.com/app/?pKey=1234567890123456789012"),
+        assertEquals(URI.create("https://www.mapillary.com/app/?pKey=1234567890123456789012&focus=photo"),
             MapillaryConfig.getUrls().browseImage("1234567890123456789012"));
     }
 
