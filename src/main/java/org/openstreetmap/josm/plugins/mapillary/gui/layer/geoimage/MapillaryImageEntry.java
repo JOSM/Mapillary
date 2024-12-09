@@ -70,6 +70,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.OffsetUtils;
+import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.ExifReader;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
@@ -83,8 +84,8 @@ import org.openstreetmap.josm.tools.date.DateUtils;
  */
 public class MapillaryImageEntry
     implements IImageEntry<MapillaryImageEntry>, BiConsumer<Long, Collection<ImageDetection<?>>> {
-    private static final CacheAccess<Long, MapillaryImageEntry> CACHE = JCSCacheManager
-        .getCache("mapillary:mapillaryimageentry");
+    private static final CacheAccess<Long, MapillaryImageEntry> CACHE =
+        JCSCacheManager.getCache("mapillary:mapillaryimageentry", Config.getPref().getInt("mapillary.jcs.cache.max_objects_in_memory", 10), 0, null);
     private static final String MESSAGE_SEPARATOR = " — ";
     private INode image;
     private final List<ImageDetection<?>> imageDetections = new ArrayList<>();
