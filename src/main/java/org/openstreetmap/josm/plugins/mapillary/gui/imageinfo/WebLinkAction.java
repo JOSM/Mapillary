@@ -32,7 +32,7 @@ public class WebLinkAction extends MapillaryAction {
     public WebLinkAction() {
         super(tr("View in browser"), "link", tr("Open in browser"),
             Shortcut.registerShortcut("mapillary:open_in_browser_View_in_browser",
-                tr("Mapillary: Open {0} in browser", tr("View in browser")), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+                tr("Mapillary: Open image in browser"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
             false, "mapillary:open_in_browser_View_in_browser", false);
     }
 
