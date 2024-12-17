@@ -120,7 +120,7 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
 
         imgKeyValue = new HtmlPanel();
 
-        imgLinkAction = new WebLinkAction(marktr("View in browser"), null);
+        imgLinkAction = new WebLinkAction();
 
         /* SHORTCUT(Mapillary: Copy URL, mapillary:copy_to_clipboard_Copy_URL, CHAR_UNDEFINED, NONE) */
         copyImgUrlAction = new ClipboardAction(marktr("Copy URL"), tr("Copied URL to clipboard …"), null);

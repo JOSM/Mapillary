@@ -28,16 +28,12 @@ public class WebLinkAction extends MapillaryAction {
 
     /**
      * Create a new action
-     *
-     * @param name The name to show users (use {@link I18n#marktr(String)})
-     * @param uri The original URI to open
      */
-    public WebLinkAction(final String name, final URI uri) {
-        super(tr(name), "link", tr("Open in browser"),
-            Shortcut.registerShortcut("mapillary:open_in_browser_" + name.replace(' ', '_'),
-                tr("Mapillary: Open {0} in browser", tr(name)), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
-            false, "mapillary:open_in_browser_" + name.replace(' ', '_'), false);
-        setURI(uri);
+    public WebLinkAction() {
+        super(tr("View in browser"), "link", tr("Open in browser"),
+            Shortcut.registerShortcut("mapillary:open_in_browser_View_in_browser",
+                tr("Mapillary: Open {0} in browser", tr("View in browser")), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+            false, "mapillary:open_in_browser_View_in_browser", false);
     }
 
     /**
