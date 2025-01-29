@@ -2,7 +2,16 @@
 <project xmlns:if="ant:if" xmlns:unless="ant:unless" name="Mapillary" default="dist" basedir=".">
   <property name="plugin.src.dir" value="src/main/java"/>
   <property name="plugin.resources.dir" value="src/main/resources"/>
-  <!-- edit the properties of this plugin in the file `gradle.properties` -->
+  <property name="plugin.author" value="nokutu, floscher, taylor.smock"/>
+  <property name="plugin.canloadatruntime" value="true"/>
+  <property name="plugin.class" value="org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin"/>
+  <property name="plugin.description" value="Allows the user to work with pictures hosted at mapillary.com"/>
+  <property name="plugin.icon" value="images/mapillary-logo.svg"/>
+  <property name="plugin.link" value="https://wiki.openstreetmap.org/wiki/JOSM/Plugins/Mapillary"/>
+  <property name="plugin.main.version" value="18940"/>
+  <!-- The datepicker plugin is currently in the source tree. TODO fix -->
+  <property name="plugin.requires" value="apache-commons"/>
+  <property name="plugin.minimum.java.version" value="17"/>
   <property file="${basedir}/gradle.properties"/>
   <property name="josm" location="../../core/dist/josm-custom.jar"/>
   <property name="plugin.dist.dir" value="../../dist"/>
