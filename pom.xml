@@ -25,7 +25,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.lang.version>17</java.lang.version>
     <plugin.src.dir>src/main/java</plugin.src.dir>
-    <plugin.resources.dir>src/main/</plugin.resources.dir>
+    <plugin.resources.dir>src/main/resources</plugin.resources.dir>
     <plugin.main.version>18940</plugin.main.version>
     <plugin.author>nokutu, floscher, taylor.smock &lt;tsmock@meta.com&gt;</plugin.author>
     <plugin.class>org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin</plugin.class>
@@ -103,6 +103,24 @@
     </dependency>
   </dependencies>
   <build>
+    <resources>
+      <resource>
+        <directory>${plugin.resources.dir}/detections</directory>
+        <targetPath>detections</targetPath>
+      </resource>
+      <resource>
+        <directory>${plugin.resources.dir}/mapcss</directory>
+        <targetPath>mapcss</targetPath>
+      </resource>
+      <resource>
+        <directory>${plugin.resources.dir}/images</directory>
+        <targetPath>images</targetPath>
+      </resource>
+      <resource>
+        <directory>${project.basedir}/data</directory>
+        <targetPath>data</targetPath>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
