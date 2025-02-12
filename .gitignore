@@ -29,3 +29,5 @@
 # Private key files
 /src/main/resources/mapillary_api_keys.json
 
+javadoc
+lib
