@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.openstreetmap.josm.plugins</groupId>
     <artifactId>plugin-root</artifactId>
-    <version>SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
   </parent>
   <artifactId>Mapillary</artifactId>
   <url>${plugin.link}</url>
@@ -39,7 +39,7 @@
     <dependency>
       <groupId>org.openstreetmap.josm.plugins</groupId>
       <artifactId>apache-commons</artifactId>
-      <version>SNAPSHOT</version>
+      <version>1.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
