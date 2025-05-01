@@ -31,3 +31,5 @@
 
 javadoc
 lib
+
+checkstyle-josm-Mapillary.xml

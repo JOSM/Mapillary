@@ -51,7 +51,7 @@ jobs:
     needs: check-release-needed
     uses: JOSM/JOSMPluginAction/.github/workflows/ant.yml@v3
     with:
-      josm-revision: "r18877"
+      josm-revision: "r19387"
       java-version: 17
       perform-revision-tagging: ${{ needs.check-release-needed.outputs.release_needed == 'true' }}
 

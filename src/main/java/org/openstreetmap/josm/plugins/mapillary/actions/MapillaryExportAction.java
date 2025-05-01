@@ -62,7 +62,7 @@ public class MapillaryExportAction extends JosmAction {
 
         this.dialog = new MapillaryExportDialog(ok);
         pane.setMessage(this.dialog);
-        pane.setOptions(new JButton[] { ok, cancel });
+        pane.setOptions(new JButton[] {ok, cancel});
 
         JDialog dlg = pane.createDialog(MainApplication.getMainFrame(), tr("Export Mapillary images"));
         dlg.setMinimumSize(new Dimension(400, 150));

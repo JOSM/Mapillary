@@ -117,7 +117,7 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
     }
 
     public static VectorDataSelectionListener[] getMapillaryDataListeners() {
-        return new VectorDataSelectionListener[] { ZOOM_ACTION };
+        return new VectorDataSelectionListener[] {ZOOM_ACTION};
     }
 
     /**

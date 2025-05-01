@@ -16,8 +16,8 @@ import org.openstreetmap.josm.tools.Logging;
  * {@link IDatePicker#getNewDatePicker} to get a new date picker. It uses the
  * {@code "datepicker.classname"} setting to determine the appropriate class.
  *
- * @param <T> The component that the date picker returns for the UI
  * @author Taylor Smock
+ * @param <T> The component that the date picker returns for the UI
  */
 public interface IDatePicker<T extends JComponent> {
     /**

@@ -85,7 +85,8 @@ import org.openstreetmap.josm.tools.date.DateUtils;
 public class MapillaryImageEntry
     implements IImageEntry<MapillaryImageEntry>, BiConsumer<Long, Collection<ImageDetection<?>>> {
     private static final CacheAccess<Long, MapillaryImageEntry> CACHE =
-        JCSCacheManager.getCache("mapillary:mapillaryimageentry", Config.getPref().getInt("mapillary.jcs.cache.max_objects_in_memory", 10), 0, null);
+        JCSCacheManager.getCache("mapillary:mapillaryimageentry",
+        Config.getPref().getInt("mapillary.jcs.cache.max_objects_in_memory", 10), 0, null);
     private static final String MESSAGE_SEPARATOR = " — ";
     private INode image;
     private final List<ImageDetection<?>> imageDetections = new ArrayList<>();
@@ -94,7 +95,7 @@ public class MapillaryImageEntry
     private int exifOrientation = 1;
     private boolean fullImage;
 
-    private static class MapillaryValueChangeListener implements AbstractProperty.ValueChangeListener<Boolean> {
+    private static final class MapillaryValueChangeListener implements AbstractProperty.ValueChangeListener<Boolean> {
         static final MapillaryValueChangeListener INSTANCE = new MapillaryValueChangeListener();
 
         @Override
@@ -503,12 +504,52 @@ public class MapillaryImageEntry
     }
 
     @Override
+    public Instant getExifGpsInstant() {
+        return null;
+    }
+
+    @Override
     public boolean hasGpsTime() {
         return false;
     }
 
     @Override
+    public Double getExifHPosErr() {
+      return null;
+    }
+
+    @Override
+    public String getExifGpsProcMethod() {
+      return null;
+    }
+
+    @Override
+    public String getExifGpsDatum() {
+      return null;
+    }
+
+    @Override
+    public Double getExifGpsDop() {
+      return null;
+    }
+
+    @Override
+    public Integer getGps2d3dMode() {
+      return null;
+    }
+
+    @Override
+    public Integer getGpsDiffMode() {
+      return null;
+    }
+
+    @Override
     public Instant getGpsInstant() {
+        return null;
+    }
+
+    @Override
+    public Double getExifGpsTrack() {
         return null;
     }
 

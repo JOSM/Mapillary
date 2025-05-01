@@ -143,7 +143,7 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
                     new MapillaryNodesDownloader(
                         downloaded -> downloaded.stream().map(MapillaryImageUtils::getSequenceKey).distinct()
                             .map(seq -> new MapillarySequenceDownloader(seq, s -> {
-                                /* Do nothing */}))
+                                /* Do nothing */ }))
                             .forEach(MapillarySequenceDownloader::execute),
                         missingImages).execute();
                 }
@@ -198,7 +198,7 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
             if (missingImages.length != 0) {
                 new MapillaryNodesDownloader(downloaded -> downloaded.stream().map(MapillaryImageUtils::getSequenceKey)
                     .distinct().map(seq -> new MapillarySequenceDownloader(seq, s -> {
-                        /* Do nothing */}))
+                        /* Do nothing */ }))
                     .forEach(MapillarySequenceDownloader::execute), missingImages).execute();
             }
             Map<OsmData<?, ?, ?, ?>, List<IPrimitive>> selections = detections.stream()
