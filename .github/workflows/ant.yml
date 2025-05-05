@@ -27,7 +27,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: ${{ (github.repository == 'JOSM/Mapillary' && github.ref_type == 'branch' && github.ref_name == 'master' && github.event_name != 'schedule' && github.event_name != 'pull_request') && '0' || '1' }}
+          fetch-depth: ${{ (github.repository == 'JOSM/Mapillary' && github.ref_type == 'branch' && github.ref_name == 'master' && github.event_name != 'schedule' && github.event_name != 'pull_request') && '0' || '10' }}
 
       - name: Set release needed
         id: create_release_needed
