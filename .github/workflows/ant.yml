@@ -33,7 +33,9 @@ jobs:
         id: create_release_needed
         run: |
           last_tag=$(git describe --tags --abbrev=0 --always)
+          last_tag_sha=$(git show $last_tag --oneline --no-abbrev-commit | head -n1 | awk '{print $1}')
           release_needed="false"
+          if [ "$last_tag_sha" == ${{ github.sha }} ]; then release_needed="true"; fi
           for file in $(git diff ${last_tag}..HEAD --name-only); do
             if [[ $file = "src/main"* ]]; then
               release_needed="true"
