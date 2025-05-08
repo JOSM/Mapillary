@@ -29,6 +29,7 @@ import org.openstreetmap.josm.testutils.annotations.TaggingPresets;
 @HTTP
 @Projection
 @TaggingPresets
+@MapillaryURLWireMock // Needed since updatePresets calls an API endpoint
 @ExtendWith(ObjectDetectionsAnnotation.ObjectDetectionsExtension.class)
 public @interface ObjectDetectionsAnnotation {
     class ObjectDetectionsExtension implements AfterAllCallback, BeforeAllCallback {
