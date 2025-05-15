@@ -32,6 +32,7 @@
     <plugin.description>Allows the user to work with pictures hosted at mapillary.com</plugin.description>
     <plugin.icon>images/mapillary-logo.svg</plugin.icon>
     <plugin.link>https://wiki.openstreetmap.org/wiki/JOSM/Plugins/Mapillary</plugin.link>
+    <plugin.minimum.java.version>${java.lang.version}</plugin.minimum.java.version>
     <plugin.canloadatruntime>true</plugin.canloadatruntime>
     <plugin.requires>apache-commons</plugin.requires>
   </properties>
