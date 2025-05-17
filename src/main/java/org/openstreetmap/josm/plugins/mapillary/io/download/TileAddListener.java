@@ -5,6 +5,7 @@ import org.openstreetmap.gui.jmapviewer.Tile;
 
 /**
  * Listen for tile add events
+ * @param <T> The tile type that we are listening for
  */
 public interface TileAddListener<T extends Tile> {
     /**
