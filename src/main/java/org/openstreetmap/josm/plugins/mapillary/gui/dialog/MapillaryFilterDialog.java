@@ -76,8 +76,17 @@ import org.openstreetmap.josm.tools.Utils;
  *
  * @author nokutu
  */
+
+
 public final class MapillaryFilterDialog extends ToggleDialog
     implements OrganizationRecordListener, UserProfile.UserProfileListener, MVTTile.TileListener {
+
+    @Override
+    public void showDialog() {
+        if (!isShowing()) {
+            super.showDialog();
+        }
+    }
 
     @Serial
     private static final long serialVersionUID = -4192029663670922103L;
