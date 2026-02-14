@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.data.mapillary;
 
 import java.util.Map;
+import java.util.HashMap;
 
 import org.openstreetmap.josm.data.osm.AbstractPrimitive;
 import org.openstreetmap.josm.data.osm.INode;
@@ -11,13 +12,13 @@ import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.osm.NameFormatter;
 import org.openstreetmap.josm.data.osm.OsmData;
 import org.openstreetmap.josm.data.osm.visitor.PrimitiveVisitor;
+import org.openstreetmap.josm.gui.mappaint.ElemStyles;
 import org.openstreetmap.josm.gui.mappaint.StyleCache;
 
 abstract class MapillaryPrimitive extends AbstractPrimitive {
 
     private boolean highlighted;
-    private StyleCache styleCache;
-    private boolean styleCacheIsUpToDate;
+    private final Map<ElemStyles, StyleCache> styleCaches = new HashMap<>();
 
     @Override
     protected void keysChangedImpl(Map<String, String> originalKeys) {
@@ -83,23 +84,31 @@ abstract class MapillaryPrimitive extends AbstractPrimitive {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
+    // Methods required for the JOSM mappaint style engine.
     @Override
-    public StyleCache getCachedStyle() {
-        return this.styleCache;
+    public StyleCache getCachedStyle(ElemStyles elemStyles) {
+        return styleCaches.get(elemStyles);
     }
 
     @Override
-    public void setCachedStyle(StyleCache mappaintStyle) {
-        this.styleCache = mappaintStyle;
+    public void setCachedStyle(ElemStyles elemStyles, StyleCache mappaintStyle) {
+        this.styleCaches.put(elemStyles, mappaintStyle);
     }
 
     @Override
-    public boolean isCachedStyleUpToDate() {
-        return this.styleCacheIsUpToDate;
+    public boolean isCachedStyleUpToDate(ElemStyles elemStyles) {
+        // This primitive type does not have a dataSet to sync with, so we can't use a cache index.
+        // Invalidation is handled manually by calling clearCachedStyle().
+        return styleCaches.get(elemStyles) != null;
     }
 
     @Override
-    public void declareCachedStyleUpToDate() {
-        this.styleCacheIsUpToDate = true;
+    public void declareCachedStyleUpToDate(ElemStyles elemStyles) {
+        // This primitive type does not have a dataSet to sync with, so there is nothing to do here.
     }
+
+    @Override
+    public void clearCachedStyle(){
+        this.styleCaches.clear();
+    };
 }
