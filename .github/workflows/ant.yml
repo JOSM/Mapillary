@@ -25,7 +25,7 @@ jobs:
       release_needed: ${{ steps.create_release_needed.outputs.release_needed }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: ${{ (github.repository == 'JOSM/Mapillary' && github.ref_type == 'branch' && github.ref_name == 'master' && github.event_name != 'schedule' && github.event_name != 'pull_request') && '0' || '10' }}
 
@@ -64,7 +64,7 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
       steps:
-          - uses: actions/checkout@v4
+          - uses: actions/checkout@v6
             with:
                 fetch-depth: 0
           - name: Echo env
