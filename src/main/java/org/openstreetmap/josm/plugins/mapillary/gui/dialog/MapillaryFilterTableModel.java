@@ -125,7 +125,7 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
      * @since 14206
      */
     public <O extends IPrimitive & IFilterablePrimitive> void executeFilters(Collection<O> primitives, boolean force) {
-        if (AutoFilterManager.getInstance().getCurrentAutoFilter() == null && (force || model.hasFilters())) {
+        if (AutoFilterManager.getInstance().getCurrentCombinedFilter() == null && (force || model.hasFilters())) {
             try {
                 FilterWorker.executeFilters(primitives, model.getFilters().toArray(new Filter[0]));
             } catch (SearchParseError searchParseError) {
