@@ -33,3 +33,5 @@ javadoc
 lib
 
 checkstyle-josm-Mapillary.xml
+dependency-reduced-pom.xml
+target/
